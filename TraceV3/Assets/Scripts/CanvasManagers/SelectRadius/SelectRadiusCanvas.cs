@@ -7,12 +7,19 @@ using UnityEngine.UIElements;
 
 public class SelectRadiusCanvas : MonoBehaviour
 {
+    [Header("External")]
+    [SerializeField] private DragAndZoomInertia dragAndZoomInertia;
+    [SerializeField] private OnlineMapsMarkerManager markerManager;
+    
+    [Header("Internal")]
+    [SerializeField]private Texture2D cirlceToDraw;
     [SerializeField]private UnityEngine.UI.Slider _radiusSlider;
     [SerializeField]private Button _isVisableToggleButton;
     [SerializeField]private bool _isTraceVisable;
     [SerializeField]private GameObject traceIsVisable;
     [SerializeField]private GameObject traceIsHidden;
     [SerializeField]private bool firstTimeEnabled;
+   
     private void OnEnable()
     {
         if (!firstTimeEnabled)
@@ -62,6 +69,11 @@ public class SelectRadiusCanvas : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
         ScreenManager.instance.isComingFromCameraScene = true;
         SceneManager.UnloadSceneAsync(1);
+        
+        //first attempt traces scale weirdly
+        markerManager.defaultTexture = cirlceToDraw;
+        markerManager.GenerateMarkerOnTopOfUser();
+        markerManager.defaultTexture = new Texture2D(0,0);
     }
 
     public void SendTraceButton()
@@ -77,6 +89,8 @@ public class SelectRadiusCanvas : MonoBehaviour
     public void SetRadius()
     {
         SendTraceManager.instance.SetRadius(_radiusSlider.value);
+        dragAndZoomInertia.setZoomMode(true);
+        dragAndZoomInertia.setTargetZoom(10);
     }
 
     public void ToggleTraceVisability()

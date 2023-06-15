@@ -14,10 +14,17 @@ using UnityEngine;
         /// <summary>
         /// Deceleration rate (0 - 1).
         /// </summary>
-        public float friction = 0.9f;
-        public int maxSamples = 5;
+        [SerializeField]private float friction = 0.9f;
+        [SerializeField]private int maxSamples = 5;
         
-        private bool isInteract;
+        [Header("Select Radius Mode")]
+        [SerializeField]private bool targetZoomMode;
+        [SerializeField]private float targetZoom;
+        [SerializeField]private bool isInteract;
+        [SerializeField] private AnimationCurve zoomToTargetSpeed;
+        
+        
+        [Header("Home Screen Mode")]
         private List<double> speedX;
         private List<double> speedY;
         private List<float> speedZ;
@@ -32,10 +39,33 @@ using UnityEngine;
         private OnlineMaps map;
         private OnlineMapsControlBase control;
 
+        public void setZoomMode(bool targetZoomMode)
+        {
+            this.targetZoomMode = targetZoomMode;
+        }
+        public void setTargetZoom(float targetZoom)
+        {
+            this.targetZoom = targetZoom;
+        }
+        
+        
+        
         private void FixedUpdate()
         {
+            if (targetZoomMode)
+            {
+                var speed = Mathf.Abs(map.floatZoom-targetZoom)/20;
+                Debug.Log("Speed of Zoom:" + speed);
+                if (map.floatZoom-0.01f > targetZoom)
+                {
+                    map.floatZoom -= (zoomToTargetSpeed.Evaluate(speed));
+                }
+                else if(map.floatZoom+0.01f < targetZoom)
+                {
+                    map.floatZoom += (zoomToTargetSpeed.Evaluate(speed));
+                }
+            }
             if (isInteract && control.GetTouchCount() == 0) isInteract = false;
-
             // If there is interaction with the map.
             if (isInteract)
             {

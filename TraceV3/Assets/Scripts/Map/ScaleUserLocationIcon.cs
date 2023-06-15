@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //still having problems with map markers culling when still in view
-public class ScaleMarkers : MonoBehaviour
+public class ScaleUserLocationIcon : MonoBehaviour
 {
     /// <summary>
     /// Zoom, when the scale = 1.
