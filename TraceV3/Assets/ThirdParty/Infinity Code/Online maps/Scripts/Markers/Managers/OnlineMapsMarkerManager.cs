@@ -190,14 +190,7 @@ public class OnlineMapsMarkerManager : OnlineMapsMarkerManagerBase<OnlineMapsMar
         double lng, lat;
         if (map.control.GetCoords(out lng, out lat)) Create(lng, lat);
     }
-    
-    //custom trace function
-    public void GenerateMarkerOnTopOfUser() {
-        double lng, lat;
-        map.GetPosition(out lng, out lat);
-        Create(lng, lat);
-    }
-    
+
     public Vector2 GetMouseLatAndLong()
     {
         double lng, lat;

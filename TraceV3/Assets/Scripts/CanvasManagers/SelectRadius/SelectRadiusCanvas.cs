@@ -3,17 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
+
 
 public class SelectRadiusCanvas : MonoBehaviour
 {
     [Header("External")]
     [SerializeField] private DragAndZoomInertia dragAndZoomInertia;
     [SerializeField] private OnlineMapsMarkerManager markerManager;
-    
-    [Header("Internal")]
-    [SerializeField]private Texture2D cirlceToDraw;
+    [SerializeField] private OnlineMaps map;
+    [SerializeField] private Image radius;
+
+
     [SerializeField]private UnityEngine.UI.Slider _radiusSlider;
+    [SerializeField] public AnimationCurve radiusSize;
+    [SerializeField] public AnimationCurve scaler;
     [SerializeField]private Button _isVisableToggleButton;
     [SerializeField]private bool _isTraceVisable;
     [SerializeField]private GameObject traceIsVisable;
@@ -39,7 +43,6 @@ public class SelectRadiusCanvas : MonoBehaviour
             _radiusSlider.value = 0.5f;
             SetRadius();
         }
-        
         if (PlayerPrefs.GetInt("LeaveTraceIsVisable") != 0)
         {
             if (PlayerPrefs.GetInt("LeaveTraceIsVisable") == 1)
@@ -69,15 +72,12 @@ public class SelectRadiusCanvas : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
         ScreenManager.instance.isComingFromCameraScene = true;
         SceneManager.UnloadSceneAsync(1);
-        
-        //first attempt traces scale weirdly
-        markerManager.defaultTexture = cirlceToDraw;
-        markerManager.GenerateMarkerOnTopOfUser();
-        markerManager.defaultTexture = new Texture2D(0,0);
+        Debug.Log("Enter Send Mode");
     }
 
     public void SendTraceButton()
     {
+        dragAndZoomInertia.setZoomMode(false);
         PlayerPrefs.SetFloat("LeaveTraceSliderRadiusValue", _radiusSlider.value);
         if(_isTraceVisable)
             PlayerPrefs.SetInt("LeaveTraceIsVisable", 1);
@@ -90,8 +90,15 @@ public class SelectRadiusCanvas : MonoBehaviour
     {
         SendTraceManager.instance.SetRadius(_radiusSlider.value);
         dragAndZoomInertia.setZoomMode(true);
-        dragAndZoomInertia.setTargetZoom(10);
+        dragAndZoomInertia.setTargetZoom(20-(_radiusSlider.value*1.8f));
     }
+
+    private void FixedUpdate()
+    {
+        var scale = scaler.Evaluate(map.floatZoom)*radiusSize.Evaluate(_radiusSlider.value);
+        radius.rectTransform.localScale = new Vector3(scale,scale,scale);
+    }
+
 
     public void ToggleTraceVisability()
     {

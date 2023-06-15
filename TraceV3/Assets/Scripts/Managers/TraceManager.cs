@@ -196,7 +196,7 @@ public class TraceManager : MonoBehaviour
 
     public void StopLocationServices()
     {
-        // If required then we can stop the location service by this
+        //If required then we can stop the location service by this
         Input.location.Stop();
     }
 
@@ -286,8 +286,6 @@ public class TraceManager : MonoBehaviour
             }
         }
     }
-    
-    
 
     public void TraceViewSwitched()
     {

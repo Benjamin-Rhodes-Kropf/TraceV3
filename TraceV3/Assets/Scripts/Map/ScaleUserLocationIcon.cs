@@ -46,13 +46,13 @@ public class ScaleUserLocationIcon : MonoBehaviour
     /// </summary>
     private void OnChangeZoom()
     {
-        float originalScale = 1 << defaultZoom;
-        float currentScale = 1 << OnlineMaps.instance.zoom;
-
-        for (int i = 1; i < markerManager.items.Count; i++)
-        {
-            markerManager.items[i].scale = currentScale / originalScale;
-        }
+        // float originalScale = 1 << defaultZoom;
+        // float currentScale = 1 << OnlineMaps.instance.zoom;
+        //
+        // for (int i = 1; i < markerManager.items.Count; i++)
+        // {
+        //     markerManager.items[i].scale = (float)currentScale / (float)originalScale;
+        // }
         /*foreach (var marker in markerManager.items)
         {
             marker.scale = currentScale / originalScale;
