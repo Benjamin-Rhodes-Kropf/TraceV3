@@ -27,6 +27,8 @@ public class HomeScreenManager : MonoBehaviour
                 displayTrace.texture = texture;
                 FbManager.instance.MarkTraceAsOpened(traceID);
                 ScreenManager.instance.OpenPopup("Trace");
+                TraceManager.instance.recivedTraceObjects[TraceManager.instance.GetRecivedTraceIndexByID(traceID)].hasBeenOpened = true;
+                TraceManager.instance.UpdateTracesOnMap();
             }
             else
             {

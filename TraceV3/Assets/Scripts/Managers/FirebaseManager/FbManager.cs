@@ -1095,18 +1095,7 @@ public partial class FbManager : MonoBehaviour
         childUpdates["Traces/" + traceID + "/Reciver/"+ _firebaseUser.UserId +"/HasViewed"] = true;
         _databaseReference.UpdateChildrenAsync(childUpdates);
     }
-    public TraceObject GetTraceToOpen() {
-        foreach (var trace in TraceManager.instance.recivedTraceObjects)
-        {
-            if (trace.canBeOpened && !trace.hasBeenOpened)
-            {
-                MarkTraceAsOpened(trace.id);
-                trace.hasBeenOpened = true;
-                return trace;
-            }
-        }
-        return null;
-    }
+    
     public IEnumerator GetTrace(string traceID)
     {
         var DBTask = _databaseReference.Child("Traces").Child(traceID).GetValueAsync();
@@ -1314,7 +1303,7 @@ public partial class FbManager : MonoBehaviour
             }
         });
         
-        yield return new WaitForSecondsRealtime(0.5f); //hmm not sure why (needs to wait for GetDownloadUrlAsync to complete)
+        yield return new WaitForSecondsRealtime(0.5f); //Todo: hmm not sure why (needs to wait for GetDownloadUrlAsync to complete)
         
         request = UnityWebRequestTexture.GetTexture((url)+"");
         

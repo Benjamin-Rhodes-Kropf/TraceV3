@@ -81,8 +81,6 @@ public class TraceManager : MonoBehaviour
             Debug.Log("Trace to Click:" + filtered[filtered.Count-1].Item1.id + "Dist:" + filtered[filtered.Count-1].Item2);
             var traceToOpen = filtered[filtered.Count - 1].Item1.id; 
             homeScreenManager.OpenTrace(traceToOpen);
-            recivedTraceObjects[GetRecivedTraceIndexByID(traceToOpen)].hasBeenOpened = true;
-            UpdateTracesOnMap();
         }
     }
     
@@ -323,6 +321,7 @@ public class TraceObject
     public double lng;
     public float radius;
     public double distanceToUser;
+    public string traceContentType;
     public string text;
     public string sender;
     public bool hasBeenAdded;

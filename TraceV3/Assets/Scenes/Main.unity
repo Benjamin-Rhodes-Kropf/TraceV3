@@ -20385,6 +20385,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 906833078}
     m_Modifications:
+    - target: {fileID: 1023150699590485251, guid: cda54dd8511b84d7c830d16ede7e0a45, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 1023150699590485251, guid: cda54dd8511b84d7c830d16ede7e0a45, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 1023150699590485251, guid: cda54dd8511b84d7c830d16ede7e0a45, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1023150699590485251, guid: cda54dd8511b84d7c830d16ede7e0a45, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1023150699719654139, guid: cda54dd8511b84d7c830d16ede7e0a45, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -20475,7 +20491,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1023150699719654143, guid: cda54dd8511b84d7c830d16ede7e0a45, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cda54dd8511b84d7c830d16ede7e0a45, type: 3}
@@ -20826,7 +20842,7 @@ MonoBehaviour:
   firebaseStorageReferenceUrl: gs://geosnapv1.appspot.com
   autoLogin: 1
   useAdminForLogin: 1
-  adminUser: usertwo@gmail.com
+  adminUser: userthree@gmail.com
   adminPass: Bark2004!
   resetPlayerPrefs: 0
   userImageTexture: {fileID: 0}
@@ -37928,7 +37944,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2355076385525282629
 RectTransform:
   m_ObjectHideFlags: 0
