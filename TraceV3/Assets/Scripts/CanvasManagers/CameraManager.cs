@@ -49,7 +49,7 @@ public class CameraManager : MonoBehaviour//PressInputBase
     public void ShareVideo()
     {
         Debug.Log("Pass Video To Firebase Manager Here");
-        //ScreenManager.instance.uiController.ShareVideo();
+        ScreenManager.instance.uiController.ShareVideo();
     }
     public void ShareImage()
     {
@@ -68,7 +68,6 @@ public class CameraManager : MonoBehaviour//PressInputBase
     //This was used for testing
     public void StopRecording() {
         ScreenManager.instance.uiController.vidRecorder.StopRecording();
-
     }
 
 }

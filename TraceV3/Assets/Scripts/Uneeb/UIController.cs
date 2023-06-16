@@ -103,6 +103,35 @@ public class UIController : MonoBehaviour
     #endif 
     }
     
+    public void SaveVideoLocation()
+    {
+        Debug.Log("SaveVideoLocation()");
+#if UNITY_EDITOR
+        SendTraceManager.instance.fileLocation = "file://" + Application.dataPath + "/SaveVideos/Traces/Video.mp4";
+
+        if (File.Exists(Application.dataPath + "/SaveVideos/Traces/Video.mp4"))
+        {
+            Debug.Log("File.Exists(filePath)");   
+        }
+        else
+        {
+            Debug.Log("File does not exist");   
+        }
+        //StartCoroutine(FbManager.instance.UploadTraceImage( Application.dataPath + "/SaveImages/Traces/Image.png"));
+#elif UNITY_IPHONE
+        if (File.Exists("file://" + Application.persistentDataPath + "/SaveImages/Traces/Image.png"))
+        {
+            Debug.Log("File.Exists(filePath)");   
+        }
+        else
+        {
+            Debug.Log("File does not exist");   
+        }
+        Debug.Log("SendTraceManager.instance.fileLocation" + "file://" + Application.persistentDataPath + "/SaveImages/Traces/Image.png");
+        SendTraceManager.instance.fileLocation = "file://" + Application.persistentDataPath + "/SaveImages/Traces/Image.png";
+#endif 
+    }
+    
     public void ShowImagePreview(string path) {
         StartCoroutine(path);
     }
