@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MyDebug : MonoBehaviour
+public class MobileDebug : MonoBehaviour
 {
 
-    public static MyDebug Instance;
+    public static MobileDebug Instance;
 
     private void Awake()
     {
