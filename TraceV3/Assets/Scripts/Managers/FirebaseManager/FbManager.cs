@@ -755,7 +755,7 @@ public partial class FbManager : MonoBehaviour
                 Debug.LogError(args.DatabaseError.Message);
                 return;
             }
-            StartCoroutine(GetTrace(args.Snapshot.Key));
+            StartCoroutine(GetRecivedTrace(args.Snapshot.Key));
             //Debug.Log("Trace:" +args.Snapshot.Key);
             //Debug.Log("value:" +  args.Snapshot.GetRawJsonValue());
         }
@@ -1039,7 +1039,8 @@ public partial class FbManager : MonoBehaviour
         string key = _databaseReference.Child("Traces").Push().Key;
         Dictionary<string, Object> childUpdates = new Dictionary<string, Object>();
         //update global traces
-        childUpdates["Traces/" + key + "/sender"] = _firebaseUser.UserId;
+        childUpdates["Traces/" + key + "/senderID"] = _firebaseUser.UserId;
+        childUpdates["Traces/" + key + "/senderName"] = thisUserModel.DisplayName;
         childUpdates["Traces/" + key + "/sendTime"] = DateTime.UtcNow.ToString();
         childUpdates["Traces/" + key + "/DurationHrs"] = 24;
         childUpdates["Traces/" + key + "/lat"] = location.x;
@@ -1075,7 +1076,7 @@ public partial class FbManager : MonoBehaviour
         traceReference.PutFileAsync(fileLocation)
             .ContinueWith((Task<StorageMetadata> task) => {
                 if (task.IsFaulted || task.IsCanceled) {
-                    Debug.Log("FB Error: Failed to Upload Image");
+                    Debug.Log("FB Error: Failed to Upload File");
                     Debug.Log("FB Error:" + task.Exception.ToString());
                     // Uh-oh, an error occurred!
                 }
@@ -1096,7 +1097,7 @@ public partial class FbManager : MonoBehaviour
         _databaseReference.UpdateChildrenAsync(childUpdates);
     }
     
-    public IEnumerator GetTrace(string traceID)
+    public IEnumerator GetRecivedTrace(string traceID)
     {
         var DBTask = _databaseReference.Child("Traces").Child(traceID).GetValueAsync();
         yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
@@ -1110,7 +1111,8 @@ public partial class FbManager : MonoBehaviour
             double lat = 0;
             double lng = 0;
             float radius = 0;
-            string sender = "";
+            string senderID = "";
+            string senderName = "";
             string sendTime = "";
             float durationHours = 0;
 
@@ -1160,10 +1162,16 @@ public partial class FbManager : MonoBehaviour
                         }
                         break;
                     }
-                    case "sender":
+                    case "senderID":
                     {
                         //Debug.Log(traceID + "sender: " + thing.Value);
-                        sender = thing.Value.ToString();
+                        senderID = thing.Value.ToString();
+                        break;
+                    }
+                    case "senderName":
+                    {
+                        //Debug.Log(traceID + "sender: " + thing.Value);
+                        senderName = thing.Value.ToString();
                         break;
                     }
                     case "sendTime":
@@ -1183,7 +1191,7 @@ public partial class FbManager : MonoBehaviour
 
             if (lat != 0 && lng != 0 && radius != 0)
             {
-                var trace = new TraceObject(lng, lat, radius, sender, 10, 20, traceID);
+                var trace = new TraceObject(lng, lat, radius, senderID, senderName, 10, 20, traceID);
                 TraceManager.instance.recivedTraceObjects.Add(trace);
             }
         }
@@ -1202,7 +1210,8 @@ public partial class FbManager : MonoBehaviour
             double lat = 0;
             double lng = 0;
             float radius = 0;
-            string sender = "";
+            string senderID = "";
+            string senderName = "";
             string sendTime = "";
             float durationHours = 0;
 
@@ -1251,10 +1260,16 @@ public partial class FbManager : MonoBehaviour
                         }
                         break;
                     }
-                    case "sender":
+                    case "senderID":
                     {
                         //Debug.Log(traceID + "sender: " + thing.Value);
-                        sender = thing.Value.ToString();
+                        senderID = thing.Value.ToString();
+                        break;
+                    }
+                    case "senderName":
+                    {
+                        //Debug.Log(traceID + "sender: " + thing.Value);
+                        senderName = thing.Value.ToString();
                         break;
                     }
                     case "sendTime":
@@ -1274,7 +1289,7 @@ public partial class FbManager : MonoBehaviour
             
             if (lat != 0 && lng != 0 && radius != 0)
             {
-                var trace = new TraceObject(lng, lat, radius,sender, 10, 20, traceID);
+                var trace = new TraceObject(lng, lat, radius,senderID,senderName, 10, 20, traceID);
                 TraceManager.instance.sentTraces.Add(trace);
             }
         }

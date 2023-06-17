@@ -49,7 +49,9 @@ public class CameraManager : MonoBehaviour//PressInputBase
     public void ShareVideo()
     {
         Debug.Log("Pass Video To Firebase Manager Here");
-        ScreenManager.instance.uiController.ShareVideo();
+        //ScreenManager.instance.uiController.ShareVideo();
+        ScreenManager.instance.uiController.SaveVideoLocation();
+
     }
     public void ShareImage()
     {

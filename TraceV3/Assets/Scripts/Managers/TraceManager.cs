@@ -147,8 +147,7 @@ public class TraceManager : MonoBehaviour
         for (var i = 0; i < recivedTraceObjects.Count && i < 10; i++)
         {
             var trace = recivedTraceObjects[i];
-            ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng,trace.radius, trace.text);
-            //ScheduleNotificationOnExitFromARadius(trace.lat, trace.lng, trace.text);
+            ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng,trace.radius, "You Received a Trace From" + trace.senderName);
         }
     }
     
@@ -188,7 +187,7 @@ public class TraceManager : MonoBehaviour
         }
 
         var trace = recivedTraceObjects[0];
-        ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng, trace.radius, trace.text);
+        ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng, trace.radius, "You Received a Trace From" + trace.senderName);
         //ScheduleNotificationOnExitFromARadius(trace.lat, trace.lng, trace.text);
     }
 
@@ -323,19 +322,21 @@ public class TraceObject
     public double distanceToUser;
     public string traceContentType;
     public string text;
-    public string sender;
+    public string senderID;
+    public string senderName;
     public bool hasBeenAdded;
     public bool canBeOpened = false;
     public bool hasBeenOpened = false;
     public double startTimeStamp;
     public double endTimeStamp;
     
-    public TraceObject(double longitude, double latitude, float radius, string sender, double startTimeStamp, double endTimeStamp, string id)
+    public TraceObject(double longitude, double latitude, float radius, string senderID, string senderName, double startTimeStamp, double endTimeStamp, string id)
     {
         lng = longitude;
         lat = latitude;
         this.radius = radius;
-        this.sender = sender;
+        this.senderID = senderID;
+        this.senderName = senderName;
         this.startTimeStamp = startTimeStamp;
         this.endTimeStamp = endTimeStamp;
         this.id = id;
