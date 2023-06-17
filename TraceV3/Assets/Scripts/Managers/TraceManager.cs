@@ -147,11 +147,11 @@ public class TraceManager : MonoBehaviour
         for (var i = 0; i < recivedTraceObjects.Count && i < 10; i++)
         {
             var trace = recivedTraceObjects[i];
-            ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng,trace.radius, "You Received a Trace From" + trace.senderName);
+            ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng,trace.radius, trace.senderName + " Left You a Trace Here", trace.senderName);
         }
     }
     
-    private static void ScheduleNotificationOnEnterInARadius(float latitude, float longitude, float radius, string message)
+    private static void ScheduleNotificationOnEnterInARadius(float latitude, float longitude, float radius, string message, string SenderName)
     {
         var enterLocationTrigger = new iOSNotificationLocationTrigger
         {
@@ -165,7 +165,7 @@ public class TraceManager : MonoBehaviour
 
         var entryBasedNotification = new iOSNotification
         {
-            Title = "Exited",
+            Title = SenderName,
             Subtitle = "You Have Entered in the radius of " + enterLocationTrigger.Center + " Meters",
             Body = message == "" ? "Radius latitude was > " + latitude + " and longitude was > " + longitude : message,
             ShowInForeground = true,
@@ -187,7 +187,7 @@ public class TraceManager : MonoBehaviour
         }
 
         var trace = recivedTraceObjects[0];
-        ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng, trace.radius, "You Received a Trace From" + trace.senderName);
+        ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng, trace.radius, trace.senderName + " Left You a Trace Here", trace.senderName);
         //ScheduleNotificationOnExitFromARadius(trace.lat, trace.lng, trace.text);
     }
 
