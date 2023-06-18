@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,11 +15,13 @@ public class HomeScreenManager : MonoBehaviour
         isInSentMode = !isInSentMode;
     }
 
-    public void OpenTrace(string traceID)
+    public void OpenTrace(string traceID, string mediaType) //Todo: Make mediaType an Enum
     {
-        //FbManager.instance.GetTraceToOpen();
         if(traceID == null)
             return;
+        
+        //determine what type of trace it is
+        
         
         StartCoroutine(FbManager.instance.GetTracePhotoByUrl(traceID, (texture) =>
         {

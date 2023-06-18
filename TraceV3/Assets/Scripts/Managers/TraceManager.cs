@@ -79,8 +79,8 @@ public class TraceManager : MonoBehaviour
         if (filtered.Count > 0)
         {
             Debug.Log("Trace to Click:" + filtered[filtered.Count-1].Item1.id + "Dist:" + filtered[filtered.Count-1].Item2);
-            var traceToOpen = filtered[filtered.Count - 1].Item1.id; 
-            homeScreenManager.OpenTrace(traceToOpen);
+            var traceToOpen = filtered[filtered.Count - 1]; 
+            homeScreenManager.OpenTrace(traceToOpen.Item1.id, traceToOpen.Item1.mediaType);
         }
     }
     
@@ -320,7 +320,7 @@ public class TraceObject
     public double lng;
     public float radius;
     public double distanceToUser;
-    public string traceContentType;
+    public string mediaType;
     public string text;
     public string senderID;
     public string senderName;

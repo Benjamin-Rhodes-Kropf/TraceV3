@@ -1030,7 +1030,7 @@ public partial class FbManager : MonoBehaviour
     #endregion
 
     #region Traces
-    public void UploadTrace(string fileLocation, float radius, Vector2 location, List<string> users)
+    public void UploadTrace(string fileLocation, float radius, Vector2 location, MediaType mediaType, List<string> users)
     {
         Debug.Log(" UploadTrace()");
         Debug.Log(" UploadTrace(): File Location:" + fileLocation);
@@ -1042,7 +1042,8 @@ public partial class FbManager : MonoBehaviour
         childUpdates["Traces/" + key + "/senderID"] = _firebaseUser.UserId;
         childUpdates["Traces/" + key + "/senderName"] = thisUserModel.DisplayName;
         childUpdates["Traces/" + key + "/sendTime"] = DateTime.UtcNow.ToString();
-        childUpdates["Traces/" + key + "/DurationHrs"] = 24;
+        childUpdates["Traces/" + key + "/durationHrs"] = 24;
+        childUpdates["Traces/" + key + "/mediaType"] = mediaType.ToString();
         childUpdates["Traces/" + key + "/lat"] = location.x;
         childUpdates["Traces/" + key + "/long"] = location.y;
         childUpdates["Traces/" + key + "/radius"] = radius;
@@ -1298,7 +1299,6 @@ public partial class FbManager : MonoBehaviour
     }
     public IEnumerator GetTracePhotoByUrl(string _url, System.Action<Texture> callback)
     {
-        CallbackObject callbackObject = new CallbackObject();
         var request = new UnityWebRequest();
         var url = "";
         
@@ -1306,18 +1306,6 @@ public partial class FbManager : MonoBehaviour
         StorageReference pathReference = _firebaseStorage.GetReference("Traces/"+_url);
         Debug.Log("path refrence:" + pathReference);
 
-        // pathReference.GetDownloadUrlAsync().ContinueWithOnMainThread(task => {
-        //     if (!task.IsFaulted && !task.IsCanceled) {
-        //         Debug.Log("Download URL: " + task.Result);
-        //         url = task.Result + "";
-        //         Debug.Log("Actual  URL: " + url);
-        //     }
-        //     else
-        //     {
-        //         Debug.Log("task failed:" + task.Result);
-        //     }
-        // });
-        
         var task = pathReference.GetDownloadUrlAsync();
 
         while (task.IsCompleted is false)
@@ -1350,46 +1338,7 @@ public partial class FbManager : MonoBehaviour
     
     #endregion
     
-    public void AddFriend(String _username)
-    {
-        String _nickName = "null";
-        StartCoroutine(FbManager.instance.ActionAcceptFriend(_username, _nickName, (myReturnValue) => {
-            if (myReturnValue != "Success")
-            {
-                Debug.LogError("failed to update freinds");
-            }
-            else
-            {
-                Debug.Log("updated friends");
-            }
-        }));
-    }
-    public void getTestImage()
-    {
-        StartCoroutine(GetTestImage((myReturnValue) => {
-            if (myReturnValue != null)
-            {
-                // testRawImage.texture = myReturnValue;
-            }
-        }));
-    }
-    private IEnumerator GetTestImage(System.Action<Texture> callback)
-    {
-        var request = new UnityWebRequest();
-        
-        request = UnityWebRequestTexture.GetTexture("https://firebasestorage.googleapis.com/v0/b/geosnapv1.appspot.com/o/ProfilePhoto%2FPVNKPFYFrWVRoPdhsTs0aAYH5cA3%2Fprofile.png?alt=media&token=894e50e6-7a46-4dec-aca7-20945d1bca58"); //Create a request
-
-        yield return request.SendWebRequest(); //Wait for the request to complete
-        
-        if (request.isNetworkError || request.isHttpError)
-        {
-            Debug.LogError("error:" + request.error);
-        }
-        else
-        {
-            callback(((DownloadHandlerTexture)request.downloadHandler).texture);
-        }
-    }
+    
     private void DeleteFile(String _location) 
     { 
         _firebaseStorageReference = _firebaseStorageReference.Child(_location);
@@ -1413,18 +1362,5 @@ public partial class FbManager : MonoBehaviour
                 onFailed?.Invoke("Image not Found");
             }
         }));
-    }
-    private IEnumerator TryLoadImage(string MediaUrl, System.Action<Texture> callback) {
-        UnityWebRequest request = UnityWebRequestTexture.GetTexture("https://firebasestorage.googleapis.com/v0/b/geosnapv1.appspot.com/o/"+ _firebaseUser.UserId +"%2FnewFile.jpeg?alt=media"); //Create a request
-
-        yield return request.SendWebRequest(); //Wait for the request to complete
-        if (request.isNetworkError || request.isHttpError)
-        {
-            Debug.LogWarning(request.error);
-        }
-        else
-        {
-            callback(((DownloadHandlerTexture)request.downloadHandler).texture);
-        }
     }
 }

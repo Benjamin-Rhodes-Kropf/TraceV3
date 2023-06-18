@@ -761,6 +761,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fileLocation: 
+  mediaType: 0
   _onlineMapsLocationService: {fileID: 6068666308761308073}
   maxRadius: 0.15
   minRadius: 0.02
@@ -4720,6 +4721,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
       objectReference: {fileID: 1301840576}
+    - target: {fileID: 8600517706394407174, guid: 833b541c13d454e5e95a103968c5ed53, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: SendTrace
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 833b541c13d454e5e95a103968c5ed53, type: 3}
 --- !u!224 &3262367220655631094 stripped

@@ -10,6 +10,7 @@ public class SendTraceManager : MonoBehaviour
     
     [Header("Trace Values")]
     public string fileLocation;
+    public MediaType mediaType;
     public OnlineMapsLocationService _onlineMapsLocationService;
     [SerializeField]private float maxRadius;
     [SerializeField]private float minRadius;
@@ -38,24 +39,16 @@ public class SendTraceManager : MonoBehaviour
         this.radius = scale(0, 1, minRadius, maxRadius, radius);
     }
     
-    public void SendTraceImage()
+    public void SendTrace()
     {
         Vector2 location = _onlineMapsLocationService.GetUserLocation();
         Debug.Log("SendTraceImage Lat:" + location.x);
-        FbManager.instance.UploadTrace(fileLocation, radius, location, users);
+        FbManager.instance.UploadTrace(fileLocation, radius, location, mediaType,users);
     }
-    
-    
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+}
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+public enum MediaType
+{
+    PHOTO,
+    VIDEO
 }
