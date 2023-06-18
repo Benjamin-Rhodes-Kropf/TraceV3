@@ -2959,9 +2959,61 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 4786457635891802946}
     - target: {fileID: 7534142396323436278, guid: 77f5644476108469381764824c2bf626, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7534142396323436278, guid: 77f5644476108469381764824c2bf626, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7534142396323436278, guid: 77f5644476108469381764824c2bf626, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7534142396323436278, guid: 77f5644476108469381764824c2bf626, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
+      objectReference: {fileID: 600464280}
+    - target: {fileID: 7534142396323436278, guid: 77f5644476108469381764824c2bf626, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
       objectReference: {fileID: 1301840576}
+    - target: {fileID: 7534142396323436278, guid: 77f5644476108469381764824c2bf626, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7534142396323436278, guid: 77f5644476108469381764824c2bf626, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SelectionHaptic
+      objectReference: {fileID: 0}
+    - target: {fileID: 7534142396323436278, guid: 77f5644476108469381764824c2bf626, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: ChangeScreenBackwardsSlideOff
+      objectReference: {fileID: 0}
+    - target: {fileID: 7534142396323436278, guid: 77f5644476108469381764824c2bf626, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: HapticManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7534142396323436278, guid: 77f5644476108469381764824c2bf626, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: ScreenManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7534142396323436278, guid: 77f5644476108469381764824c2bf626, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7534142396323436278, guid: 77f5644476108469381764824c2bf626, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_StringArgument
+      value: HomeScreen
+      objectReference: {fileID: 0}
+    - target: {fileID: 7534142396323436278, guid: 77f5644476108469381764824c2bf626, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 7534142396323436278, guid: 77f5644476108469381764824c2bf626, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 7534142397718244949, guid: 77f5644476108469381764824c2bf626, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -3202,9 +3254,57 @@ PrefabInstance:
     m_TransformParent: {fileID: 906833078}
     m_Modifications:
     - target: {fileID: 379848859150702375, guid: 130a0751f81704172bfda12f495d109b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 379848859150702375, guid: 130a0751f81704172bfda12f495d109b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 379848859150702375, guid: 130a0751f81704172bfda12f495d109b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 379848859150702375, guid: 130a0751f81704172bfda12f495d109b, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
+      objectReference: {fileID: 600464280}
+    - target: {fileID: 379848859150702375, guid: 130a0751f81704172bfda12f495d109b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
       objectReference: {fileID: 1301840576}
+    - target: {fileID: 379848859150702375, guid: 130a0751f81704172bfda12f495d109b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 379848859150702375, guid: 130a0751f81704172bfda12f495d109b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SelectionHaptic
+      objectReference: {fileID: 0}
+    - target: {fileID: 379848859150702375, guid: 130a0751f81704172bfda12f495d109b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: ChangeScreenBackwards
+      objectReference: {fileID: 0}
+    - target: {fileID: 379848859150702375, guid: 130a0751f81704172bfda12f495d109b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: HapticManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 379848859150702375, guid: 130a0751f81704172bfda12f495d109b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: ScreenManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 379848859150702375, guid: 130a0751f81704172bfda12f495d109b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 379848859150702375, guid: 130a0751f81704172bfda12f495d109b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_StringArgument
+      value: EditProfile
+      objectReference: {fileID: 0}
+    - target: {fileID: 379848859150702375, guid: 130a0751f81704172bfda12f495d109b, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 4753539908005840739, guid: 130a0751f81704172bfda12f495d109b, type: 3}
       propertyPath: m_Name
       value: Edit Profile Username
@@ -5020,6 +5120,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Select_Friends
       objectReference: {fileID: 0}
+    - target: {fileID: 5104588007614267539, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5104588007614267543, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -5102,6 +5206,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5104588007614267543, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5104588007987252597, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5104588007987252597, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5104588007987252597, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5104588007987252597, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
+      propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -5880,8 +6000,36 @@ PrefabInstance:
       value: Edit Profile Email
       objectReference: {fileID: 0}
     - target: {fileID: 7695304106531109920, guid: 60e4f9f6103fa4e638917ffab0737b02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7695304106531109920, guid: 60e4f9f6103fa4e638917ffab0737b02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7695304106531109920, guid: 60e4f9f6103fa4e638917ffab0737b02, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1301840576}
+    - target: {fileID: 7695304106531109920, guid: 60e4f9f6103fa4e638917ffab0737b02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 600464280}
+    - target: {fileID: 7695304106531109920, guid: 60e4f9f6103fa4e638917ffab0737b02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7695304106531109920, guid: 60e4f9f6103fa4e638917ffab0737b02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: SelectionHaptic
+      objectReference: {fileID: 0}
+    - target: {fileID: 7695304106531109920, guid: 60e4f9f6103fa4e638917ffab0737b02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: HapticManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7695304106531109920, guid: 60e4f9f6103fa4e638917ffab0737b02, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 60e4f9f6103fa4e638917ffab0737b02, type: 3}
