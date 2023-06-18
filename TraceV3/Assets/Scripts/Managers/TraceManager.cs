@@ -79,7 +79,7 @@ public class TraceManager : MonoBehaviour
         if (filtered.Count > 0)
         {
             Debug.Log("Trace to Click:" + filtered[filtered.Count-1].Item1.id + "Dist:" + filtered[filtered.Count-1].Item2);
-            var traceToOpen = filtered[filtered.Count - 1]; 
+            var traceToOpen = filtered[filtered.Count - 1];
             homeScreenManager.OpenTrace(traceToOpen.Item1.id, traceToOpen.Item1.mediaType);
         }
     }
@@ -330,7 +330,7 @@ public class TraceObject
     public double startTimeStamp;
     public double endTimeStamp;
     
-    public TraceObject(double longitude, double latitude, float radius, string senderID, string senderName, double startTimeStamp, double endTimeStamp, string id)
+    public TraceObject(double longitude, double latitude, float radius, string senderID, string senderName, double startTimeStamp, double endTimeStamp, string mediaType, string id)
     {
         lng = longitude;
         lat = latitude;
@@ -339,6 +339,7 @@ public class TraceObject
         this.senderName = senderName;
         this.startTimeStamp = startTimeStamp;
         this.endTimeStamp = endTimeStamp;
+        this.mediaType = mediaType;
         this.id = id;
     }
 }

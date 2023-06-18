@@ -1442,7 +1442,7 @@ MonoBehaviour:
   firebaseStorageReferenceUrl: gs://geosnapv1.appspot.com
   autoLogin: 1
   useAdminForLogin: 1
-  adminUser: usertwo@gmail.com
+  adminUser: userthree@gmail.com
   adminPass: Bark2004!
   resetPlayerPrefs: 0
   userImageTexture: {fileID: 0}
@@ -1927,6 +1927,11 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!328 &1773863994 stripped
+VideoPlayer:
+  m_CorrespondingSourceObject: {fileID: 3565838637314243122, guid: fd70a3811687a4ab091b8fd6bade26eb, type: 3}
+  m_PrefabInstance: {fileID: 7030958484904619186}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1793062011
 GameObject:
   m_ObjectHideFlags: 0
@@ -2434,9 +2439,25 @@ PrefabInstance:
     m_TransformParent: {fileID: 906833078}
     m_Modifications:
     - target: {fileID: 249140091226593198, guid: 260a7e2ac0d984bb2baeafc4570bacc3, type: 3}
+      propertyPath: videoPlayer
+      value: 
+      objectReference: {fileID: 1773863994}
+    - target: {fileID: 249140091226593198, guid: 260a7e2ac0d984bb2baeafc4570bacc3, type: 3}
       propertyPath: displayTrace
       value: 
       objectReference: {fileID: 1384723143}
+    - target: {fileID: 4032778429507668745, guid: 260a7e2ac0d984bb2baeafc4570bacc3, type: 3}
+      propertyPath: m_Looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4032778429507668745, guid: 260a7e2ac0d984bb2baeafc4570bacc3, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4032778429507668745, guid: 260a7e2ac0d984bb2baeafc4570bacc3, type: 3}
+      propertyPath: m_TargetTexture
+      value: 
+      objectReference: {fileID: 8400000, guid: 830c235f55c1b4d73b8a3c5bd15abf71, type: 2}
     - target: {fileID: 4552650007788740886, guid: 260a7e2ac0d984bb2baeafc4570bacc3, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 3
@@ -5930,6 +5951,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1279216834}
     m_Modifications:
+    - target: {fileID: 3565838637314243122, guid: fd70a3811687a4ab091b8fd6bade26eb, type: 3}
+      propertyPath: m_Looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3565838637314243122, guid: fd70a3811687a4ab091b8fd6bade26eb, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3565838637314243122, guid: fd70a3811687a4ab091b8fd6bade26eb, type: 3}
+      propertyPath: m_TargetTexture
+      value: 
+      objectReference: {fileID: 8400000, guid: 830c235f55c1b4d73b8a3c5bd15abf71, type: 2}
+    - target: {fileID: 6112041277791309228, guid: fd70a3811687a4ab091b8fd6bade26eb, type: 3}
+      propertyPath: m_Texture
+      value: 
+      objectReference: {fileID: 8400000, guid: 830c235f55c1b4d73b8a3c5bd15abf71, type: 2}
     - target: {fileID: 7030958484798897152, guid: fd70a3811687a4ab091b8fd6bade26eb, type: 3}
       propertyPath: m_Name
       value: Trace Popup

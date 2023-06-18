@@ -2,6 +2,7 @@ using System;
 using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Video;
 
 public class CameraManager : MonoBehaviour//PressInputBase
 {
@@ -49,13 +50,13 @@ public class CameraManager : MonoBehaviour//PressInputBase
     public void ShareVideo()
     {
         Debug.Log("Pass Video To Firebase Manager Here");
-        //ScreenManager.instance.uiController.ShareVideo();
+        videoPreviewPanel.gameObject.SetActive(false);
         ScreenManager.instance.uiController.SaveVideoLocation();
-
     }
     public void ShareImage()
     {
         Debug.Log("Pass Image To Firebase Manager Here");
+        imagePreviewPanel.gameObject.SetActive(false);
         ScreenManager.instance.uiController.SaveImageLocation();
     }
     //For capturing the image

@@ -1153,6 +1153,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isInSentMode: 0
   displayTrace: {fileID: 0}
+  videoPlayer: {fileID: 0}
 --- !u!1 &4552650008511222681
 GameObject:
   m_ObjectHideFlags: 0
