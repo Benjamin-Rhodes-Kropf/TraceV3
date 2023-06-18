@@ -6622,10 +6622,90 @@ PrefabInstance:
       propertyPath: m_Name
       value: Edit Profile NickName
       objectReference: {fileID: 0}
+    - target: {fileID: 7855533811217657044, guid: 980d7ebe780ea47c89292499ca129e21, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7855533811217657044, guid: 980d7ebe780ea47c89292499ca129e21, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7855533811217657044, guid: 980d7ebe780ea47c89292499ca129e21, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7855533811217657044, guid: 980d7ebe780ea47c89292499ca129e21, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7855533811309008990, guid: 980d7ebe780ea47c89292499ca129e21, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7855533811309008990, guid: 980d7ebe780ea47c89292499ca129e21, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7855533811309008990, guid: 980d7ebe780ea47c89292499ca129e21, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7855533811309008990, guid: 980d7ebe780ea47c89292499ca129e21, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7855533811391340000, guid: 980d7ebe780ea47c89292499ca129e21, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1301840576}
+    - target: {fileID: 7855533811736022465, guid: 980d7ebe780ea47c89292499ca129e21, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7855533811736022465, guid: 980d7ebe780ea47c89292499ca129e21, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7855533811736022465, guid: 980d7ebe780ea47c89292499ca129e21, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7855533811736022465, guid: 980d7ebe780ea47c89292499ca129e21, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7855533811842477555, guid: 980d7ebe780ea47c89292499ca129e21, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7855533811842477555, guid: 980d7ebe780ea47c89292499ca129e21, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7855533811842477555, guid: 980d7ebe780ea47c89292499ca129e21, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7855533811842477555, guid: 980d7ebe780ea47c89292499ca129e21, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7855533811873593279, guid: 980d7ebe780ea47c89292499ca129e21, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7855533811873593279, guid: 980d7ebe780ea47c89292499ca129e21, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7855533811873593279, guid: 980d7ebe780ea47c89292499ca129e21, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7855533811873593279, guid: 980d7ebe780ea47c89292499ca129e21, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 980d7ebe780ea47c89292499ca129e21, type: 3}
 --- !u!1001 &8836855817059430517
