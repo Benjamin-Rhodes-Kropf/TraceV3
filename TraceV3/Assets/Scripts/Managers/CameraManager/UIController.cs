@@ -112,7 +112,7 @@ public class UIController : MonoBehaviour
         
         SendTraceManager.instance.mediaType = MediaType.VIDEO;
         SendTraceManager.instance.fileLocation = "file://" + Application.dataPath + "/SaveVideos/Traces/Video.mp4";
-
+        
         if (File.Exists(Application.dataPath + "/SaveVideos/Traces/Video.mp4"))
         {
             Debug.Log("File.Exists(filePath)");   
@@ -125,8 +125,9 @@ public class UIController : MonoBehaviour
 #elif UNITY_IPHONE
         File.Delete(Application.persistentDataPath + "/SaveVideos/Traces/Video.mp4");
         File.Copy(path,  Application.persistentDataPath + "/SaveVideos/Traces/Video.mp4");
+
         SendTraceManager.instance.mediaType = MediaType.VIDEO;
-        SendTraceManager.instance.fileLocation = "file://" + Application.dataPath + "/SaveVideos/Traces/Video.mp4";
+        SendTraceManager.instance.fileLocation = "file://" + Application.persistentDataPath + "/SaveVideos/Traces/Video.mp4";
 
         if (File.Exists(Application.persistentDataPath + "/SaveVideos/Traces/Video.mp4"))
         {
