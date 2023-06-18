@@ -69,7 +69,7 @@ public class UIController : MonoBehaviour
         cameraView.SetActive(true);
     }
     
-    //write sharing code here
+    //sharing code here
     public void SaveImageLocation()
     {
     #if UNITY_EDITOR
@@ -80,7 +80,6 @@ public class UIController : MonoBehaviour
         SendTraceManager.instance.fileLocation = "file://" + Application.persistentDataPath + "/SaveImages/Traces/Image.png";
     #endif 
     }
-    
     public void SaveVideoLocation()
     {
     #if UNITY_EDITOR
@@ -91,35 +90,6 @@ public class UIController : MonoBehaviour
         SendTraceManager.instance.fileLocation = "file://" + path;
     #endif 
     }
-    
-    public void ShowImagePreview(string path) {
-        StartCoroutine(path);
-    }
-
-    [System.Obsolete]
-    IEnumerator LoadingImages(string path)
-    {
-        //yield return new WaitForSeconds(1f);
-        using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture(path))
-        {
-            yield return uwr.SendWebRequest();
-
-            if (uwr.isNetworkError || uwr.isHttpError)
-            {
-                Debug.Log(uwr.error);
-            }
-            else
-            {
-                // Get downloaded asset bundle
-                var texture = DownloadHandlerTexture.GetContent(uwr);
-                Texture2D nexTexture = new Texture2D(texture.width, texture.height);
-                nexTexture.LoadImage(uwr.downloadHandler.data);
-                camManger.previewImagePlayer.sprite = Sprite.Create(nexTexture, new Rect(0, 0, nexTexture.width, nexTexture.height), new Vector2(0, 0));
-                camManger.previewImagePlayer.color = Color.white;
-            }
-        }
-    }
-    //It will capture the image
     public void CaputureImage()
     {
         //turning off the UI so that i won't visible in image.
@@ -153,9 +123,6 @@ public class UIController : MonoBehaviour
         
         File.WriteAllBytes(dirPath + "Image" + ".png", bytes);
         Debug.Log("file location:" + dirPath + "Image" + ".png");
-        
-        //cleanup
-        //Object.Destroy(texture);
     }
     
     //This is an event which is handle the video preview work afetr the recording is done
@@ -176,16 +143,6 @@ public class UIController : MonoBehaviour
         previewVideoPlayer.Play();
         //disabling the camera view
         cameraView.SetActive(false);
-        
-        // //save video to send to database
-        // string fileName = Path.GetFileName(path);
-        // // Set the target save path using the application DataPath
-        // string savePath = Path.Combine(Application.persistentDataPath, fileName);
-        // Debug.Log("SET SAVE PATH FOR VIDEO");
-        // SendTraceManager.instance.fileLocation = savePath;
-        // // Copy the video file to the save path
-        // File.Copy(path, savePath);
-        // Debug.Log("Video saved to: " + savePath);
     }
     //To save the video in mobile gallery
     public void SaveVideo() {
@@ -194,6 +151,7 @@ public class UIController : MonoBehaviour
         Debug.Log("Permission result: " + permission);
     }
     #region
+    
     //This will reload the AR camera scene so that garbage values can be clean,
     //which was causing jitter in audio after reopening the app on minimising
     private void OnApplicationFocus(bool focus)
