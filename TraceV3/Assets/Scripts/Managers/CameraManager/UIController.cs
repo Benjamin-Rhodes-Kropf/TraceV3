@@ -72,72 +72,24 @@ public class UIController : MonoBehaviour
     //write sharing code here
     public void SaveImageLocation()
     {
-        Debug.Log("SaveImageLocation()");
     #if UNITY_EDITOR
         SendTraceManager.instance.mediaType = MediaType.PHOTO;
         SendTraceManager.instance.fileLocation = "file://" + Application.dataPath + "/SaveImages/Traces/Image.png";
-
-        if (File.Exists(Application.dataPath + "/SaveImages/Traces/Image.png"))
-        {
-            Debug.Log("File.Exists(filePath)");   
-        }
-        else
-        {
-            Debug.Log("File does not exist");   
-        }
-        //StartCoroutine(FbManager.instance.UploadTraceImage( Application.dataPath + "/SaveImages/Traces/Image.png"));
     #elif UNITY_IPHONE
         SendTraceManager.instance.mediaType = MediaType.PHOTO;
         SendTraceManager.instance.fileLocation = "file://" + Application.persistentDataPath + "/SaveImages/Traces/Image.png";
-
-        if (File.Exists("file://" + Application.persistentDataPath + "/SaveImages/Traces/Image.png"))
-        {
-            Debug.Log("File.Exists(filePath)");   
-        }
-        else
-        {
-            Debug.Log("File does not exist");   
-        }
-        Debug.Log("SendTraceManager.instance.fileLocation" + "file://" + Application.persistentDataPath + "/SaveImages/Traces/Image.png");
-        #endif 
+    #endif 
     }
     
     public void SaveVideoLocation()
     {
-        Debug.Log("SaveVideoLocation()");
-        
-#if UNITY_EDITOR
-        File.Delete(Application.dataPath + "/SaveVideos/Traces/Video.mp4");
-        File.Copy(path,  Application.dataPath + "/SaveVideos/Traces/Video.mp4");
-        
+    #if UNITY_EDITOR
         SendTraceManager.instance.mediaType = MediaType.VIDEO;
-        SendTraceManager.instance.fileLocation = "file://" + Application.dataPath + "/SaveVideos/Traces/Video.mp4";
-        
-        if (File.Exists(Application.dataPath + "/SaveVideos/Traces/Video.mp4"))
-        {
-            Debug.Log("File.Exists(filePath)");   
-        }
-        else
-        {
-            Debug.Log("File does not exist");   
-        }
-        //StartCoroutine(FbManager.instance.UploadTraceImage( Application.dataPath + "/SaveImages/Traces/Image.png"));
-#elif UNITY_IPHONE
-        File.Delete(Application.persistentDataPath + "/SaveVideos/Traces/Video.mp4");
-        File.Copy(path,  Application.persistentDataPath + "/SaveVideos/Traces/Video.mp4");
-
+        SendTraceManager.instance.fileLocation = "file://" + path;
+    #elif UNITY_IPHONE
         SendTraceManager.instance.mediaType = MediaType.VIDEO;
-        SendTraceManager.instance.fileLocation = "file://" + Application.persistentDataPath + "/SaveVideos/Traces/Video.mp4";
-
-        if (File.Exists(Application.persistentDataPath + "/SaveVideos/Traces/Video.mp4"))
-        {
-            Debug.Log("File.Exists(filePath)");   
-        }
-        else
-        {
-            Debug.Log("File does not exist");   
-        }
-#endif 
+        SendTraceManager.instance.fileLocation = "file://" + path;
+    #endif 
     }
     
     public void ShowImagePreview(string path) {

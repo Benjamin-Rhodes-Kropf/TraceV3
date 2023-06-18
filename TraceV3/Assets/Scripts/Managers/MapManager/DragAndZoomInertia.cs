@@ -55,7 +55,7 @@ using UnityEngine;
             if (targetZoomMode)
             {
                 var speed = Mathf.Abs(map.floatZoom-targetZoom)/20;
-                Debug.Log("Speed of Zoom:" + speed);
+               // Debug.Log("Speed of Zoom:" + speed);
                 if (map.floatZoom-0.01f > targetZoom)
                 {
                     map.floatZoom -= (zoomToTargetSpeed.Evaluate(speed));
