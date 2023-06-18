@@ -1306,19 +1306,32 @@ public partial class FbManager : MonoBehaviour
         StorageReference pathReference = _firebaseStorage.GetReference("Traces/"+_url);
         Debug.Log("path refrence:" + pathReference);
 
-        pathReference.GetDownloadUrlAsync().ContinueWithOnMainThread(task => {
-            if (!task.IsFaulted && !task.IsCanceled) {
-                Debug.Log("Download URL: " + task.Result);
-                url = task.Result + "";
-                Debug.Log("Actual  URL: " + url);
-            }
-            else
-            {
-                Debug.Log("task failed:" + task.Result);
-            }
-        });
+        // pathReference.GetDownloadUrlAsync().ContinueWithOnMainThread(task => {
+        //     if (!task.IsFaulted && !task.IsCanceled) {
+        //         Debug.Log("Download URL: " + task.Result);
+        //         url = task.Result + "";
+        //         Debug.Log("Actual  URL: " + url);
+        //     }
+        //     else
+        //     {
+        //         Debug.Log("task failed:" + task.Result);
+        //     }
+        // });
         
-        yield return new WaitForSecondsRealtime(0.5f); //Todo: hmm not sure why (needs to wait for GetDownloadUrlAsync to complete)
+        var task = pathReference.GetDownloadUrlAsync();
+
+        while (task.IsCompleted is false)
+            yield return new WaitForEndOfFrame();
+        
+        if (!task.IsFaulted && !task.IsCanceled) {
+            Debug.Log("Download URL: " + task.Result);
+            url = task.Result + "";
+            Debug.Log("Actual  URL: " + url);
+        }
+        else
+        {
+            Debug.Log("task failed:" + task.Result);
+        }
         
         request = UnityWebRequestTexture.GetTexture((url)+"");
         
@@ -1333,6 +1346,8 @@ public partial class FbManager : MonoBehaviour
             callback(((DownloadHandlerTexture)request.downloadHandler).texture);
         }
     }
+
+    
     #endregion
     
     public void AddFriend(String _username)
