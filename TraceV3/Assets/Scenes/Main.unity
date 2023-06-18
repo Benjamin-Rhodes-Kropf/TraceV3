@@ -4599,6 +4599,74 @@ PrefabInstance:
       propertyPath: m_Name
       value: Create Account
       objectReference: {fileID: 0}
+    - target: {fileID: 6454114606808003545, guid: e8f927e5e67e1423cb2ad88e4c1dd981, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454114607065337969, guid: e8f927e5e67e1423cb2ad88e4c1dd981, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454114607065337969, guid: e8f927e5e67e1423cb2ad88e4c1dd981, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454114607065337969, guid: e8f927e5e67e1423cb2ad88e4c1dd981, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454114607065337969, guid: e8f927e5e67e1423cb2ad88e4c1dd981, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454114607917092847, guid: e8f927e5e67e1423cb2ad88e4c1dd981, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454114607917092847, guid: e8f927e5e67e1423cb2ad88e4c1dd981, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454114607917092847, guid: e8f927e5e67e1423cb2ad88e4c1dd981, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454114607917092847, guid: e8f927e5e67e1423cb2ad88e4c1dd981, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454114608289815398, guid: e8f927e5e67e1423cb2ad88e4c1dd981, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454114608289815398, guid: e8f927e5e67e1423cb2ad88e4c1dd981, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454114608289815398, guid: e8f927e5e67e1423cb2ad88e4c1dd981, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454114608289815398, guid: e8f927e5e67e1423cb2ad88e4c1dd981, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454114608353573133, guid: e8f927e5e67e1423cb2ad88e4c1dd981, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454114608353573133, guid: e8f927e5e67e1423cb2ad88e4c1dd981, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454114608353573133, guid: e8f927e5e67e1423cb2ad88e4c1dd981, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6454114608353573133, guid: e8f927e5e67e1423cb2ad88e4c1dd981, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e8f927e5e67e1423cb2ad88e4c1dd981, type: 3}
 --- !u!224 &2882741145319826842 stripped
@@ -5426,6 +5494,14 @@ PrefabInstance:
     - target: {fileID: 6824431495080613351, guid: 6fc6ea478a71d44a78dbec55284168bc, type: 3}
       propertyPath: m_Name
       value: What is your Name
+      objectReference: {fileID: 0}
+    - target: {fileID: 6824431495080613351, guid: 6fc6ea478a71d44a78dbec55284168bc, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6824431496668675778, guid: 6fc6ea478a71d44a78dbec55284168bc, type: 3}
+      propertyPath: m_text
+      value: Enter your Full Name
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6fc6ea478a71d44a78dbec55284168bc, type: 3}
