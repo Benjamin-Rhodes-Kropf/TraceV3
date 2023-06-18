@@ -31,6 +31,7 @@ public partial class FbManager
                 
                 if (FriendRequestManager.Instance.IsRequestAllReadyInList(senderId) || senderId == _firebaseUser.UserId)
                 {
+                    Debug.Log("RequestAllReadyInList: " + senderId);
                     //_databaseReference.Child("allFriendRequests").ChildAdded -= HandleFriendRequest;
                     return;
                 }
@@ -50,8 +51,9 @@ public partial class FbManager
                     SenderID = senderId
                 };
                 
-                _allReceivedRequests.Add(request);
-                SoundManager.instance.PlaySound(SoundManager.SoundType.Notification);
+                Debug.Log("_allReceivedRequests.Add");
+                //_allReceivedRequests.Add(request); //Todo: this ain't workin it causes double requests
+                //SoundManager.instance.PlaySound(SoundManager.SoundType.Notification);
                 HelperMethods.PlayHeptics();
                 ContactsCanvas.UpdateRedMarks?.Invoke();
 
@@ -109,7 +111,7 @@ public partial class FbManager
             _allFriends.Add(friend);
             if (ContactsCanvas.UpdateFriendsView != null)
                 ContactsCanvas.UpdateFriendsView?.Invoke();
-            
+            ContactsCanvas.UpdateRedMarks();
             _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildAdded -= HandleFriends;
 
         }
@@ -238,7 +240,6 @@ public partial class FbManager
         }
         else
         {
-           
             // _allFriends.Add(friend);
             callback(true);
         }

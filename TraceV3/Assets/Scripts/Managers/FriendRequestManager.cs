@@ -34,7 +34,6 @@ public class FriendRequestManager
         if (isReceivedRequest)
         {
                 FriendRequests friendRequest =
-
                     (from request in FbManager.instance._allReceivedRequests
                         where request.SenderID.Equals(senderId)
                         select request).FirstOrDefault();

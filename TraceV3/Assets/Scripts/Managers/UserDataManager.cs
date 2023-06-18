@@ -55,9 +55,7 @@ public class UserDataManager
         List<UserModel> users = new List<UserModel>();
         foreach (var request in FbManager.instance._allReceivedRequests)
         {
-                Debug.Log("GetFriendRequested from:" + request.SenderID);
-                //var _userSearchQuery = from user in FbManager.instance.AllUsers where string.Equals(user.userId, request.SenderID) select user;
-            
+            Debug.Log("GetFriendRequested from:" + request.SenderID);
                 foreach (var user in FbManager.instance.AllUsers)
                 {
                     Debug.Log("Compare:" + user.userId + "to: " + request.SenderID);

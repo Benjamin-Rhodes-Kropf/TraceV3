@@ -67,7 +67,6 @@ namespace CanvasManagers
             UpdateRequestView -= _controller.UpdateRequestLayout;
             UpdateFriendsView -= _controller.UpdateFriendsLayout;
             UpdateRedMarks -= _controller.UpdateSelectionPanelView;
-
         }
 
         public void ClearFriends()
