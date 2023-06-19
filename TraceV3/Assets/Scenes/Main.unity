@@ -1442,7 +1442,7 @@ MonoBehaviour:
   firebaseStorageReferenceUrl: gs://geosnapv1.appspot.com
   autoLogin: 1
   useAdminForLogin: 1
-  adminUser: userthree@gmail.com
+  adminUser: usertwo@gmail.com
   adminPass: Bark2004!
   resetPlayerPrefs: 0
   userImageTexture: {fileID: 0}
