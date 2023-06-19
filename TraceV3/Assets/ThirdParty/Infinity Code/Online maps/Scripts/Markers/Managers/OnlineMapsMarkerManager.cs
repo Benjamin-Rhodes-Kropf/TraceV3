@@ -107,7 +107,7 @@ public class OnlineMapsMarkerManager : OnlineMapsMarkerManagerBase<OnlineMapsMar
         marker.manager = this;
         marker.texture = texture;
         marker.label = label;
-        marker.align = defaultAlign;
+        marker.align = OnlineMapsAlign.Center;
         marker.scale = defaultScale;
         marker.Init();
         Redraw();
@@ -189,6 +189,10 @@ public class OnlineMapsMarkerManager : OnlineMapsMarkerManagerBase<OnlineMapsMar
     public void GenerateMarker() {
         double lng, lat;
         if (map.control.GetCoords(out lng, out lat)) Create(lng, lat);
+    }
+    
+    public void AddTraceToMap(double lat, double lng, Texture2D texture) {
+        Create(lng, lat, texture, "");
     }
 
     public Vector2 GetMouseLatAndLong()
