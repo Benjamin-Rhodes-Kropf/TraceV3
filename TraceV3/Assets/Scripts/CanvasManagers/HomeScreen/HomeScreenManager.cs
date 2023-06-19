@@ -8,8 +8,9 @@ using UnityEngine.Video;
 public class HomeScreenManager : MonoBehaviour
 {
     public bool isInSentMode;
-    public RawImage displayTrace;
-    public VideoPlayer videoPlayer;
+    // public RawImage displayTrace;
+    public TracePopup tracePopupManager;
+    // public VideoPlayer videoPlayer;
 
     public void ToggleisInSentMode()
     {
@@ -34,9 +35,10 @@ public class HomeScreenManager : MonoBehaviour
             {
                 if (texture != null)
                 {
-                    displayTrace.texture = texture;
                     FbManager.instance.MarkTraceAsOpened(traceID);
                     ScreenManager.instance.OpenPopup("Trace");
+                    tracePopupManager.ActivatePhotoFormat();
+                    tracePopupManager.displayTrace.texture = texture;
                     TraceManager.instance.recivedTraceObjects[TraceManager.instance.GetRecivedTraceIndexByID(traceID)].hasBeenOpened = true;
                     TraceManager.instance.UpdateTracesOnMap();
                 }
@@ -57,8 +59,9 @@ public class HomeScreenManager : MonoBehaviour
                     //do somthing
                     // displayTrace.texture = texture;
                     ScreenManager.instance.OpenPopup("Trace");
-                    videoPlayer.url = path;
-                    videoPlayer.Play();
+                    tracePopupManager.ActivateVideoFormat();
+                    tracePopupManager.videoPlayer.url = path;
+                    tracePopupManager.videoPlayer.Play();
                     FbManager.instance.MarkTraceAsOpened(traceID); 
                     TraceManager.instance.recivedTraceObjects[TraceManager.instance.GetRecivedTraceIndexByID(traceID)].hasBeenOpened = true;
                     TraceManager.instance.UpdateTracesOnMap();

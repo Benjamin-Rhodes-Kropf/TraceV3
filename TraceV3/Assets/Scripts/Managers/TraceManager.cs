@@ -50,8 +50,9 @@ public class TraceManager : MonoBehaviour
         Application.runInBackground = true;
         onlineMapsLocationService.updatePosition = true;
         
-        //handle when map click
+        //handle map updates
         onlineMapsControlBase.OnMapClick += HandleMapClick;
+        onlineMapsLocationService.OnLocationChanged += UpdateMap;
     }
     
     private void HandleMapClick()
@@ -302,6 +303,11 @@ public class TraceManager : MonoBehaviour
         }
     }
 
+    public void UpdateMap(Vector2 vector2)
+    {
+        Debug.Log("Map Update");
+        UpdateTracesOnMap();
+    }
     public void UpdateTracesOnMap()
     {
         drawTraceOnMap.Clear();
