@@ -54,10 +54,7 @@ public class DrawTraceOnMap : MonoBehaviour
         }
 
         // Create a new polygon to draw a circle
-        OnlineMapsDrawingElementManager.AddItem(new OnlineMapsDrawingPoly(points, color, 3));
-
-       // Add OnClick events to static markers
-        //ModifyTraceToBeClickable(OnlineMapsMarkerManager.instance[OnlineMapsMarkerManager.instance.Count-1], (int)radius, markerID);
+        OnlineMapsDrawingElementManager.AddItem(new OnlineMapsDrawingPoly(points, color, 3, new Color(10, 10, 10, 0.1f)));
     }
     
     public static Texture2D DrawCircleOnMap(Texture2D tex, Color color, int x, int y, int radius)

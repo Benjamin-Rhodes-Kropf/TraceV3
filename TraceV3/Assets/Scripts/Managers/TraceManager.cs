@@ -148,7 +148,7 @@ public class TraceManager : MonoBehaviour
         for (var i = 0; i < recivedTraceObjects.Count && i < 10; i++)
         {
             var trace = recivedTraceObjects[i];
-            ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng,trace.radius, trace.senderName + " Left You a Trace Here", trace.senderName);
+            ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng,trace.radius, " ", trace.senderName);
         }
     }
     
@@ -167,16 +167,16 @@ public class TraceManager : MonoBehaviour
         var entryBasedNotification = new iOSNotification
         {
             Title = SenderName,
-            Subtitle = "You Have Entered in the radius of " + enterLocationTrigger.Center + " Meters",
-            Body = message == "" ? "Radius latitude was > " + latitude + " and longitude was > " + longitude : message,
+            Subtitle =  "Left You A Trace Here",
+            Body = "",
+            //Body = message == "" ? "Radius latitude was > " + latitude + " and longitude was > " + longitude : message,
             ShowInForeground = true,
             ForegroundPresentationOption = PresentationOption.Alert | PresentationOption.Sound,
             Trigger = enterLocationTrigger
         };
         
-        iOSNotificationCenter.ScheduleNotification(entryBasedNotification);
         // Schedule notification for entry base
-        Debug.Log("Started a location notification at " + enterLocationTrigger.Center);
+        iOSNotificationCenter.ScheduleNotification(entryBasedNotification);
     }
 
     private void UpdateNotificationForNextTrace()
@@ -260,11 +260,14 @@ public class TraceManager : MonoBehaviour
                     Debug.Log("Dist is: " + dist);
                     if (dist < 0)
                     {
+                        //new Color(73,255, 44)
+                        var color = new Color(73, 255, 44);
                         drawTraceOnMap.DrawCirlce(traceobject.lat, traceobject.lng, (traceobject.radius), Color.green, traceobject.id);
                         traceobject.canBeOpened = true;
                     }
                     else
                     {
+                        //new Color(71,255,214)
                         drawTraceOnMap.DrawCirlce(traceobject.lat, traceobject.lng, (traceobject.radius), Color.white, traceobject.id);
                         traceobject.canBeOpened = false;
                     }
@@ -278,7 +281,8 @@ public class TraceManager : MonoBehaviour
             {
                 if (!traceobject.hasBeenAdded)
                 {
-                    drawTraceOnMap.DrawCirlce(traceobject.lat, traceobject.lng, (traceobject.radius), Color.white, traceobject.id);
+                    //new Color(71,255,214)
+                    drawTraceOnMap.DrawCirlce(traceobject.lat, traceobject.lng, (traceobject.radius), Color.blue, traceobject.id);
                     traceobject.hasBeenAdded = true;
                 }
             }
