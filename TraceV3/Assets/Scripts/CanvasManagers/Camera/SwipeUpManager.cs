@@ -53,12 +53,13 @@ public class SwipeUpManager : MonoBehaviour, IDragHandler, IEndDragHandler
 			Dy *= friction;
 		}
 		
-		//if they throw the arrow off the bottom of the screen
+		//if user throws  arrow off the bottom of the screen return faster
 		if (changeInYVal < -800)
 		{
 			Dy = 0;
 		}
-
+		
+		//next screen trigger
 		if (changeInYVal > changeInYvalGoLimit && !hasBegunScreenSwitch && !isDragging && Dy > dyLimitForScreenSwitch)
 		{
 			StartCoroutine(TraceArrowSlidUp());
@@ -102,8 +103,11 @@ public class SwipeUpManager : MonoBehaviour, IDragHandler, IEndDragHandler
 			cameraManager.ShareVideo();
 		}
 		
+		//reset screens
 		BackToMainScene();
 		Reset();
+		
+		//go to select friends screen
 		ScreenManager.instance.ChangeScreenUpSlideOver("SelectFriends");
 	}
 	

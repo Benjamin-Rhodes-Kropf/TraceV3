@@ -1,0 +1,83 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.EventSystems;
+
+public class SlideToOpenManager : MonoBehaviour
+{
+    [Header("Swipe Physics")]
+    RectTransform m_transform = null;
+    [SerializeField] private float initailYVal;
+    [SerializeField] private float changeInYVal;
+    [SerializeField] private float Dy;
+    [SerializeField] private float friction = 0.95f;
+    [SerializeField] private float frictionWeight = 1f;
+    [SerializeField] private float changeInYvalGoLimit;
+    [SerializeField] private float changeInYvalGoTrigger;
+    [SerializeField] private bool hasBegunScreenSwitch;
+    [SerializeField] private float dyLimitForScreenSwitch;
+    [SerializeField] private bool isDragging;
+    [SerializeField] private AnimationCurve slideFrictionCurve;
+    [SerializeField] private AnimationCurve slideRestitutionCurve;
+    
+    private void OnEnable()
+    {
+        hasBegunScreenSwitch = false;
+    }
+    void Start () {
+        m_transform = GetComponent<RectTransform>();
+        initailYVal = m_transform.position.y;
+    }
+    public void Update()
+    {
+        changeInYVal =  m_transform.position.y-initailYVal;
+        if (!isDragging)
+        {
+            m_transform.position = new Vector3(m_transform.position.x, m_transform.position.y + Dy*frictionWeight + slideRestitutionCurve.Evaluate(changeInYVal)*100f);
+        }
+
+        //only apply friction before screen switch
+        if (!hasBegunScreenSwitch)
+        {
+            Dy *= friction;
+        }
+		
+        //if user throws  arrow off the bottom of the screen return faster
+        if (changeInYVal < -800)
+        {
+            Dy = 0;
+        }
+		
+        //next screen trigger
+        if (changeInYVal > changeInYvalGoLimit && !hasBegunScreenSwitch && !isDragging && Dy > dyLimitForScreenSwitch)
+        {
+            //trigger open trace
+            hasBegunScreenSwitch = true;
+        }
+    }
+    
+    public void OnDrag(PointerEventData eventData)
+    {
+        isDragging = true;
+        Dy += eventData.delta.y;
+        m_transform.position += new Vector3(0, eventData.delta.y * slideFrictionCurve.Evaluate(changeInYVal));
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        isDragging = false;
+    }
+
+    private void Reset()
+    {
+        hasBegunScreenSwitch = false;
+        changeInYVal = 0;
+        Dy = 0;
+        m_transform.position = new Vector3(m_transform.position.x, initailYVal);
+    }
+
+    public void OpenTraceOption()
+    {
+        
+    }
+}

@@ -2,20 +2,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
 public class HomeScreenManager : MonoBehaviour
 {
-    public bool isInSentMode;
-    // public RawImage displayTrace;
+    [Header("External")]
     public TracePopup tracePopupManager;
-    // public VideoPlayer videoPlayer;
-
-    public void ToggleisInSentMode()
-    {
-        isInSentMode = !isInSentMode;
-    }
+    public Animator homeScreenAnimator;
+    public GameObject openTraceBackground;
+    public GameObject openTraceForeground;
+    
 
     public void OpenTrace(string traceID, string mediaType) //Todo: Make mediaType an Enum
     {
