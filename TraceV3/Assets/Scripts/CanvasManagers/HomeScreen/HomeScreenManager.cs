@@ -14,7 +14,7 @@ public class HomeScreenManager : MonoBehaviour
     
     
 
-    public void OpenTrace(string traceID, string mediaType) //Todo: Make mediaType an Enum
+    public void OpenTrace(string traceID, string senderName, string sendDate, string mediaType) //Todo: Make mediaType an Enum
     {
         Debug.Log("Open Trace");
         if (traceID == null)
@@ -32,12 +32,8 @@ public class HomeScreenManager : MonoBehaviour
             {
                 if (texture != null)
                 {
-                    // ScreenManager.instance.OpenPopup("Trace");
-                    slideToOpenManager.ActivatePhotoFormat();
+                    slideToOpenManager.ActivatePhotoFormat(traceID, sendDate, senderName);
                     slideToOpenManager.displayTrace.texture = texture;
-                    // FbManager.instance.MarkTraceAsOpened(traceID);
-                    // TraceManager.instance.recivedTraceObjects[TraceManager.instance.GetRecivedTraceIndexByID(traceID)].hasBeenOpened = true;
-                    // TraceManager.instance.UpdateTracesOnMap();
                 }
                 else
                 {
@@ -55,11 +51,7 @@ public class HomeScreenManager : MonoBehaviour
                 {
                     Debug.Log("Open Trace View");
                     slideToOpenManager.videoPlayer.url = path;
-                    slideToOpenManager.ActivateVideoFormat();
-                   
-                    // FbManager.instance.MarkTraceAsOpened(traceID); 
-                    // TraceManager.instance.recivedTraceObjects[TraceManager.instance.GetRecivedTraceIndexByID(traceID)].hasBeenOpened = true;
-                    // TraceManager.instance.UpdateTracesOnMap();
+                    slideToOpenManager.ActivateVideoFormat(traceID, senderName, sendDate);
                 }
                 else
                 {

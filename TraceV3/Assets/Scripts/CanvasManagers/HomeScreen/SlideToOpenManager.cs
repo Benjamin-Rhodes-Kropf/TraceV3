@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -11,9 +12,13 @@ public class SlideToOpenManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [Header("Trace Stuff")]
     [SerializeField] private GameObject imageObject;
     [SerializeField] private GameObject videoObject;
+    [SerializeField] private string traceID;
+    [SerializeField] private TMP_Text senderNameDisplay;
+    [SerializeField] private TMP_Text senderDateDisplay;
+   
     public VideoPlayer videoPlayer;
     public  RawImage displayTrace;
-    
+
     [Header("Swipe Physics Both")] 
     [SerializeField] private float startLocation;
     [SerializeField] private GameObject openTraceBackground;
@@ -86,15 +91,21 @@ public class SlideToOpenManager : MonoBehaviour, IDragHandler, IEndDragHandler
         m_targetYVal = 1200;
     }
     
-    public void ActivatePhotoFormat()
+    public void ActivatePhotoFormat(string traceID, string sendDate, string senderName)
     {
+        this.traceID = traceID;
+        senderNameDisplay.text = senderName;
+        senderDateDisplay.text = sendDate;
         canUsePhysics = true;
         isPhoto = true;
         imageObject.SetActive(true);
         videoObject.SetActive(false);
     }
-    public void ActivateVideoFormat()
+    public void ActivateVideoFormat(string traceID, string sendDate, string senderName)
     {
+        this.traceID = traceID;
+        senderNameDisplay.text = senderName;
+        senderDateDisplay.text = sendDate;
         canUsePhysics = true;
         isPhoto = false;
         imageObject.SetActive(false);
@@ -155,22 +166,26 @@ public class SlideToOpenManager : MonoBehaviour, IDragHandler, IEndDragHandler
             m_targetYVal = 3800;
         }
 
+        //Slow down window as it hits the top Of the screen
         if (hasBegunOpenTrace && m_transform.localPosition.y > stopAtScreenTopLimit && Dy > 0)
         {
             Dy *= 0.5f;
             g_gameObject.SetActive(false);
-            //canUsePhysics = false;
-            //m_transform.localPosition = new Vector3( m_transform.position.x, stopAtScreenTopLimit, m_transform.position.z);
-            //Debug.Log(m_transform.localPosition.y);
         }
         
         if (hasBegunOpenTrace && !canCloseTrace && g_transform.localPosition.y > 1000)
         {
+            //State
             canCloseTrace = true;
+            
+            //Play Video
             if (!isPhoto)
             {
                 videoPlayer.Play();
             }
+            //Update Map and Database
+            FbManager.instance.MarkTraceAsOpened(traceID);
+            TraceManager.instance.UpdateTracesOnMap();
         }
         if (hasBegunOpenTrace && changeInYVal < changeInYvalCloseLimit && !isDragging && canCloseTrace)
         {

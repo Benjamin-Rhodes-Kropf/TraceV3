@@ -82,6 +82,11 @@ public class OnlineMapsMarkerBase: IOnlineMapsInteractiveElement
     public string label = "";
 
     /// <summary>
+    /// Trace radius.
+    /// </summary>
+    public float radius = 0;
+    
+    /// <summary>
     /// Zoom range, in which the marker will be displayed.
     /// </summary>
     public OnlineMapsRange range;
@@ -374,6 +379,15 @@ public class OnlineMapsMarkerBase: IOnlineMapsInteractiveElement
         longitude = lng;
         latitude = lat;
         if (OnPositionChanged != null) OnPositionChanged(this);
+    }
+    
+    /// <summary>
+    /// Set radius of marker
+    /// </summary>
+    /// <param name="radius">Radius</param>
+    public void SetRadius(float radius)
+    {
+        this.radius = radius;
     }
 
     /// <summary>

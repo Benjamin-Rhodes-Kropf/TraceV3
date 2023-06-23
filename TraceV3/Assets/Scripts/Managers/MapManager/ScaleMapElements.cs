@@ -28,9 +28,9 @@ public class ScaleMapElements : MonoBehaviour
 
         for (int i = 1; i < markerManager.items.Count; i++)
         {
-            if (traceScale * radiusSize >0)
+            if (traceScale * radiusSize > 0)
             {
-                markerManager.items[i].scale = (float)(traceScale * radiusSize);   
+                markerManager.items[i].scale = (float)(traceScale * radiusSize * markerManager.items[i].radius);
             }
         }
     }

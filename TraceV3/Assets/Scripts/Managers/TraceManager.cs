@@ -81,7 +81,7 @@ public class TraceManager : MonoBehaviour
         {
             Debug.Log("Trace to Click:" + filtered[filtered.Count-1].Item1.id + "Dist:" + filtered[filtered.Count-1].Item2);
             var traceToOpen = filtered[filtered.Count - 1];
-            homeScreenManager.OpenTrace(traceToOpen.Item1.id, traceToOpen.Item1.mediaType);
+            homeScreenManager.OpenTrace(traceToOpen.Item1.id, traceToOpen.Item1.senderName,traceToOpen.Item1.sendTime, traceToOpen.Item1.mediaType);
         }
     }
     
@@ -336,17 +336,17 @@ public class TraceObject
     public bool hasBeenAdded;
     public bool canBeOpened = false;
     public bool hasBeenOpened = false;
-    public double startTimeStamp;
+    public string sendTime;
     public double endTimeStamp;
     
-    public TraceObject(double longitude, double latitude, float radius, string senderID, string senderName, double startTimeStamp, double endTimeStamp, string mediaType, string id)
+    public TraceObject(double longitude, double latitude, float radius, string senderID, string senderName, string sendTime, double endTimeStamp, string mediaType, string id)
     {
         lng = longitude;
         lat = latitude;
         this.radius = radius;
         this.senderID = senderID;
         this.senderName = senderName;
-        this.startTimeStamp = startTimeStamp;
+        this.sendTime = sendTime;
         this.endTimeStamp = endTimeStamp;
         this.mediaType = mediaType;
         this.id = id;

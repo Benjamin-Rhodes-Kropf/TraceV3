@@ -30,10 +30,11 @@ public abstract class OnlineMapsMarkerManagerBase<T, U>: OnlineMapsInteractiveEl
         if (instance != null) instance.RemoveByTag(tags);
     }
 
-    protected U _CreateItem(double longitude, double latitude)
+    protected U _CreateItem(double longitude, double latitude, float radius)
     {
         U item = Activator.CreateInstance<U>();
         item.SetPosition(longitude, latitude);
+        item.SetRadius(radius);
         items.Add(item);
         if (OnCreateItem != null) OnCreateItem(item);
         return item;

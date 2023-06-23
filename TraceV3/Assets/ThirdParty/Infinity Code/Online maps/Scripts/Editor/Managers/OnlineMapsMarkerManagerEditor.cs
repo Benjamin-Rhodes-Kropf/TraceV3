@@ -28,7 +28,7 @@ public class OnlineMapsMarkerManagerEditor: OnlineMapsMarkerManagerBaseEditor<On
         {
             double lng, lat;
             map.GetPosition(out lng, out lat);
-            OnlineMapsMarker marker = manager.Create(lng, lat);
+            OnlineMapsMarker marker = manager.Create(lng, lat, 0);
             marker.align = manager.defaultAlign;
             marker.scale = manager.defaultScale;
         }

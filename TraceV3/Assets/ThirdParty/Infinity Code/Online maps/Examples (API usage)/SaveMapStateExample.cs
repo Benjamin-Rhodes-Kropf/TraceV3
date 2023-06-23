@@ -29,7 +29,7 @@ namespace InfinityCode.OnlineMapsExamples
                 if (textureIndex > -1 && textureIndex < markerTextures.Count) texture = markerTextures[textureIndex];
                 string label = jitem.ChildValue<string>("label");
 
-                OnlineMapsMarker marker = manager.Create(mx, my, texture, label);
+                OnlineMapsMarker marker = manager.Create(mx, my,0, texture, label);
                 
                 marker.range = jitem.ChildValue<OnlineMapsRange>("range");
                 marker.align = (OnlineMapsAlign)jitem.ChildValue<int>("align");

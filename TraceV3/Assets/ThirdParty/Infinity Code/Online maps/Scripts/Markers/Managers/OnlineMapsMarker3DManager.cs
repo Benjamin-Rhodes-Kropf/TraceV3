@@ -51,7 +51,7 @@ public class OnlineMapsMarker3DManager : OnlineMapsMarkerManagerBase<OnlineMapsM
     /// <returns>Instance of the marker</returns>
     public OnlineMapsMarker3D Create(double longitude, double latitude, GameObject prefab)
     {
-        OnlineMapsMarker3D marker = _CreateItem(longitude, latitude);
+        OnlineMapsMarker3D marker = _CreateItem(longitude, latitude, 0);
         marker.prefab = prefab;
         marker.manager = this;
         marker.scale = defaultScale;
@@ -69,7 +69,7 @@ public class OnlineMapsMarker3DManager : OnlineMapsMarkerManagerBase<OnlineMapsM
     /// <returns>Instance of the marker</returns>
     public OnlineMapsMarker3D CreateFromExistGameObject(double longitude, double latitude, GameObject markerGameObject)
     {
-        OnlineMapsMarker3D marker = _CreateItem(longitude, latitude);
+        OnlineMapsMarker3D marker = _CreateItem(longitude, latitude, 0);
         marker.prefab = marker._prefab = marker.instance = markerGameObject;
         marker.control = map.control as OnlineMapsControlBase3D;
         marker.manager = this;

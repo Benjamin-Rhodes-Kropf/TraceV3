@@ -13,7 +13,7 @@ public class DrawTraceOnMap : MonoBehaviour
 
     public void DrawCirlce(double lat, double lng, float radius, Color color, string markerID)
     {
-        //markerManager.AddTraceToMap(lat, lng, testTexture);
+        markerManager.AddTraceToMap(lat, lng, radius, testTexture, markerID);
 
         if (showDebugTextures)
         {

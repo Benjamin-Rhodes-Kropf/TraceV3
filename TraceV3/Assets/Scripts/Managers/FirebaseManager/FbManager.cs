@@ -1094,6 +1094,8 @@ public partial class FbManager : MonoBehaviour
         childUpdates["RecivedTraces/" + _firebaseUser.UserId + "/" + traceID] = null;
         childUpdates["Traces/" + traceID + "/Reciver/"+ _firebaseUser.UserId +"/HasViewed"] = true;
         _databaseReference.UpdateChildrenAsync(childUpdates);
+        //Update Map
+        TraceManager.instance.recivedTraceObjects[TraceManager.instance.GetRecivedTraceIndexByID(traceID)].hasBeenOpened = true;
     }
     
     public IEnumerator GetRecievedTrace(string traceID)
@@ -1186,7 +1188,7 @@ public partial class FbManager : MonoBehaviour
             }
             if (lat != 0 && lng != 0 && radius != 0) //check for malformed data entry
             {
-                var trace = new TraceObject(lng, lat, radius, senderID, senderName, 10, 20, mediaType,traceID);
+                var trace = new TraceObject(lng, lat, radius, senderID, senderName, sendTime, 20, mediaType,traceID);
                 TraceManager.instance.recivedTraceObjects.Add(trace);
             }
         }
@@ -1285,7 +1287,7 @@ public partial class FbManager : MonoBehaviour
             
             if (lat != 0 && lng != 0 && radius != 0)
             {
-                var trace = new TraceObject(lng, lat, radius,senderID,senderName, 10, 20, mediaType,traceID);
+                var trace = new TraceObject(lng, lat, radius,senderID,senderName, sendTime, 20, mediaType,traceID);
                 TraceManager.instance.sentTraces.Add(trace);
             }
         }
