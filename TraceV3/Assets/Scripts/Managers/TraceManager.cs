@@ -261,7 +261,6 @@ public class TraceManager : MonoBehaviour
                     if (dist < 0)
                     {
                         //new Color(73,255, 44)
-                        var color = new Color(73, 255, 44);
                         drawTraceOnMap.DrawCirlce(traceobject.lat, traceobject.lng, (traceobject.radius), Color.green, traceobject.id);
                         traceobject.canBeOpened = true;
                     }

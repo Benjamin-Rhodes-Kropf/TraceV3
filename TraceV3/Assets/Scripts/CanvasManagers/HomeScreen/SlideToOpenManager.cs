@@ -1,83 +1,198 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using UnityEngine.Video;
 
-public class SlideToOpenManager : MonoBehaviour
+public class SlideToOpenManager : MonoBehaviour, IDragHandler, IEndDragHandler
 {
-    [Header("Swipe Physics")]
-    RectTransform m_transform = null;
-    [SerializeField] private float initailYVal;
+    [Header("Trace Stuff")]
+    [SerializeField] private GameObject imageObject;
+    [SerializeField] private GameObject videoObject;
+    public VideoPlayer videoPlayer;
+    public  RawImage displayTrace;
+    
+    [Header("Swipe Physics Both")] 
+    [SerializeField] private float startLocation;
+    [SerializeField] private GameObject openTraceBackground;
+    
+    [Header("Swipe Physics Primary")]
+    [SerializeField] RectTransform m_transform;
+    [SerializeField] private float m_targetYVal;
     [SerializeField] private float changeInYVal;
     [SerializeField] private float Dy;
     [SerializeField] private float friction = 0.95f;
     [SerializeField] private float frictionWeight = 1f;
-    [SerializeField] private float changeInYvalGoLimit;
-    [SerializeField] private float changeInYvalGoTrigger;
-    [SerializeField] private bool hasBegunScreenSwitch;
-    [SerializeField] private float dyLimitForScreenSwitch;
-    [SerializeField] private bool isDragging;
+    [SerializeField] private float dyLimitForScreenExit;
     [SerializeField] private AnimationCurve slideFrictionCurve;
     [SerializeField] private AnimationCurve slideRestitutionCurve;
     
+    [Header("Swipe Physics Limits")]
+    [SerializeField] private float changeInYvalGoLimit;
+    [SerializeField] private float changeInYDvLimit;
+    [SerializeField] private float changeInYvalExitLimit;
+    [SerializeField] private float changeInYvalCloseLimit;
+    [SerializeField] private float dyForScreenSwitchLimit;
+    [SerializeField] private float stopAtScreenTopLimit;
+
+
+    [Header("State")] 
+    [SerializeField] private bool isPhoto;
+    [SerializeField] private bool isDragging;
+    [SerializeField] private bool canUsePhysics;
+    [SerializeField] private bool canCloseTrace;
+    [SerializeField] private bool hasBegunOpenTrace;
+    [SerializeField] private bool hasBegunCloseTrace;
+    
+    [Header("Swipe Physics Secondary")]
+    [SerializeField] private GameObject g_gameObject;
+    [SerializeField] private RectTransform g_transform;
+    [SerializeField] private float springStiffness = 0.1f;
+    [SerializeField] private float springDamping = 0.8f;
+    [SerializeField] private float bobSpeed = 1f;
+    [SerializeField] private float bobHeight = 0.5f;
+    [SerializeField] private float g_offset;
+    [SerializeField] private float bobOffset;
+    [SerializeField] private float gTransformVelocity;
+    
+    [Header("Swipe Arrow")] 
+    [SerializeField] private RectTransform arrow;
+    [SerializeField] private Image arrowImage;
+    [SerializeField] private AnimationCurve arrowScale;
+    [SerializeField] private AnimationCurve colorScale;
+    [SerializeField] private Gradient gradient;
     private void OnEnable()
     {
-        hasBegunScreenSwitch = false;
+        Reset();
     }
-    void Start () {
-        m_transform = GetComponent<RectTransform>();
-        initailYVal = m_transform.position.y;
+    public void Reset()
+    {
+        videoPlayer.enabled = false;
+        displayTrace.texture = null;
+        imageObject.SetActive(false);
+        videoObject.SetActive(false);
+        hasBegunOpenTrace = false;
+        hasBegunOpenTrace = false;
+        canCloseTrace = false;
+        canUsePhysics = false;
+        m_transform.position = new Vector3(m_transform.position.x, startLocation, m_transform.position.z);
+        g_transform.position = new Vector3(g_transform.position.x, startLocation, g_transform.position.z);
+        openTraceBackground.SetActive(true);
+        Dy = 0;
+        changeInYVal = 0;
+        gTransformVelocity = 0;
+        m_targetYVal = 1200;
     }
+    
+    public void ActivatePhotoFormat()
+    {
+        canUsePhysics = true;
+        isPhoto = true;
+        imageObject.SetActive(true);
+        videoObject.SetActive(false);
+    }
+    public void ActivateVideoFormat()
+    {
+        canUsePhysics = true;
+        isPhoto = false;
+        imageObject.SetActive(false);
+        videoObject.SetActive(true); 
+        videoPlayer.enabled = true;
+        videoPlayer.Play();
+        videoPlayer.Pause();
+    }
+
     public void Update()
     {
-        changeInYVal =  m_transform.position.y-initailYVal;
+        if (!canUsePhysics)
+        {
+            return;
+        }
+        changeInYVal =  m_transform.position.y-m_targetYVal;
         if (!isDragging)
         {
-            m_transform.position = new Vector3(m_transform.position.x, m_transform.position.y + Dy*frictionWeight + slideRestitutionCurve.Evaluate(changeInYVal)*100f);
+            m_transform.position = new Vector3(m_transform.position.x, m_transform.position.y + Dy*frictionWeight + slideRestitutionCurve.Evaluate(changeInYVal)*100f); 
+            bobOffset = Mathf.Sin(Time.time * bobSpeed) * bobHeight;
         }
+        var scaleArrow = arrowScale.Evaluate(changeInYVal);
+        arrow.transform.localScale = new Vector3(0.25f,scaleArrow, 0.25f);
+        arrowImage.color = gradient.Evaluate(colorScale.Evaluate(changeInYVal));
+
+        // Apply spring-like behavior to g_transform
+        float displacement = g_transform.position.y-m_transform.position.y-g_offset-bobOffset;
+        float springForce = -springStiffness * displacement;
+        float dampingForce = -springDamping * gTransformVelocity;
+
+        float acceleration = (springForce + dampingForce) / frictionWeight;
+        gTransformVelocity += acceleration * Time.deltaTime;
+        g_transform.position += new Vector3(0,gTransformVelocity, 0) * Time.deltaTime;
 
         //only apply friction before screen switch
-        if (!hasBegunScreenSwitch)
+        if (!hasBegunOpenTrace)
         {
             Dy *= friction;
         }
-		
-        //if user throws  arrow off the bottom of the screen return faster
-        if (changeInYVal < -800)
+        
+        if (changeInYVal > changeInYDvLimit)
         {
             Dy = 0;
         }
-		
-        //next screen trigger
-        if (changeInYVal > changeInYvalGoLimit && !hasBegunScreenSwitch && !isDragging && Dy > dyLimitForScreenSwitch)
+        
+        if (changeInYVal < changeInYvalExitLimit && !isDragging && Dy < dyLimitForScreenExit)
         {
-            //trigger open trace
-            hasBegunScreenSwitch = true;
+            Debug.Log("ExitTrace");
+            hasBegunCloseTrace = true;
+            canCloseTrace = true;
+            m_targetYVal = 0;
+        }
+        
+        if (changeInYVal > changeInYvalGoLimit && !hasBegunOpenTrace  && !isDragging && Dy > dyForScreenSwitchLimit)
+        {
+            Debug.Log("OpenTrace");
+            hasBegunOpenTrace = true;
+            m_targetYVal = 3800;
+        }
+
+        if (hasBegunOpenTrace && m_transform.localPosition.y > stopAtScreenTopLimit && Dy > 0)
+        {
+            Dy *= 0.5f;
+            g_gameObject.SetActive(false);
+            //canUsePhysics = false;
+            //m_transform.localPosition = new Vector3( m_transform.position.x, stopAtScreenTopLimit, m_transform.position.z);
+            //Debug.Log(m_transform.localPosition.y);
+        }
+        
+        if (hasBegunOpenTrace && !canCloseTrace && g_transform.localPosition.y > 1000)
+        {
+            canCloseTrace = true;
+            if (!isPhoto)
+            {
+                videoPlayer.Play();
+            }
+        }
+        if (hasBegunOpenTrace && changeInYVal < changeInYvalCloseLimit && !isDragging && canCloseTrace)
+        {
+            hasBegunCloseTrace = true;
+            m_targetYVal = 0;
+        }
+
+        if (hasBegunCloseTrace && g_transform.localPosition.y < -1000 && canCloseTrace)
+        {
+            Reset();
         }
     }
-    
+
     public void OnDrag(PointerEventData eventData)
     {
         isDragging = true;
         Dy += eventData.delta.y;
         m_transform.position += new Vector3(0, eventData.delta.y * slideFrictionCurve.Evaluate(changeInYVal));
     }
-
+    
     public void OnEndDrag(PointerEventData eventData)
     {
         isDragging = false;
-    }
-
-    private void Reset()
-    {
-        hasBegunScreenSwitch = false;
-        changeInYVal = 0;
-        Dy = 0;
-        m_transform.position = new Vector3(m_transform.position.x, initailYVal);
-    }
-
-    public void OpenTraceOption()
-    {
-        
     }
 }

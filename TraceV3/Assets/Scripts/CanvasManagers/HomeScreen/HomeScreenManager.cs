@@ -8,11 +8,10 @@ using UnityEngine.Video;
 
 public class HomeScreenManager : MonoBehaviour
 {
-    [Header("External")]
-    public TracePopup tracePopupManager;
-    public Animator homeScreenAnimator;
-    public GameObject openTraceBackground;
-    public GameObject openTraceForeground;
+    [Header("External")] 
+    [SerializeField] private SlideToOpenManager slideToOpenManager;
+    [SerializeField] private Animator homeScreenAnimator;
+    
     
 
     public void OpenTrace(string traceID, string mediaType) //Todo: Make mediaType an Enum
@@ -33,12 +32,12 @@ public class HomeScreenManager : MonoBehaviour
             {
                 if (texture != null)
                 {
-                    FbManager.instance.MarkTraceAsOpened(traceID);
-                    ScreenManager.instance.OpenPopup("Trace");
-                    tracePopupManager.ActivatePhotoFormat();
-                    tracePopupManager.displayTrace.texture = texture;
-                    TraceManager.instance.recivedTraceObjects[TraceManager.instance.GetRecivedTraceIndexByID(traceID)].hasBeenOpened = true;
-                    TraceManager.instance.UpdateTracesOnMap();
+                    // ScreenManager.instance.OpenPopup("Trace");
+                    slideToOpenManager.ActivatePhotoFormat();
+                    slideToOpenManager.displayTrace.texture = texture;
+                    // FbManager.instance.MarkTraceAsOpened(traceID);
+                    // TraceManager.instance.recivedTraceObjects[TraceManager.instance.GetRecivedTraceIndexByID(traceID)].hasBeenOpened = true;
+                    // TraceManager.instance.UpdateTracesOnMap();
                 }
                 else
                 {
@@ -54,15 +53,13 @@ public class HomeScreenManager : MonoBehaviour
             {
                 if (path != null)
                 {
-                    //do somthing
-                    // displayTrace.texture = texture;
-                    ScreenManager.instance.OpenPopup("Trace");
-                    tracePopupManager.ActivateVideoFormat();
-                    tracePopupManager.videoPlayer.url = path;
-                    tracePopupManager.videoPlayer.Play();
-                    FbManager.instance.MarkTraceAsOpened(traceID); 
-                    TraceManager.instance.recivedTraceObjects[TraceManager.instance.GetRecivedTraceIndexByID(traceID)].hasBeenOpened = true;
-                    TraceManager.instance.UpdateTracesOnMap();
+                    Debug.Log("Open Trace View");
+                    slideToOpenManager.videoPlayer.url = path;
+                    slideToOpenManager.ActivateVideoFormat();
+                   
+                    // FbManager.instance.MarkTraceAsOpened(traceID); 
+                    // TraceManager.instance.recivedTraceObjects[TraceManager.instance.GetRecivedTraceIndexByID(traceID)].hasBeenOpened = true;
+                    // TraceManager.instance.UpdateTracesOnMap();
                 }
                 else
                 {

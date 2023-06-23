@@ -1366,9 +1366,6 @@ public partial class FbManager : MonoBehaviour
         else
         {
             var path = Application.persistentDataPath + "/" + "ReceivedTraceVideo" + ".mp4";
-            //var path = Application.dataPath + "/" + "ReceivedTraceVideo" + ".mp4";
-
-            
             File.WriteAllBytes(path, request.downloadHandler.data);
             Debug.Log("Downloaded Video!");
             Debug.Log("Video Location:" + path);

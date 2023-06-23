@@ -7,6 +7,7 @@ using UnityEngine.Video;
 
 public class TracePopup : MonoBehaviour
 {
+    [SerializeField] private GameObject _slideToOpenManager;
     public GameObject imageObject;
     public RawImage displayTrace;
     public GameObject videoObject;
@@ -22,11 +23,13 @@ public class TracePopup : MonoBehaviour
     
     public void ActivatePhotoFormat()
     {
+        _slideToOpenManager.SetActive(true);
         imageObject.SetActive(true);
         videoObject.SetActive(false);
     }
     public void ActivateVideoFormat()
     {
+        _slideToOpenManager.SetActive(true);
         imageObject.SetActive(false);
         videoObject.SetActive(true);
         videoPlayer.enabled = true;
