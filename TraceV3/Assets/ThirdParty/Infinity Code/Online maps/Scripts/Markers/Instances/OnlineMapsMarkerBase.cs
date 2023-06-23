@@ -82,6 +82,11 @@ public class OnlineMapsMarkerBase: IOnlineMapsInteractiveElement
     public string label = "";
 
     /// <summary>
+    /// TraceID.
+    /// </summary>
+    public string traceID = "";
+    
+    /// <summary>
     /// Trace radius.
     /// </summary>
     public float radius = 0;

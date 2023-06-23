@@ -114,9 +114,9 @@ public class OnlineMapsMarkerManager : OnlineMapsMarkerManagerBase<OnlineMapsMar
     /// <param name="radius">Tooltip</param>
     /// <param name="label">Tooltip</param>
     /// <returns>Instance of the marker</returns
-    public OnlineMapsMarker Create(Vector2 location, float radius, Texture2D texture = null, string label = "")
+    public OnlineMapsMarker Create(Vector2 location, float radius, Texture2D texture = null, string label = "", string traceID = "")
     {
-        if (instance != null) return Create(location.x, location.y,  radius, texture, label);
+        if (instance != null) return Create(location.x, location.y,  radius, texture, label, traceID);
         return null;
     }
 
@@ -128,13 +128,14 @@ public class OnlineMapsMarkerManager : OnlineMapsMarkerManagerBase<OnlineMapsMar
     /// <param name="texture">Texture of the marker</param>
     /// <param name="label">Tooltip</param>
     /// <returns>Instance of the marker</returns>
-    public OnlineMapsMarker Create(double longitude, double latitude, float radius, Texture2D texture = null, string label = "")
+    public OnlineMapsMarker Create(double longitude, double latitude, float radius, Texture2D texture = null, string label = "", string traceID = "")
     {
         if (texture == null) texture = defaultTexture;
         OnlineMapsMarker marker = _CreateItem(longitude, latitude, radius);
         marker.manager = this;
         marker.texture = texture;
         marker.label = label;
+        marker.traceID = traceID;
         marker.align = OnlineMapsAlign.Center;
         marker.scale = defaultScale;
         marker.Init();
@@ -220,7 +221,7 @@ public class OnlineMapsMarkerManager : OnlineMapsMarkerManagerBase<OnlineMapsMar
     }
     
     public void AddTraceToMap(double lat, double lng, float radius, Texture2D texture, string traceID) {
-        Create(lng, lat, radius, texture, traceID);
+        Create(lng, lat, radius, texture, "", traceID);
     }
 
     public Vector2 GetMouseLatAndLong()
