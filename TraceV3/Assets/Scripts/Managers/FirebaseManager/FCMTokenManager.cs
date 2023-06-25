@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Firebase;
+using Firebase.Messaging;
 using UnityEngine;
 
 public partial class FbManager
@@ -20,7 +22,7 @@ public partial class FbManager
     
     private void InitializeFCMService()
     {
-        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
+        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(async task =>
         {
             var dependencyStatus = task.Result;
             if (dependencyStatus == DependencyStatus.Available)
@@ -28,7 +30,10 @@ public partial class FbManager
                 Firebase.Messaging.FirebaseMessaging.TokenRegistrationOnInitEnabled = true;
                 Firebase.Messaging.FirebaseMessaging.TokenReceived += OnTokenReceived;
                 Firebase.Messaging.FirebaseMessaging.MessageReceived += OnMessageReceived;
-                Firebase.Messaging.FirebaseMessaging.SubscribeAsync("all");
+                await Firebase.Messaging.FirebaseMessaging.SubscribeAsync("all");
+                
+                var fcmToken = await FirebaseMessaging.GetTokenAsync();
+                OnTokenReceived(null, new TokenReceivedEventArgs(fcmToken));
             }
             else
             {
@@ -54,5 +59,33 @@ public partial class FbManager
         var DBTaskSetUserFriends = _databaseReference.Child("FcmTokens").Child(_firebaseUser.UserId).SetValueAsync(token);
         while (DBTaskSetUserFriends.IsCompleted is false)
             yield return new WaitForEndOfFrame();
+    }
+    
+    public async Task<string> GetDeviceTokenForUser(string firebaseUserId)
+    {
+        string deviceToken = null;
+
+        await _databaseReference
+            .Child("FcmTokens")
+            .Child(firebaseUserId)
+            .GetValueAsync().ContinueWith(task =>
+            {
+                if (task.IsCanceled)
+                {
+                    Debug.LogError("GetDeviceTokenForUser: Fetching device token was canceled.");
+                }
+                else if (task.IsFaulted)
+                {
+                    Debug.LogError($"GetDeviceTokenForUser: Failed to fetch device token. Error: {task.Exception}");
+                }
+                else if (task.IsCompleted)
+                {
+                    var snapshot = task.Result;
+                    deviceToken = snapshot.Value as string;
+                }
+            });
+
+        Debug.Log("Fetched FcmToken: " + deviceToken);
+        return deviceToken;
     }
 }

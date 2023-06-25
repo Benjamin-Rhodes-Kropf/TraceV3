@@ -14,7 +14,7 @@ public class HomeScreenManager : MonoBehaviour
     
     
 
-    public void OpenTrace(string traceID, string senderName, string sendDate, string mediaType) //Todo: Make mediaType an Enum
+    public void OpenTrace(string traceID, string senderName, string sendDate, string mediaType, string senderID) //Todo: Make mediaType an Enum
     {
         Debug.Log("Open Trace");
         if (traceID == null)
@@ -23,7 +23,7 @@ public class HomeScreenManager : MonoBehaviour
             return;
         }
         Debug.Log("mediaType:" + mediaType);
-        
+
         //determine what type of trace it is
         if (mediaType == MediaType.PHOTO.ToString())
         {
@@ -40,9 +40,8 @@ public class HomeScreenManager : MonoBehaviour
                     Debug.LogError("LoadTraceImage Failed");
                 }
             }));
-            return;
         }
-        if (mediaType == MediaType.VIDEO.ToString())
+        else if (mediaType == MediaType.VIDEO.ToString())
         {
             Debug.Log("mediaType == MediaType.Video.ToString()");
             StartCoroutine(FbManager.instance.GetTraceVideoByUrl(traceID, (path) =>
@@ -58,8 +57,12 @@ public class HomeScreenManager : MonoBehaviour
                     Debug.LogError("LoadTraceImage Failed");
                 }
             }));
-            return;
         }
         
+        StartCoroutine(FbManager.instance.GetMyUserNickName(nickName =>
+        {
+            BackgroundNotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID,
+                nickName + " opened Your Trace!");
+        }));
     }
 }

@@ -117,15 +117,22 @@ public class FriendView : MonoBehaviour
             return;
             
         Debug.LogError("Here after Checking List");
-        StartCoroutine(FbManager.instance.SendFriendRequest(friendUID,  (IsSuccessful) => {
+        StartCoroutine(FbManager.instance.SendFriendRequest(friendUID, async (IsSuccessful) => {
             if (!IsSuccessful)
             {
                 Debug.LogError("Friend request failed at : "+ friendUID);
                 return;
             }
+            
             UpdateRequestStatus(true);
             _addRemoveButton.interactable = true;
             Debug.Log("friend requested at:" + friendUID);
+
+            StartCoroutine(FbManager.instance.GetMyUserNickName(nickName =>
+            {
+                BackgroundNotificationManager.Instance.SendNotificationUsingFirebaseUserId(friendUID,
+                    "You Received a Friend Request from " + nickName);
+            }, friendUID));
         }));
     }
 

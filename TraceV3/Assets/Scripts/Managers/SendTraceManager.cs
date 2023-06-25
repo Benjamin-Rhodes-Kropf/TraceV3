@@ -44,6 +44,14 @@ public class SendTraceManager : MonoBehaviour
         Vector2 location = _onlineMapsLocationService.GetUserLocation();
         Debug.Log("SendTraceImage Lat:" + location.x);
         FbManager.instance.UploadTrace(fileLocation, radius, location, mediaType,users);
+        
+        StartCoroutine(FbManager.instance.GetMyUserNickName(nickName =>
+        {
+            foreach (var userId in users)
+            {
+                BackgroundNotificationManager.Instance.SendNotificationUsingFirebaseUserId(userId, nickName + " sent you a Trace!");
+            }
+        }));
     }
 }
 

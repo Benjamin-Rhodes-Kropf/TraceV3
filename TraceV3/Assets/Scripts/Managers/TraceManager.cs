@@ -81,7 +81,7 @@ public class TraceManager : MonoBehaviour
         {
             Debug.Log("Trace to Click:" + filtered[filtered.Count-1].Item1.id + "Dist:" + filtered[filtered.Count-1].Item2);
             var traceToOpen = filtered[filtered.Count - 1];
-            homeScreenManager.OpenTrace(traceToOpen.Item1.id, traceToOpen.Item1.senderName,traceToOpen.Item1.sendTime, traceToOpen.Item1.mediaType);
+            homeScreenManager.OpenTrace(traceToOpen.Item1.id, traceToOpen.Item1.senderName,traceToOpen.Item1.sendTime, traceToOpen.Item1.mediaType, traceToOpen.Item1.senderID);
         }
     }
     
