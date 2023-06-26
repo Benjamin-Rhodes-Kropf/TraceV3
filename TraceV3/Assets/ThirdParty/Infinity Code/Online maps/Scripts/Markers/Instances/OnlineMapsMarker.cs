@@ -36,16 +36,26 @@ public class OnlineMapsMarker : OnlineMapsMarkerBase
     [SerializeField]
     private float _rotation = 0;
 
-    [SerializeField, FormerlySerializedAs("texture")]
+    [SerializeField]
     private Texture2D _texture;
-
+    
+    [SerializeField]
+    private Texture2D _primaryZoomedInTexture;
+    
+    [SerializeField]
+    private Texture2D _secondaryZoomedOutTexture;
+    
+    //privates
     private Color32[] _rotatedColors;
     private int _textureHeight;
     private int _textureWidth;
     private int _width;
     private float _lastRotation;
     private float _lastScale;
-
+    
+    
+    
+    
     /// <summary>
     /// Gets the marker colors.
     /// </summary>
@@ -200,12 +210,32 @@ public class OnlineMapsMarker : OnlineMapsMarkerBase
     /// <strong>Must enable "Read / Write enabled".</strong><br/>
     /// After changing the texture you need to call OnlineMapsMarker.Init.
     /// </summary>
-    public Texture2D primaryTexture
+    public Texture2D texture
     {
         get { return _texture; }
         set
         {
             _texture = value;
+            if (map != null)
+            {
+                Init();
+                map.Redraw();
+            }
+        }
+    }
+    
+    /// <summary>
+    /// Texture marker. <br/>
+    /// Texture format: ARGB32.<br/>
+    /// <strong>Must enable "Read / Write enabled".</strong><br/>
+    /// After changing the texture you need to call OnlineMapsMarker.Init.
+    /// </summary>
+    public Texture2D secondaryZoomedOutTexture
+    {
+        get { return _secondaryZoomedOutTexture; }
+        set
+        {
+            _secondaryZoomedOutTexture = value;
             if (map != null)
             {
                 Init();
@@ -372,11 +402,11 @@ public class OnlineMapsMarker : OnlineMapsMarkerBase
     /// <param name="height">Height of the marker texture.</param>
     public void Init(int? width = null, int? height = null)
     {
-        if (primaryTexture != null)
+        if (texture != null)
         {
-            if (map.control.resultIsTexture) _colors = primaryTexture.GetPixels32();
-            _width = _textureWidth = width ?? primaryTexture.width;
-            _height = _textureHeight = height ?? primaryTexture.height;
+            if (map.control.resultIsTexture) _colors = texture.GetPixels32();
+            _width = _textureWidth = width ?? texture.width;
+            _height = _textureHeight = height ?? texture.height;
         }
         else
         {
@@ -405,7 +435,7 @@ public class OnlineMapsMarker : OnlineMapsMarkerBase
         return base.ToJSON().AppendObject(new
         {
             align = (int)align,
-            texture = primaryTexture != null ? primaryTexture.GetInstanceID() : 0,
+            texture = texture != null ? texture.GetInstanceID() : 0,
             rotation
         });
     }

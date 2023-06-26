@@ -241,14 +241,14 @@ public class OnlineMapsMarkerFlatDrawer : OnlineMapsMarker2DMeshDrawer
             fx = fx * OnlineMapsUtils.tileSize - offset.x;
             fy = (fy - ty) / zoomCoof * OnlineMapsUtils.tileSize - offset.y;
 
-            if (marker.primaryTexture == null)
+            if (marker.texture == null)
             {
-                marker.primaryTexture = control.markerManager.defaultTexture;
+                marker.texture = control.markerManager.defaultTexture;
                 marker.Init();
             }
 
-            float markerWidth = marker.primaryTexture.width * marker.scale;
-            float markerHeight = marker.primaryTexture.height * marker.scale;
+            float markerWidth = marker.texture.width * marker.scale;
+            float markerHeight = marker.texture.height * marker.scale;
 
             float rx1 = (float)(fx * cx);
             float ry1 = (float)(fy * cy);
@@ -304,20 +304,20 @@ public class OnlineMapsMarkerFlatDrawer : OnlineMapsMarker2DMeshDrawer
 
             if (OnGenerateMarkerVertices != null) OnGenerateMarkerVertices(marker, markersVertices, vIndex);
 
-            if (marker.primaryTexture == control.markerManager.defaultTexture)
+            if (marker.texture == control.markerManager.defaultTexture)
             {
                 usedTexturesMarkerIndex[0].Add(usedMarkersCount);
             }
             else
             {
-                int textureIndex = usedTextures.IndexOf(marker.primaryTexture);
+                int textureIndex = usedTextures.IndexOf(marker.texture);
                 if (textureIndex != -1)
                 {
                     usedTexturesMarkerIndex[textureIndex].Add(usedMarkersCount);
                 }
                 else
                 {
-                    usedTextures.Add(marker.primaryTexture);
+                    usedTextures.Add(marker.texture);
                     usedTexturesMarkerIndex.Add(new List<int>(32));
                     usedTexturesMarkerIndex[usedTexturesMarkerIndex.Count - 1].Add(usedMarkersCount);
                 }

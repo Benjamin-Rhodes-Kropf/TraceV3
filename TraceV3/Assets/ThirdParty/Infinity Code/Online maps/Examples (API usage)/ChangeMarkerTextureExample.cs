@@ -22,7 +22,7 @@ namespace InfinityCode.OnlineMapsExamples
                 // ... all markers will change the texture.
                 foreach (OnlineMapsMarker marker in OnlineMapsMarkerManager.instance)
                 {
-                    marker.primaryTexture = newMarkerTexture;
+                    marker.texture = newMarkerTexture;
                     marker.Init();
                 }
 

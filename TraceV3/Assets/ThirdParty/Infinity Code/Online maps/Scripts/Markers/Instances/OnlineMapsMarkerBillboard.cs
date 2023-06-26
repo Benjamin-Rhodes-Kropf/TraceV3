@@ -37,8 +37,8 @@ public class OnlineMapsMarkerBillboard : OnlineMapsMarkerInstanceBase
         
         billboard.marker = marker;
         marker.OnInitComplete += billboard.OnInitComplete;
-        Texture2D texture = marker.primaryTexture;
-        if (marker.primaryTexture == null) texture = (marker.manager as OnlineMapsMarkerManager).defaultTexture;
+        Texture2D texture = marker.texture;
+        if (marker.texture == null) texture = (marker.manager as OnlineMapsMarkerManager).defaultTexture;
         if (texture != null)
         {
             spriteRenderer.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0));
@@ -69,9 +69,9 @@ public class OnlineMapsMarkerBillboard : OnlineMapsMarkerInstanceBase
     private void OnInitComplete(OnlineMapsMarkerBase markerBase)
     {
         OnlineMapsMarker marker = markerBase as OnlineMapsMarker;
-        Texture2D texture = marker.primaryTexture;
+        Texture2D texture = marker.texture;
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        if (marker.primaryTexture == null) texture = (marker.manager as OnlineMapsMarkerManager).defaultTexture;
+        if (marker.texture == null) texture = (marker.manager as OnlineMapsMarkerManager).defaultTexture;
         if (texture != null)
         {
             spriteRenderer.sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0));
