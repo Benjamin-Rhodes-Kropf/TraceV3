@@ -8,12 +8,20 @@ using UnityEngine.Video;
 
 public class HomeScreenManager : MonoBehaviour
 {
+    
     [Header("External")] 
-    [SerializeField] private SlideToOpenManager slideToOpenManager;
-    [SerializeField] private Animator homeScreenAnimator;
-    
-    
+    public static bool isInSendTraceView;
+    [SerializeField] private OpenTraceManager openTraceManager;
+    [SerializeField] private ViewTraceManager viewTraceManager;
+    [SerializeField] private Animator homeScreenAnimator; //Todo: add animation
 
+    
+    
+    public void ViewTrace(string senderName, string sendDate)
+    {
+        viewTraceManager.ActivateView(senderName, sendDate);   
+    }
+    
     public void OpenTrace(string traceID, string senderName, string sendDate, string mediaType) //Todo: Make mediaType an Enum
     {
         Debug.Log("Open Trace");
@@ -32,8 +40,8 @@ public class HomeScreenManager : MonoBehaviour
             {
                 if (texture != null)
                 {
-                    slideToOpenManager.ActivatePhotoFormat(traceID, sendDate, senderName);
-                    slideToOpenManager.displayTrace.texture = texture;
+                    openTraceManager.ActivatePhotoFormat(traceID, sendDate, senderName);
+                    openTraceManager.displayTrace.texture = texture;
                 }
                 else
                 {
@@ -50,8 +58,8 @@ public class HomeScreenManager : MonoBehaviour
                 if (path != null)
                 {
                     Debug.Log("Open Trace View");
-                    slideToOpenManager.videoPlayer.url = path;
-                    slideToOpenManager.ActivateVideoFormat(traceID, senderName, sendDate);
+                    openTraceManager.videoPlayer.url = path;
+                    openTraceManager.ActivateVideoFormat(traceID,sendDate,senderName);
                 }
                 else
                 {

@@ -133,10 +133,10 @@ namespace InfinityCode.OnlineMapsExamples
 
             public void Apply(Texture2D font)
             {
-                int width = instance.texture.width;
-                int height = instance.texture.height;
+                int width = instance.primaryTexture.width;
+                int height = instance.primaryTexture.height;
                 Texture2D texture = new Texture2D(width, height, TextureFormat.ARGB32, false);
-                Color[] colors = instance.texture.GetPixels();
+                Color[] colors = instance.primaryTexture.GetPixels();
 
                 char[] cText = markers.Count.ToString().ToCharArray();
 
@@ -169,7 +169,7 @@ namespace InfinityCode.OnlineMapsExamples
 
                 texture.SetPixels(colors);
                 texture.Apply();
-                instance.texture = texture;
+                instance.primaryTexture = texture;
             }
         }
     }

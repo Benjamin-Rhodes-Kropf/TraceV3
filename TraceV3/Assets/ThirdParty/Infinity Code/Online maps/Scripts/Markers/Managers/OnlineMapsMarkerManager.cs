@@ -133,7 +133,7 @@ public class OnlineMapsMarkerManager : OnlineMapsMarkerManagerBase<OnlineMapsMar
         if (texture == null) texture = defaultTexture;
         OnlineMapsMarker marker = _CreateItem(longitude, latitude, radius);
         marker.manager = this;
-        marker.texture = texture;
+        marker.primaryTexture = texture;
         marker.label = label;
         marker.traceID = traceID;
         marker.align = OnlineMapsAlign.Center;
@@ -178,7 +178,7 @@ public class OnlineMapsMarkerManager : OnlineMapsMarkerManagerBase<OnlineMapsMar
 
             marker.range = jitem.ChildValue<OnlineMapsRange>("range");
             marker.label = jitem.ChildValue<string>("label");
-            marker.texture = OnlineMapsUtils.GetObject(jitem.ChildValue<int>("texture")) as Texture2D;
+            marker.primaryTexture = OnlineMapsUtils.GetObject(jitem.ChildValue<int>("texture")) as Texture2D;
             marker.align = (OnlineMapsAlign)jitem.ChildValue<int>("align");
             marker.rotation = jitem.ChildValue<float>("rotation");
             marker.enabled = jitem.ChildValue<bool>("enabled");

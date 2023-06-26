@@ -58,32 +58,54 @@ public class TraceManager : MonoBehaviour
     private void HandleMapClick()
     {
         Vector2 mouseLatAndLong = markerManager.GetMouseLatAndLong();
+        var accessibleTraces = new List<(TraceObject, double)>();
+        var viewableAbleTraces = new List<(TraceObject, double)>();
         
-        var filtered = new List<(TraceObject, double)>();
-        foreach (var trace in recivedTraceObjects)
+        //sort traces based on location of click and which view the user is in
+        if (!HomeScreenManager.isInSendTraceView)
         {
-            var distance = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.lat, (float)trace.lng, trace.radius*1000f);
-            Debug.Log( "Trace:"+trace.id +" Dist: " + distance);
-            if (distance < 0 && !trace.hasBeenOpened && trace.canBeOpened)
+            foreach (var trace in recivedTraceObjects)
             {
-                filtered.Add((trace, distance));
+                var distance = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.lat, (float)trace.lng, trace.radius*1000f);
+                Debug.Log( "Trace:"+trace.id +" Dist: " + distance);
+                if (distance < 0 && !trace.hasBeenOpened && trace.canBeOpened)
+                {
+                    accessibleTraces.Add((trace, distance));
+                }else if (distance < 0 && !trace.hasBeenOpened && !trace.canBeOpened)
+                {
+                    viewableAbleTraces.Add((trace, distance));
+                }
             }
         }
-        filtered.Sort((i1, i2) => i1.Item2.CompareTo(i2.Item2));
-        
-        Debug.Log("FILTERED IN CLICK:");
-        foreach (var filteredObject in filtered)
+        else
         {
-            Debug.Log("TraceID" + filteredObject.Item1.id + "Distance: " + filteredObject.Item2);
+            foreach (var trace in sentTraces)
+            {
+                var distance = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.lat, (float)trace.lng, trace.radius*1000f);
+                Debug.Log( "Trace:"+trace.id +" Dist: " + distance);
+                if (distance < 0 && !trace.hasBeenOpened && !trace.canBeOpened)
+                {
+                    viewableAbleTraces.Add((trace, distance));
+                }
+            }   
         }
-
-        if (filtered.Count > 0)
+        
+        //open based on sort
+        if (accessibleTraces.Count > 0)
         {
-            Debug.Log("Trace to Click:" + filtered[filtered.Count-1].Item1.id + "Dist:" + filtered[filtered.Count-1].Item2);
-            var traceToOpen = filtered[filtered.Count - 1];
+            accessibleTraces.Sort((i1, i2) => i1.Item2.CompareTo(i2.Item2));
+            var traceToOpen = accessibleTraces[accessibleTraces.Count - 1];
             homeScreenManager.OpenTrace(traceToOpen.Item1.id, traceToOpen.Item1.senderName,traceToOpen.Item1.sendTime, traceToOpen.Item1.mediaType);
         }
+        else if(viewableAbleTraces.Count > 0)
+        {
+            viewableAbleTraces.Sort((i1, i2) => i1.Item2.CompareTo(i2.Item2));
+            var traceToView = viewableAbleTraces[viewableAbleTraces.Count - 1];
+            homeScreenManager.ViewTrace( traceToView.Item1.senderName,traceToView.Item1.sendTime);
+        }
     }
+    
+    
     
     private static double ApproximateDistanceBetweenTwoLatLongsInM(double lat1, double lon1, double lat2, double lon2)
     {
@@ -250,7 +272,7 @@ public class TraceManager : MonoBehaviour
             UpdateNotificationsForNext10Traces();
         }
 
-        if (sentRecivedToggle.selectorInUpPosition)
+        if (!HomeScreenManager.isInSendTraceView)
         {
             foreach (var traceobject in recivedTraceObjects)
             {
@@ -290,7 +312,7 @@ public class TraceManager : MonoBehaviour
 
     public void TraceViewSwitched()
     {
-        if (sentRecivedToggle.selectorInUpPosition)
+        if (!HomeScreenManager.isInSendTraceView)
         {
             foreach (var traceobject in recivedTraceObjects)
             {

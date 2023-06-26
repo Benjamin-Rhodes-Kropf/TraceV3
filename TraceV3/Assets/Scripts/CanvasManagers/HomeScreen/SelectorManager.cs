@@ -6,7 +6,7 @@ using UnityEngine;
 public class SelectorManager : MonoBehaviour
 {
     [SerializeField] private Animator selectorAnimator;
-    public bool selectorInUpPosition;
+    [SerializeField] private bool selectorInUpPosition;
     public void OnEnable()
     {
         
@@ -18,10 +18,13 @@ public class SelectorManager : MonoBehaviour
         if (!selectorInUpPosition)
         {
             selectorAnimator.Play("MoveDown");
+            HomeScreenManager.isInSendTraceView = true;
         }
         else
         {
             selectorAnimator.Play("MoveUp");
+            HomeScreenManager.isInSendTraceView = false;
+
         }
     }
 }

@@ -103,7 +103,7 @@ namespace InfinityCode.OnlineMapsExamples
             foreach (OnlineMapsMarker marker in OnlineMapsMarkerManager.instance)
             {
                 OnlineMapsJSONObject jmarker = marker.ToJSON() as OnlineMapsJSONObject;
-                jmarker.Add("texture", markerTextures.IndexOf(marker.texture));
+                jmarker.Add("texture", markerTextures.IndexOf(marker.primaryTexture));
                 jmarkers.Add(jmarker);
             }
             json.Add("Markers", jmarkers);

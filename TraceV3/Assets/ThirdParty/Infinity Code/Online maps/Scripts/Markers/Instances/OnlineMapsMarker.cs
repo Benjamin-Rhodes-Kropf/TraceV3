@@ -200,7 +200,7 @@ public class OnlineMapsMarker : OnlineMapsMarkerBase
     /// <strong>Must enable "Read / Write enabled".</strong><br/>
     /// After changing the texture you need to call OnlineMapsMarker.Init.
     /// </summary>
-    public Texture2D texture
+    public Texture2D primaryTexture
     {
         get { return _texture; }
         set
@@ -372,11 +372,11 @@ public class OnlineMapsMarker : OnlineMapsMarkerBase
     /// <param name="height">Height of the marker texture.</param>
     public void Init(int? width = null, int? height = null)
     {
-        if (texture != null)
+        if (primaryTexture != null)
         {
-            if (map.control.resultIsTexture) _colors = texture.GetPixels32();
-            _width = _textureWidth = width ?? texture.width;
-            _height = _textureHeight = height ?? texture.height;
+            if (map.control.resultIsTexture) _colors = primaryTexture.GetPixels32();
+            _width = _textureWidth = width ?? primaryTexture.width;
+            _height = _textureHeight = height ?? primaryTexture.height;
         }
         else
         {
@@ -405,7 +405,7 @@ public class OnlineMapsMarker : OnlineMapsMarkerBase
         return base.ToJSON().AppendObject(new
         {
             align = (int)align,
-            texture = texture != null ? texture.GetInstanceID() : 0,
+            texture = primaryTexture != null ? primaryTexture.GetInstanceID() : 0,
             rotation
         });
     }

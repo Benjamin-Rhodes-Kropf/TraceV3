@@ -1207,6 +1207,7 @@ public partial class FbManager : MonoBehaviour
             double lat = 0;
             double lng = 0;
             float radius = 0;
+            bool hasBeenOpened;
             string senderID = "";
             string senderName = "";
             string sendTime = "";
@@ -1283,6 +1284,12 @@ public partial class FbManager : MonoBehaviour
                         break;
                     }
                 }
+
+                //Todo: remove trace when all users have viewed
+                // if (thing.Key == thisUserModel.userId)
+                // {
+                //     Debug.Log("User ID Present In Trace");
+                // }
             }
             
             if (lat != 0 && lng != 0 && radius != 0)
@@ -1328,6 +1335,7 @@ public partial class FbManager : MonoBehaviour
         }
         else
         {
+            Debug.Log("Correctly Got Image From Database");
             callback(((DownloadHandlerTexture)request.downloadHandler).texture);
         }
     }
@@ -1367,6 +1375,7 @@ public partial class FbManager : MonoBehaviour
         }
         else
         {
+            Debug.Log("Correctly Got Video From Database");
             var path = Application.persistentDataPath + "/" + "ReceivedTraceVideo" + ".mp4";
             File.WriteAllBytes(path, request.downloadHandler.data);
             Debug.Log("Downloaded Video!");

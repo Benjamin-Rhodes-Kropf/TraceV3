@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
-public class SlideToOpenManager : MonoBehaviour, IDragHandler, IEndDragHandler
+public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
 {
     [Header("Trace Stuff")]
     [SerializeField] private GameObject imageObject;
@@ -37,6 +37,7 @@ public class SlideToOpenManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [Header("Swipe Physics Limits")]
     [SerializeField] private float changeInYvalGoLimit;
     [SerializeField] private float changeInYDvLimit;
+    [SerializeField] private float m_YResetLimit;
     [SerializeField] private float changeInYvalExitLimit;
     [SerializeField] private float changeInYvalCloseLimit;
     [SerializeField] private float dyForScreenSwitchLimit;
@@ -80,8 +81,10 @@ public class SlideToOpenManager : MonoBehaviour, IDragHandler, IEndDragHandler
         videoObject.SetActive(false);
         hasBegunOpenTrace = false;
         hasBegunOpenTrace = false;
+        hasBegunCloseTrace = false;
         canCloseTrace = false;
         canUsePhysics = false;
+        
         m_transform.position = new Vector3(m_transform.position.x, startLocation, m_transform.position.z);
         g_transform.position = new Vector3(g_transform.position.x, startLocation, g_transform.position.z);
         openTraceBackground.SetActive(true);
@@ -157,6 +160,7 @@ public class SlideToOpenManager : MonoBehaviour, IDragHandler, IEndDragHandler
             hasBegunCloseTrace = true;
             canCloseTrace = true;
             m_targetYVal = 0;
+            videoPlayer.Pause();
         }
         
         if (changeInYVal > changeInYvalGoLimit && !hasBegunOpenTrace  && !isDragging && Dy > dyForScreenSwitchLimit)
@@ -193,8 +197,11 @@ public class SlideToOpenManager : MonoBehaviour, IDragHandler, IEndDragHandler
             m_targetYVal = 0;
         }
 
-        if (hasBegunCloseTrace && g_transform.localPosition.y < -1000 && canCloseTrace)
+        //changed from g to m
+        Debug.Log("m_transform.localPosition.y:" + m_transform.localPosition.y);
+        if (hasBegunCloseTrace && m_transform.localPosition.y < m_YResetLimit && canCloseTrace)
         {
+            Debug.Log("RESET OPEN TRACE");
             Reset();
         }
     }
