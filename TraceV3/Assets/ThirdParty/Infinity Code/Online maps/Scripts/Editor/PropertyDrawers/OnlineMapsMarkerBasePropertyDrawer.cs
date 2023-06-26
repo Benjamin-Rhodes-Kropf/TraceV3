@@ -16,7 +16,7 @@ public abstract class OnlineMapsMarkerBasePropertyDrawer : PropertyDrawer
 
     protected void DrawCenterButton(Rect rect, SerializedProperty pLng, SerializedProperty pLat)
     {
-        rect.y += 18;
+        rect.y += 20;
         if (OnlineMaps.isPlaying && GUI.Button(rect, "Center"))
         {
             OnlineMaps.instance.SetPosition(pLng.doubleValue, pLat.doubleValue);

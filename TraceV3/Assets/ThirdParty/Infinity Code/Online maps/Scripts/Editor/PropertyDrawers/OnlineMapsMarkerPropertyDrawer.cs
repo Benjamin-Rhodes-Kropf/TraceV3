@@ -9,7 +9,7 @@ public class OnlineMapsMarkerPropertyDrawer : OnlineMapsMarkerBasePropertyDrawer
 {
     protected override int countFields
     {
-        get { return OnlineMaps.isPlaying? 9: 8; }
+        get { return OnlineMaps.isPlaying? 11: 10; }
     }
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -18,7 +18,7 @@ public class OnlineMapsMarkerPropertyDrawer : OnlineMapsMarkerBasePropertyDrawer
 
         try
         {
-            Rect rect = new Rect(position.x, position.y, position.width, 16);
+            Rect rect = new Rect(position.x, position.y, position.width, 20);
             if (!DrawHeader(label, rect, property))
             {
                 EditorGUI.EndProperty();
@@ -55,6 +55,14 @@ public class OnlineMapsMarkerPropertyDrawer : OnlineMapsMarkerBasePropertyDrawer
             SerializedProperty pTexture = DrawProperty(property, "_texture", ref rect);
             if (EditorGUI.EndChangeCheck()) OnlineMapsEditorUtils.CheckMarkerTextureImporter(pTexture);
 
+            EditorGUI.BeginChangeCheck();
+            SerializedProperty primaryTexture = DrawProperty(property, "_primaryZoomedInTexture", ref rect);
+            if (EditorGUI.EndChangeCheck()) OnlineMapsEditorUtils.CheckMarkerTextureImporter(primaryTexture);
+
+            EditorGUI.BeginChangeCheck();
+            SerializedProperty secondaryTexture = DrawProperty(property, "_secondaryZoomedOutTexture", ref rect);
+            if (EditorGUI.EndChangeCheck()) OnlineMapsEditorUtils.CheckMarkerTextureImporter(secondaryTexture);
+            
             DrawCenterButton(rect, pLng, pLat);
         }
         catch
