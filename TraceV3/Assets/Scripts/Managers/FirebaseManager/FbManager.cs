@@ -311,13 +311,13 @@ public partial class FbManager : MonoBehaviour
         userImageTexture = null;
         TraceManager.instance.recivedTraceObjects.Clear();
         TraceManager.instance.sentTraceObjects.Clear();
+        HomeScreenManager.isInSendTraceView = false;
         thisUserModel = new UserModel();
         _firebaseAuth.SignOut();
         PlayerPrefs.SetString("Username", "null");
         PlayerPrefs.SetString("Password", "null");
         HandleFriendsUserLogout();
         ScreenManager.instance.ChangeScreenForwards("Welcome");
-
         //Set Login Status On DB (This Should not work)
         // StartCoroutine(SetUserLoginStatus(false, isSusscess =>
         // {

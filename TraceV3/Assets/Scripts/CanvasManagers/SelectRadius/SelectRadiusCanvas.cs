@@ -33,13 +33,6 @@ public class SelectRadiusCanvas : MonoBehaviour
             return;
         }
         
-        //enter send mode
-        HomeScreenManager.isInSendTraceView = true;
-        _drawTraceOnMap.Clear();
-        
-        
-        StartCoroutine(LoadMap());
-        
         if (PlayerPrefs.GetFloat("LeaveTraceSliderRadiusValue") != 0)
         {
             _radiusSlider.value = PlayerPrefs.GetFloat("LeaveTraceSliderRadiusValue");
@@ -72,14 +65,6 @@ public class SelectRadiusCanvas : MonoBehaviour
             traceIsVisable.SetActive(true);
             traceIsHidden.SetActive(false);
         }
-    }
-
-    IEnumerator LoadMap()
-    {
-        yield return new WaitForSeconds(0.3f);
-        ScreenManager.instance.isComingFromCameraScene = true;
-        SceneManager.UnloadSceneAsync(1);
-        Debug.Log("Enter Send Mode");
     }
 
     public void SendTraceButton()

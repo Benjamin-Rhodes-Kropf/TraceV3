@@ -202,7 +202,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         if (hasBegunOpenTrace && changeInYVal < changeInYvalCloseLimit && !isDragging && canCloseTrace)
         {
             hasBegunCloseTrace = true;
-            m_targetYVal = 0;
+            m_targetYVal = -1000;
         }
 
         //changed from g to m

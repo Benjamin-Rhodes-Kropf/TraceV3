@@ -35,13 +35,25 @@ public class SelectFriendsCanvas : MonoBehaviour{
         //     Destroy(g);
         // }
     }
-
-    
     
     public void SendButtonPressed()
     {
+        StartCoroutine(LoadMap());
         Debug.Log("SendButtonPressed()");
         _controller.UpdateFriendsSendTo();
+    }
+    
+    //load map before screen switch
+    IEnumerator LoadMap()
+    {
+        ScreenManager.instance.isComingFromCameraScene = true;
+        AsyncOperation unloadOperation = SceneManager.UnloadSceneAsync(1);
+        HomeScreenManager.isInSendTraceView = true;
+        while (!unloadOperation.isDone)
+        {
+            yield return null;
+        }
+        ScreenManager.instance.ChangeScreenForwards("SelectRadius");
     }
     private void OnDisable()
     {

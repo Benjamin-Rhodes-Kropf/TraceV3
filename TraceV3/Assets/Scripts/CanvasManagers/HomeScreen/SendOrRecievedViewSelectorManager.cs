@@ -13,11 +13,11 @@ public class SendOrRecievedViewSelectorManager : MonoBehaviour
     {
         if (HomeScreenManager.isInSendTraceView)
         {
-            selectorAnimator.Play("MoveDown");
+            selectorAnimator.Play("SetToDown");
         }
         else
         {
-            selectorAnimator.Play("MoveUp");
+            selectorAnimator.Play("SetToUp");
         }
     }
 

@@ -37,7 +37,7 @@ public class ScaleMapElements : MonoBehaviour
            item.SwitchDisplayedImage(true);
             item.scale = (float)(traceScale * radiusSize * markerManager.items[i].radius);
             
-            Debug.Log("radius:" + item.radius);
+            //Debug.Log("radius:" + item.radius);
             if ( traceScale * radiusSize * item.radius < scaleLimitForSwitchImage)
             {
                 item.SwitchDisplayedImage(false);

@@ -1796,7 +1796,7 @@ MonoBehaviour:
   dependencyStatus: 0
   firebaseStorageReferenceUrl: gs://geosnapv1.appspot.com
   autoLogin: 1
-  useAdminForLogin: 1
+  useAdminForLogin: 0
   adminUser: userthree@gmail.com
   adminPass: Bark2004!
   resetPlayerPrefs: 0
@@ -4929,6 +4929,46 @@ PrefabInstance:
       propertyPath: dragAndZoomInertia
       value: 
       objectReference: {fileID: 6068666308761308082}
+    - target: {fileID: 2995565800904351138, guid: 833b541c13d454e5e95a103968c5ed53, type: 3}
+      propertyPath: scaler.m_Curve.Array.data[0].time
+      value: 10.122276
+      objectReference: {fileID: 0}
+    - target: {fileID: 2995565800904351138, guid: 833b541c13d454e5e95a103968c5ed53, type: 3}
+      propertyPath: scaler.m_Curve.Array.data[1].value
+      value: 160
+      objectReference: {fileID: 0}
+    - target: {fileID: 2995565800904351138, guid: 833b541c13d454e5e95a103968c5ed53, type: 3}
+      propertyPath: scaler.m_Curve.Array.data[0].inSlope
+      value: 0.25892663
+      objectReference: {fileID: 0}
+    - target: {fileID: 2995565800904351138, guid: 833b541c13d454e5e95a103968c5ed53, type: 3}
+      propertyPath: scaler.m_Curve.Array.data[1].inSlope
+      value: 75.802895
+      objectReference: {fileID: 0}
+    - target: {fileID: 2995565800904351138, guid: 833b541c13d454e5e95a103968c5ed53, type: 3}
+      propertyPath: scaler.m_Curve.Array.data[0].outSlope
+      value: 0.25892663
+      objectReference: {fileID: 0}
+    - target: {fileID: 2995565800904351138, guid: 833b541c13d454e5e95a103968c5ed53, type: 3}
+      propertyPath: scaler.m_Curve.Array.data[1].inWeight
+      value: 0.13749997
+      objectReference: {fileID: 0}
+    - target: {fileID: 2995565800904351138, guid: 833b541c13d454e5e95a103968c5ed53, type: 3}
+      propertyPath: scaler.m_Curve.Array.data[1].outSlope
+      value: 75.802895
+      objectReference: {fileID: 0}
+    - target: {fileID: 2995565800904351138, guid: 833b541c13d454e5e95a103968c5ed53, type: 3}
+      propertyPath: scaler.m_Curve.Array.data[0].outWeight
+      value: 0.8875
+      objectReference: {fileID: 0}
+    - target: {fileID: 2995565800904351138, guid: 833b541c13d454e5e95a103968c5ed53, type: 3}
+      propertyPath: scaler.m_Curve.Array.data[0].weightedMode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2995565800904351138, guid: 833b541c13d454e5e95a103968c5ed53, type: 3}
+      propertyPath: scaler.m_Curve.Array.data[1].weightedMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8600517706394407174, guid: 833b541c13d454e5e95a103968c5ed53, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
@@ -8036,7 +8076,7 @@ MonoBehaviour:
   changeInYDvLimit: 2000
   m_YResetLimit: -800
   changeInYvalExitLimit: -100
-  changeInYvalCloseLimit: -500
+  changeInYvalCloseLimit: -200
   dyForScreenSwitchLimit: 0
   stopAtScreenTopLimit: 1000
   isPhoto: 0
@@ -9634,6 +9674,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 906833078}
     m_Modifications:
+    - target: {fileID: 5104588007342297611, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5104588007342297611, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
