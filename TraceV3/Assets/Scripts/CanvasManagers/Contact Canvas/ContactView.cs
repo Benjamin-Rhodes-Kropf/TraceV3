@@ -40,10 +40,9 @@ public class ContactView : MonoBehaviour
       _removeButton.onClick.AddListener(OnRemoveClick);
    }
 
-
    private void OnAddClick()
    {
-      print("On Add Clicked");
+      HelperMethods.SendSMS(_phoneNumber.text, "What Up! I've been using this app for the past week and its lowk rly fun leaveatraceapp.com");
    }
 
    private void OnRemoveClick()

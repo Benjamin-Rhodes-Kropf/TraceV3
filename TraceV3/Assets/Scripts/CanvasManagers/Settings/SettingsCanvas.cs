@@ -11,8 +11,7 @@ public class SettingsCanvas : MonoBehaviour
    public Image _profileImage;
    
    private SettingCanvasController _controller;
-
-
+   
    #region UnityEvents
 
    private void OnEnable()
@@ -36,16 +35,16 @@ public class SettingsCanvas : MonoBehaviour
    }
    public void ContactUs()
    {
-      string email = "me@example.com";
-      string subject = MyEscapeURL("Contact Us");
-      string body = MyEscapeURL("My Body\r\nFull of non-escaped chars");
+      string email = "bsiegel@leaveatraceapp.com";
+      string subject = MyEscapeURL("[Contact Us]");
+      string body = MyEscapeURL("Hello! My name is " + FbManager.instance.thisUserModel.Username + " and I would like to contact you because");
       Application.OpenURL("mailto:" + email + "?subject=" + subject + "&body=" + body);
    }
    public void GetHelp()
    {
-      string email = "me@example.com";
-      string subject = MyEscapeURL("Get Help");
-      string body = MyEscapeURL("My Body\r\nFull of non-escaped chars");
+      string email = "bsiegel@leaveatraceapp.com";
+      string subject = MyEscapeURL("[Get Help]");
+      string body = MyEscapeURL("Hello! My name is " + FbManager.instance.thisUserModel.Username + " and I need some help with");
       Application.OpenURL("mailto:" + email + "?subject=" + subject + "&body=" + body);
    }
    string MyEscapeURL(string url)

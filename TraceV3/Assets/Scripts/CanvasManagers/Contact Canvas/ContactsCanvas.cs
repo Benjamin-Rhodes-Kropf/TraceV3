@@ -20,6 +20,7 @@ namespace CanvasManagers
         [Header("Contacts Info")] 
         public ContactView _contactPrfab;
         public Transform _contactParent;
+        
         [Header("Requests Info")] 
         public RequestView _requestPrefab;
         public Transform _requestParent;
@@ -37,11 +38,9 @@ namespace CanvasManagers
         public Button _friendsButton;
         public Button _requestsButton;
 
-
         [Header("Search Bar Content")] 
         public Transform _searchscrollParent;
         public TMP_Text _searchTabTextPrefab;
-        
         
         private ContactsCanvasController _controller;
 
@@ -75,10 +74,5 @@ namespace CanvasManagers
         }
 
         #endregion
-        
-        
-        
-        
-        
     }
 }

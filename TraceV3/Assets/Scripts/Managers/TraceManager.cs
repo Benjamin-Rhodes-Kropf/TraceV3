@@ -157,7 +157,7 @@ public class TraceManager : MonoBehaviour
         return filtered.Select(i => i.Item1).ToList();
     }
     
-    private void UpdateNotificationsForNext10Traces()
+    private void UpdateNotificationsForNext50Traces()
     {
         if (recivedTraceObjects.Count < 1)
         {
@@ -167,7 +167,7 @@ public class TraceManager : MonoBehaviour
 
         recivedTraceObjects = ApplyDistanceFilterTraces(_previousLatitude, _previousLongitude);
 
-        for (var i = 0; i < recivedTraceObjects.Count && i < 10; i++)
+        for (var i = 0; i < recivedTraceObjects.Count && i < 50; i++)
         {
             var trace = recivedTraceObjects[i];
             ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng,trace.radius, " ", trace.senderName);
@@ -269,7 +269,7 @@ public class TraceManager : MonoBehaviour
             _previousLongitude = currentLongitude;
 
             // Add Notifications for the Next 10 Distance Filtered Traces
-            UpdateNotificationsForNext10Traces();
+            UpdateNotificationsForNext50Traces();
         }
 
         if (!HomeScreenManager.isInSendTraceView)

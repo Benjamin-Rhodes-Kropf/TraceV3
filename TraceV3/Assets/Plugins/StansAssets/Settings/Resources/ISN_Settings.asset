@@ -17,7 +17,7 @@ MonoBehaviour:
   CloudKit: 0
   Photos: 0
   ReplayKit: 0
-  Social: 0
+  Social: 1
   AdSupport: 0
   AppTrackingTransparency: 0
   AVKit: 0

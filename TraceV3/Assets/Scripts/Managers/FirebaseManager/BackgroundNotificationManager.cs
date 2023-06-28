@@ -24,7 +24,6 @@ public class BackgroundNotificationManager : UnitySingleton<BackgroundNotificati
     public async void SendNotificationUsingFirebaseUserId(string firebaseUserId, string title = "", string message = "")
     {
         var fcmToken = await FbManager.instance.GetDeviceTokenForUser(firebaseUserId);
-        
         StartCoroutine(SendNotificationUsingFcmTokenEnumerator(fcmToken, title, message));
     }
     
@@ -32,7 +31,7 @@ public class BackgroundNotificationManager : UnitySingleton<BackgroundNotificati
     {
         // Check Android Permissions
         Permissions.CheckAndroidPermissions();
-        
+   
         Debug.Log("Sending Notification to: " + deviceToken);
 
         // Create the data to send in the notification

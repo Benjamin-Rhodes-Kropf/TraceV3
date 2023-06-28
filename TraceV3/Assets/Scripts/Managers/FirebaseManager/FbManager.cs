@@ -94,6 +94,21 @@ public partial class FbManager : MonoBehaviour
             if (dependencyStatus == DependencyStatus.Available)
             {
                 InitializeFirebase();
+                if (autoLogin)
+                {
+                    if (useAdminForLogin)
+                    {
+                        PlayerPrefs.SetString("Username", adminUser);
+                        PlayerPrefs.SetString("Password", adminPass);
+                    }
+                }
+                else
+                {
+                    PlayerPrefs.SetString("Username", null);
+                    PlayerPrefs.SetString("Password", null);
+                }
+                Debug.Log("Auto Logging in with username:" + PlayerPrefs.GetString("Username"));
+                Debug.Log("Auto Logging in with password:" + PlayerPrefs.GetString("Password"));
             }
             else
             {
@@ -115,22 +130,6 @@ public partial class FbManager : MonoBehaviour
 
     private void Start()
     {
-        if (autoLogin)
-        {
-            if (useAdminForLogin)
-            {
-                PlayerPrefs.SetString("Username", adminUser);
-                PlayerPrefs.SetString("Password", adminPass);
-            }
-        }
-        else
-        {
-            PlayerPrefs.SetString("Username", null);
-            PlayerPrefs.SetString("Password", null);
-        }
-        Debug.Log("Auto Logging in with username:" + PlayerPrefs.GetString("Username"));
-        Debug.Log("Auto Logging in with password:" + PlayerPrefs.GetString("Password"));
-
         StartCoroutine(AutoLogin());
     }
 
@@ -138,11 +137,11 @@ public partial class FbManager : MonoBehaviour
     #region -User Login/Logout
     public IEnumerator AutoLogin()
     {
-        //Todo: figure out which wait until to use...
-        Debug.Log("Auto Logging in");
-        //Todo:Why do we wait?
-        yield return new WaitForSeconds(0.4f); //has to wait until firebase async task is finished... (is there something better?)
-        Debug.Log("Auto Logging 0.4s");
+        while (dependencyStatus != DependencyStatus.Available)
+        {
+            yield return null;
+        }
+        
         String savedUsername = PlayerPrefs.GetString("Username");
         String savedPassword = PlayerPrefs.GetString("Password");
         
@@ -172,11 +171,9 @@ public partial class FbManager : MonoBehaviour
     }
     public IEnumerator Login(string _email, string _password,  System.Action<CallbackObject> callback)
     {
-        Debug.Log("Login Started");
+        //Fb Login
         CallbackObject callbackObject = new CallbackObject();
-        //Call the Firebase auth signin function passing the email and password
         var LoginTask = _firebaseAuth.SignInWithEmailAndPasswordAsync(_email, _password);
-        
         yield return new WaitUntil(predicate: () => LoginTask.IsCompleted);
         
         if (LoginTask.Exception != null)
@@ -221,13 +218,15 @@ public partial class FbManager : MonoBehaviour
         Debug.LogFormat("User signed in successfully: {0} ({1})", _firebaseUser.DisplayName, _firebaseUser.Email);
         Debug.Log("logged In: user profile photo is: " + _firebaseUser.PhotoUrl);
         callbackObject.IsSuccessful = true;
+        
+        //Todo:Add this back in and pre load users friends images
         //Load User Profile Texture
-        /*StartCoroutine(FbManager.instance.GetMyUserProfilePhoto((myReturnValue) => {
-            if (myReturnValue != null)
-            {
-                userImageTexture = myReturnValue;
-            }
-        }));*/
+        // StartCoroutine(FbManager.instance.GetMyUserProfilePhoto((myReturnValue) => {
+        //     if (myReturnValue != null)
+        //     {
+        //         userImageTexture = myReturnValue;
+        //     }
+        // }));
         
         //all database things that need to be activated
         var DBTaskSetIsOnline = _databaseReference.Child("users").Child(_firebaseUser.UserId).Child("isOnline").SetValueAsync(true);
@@ -237,10 +236,9 @@ public partial class FbManager : MonoBehaviour
         PlayerPrefs.SetString("Username", _email);
         PlayerPrefs.SetString("Password", _password);
         PlayerPrefs.Save();
-        callback(callbackObject);
 
         //once user logged in
-        GetAllUserNames(); //we really shoul not be doing this
+        GetAllUserNames(); //Todo: we really should not be doing this
         GetCurrentUserData(_password);
         StartCoroutine(RetrieveFriendRequests());
         StartCoroutine(RetrieveSentFriendRequests());
@@ -257,6 +255,7 @@ public partial class FbManager : MonoBehaviour
                 }
             }));
         }
+        callback(callbackObject);
     }
 
     private void ContinuesListners()
@@ -292,13 +291,11 @@ public partial class FbManager : MonoBehaviour
                     string phoneNumber = snapshot.Child("phone").Value.ToString();
                     string photoURL = snapshot.Child("userPhotoUrl").Value.ToString();
                     thisUserModel = new UserModel(_firebaseUser.UserId,email,0,displayName,username,phoneNumber,photoURL, password);
-
                     IsFirebaseUserInitialised = true;
             }
             if (task.IsFaulted)
             {
                 Debug.LogError(task.Exception);
-                // Handle the error
             }
         });
     }
@@ -309,6 +306,15 @@ public partial class FbManager : MonoBehaviour
        
         //Reset User Settings
         userImageTexture = null;
+        
+        //DB Tasks
+        StartCoroutine(RemoveFCMDeviceToken());
+        StartCoroutine(SetUserLoginStatus(false, isSusscess =>
+        {
+            if (isSusscess) print("Updated Login Status");
+        }));
+        
+        //Local Tasks
         TraceManager.instance.recivedTraceObjects.Clear();
         TraceManager.instance.sentTraceObjects.Clear();
         HomeScreenManager.isInSendTraceView = false;
@@ -317,14 +323,8 @@ public partial class FbManager : MonoBehaviour
         PlayerPrefs.SetString("Username", "null");
         PlayerPrefs.SetString("Password", "null");
         HandleFriendsUserLogout();
+        IsApplicationFirstTimeOpened = false;
         ScreenManager.instance.ChangeScreenForwards("Welcome");
-        //Set Login Status On DB (This Should not work)
-        // StartCoroutine(SetUserLoginStatus(false, isSusscess =>
-        // {
-        //     if (isSusscess)
-        //         print("Updated Login Status");
-        //     ScreenManager.instance.ChangeScreenForwards("Welcome");
-        // }));
     }
     #endregion
     #region -User Registration
@@ -518,9 +518,6 @@ public partial class FbManager : MonoBehaviour
                 .SetValueAsync(_isLoggedIn);
             while (DBTask.IsCompleted is false)
                 yield return new WaitForEndOfFrame();
-
-            // yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
-
             if (DBTask.Exception != null)
             {
                 Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");

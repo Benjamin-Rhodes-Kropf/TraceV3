@@ -22,6 +22,7 @@ public partial class FbManager
     
     private void InitializeFCMService()
     {
+        Debug.Log("Initializing FCMService");
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(async task =>
         {
             var dependencyStatus = task.Result;
@@ -31,7 +32,6 @@ public partial class FbManager
                 Firebase.Messaging.FirebaseMessaging.TokenReceived += OnTokenReceived;
                 Firebase.Messaging.FirebaseMessaging.MessageReceived += OnMessageReceived;
                 await Firebase.Messaging.FirebaseMessaging.SubscribeAsync("all");
-                
                 var fcmToken = await FirebaseMessaging.GetTokenAsync();
                 OnTokenReceived(null, new TokenReceivedEventArgs(fcmToken));
             }
@@ -42,12 +42,9 @@ public partial class FbManager
         });
     }
     private void OnTokenReceived(object sender, Firebase.Messaging.TokenReceivedEventArgs token) {
-        UnityEngine.Debug.Log("Received Registration Token: " + token.Token);
-        
+        Debug.Log("Received Registration Token: " + token.Token);
         if (!IsApplicationFirstTimeOpened) 
             return;
-
-        Debug.Log("SetFCMDeviceToken()");
         StartCoroutine(SetFCMDeviceToken(token.Token));
         IsApplicationFirstTimeOpened = false;
     }
@@ -56,11 +53,18 @@ public partial class FbManager
     }
     IEnumerator SetFCMDeviceToken(string token)
     {
+        Debug.Log("Setting FCMDeviceToken()");
         var DBTaskSetUserFriends = _databaseReference.Child("FcmTokens").Child(_firebaseUser.UserId).SetValueAsync(token);
         while (DBTaskSetUserFriends.IsCompleted is false)
             yield return new WaitForEndOfFrame();
+        Debug.Log("SET FCM TOKEN!");
     }
-    
+    IEnumerator RemoveFCMDeviceToken()
+    {
+        var DBTaskSetUserFriends = _databaseReference.Child("FcmTokens").Child(_firebaseUser.UserId).SetValueAsync("null");
+        while (DBTaskSetUserFriends.IsCompleted is false)
+            yield return new WaitForEndOfFrame();
+    }
     public async Task<string> GetDeviceTokenForUser(string firebaseUserId)
     {
         string deviceToken = null;

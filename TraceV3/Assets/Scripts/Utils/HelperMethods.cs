@@ -7,6 +7,7 @@ using UnityEngine.Networking;
 using System.Text.RegularExpressions;
 using UnityEngine.UI;
 using MoreMountains.NiceVibrations;
+using SA.iOS.Social;
 public static class HelperMethods
 {
     public static Sprite LoadSprite(string path, string filename, string fallBackFile = "")
@@ -58,6 +59,14 @@ public static class HelperMethods
         Transform[] layerTransforms = parent.GetComponentsInChildren<Transform>();
         for (int i = 0; i < layerTransforms.Length; i++)
             layerTransforms[i].gameObject.layer = layer;
+    }
+    
+    
+
+
+    public static void SendSMS(string phoneNumber, string contents)
+    {
+        ISN_TextMessage.Send(contents, phoneNumber);
     }
 
     public static string ConvertActualString(string input)

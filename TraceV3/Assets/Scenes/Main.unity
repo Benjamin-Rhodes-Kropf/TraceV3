@@ -300,6 +300,27 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &213056011 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7069077437651821410, guid: 48051510910734c74ae02d431ff9434b, type: 3}
+  m_PrefabInstance: {fileID: 7793653265790558547}
+  m_PrefabAsset: {fileID: 0}
+--- !u!111 &213056015
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 213056011}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: a3a6569a3feb34a9abdc2321de286443, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: a3a6569a3feb34a9abdc2321de286443, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &239581340
 GameObject:
   m_ObjectHideFlags: 0
@@ -1531,7 +1552,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a9ef0b6435fe6a4e8fa5eaa314fa5de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dependencyStatus: 0
+  dependencyStatus: 6
   firebaseStorageReferenceUrl: gs://geosnapv1.appspot.com
   autoLogin: 1
   useAdminForLogin: 0
@@ -5313,6 +5334,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HomeScreen
       objectReference: {fileID: 0}
+    - target: {fileID: 9172647568999289980, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9172647569576335169, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -6022,12 +6047,12 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
+      inSlope: 0.93229747
+      outSlope: 0.93229747
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.14166667
     - serializedVersion: 3
       time: 1
       value: 1
@@ -6035,7 +6060,7 @@ MonoBehaviour:
       outSlope: 1
       tangentMode: 34
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.33333334
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -6311,9 +6336,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 906833078}
     m_Modifications:
+    - target: {fileID: 7069077437651821412, guid: 48051510910734c74ae02d431ff9434b, type: 3}
+      propertyPath: m_fontColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7069077437651821412, guid: 48051510910734c74ae02d431ff9434b, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 16777215
+      objectReference: {fileID: 0}
     - target: {fileID: 7069077438171782112, guid: 48051510910734c74ae02d431ff9434b, type: 3}
       propertyPath: m_Name
       value: Loading Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 7069077438171782112, guid: 48051510910734c74ae02d431ff9434b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7069077438171782116, guid: 48051510910734c74ae02d431ff9434b, type: 3}
       propertyPath: m_Pivot.x
@@ -6397,6 +6434,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7069077438171782116, guid: 48051510910734c74ae02d431ff9434b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7793653265278976770, guid: 48051510910734c74ae02d431ff9434b, type: 3}
+      propertyPath: waitBeforeFade
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7793653265278976770, guid: 48051510910734c74ae02d431ff9434b, type: 3}
+      propertyPath: fadeInOnEnabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
