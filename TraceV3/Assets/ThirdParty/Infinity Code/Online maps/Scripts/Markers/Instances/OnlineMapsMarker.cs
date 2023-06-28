@@ -2,6 +2,8 @@
 /*   https://infinity-code.com   */
 
 using System;
+using JetBrains.Annotations;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 #if !UNITY_WEBGL
@@ -37,16 +39,14 @@ public class OnlineMapsMarker : OnlineMapsMarkerBase
     private float _rotation = 0;
 
     [SerializeField]
-    private Texture2D _texture;
-    
+    private Texture2D _displayedTexture;
     [SerializeField]
     private Texture2D _primaryZoomedInTexture;
-    
     [SerializeField]
     private Texture2D _secondaryZoomedOutTexture;
-    
     //privates
     private Color32[] _rotatedColors;
+    private bool _isShowingPrimaryTexture;
     private int _textureHeight;
     private int _textureWidth;
     private int _width;
@@ -210,12 +210,12 @@ public class OnlineMapsMarker : OnlineMapsMarkerBase
     /// <strong>Must enable "Read / Write enabled".</strong><br/>
     /// After changing the texture you need to call OnlineMapsMarker.Init.
     /// </summary>
-    public Texture2D texture
+    public Texture2D displayedTexture
     {
-        get { return _texture; }
+        get { return _displayedTexture; }
         set
         {
-            _texture = value;
+            _displayedTexture = value;
             if (map != null)
             {
                 Init();
@@ -223,6 +223,27 @@ public class OnlineMapsMarker : OnlineMapsMarkerBase
             }
         }
     }
+    
+    /// <summary>
+    /// Texture marker. <br/>
+    /// Texture format: ARGB32.<br/>
+    /// <strong>Must enable "Read / Write enabled".</strong><br/>
+    /// After changing the texture you need to call OnlineMapsMarker.Init.
+    /// </summary>
+    public Texture2D primaryZoomedInTexture
+    {
+        get { return _primaryZoomedInTexture; }
+        set
+        {
+            _primaryZoomedInTexture = value;
+            if (map != null)
+            {
+                Init();
+                map.Redraw();
+            }
+        }
+    }
+
     
     /// <summary>
     /// Texture marker. <br/>
@@ -238,11 +259,13 @@ public class OnlineMapsMarker : OnlineMapsMarkerBase
             _secondaryZoomedOutTexture = value;
             if (map != null)
             {
-                Init();
+                //Todo: make custom width and height for secondary and primary map texture
+                Init(_width,_height,_secondaryZoomedOutTexture);
                 map.Redraw();
             }
         }
     }
+
 
     /// <summary>
     /// Gets the marker width.
@@ -317,6 +340,23 @@ public class OnlineMapsMarker : OnlineMapsMarkerBase
         if (align == OnlineMapsAlign.BottomRight || align == OnlineMapsAlign.Bottom || align == OnlineMapsAlign.BottomLeft) offset.y = _textureHeight;
         else if (align == OnlineMapsAlign.Left || align == OnlineMapsAlign.Center || align == OnlineMapsAlign.Right) offset.y = _textureHeight / 2;
         return offset;
+    }
+
+    /// <summary>
+    /// Modifies display Image To Difrent Texture
+    /// </summary>
+    public void SwitchDisplayedImage(bool switchToPrimary)
+    {
+        if (switchToPrimary && !_isShowingPrimaryTexture)
+        {
+            displayedTexture = primaryZoomedInTexture;
+            _isShowingPrimaryTexture = true;
+        }
+        if (!switchToPrimary && _isShowingPrimaryTexture)
+        {
+            displayedTexture = secondaryZoomedOutTexture;
+            _isShowingPrimaryTexture = false;
+        }
     }
 
     private Rect GetRect()
@@ -400,13 +440,19 @@ public class OnlineMapsMarker : OnlineMapsMarkerBase
     /// </summary>
     /// <param name="width">Width of the marker texture.</param>
     /// <param name="height">Height of the marker texture.</param>
-    public void Init(int? width = null, int? height = null)
+    /// <param name="newTexture">Replaces the old marker texture.</param>
+    public void Init(int? width = null, int? height = null, [CanBeNull] Texture2D newTexture = null)
     {
-        if (texture != null)
+        if (displayedTexture != null && newTexture == null)
         {
-            if (map.control.resultIsTexture) _colors = texture.GetPixels32();
-            _width = _textureWidth = width ?? texture.width;
-            _height = _textureHeight = height ?? texture.height;
+            if (map.control.resultIsTexture) _colors = displayedTexture.GetPixels32();
+            _width = _textureWidth = width ?? displayedTexture.width;
+            _height = _textureHeight = height ?? displayedTexture.height;
+        }else if (newTexture != null)
+        {
+            if (map.control.resultIsTexture) _colors = newTexture.GetPixels32();
+            _width = _textureWidth = width ?? displayedTexture.width;
+            _height = _textureHeight = height ?? displayedTexture.height;
         }
         else
         {
@@ -435,7 +481,7 @@ public class OnlineMapsMarker : OnlineMapsMarkerBase
         return base.ToJSON().AppendObject(new
         {
             align = (int)align,
-            texture = texture != null ? texture.GetInstanceID() : 0,
+            texture = displayedTexture != null ? displayedTexture.GetInstanceID() : 0,
             rotation
         });
     }

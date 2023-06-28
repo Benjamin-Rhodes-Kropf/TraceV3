@@ -9,6 +9,7 @@ public class ScaleMapElements : MonoBehaviour
     [SerializeField]private OnlineMapsMarkerManager markerManager;
     [SerializeField]private OnlineMaps map;
     [SerializeField] private float radiusSize;
+    [SerializeField] private float scaleLimitForSwitchImage;
     [SerializeField] private AnimationCurve scaler;
     
     private void Update()
@@ -26,11 +27,26 @@ public class ScaleMapElements : MonoBehaviour
         var zoomfloat = map.floatZoom;
         traceScale = scaler.Evaluate(zoomfloat);
 
+        //Sets the way a trace looks and changes with zoom depending on scale
         for (int i = 1; i < markerManager.items.Count; i++)
         {
-            if (traceScale * radiusSize > 0)
+            var user = markerManager.items[0];
+            double evaluatedSize = traceScale * radiusSize * user.radius;
+
+            var item = markerManager.items[i];
+           item.SwitchDisplayedImage(true);
+            item.scale = (float)(traceScale * radiusSize * markerManager.items[i].radius);
+            
+            Debug.Log("radius:" + item.radius);
+            if ( traceScale * radiusSize * item.radius < scaleLimitForSwitchImage)
             {
-                markerManager.items[i].scale = (float)(traceScale * radiusSize * markerManager.items[i].radius);
+                item.SwitchDisplayedImage(false);
+                item.scale = 0.1f;
+            }
+            else
+            {
+                item.SwitchDisplayedImage(true);
+                item.scale = (float)(traceScale * radiusSize * markerManager.items[i].radius);
             }
         }
     }

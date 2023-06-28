@@ -50,9 +50,11 @@ public class OnlineMapsMarkerPropertyDrawer : OnlineMapsMarkerBasePropertyDrawer
             DrawProperty(property, "_scale", ref rect);
             DrawProperty(property, "label", ref rect);
             DrawProperty(property, "align", ref rect);
+            DrawProperty(property, "radius", ref rect);
+
 
             EditorGUI.BeginChangeCheck();
-            SerializedProperty pTexture = DrawProperty(property, "_texture", ref rect);
+            SerializedProperty pTexture = DrawProperty(property, "_displayedTexture", ref rect);
             if (EditorGUI.EndChangeCheck()) OnlineMapsEditorUtils.CheckMarkerTextureImporter(pTexture);
 
             EditorGUI.BeginChangeCheck();

@@ -16,10 +16,10 @@ public class TraceManager : MonoBehaviour
     [SerializeField] private OnlineMapsMarkerManager markerManager;
     [SerializeField] private OnlineMapsLocationService onlineMapsLocationService;
     [SerializeField] private DrawTraceOnMap drawTraceOnMap;
-    [SerializeField] private SelectorManager sentRecivedToggle;
+    [SerializeField] private SendOrRecievedViewSelectorManager sentRecivedToggle;
     [SerializeField] private Vector2 userLocation;
     public List<TraceObject> recivedTraceObjects;
-    public List<TraceObject> sentTraces;
+    public List<TraceObject> sentTraceObjects;
     public List<TraceObject> recivedTraceObjectsByDistanceToUser;
 
     [Header("Variables")] 
@@ -79,7 +79,7 @@ public class TraceManager : MonoBehaviour
         }
         else
         {
-            foreach (var trace in sentTraces)
+            foreach (var trace in sentTraceObjects)
             {
                 var distance = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.lat, (float)trace.lng, trace.radius*1000f);
                 Debug.Log( "Trace:"+trace.id +" Dist: " + distance);
@@ -298,7 +298,7 @@ public class TraceManager : MonoBehaviour
         }
         else
         {
-            foreach (var traceobject in sentTraces)
+            foreach (var traceobject in sentTraceObjects)
             {
                 if (!traceobject.hasBeenAdded)
                 {
@@ -321,7 +321,7 @@ public class TraceManager : MonoBehaviour
         }
         else
         {
-            foreach (var traceobject in sentTraces)
+            foreach (var traceobject in sentTraceObjects)
             {
                 traceobject.hasBeenAdded = false;
             }
@@ -337,6 +337,10 @@ public class TraceManager : MonoBehaviour
     {
         drawTraceOnMap.Clear();
         foreach (var traceobject in recivedTraceObjects)
+        {
+            traceobject.hasBeenAdded = false;
+        }
+        foreach (var traceobject in sentTraceObjects)
         {
             traceobject.hasBeenAdded = false;
         }

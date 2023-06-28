@@ -122,20 +122,15 @@ public partial class FbManager : MonoBehaviour
                 PlayerPrefs.SetString("Username", adminUser);
                 PlayerPrefs.SetString("Password", adminPass);
             }
-            else
-            {
-                if (PlayerPrefs.GetString("Username") == adminUser)
-                {
-                    PlayerPrefs.SetString("Username", null);
-                    PlayerPrefs.SetString("Password", null);
-                }
-            }
         }
         else
         {
             PlayerPrefs.SetString("Username", null);
             PlayerPrefs.SetString("Password", null);
         }
+        Debug.Log("Auto Logging in with username:" + PlayerPrefs.GetString("Username"));
+        Debug.Log("Auto Logging in with password:" + PlayerPrefs.GetString("Password"));
+
         StartCoroutine(AutoLogin());
     }
 
@@ -145,13 +140,14 @@ public partial class FbManager : MonoBehaviour
     {
         //Todo: figure out which wait until to use...
         Debug.Log("Auto Logging in");
+        //Todo:Why do we wait?
         yield return new WaitForSeconds(0.4f); //has to wait until firebase async task is finished... (is there something better?)
         Debug.Log("Auto Logging 0.4s");
         String savedUsername = PlayerPrefs.GetString("Username");
         String savedPassword = PlayerPrefs.GetString("Password");
         
         Debug.Log("saved user:" +  PlayerPrefs.GetString("Username"));
-        if (savedUsername != "null" || savedPassword != "null")
+        if (savedUsername != "null" && savedPassword != "null")
         {
             Debug.Log("auto logging in");
             StartCoroutine(FbManager.instance.Login(savedUsername, savedPassword, (myReturnValue) => {
@@ -314,7 +310,7 @@ public partial class FbManager : MonoBehaviour
         //Reset User Settings
         userImageTexture = null;
         TraceManager.instance.recivedTraceObjects.Clear();
-        TraceManager.instance.sentTraces.Clear();
+        TraceManager.instance.sentTraceObjects.Clear();
         thisUserModel = new UserModel();
         _firebaseAuth.SignOut();
         PlayerPrefs.SetString("Username", "null");
@@ -1295,7 +1291,7 @@ public partial class FbManager : MonoBehaviour
             if (lat != 0 && lng != 0 && radius != 0)
             {
                 var trace = new TraceObject(lng, lat, radius,senderID,senderName, sendTime, 20, mediaType,traceID);
-                TraceManager.instance.sentTraces.Add(trace);
+                TraceManager.instance.sentTraceObjects.Add(trace);
             }
         }
 

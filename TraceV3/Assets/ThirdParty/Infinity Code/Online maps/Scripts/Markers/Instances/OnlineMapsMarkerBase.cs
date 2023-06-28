@@ -86,6 +86,7 @@ public class OnlineMapsMarkerBase: IOnlineMapsInteractiveElement
     /// </summary>
     public string traceID = "";
     
+    //Todo: Remove Radius From Base and into Child Class
     /// <summary>
     /// Trace radius.
     /// </summary>

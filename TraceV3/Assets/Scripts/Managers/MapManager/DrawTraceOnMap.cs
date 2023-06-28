@@ -9,11 +9,12 @@ public class DrawTraceOnMap : MonoBehaviour
     [SerializeField] private int scaleAmount;
     [SerializeField] private OnlineMapsMarkerManager markerManager;
     [SerializeField] private bool showDebugTextures;
-    public Texture2D testTexture;
+    [SerializeField] private Texture2D primaryTexture;
+    [SerializeField] private Texture2D secondaryTexture;
 
     public void DrawCirlce(double lat, double lng, float radius, Color color, string markerID)
     {
-        markerManager.AddTraceToMap(lat, lng, radius, testTexture, markerID);
+        markerManager.AddTraceToMap(lat, lng, radius, primaryTexture, secondaryTexture, markerID);
 
         if (showDebugTextures)
         {

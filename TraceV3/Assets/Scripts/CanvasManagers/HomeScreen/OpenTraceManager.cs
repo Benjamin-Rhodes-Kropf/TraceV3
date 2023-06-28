@@ -118,6 +118,14 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         videoPlayer.Pause();
     }
 
+    public void CloseView()
+    {
+        hasBegunCloseTrace = true;
+        canCloseTrace = true;
+        m_targetYVal = 0;
+        videoPlayer.Pause();
+    }
+
     public void Update()
     {
         if (!canUsePhysics)

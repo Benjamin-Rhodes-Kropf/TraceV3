@@ -55,6 +55,13 @@ public class ViewTraceManager :  MonoBehaviour, IDragHandler, IEndDragHandler
         canUsePhysics = true;
         hasBegunExit = false;
     }
+
+    public void ClosePreview()
+    {
+        Debug.Log("ExitTrace");
+        m_targetYVal = 0;
+        hasBegunExit = true;
+    }
     
     public void Update()
     {

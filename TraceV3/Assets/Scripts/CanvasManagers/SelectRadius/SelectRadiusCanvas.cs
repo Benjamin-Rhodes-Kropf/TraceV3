@@ -8,7 +8,8 @@ using UnityEngine.UI;
 
 public class SelectRadiusCanvas : MonoBehaviour
 {
-    [Header("External")]
+    [Header("External")] [SerializeField] private DrawTraceOnMap 
+        _drawTraceOnMap;
     [SerializeField] private DragAndZoomInertia dragAndZoomInertia;
     [SerializeField] private OnlineMapsMarkerManager markerManager;
     [SerializeField] private OnlineMaps map;
@@ -31,6 +32,12 @@ public class SelectRadiusCanvas : MonoBehaviour
             firstTimeEnabled = true;
             return;
         }
+        
+        //enter send mode
+        HomeScreenManager.isInSendTraceView = true;
+        _drawTraceOnMap.Clear();
+        
+        
         StartCoroutine(LoadMap());
         
         if (PlayerPrefs.GetFloat("LeaveTraceSliderRadiusValue") != 0)

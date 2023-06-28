@@ -164,9 +164,37 @@ public static class HelperMethods
         return returnValue;
     }
     
+    //old password
+    // public static string IsValidPassword(string password)
+    // {
+    //     Regex passwordValidator = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,15}$");
+    //     string stringToReturn = null;
+    //
+    //     if (string.IsNullOrEmpty(password))
+    //     {
+    //         stringToReturn = "Password cannot be empty";
+    //     }
+    //     else if (password.Length >= 6)
+    //     {
+    //         stringToReturn = null;
+    //         
+    //         if (!passwordValidator.IsMatch(password))
+    //         {
+    //             stringToReturn = "Invalid Password: Must include atleast 1 Small character, \n1 Capital character, 1 Number, and 1 Special character";
+    //         }
+    //     }
+    //     else
+    //     {
+    //         stringToReturn = "Length minimum 8 characters";
+    //     }
+    //
+    //     return stringToReturn;
+    // }
+    
+    //simpler password validator
     public static string IsValidPassword(string password)
     {
-        Regex passwordValidator = new Regex(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,15}$");
+        Regex passwordValidator = new Regex(@"^(?=.*[a-z])(?=.*\d).{6,}$");
         string stringToReturn = null;
 
         if (string.IsNullOrEmpty(password))
@@ -176,15 +204,15 @@ public static class HelperMethods
         else if (password.Length >= 6)
         {
             stringToReturn = null;
-            
+        
             if (!passwordValidator.IsMatch(password))
             {
-                stringToReturn = "Invalid Password: Must include atleast 1 Small character, \n1 Capital character, 1 Number, and 1 Special character";
+                stringToReturn = "Invalid Password: Must include at least 1 lowercase letter and 1 digit";
             }
         }
         else
         {
-            stringToReturn = "Length minimum 8 characters";
+            stringToReturn = "Length minimum 6 characters";
         }
 
         return stringToReturn;

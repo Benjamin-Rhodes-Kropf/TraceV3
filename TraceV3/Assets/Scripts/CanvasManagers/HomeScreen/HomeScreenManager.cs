@@ -15,8 +15,6 @@ public class HomeScreenManager : MonoBehaviour
     [SerializeField] private ViewTraceManager viewTraceManager;
     [SerializeField] private Animator homeScreenAnimator; //Todo: add animation
 
-    
-    
     public void ViewTrace(string senderName, string sendDate)
     {
         viewTraceManager.ActivateView(senderName, sendDate);   

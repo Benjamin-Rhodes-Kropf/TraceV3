@@ -241,14 +241,14 @@ public class OnlineMapsMarkerFlatDrawer : OnlineMapsMarker2DMeshDrawer
             fx = fx * OnlineMapsUtils.tileSize - offset.x;
             fy = (fy - ty) / zoomCoof * OnlineMapsUtils.tileSize - offset.y;
 
-            if (marker.texture == null)
+            if (marker.displayedTexture == null)
             {
-                marker.texture = control.markerManager.defaultTexture;
+                marker.displayedTexture = control.markerManager.defaultTexture;
                 marker.Init();
             }
 
-            float markerWidth = marker.texture.width * marker.scale;
-            float markerHeight = marker.texture.height * marker.scale;
+            float markerWidth = marker.displayedTexture.width * marker.scale;
+            float markerHeight = marker.displayedTexture.height * marker.scale;
 
             float rx1 = (float)(fx * cx);
             float ry1 = (float)(fy * cy);
@@ -304,20 +304,20 @@ public class OnlineMapsMarkerFlatDrawer : OnlineMapsMarker2DMeshDrawer
 
             if (OnGenerateMarkerVertices != null) OnGenerateMarkerVertices(marker, markersVertices, vIndex);
 
-            if (marker.texture == control.markerManager.defaultTexture)
+            if (marker.displayedTexture == control.markerManager.defaultTexture)
             {
                 usedTexturesMarkerIndex[0].Add(usedMarkersCount);
             }
             else
             {
-                int textureIndex = usedTextures.IndexOf(marker.texture);
+                int textureIndex = usedTextures.IndexOf(marker.displayedTexture);
                 if (textureIndex != -1)
                 {
                     usedTexturesMarkerIndex[textureIndex].Add(usedMarkersCount);
                 }
                 else
                 {
-                    usedTextures.Add(marker.texture);
+                    usedTextures.Add(marker.displayedTexture);
                     usedTexturesMarkerIndex.Add(new List<int>(32));
                     usedTexturesMarkerIndex[usedTexturesMarkerIndex.Count - 1].Add(usedMarkersCount);
                 }

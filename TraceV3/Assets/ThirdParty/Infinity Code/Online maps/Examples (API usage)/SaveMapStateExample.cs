@@ -29,7 +29,8 @@ namespace InfinityCode.OnlineMapsExamples
                 if (textureIndex > -1 && textureIndex < markerTextures.Count) texture = markerTextures[textureIndex];
                 string label = jitem.ChildValue<string>("label");
 
-                OnlineMapsMarker marker = manager.Create(mx, my,0, texture, label);
+                //Todo: add load values for secondary texture
+                OnlineMapsMarker marker = manager.Create(mx, my,0, texture, null, label);
                 
                 marker.range = jitem.ChildValue<OnlineMapsRange>("range");
                 marker.align = (OnlineMapsAlign)jitem.ChildValue<int>("align");
@@ -103,7 +104,7 @@ namespace InfinityCode.OnlineMapsExamples
             foreach (OnlineMapsMarker marker in OnlineMapsMarkerManager.instance)
             {
                 OnlineMapsJSONObject jmarker = marker.ToJSON() as OnlineMapsJSONObject;
-                jmarker.Add("texture", markerTextures.IndexOf(marker.texture));
+                jmarker.Add("texture", markerTextures.IndexOf(marker.displayedTexture));
                 jmarkers.Add(jmarker);
             }
             json.Add("Markers", jmarkers);
