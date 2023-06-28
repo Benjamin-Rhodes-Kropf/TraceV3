@@ -595,9 +595,9 @@ public partial class FbManager : MonoBehaviour
             callback(null);
         });
     }
-    public IEnumerator GetMyUserNickName(System.Action<String> callback)
+    public IEnumerator GetMyUserNickName(System.Action<String> callback, string firebaseUserId = "")
     {
-        var DBTask = _databaseReference.Child("users").Child(_firebaseUser.UserId).Child("Friends").Child("nickName").GetValueAsync();
+        var DBTask = _databaseReference.Child("users").Child(firebaseUserId == ""? _firebaseUser.UserId: firebaseUserId).Child("Friends").Child("nickName").GetValueAsync();
         
         yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
         
