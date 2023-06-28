@@ -886,7 +886,7 @@ MonoBehaviour:
   maxRadius: 0.15
   minRadius: 0.02
   radius: 0
-  users: []
+  usersToSendTo: []
 --- !u!4 &722720123
 Transform:
   m_ObjectHideFlags: 0
@@ -5932,10 +5932,10 @@ MonoBehaviour:
   marker3DSizeType: 0
   maxPositionCount: 3
   position: {x: 0, y: 0}
-  restoreAfter: 20
+  restoreAfter: 10
   rotateCameraByCompass: 0
   trueHeading: 0
-  updatePosition: 0
+  updatePosition: 1
   useCompassForMarker: 0
   useGPSEmulator: 1
   desiredAccuracy: 0

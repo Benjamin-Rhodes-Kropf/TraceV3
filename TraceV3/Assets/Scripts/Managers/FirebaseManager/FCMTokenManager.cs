@@ -43,8 +43,8 @@ public partial class FbManager
     }
     private void OnTokenReceived(object sender, Firebase.Messaging.TokenReceivedEventArgs token) {
         Debug.Log("Received Registration Token: " + token.Token);
-        if (!IsApplicationFirstTimeOpened) 
-            return;
+        // if (!IsApplicationFirstTimeOpened) 
+        //     return; //todo not sure if this is needed seems like its blocking fcm cloud registration
         StartCoroutine(SetFCMDeviceToken(token.Token));
         IsApplicationFirstTimeOpened = false;
     }
@@ -67,6 +67,7 @@ public partial class FbManager
     }
     public async Task<string> GetDeviceTokenForUser(string firebaseUserId)
     {
+        Debug.Log("Getting Device Token For:" + firebaseUserId);
         string deviceToken = null;
 
         await _databaseReference

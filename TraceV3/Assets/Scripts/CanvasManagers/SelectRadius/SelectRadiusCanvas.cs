@@ -12,6 +12,7 @@ public class SelectRadiusCanvas : MonoBehaviour
         _drawTraceOnMap;
     [SerializeField] private DragAndZoomInertia dragAndZoomInertia;
     [SerializeField] private OnlineMapsMarkerManager markerManager;
+    [SerializeField] private OnlineMapsLocationService _onlineMapsLocationService;
     [SerializeField] private OnlineMaps map;
     [SerializeField] private Image radius;
 
@@ -32,6 +33,8 @@ public class SelectRadiusCanvas : MonoBehaviour
             firstTimeEnabled = true;
             return;
         }
+        
+        _onlineMapsLocationService.updatePosition = true;
         
         if (PlayerPrefs.GetFloat("LeaveTraceSliderRadiusValue") != 0)
         {

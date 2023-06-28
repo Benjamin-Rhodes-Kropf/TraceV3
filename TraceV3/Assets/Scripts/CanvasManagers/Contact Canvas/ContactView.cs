@@ -14,8 +14,7 @@ public class ContactView : MonoBehaviour
    public Image _contactImage;
    public Button _addButton;
    public Button _removeButton;
-
-
+   
    public void UpdateContactInfo(IAddressBookContact contact)
    {
       _givenName.text = contact.FirstName + " "+ contact.LastName;
@@ -33,7 +32,6 @@ public class ContactView : MonoBehaviour
             _contactImage.sprite = sprite;
          }
       });
-      
       _addButton.onClick.RemoveAllListeners();
       _addButton.onClick.AddListener(OnAddClick);
       _removeButton.onClick.RemoveAllListeners();
@@ -42,7 +40,7 @@ public class ContactView : MonoBehaviour
 
    private void OnAddClick()
    {
-      HelperMethods.SendSMS(_phoneNumber.text, "What Up! I've been using this app for the past week and its lowk rly fun leaveatraceapp.com");
+      HelperMethods.SendSMS(_phoneNumber.text, "I've been using this app for the past week and its lowk rly fun leaveatraceapp.com");
    }
 
    private void OnRemoveClick()

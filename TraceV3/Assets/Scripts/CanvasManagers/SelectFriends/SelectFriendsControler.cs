@@ -58,7 +58,7 @@ public class SelectFriendsControler : MonoBehaviour
     
     public void UpdateFriendsSendTo()
     {
-        SendTraceManager.instance.users.Clear();
+        SendTraceManager.instance.usersToSendTo.Clear();
         Debug.Log("UpdateFriendsSendTo()");
         foreach (var view in _allFriendsView)
         {
@@ -66,7 +66,7 @@ public class SelectFriendsControler : MonoBehaviour
             {
                 Debug.Log("UpdateFriendsSendTo:" + view.friendUID);
                 //_SendToUIDs.Add(view.friendUID);
-                SendTraceManager.instance.users.Add(view.friendUID);
+                SendTraceManager.instance.usersToSendTo.Add(view.friendUID);
             }
         }
         

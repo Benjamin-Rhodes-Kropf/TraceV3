@@ -306,6 +306,7 @@ public partial class FbManager : MonoBehaviour
        
         //Reset User Settings
         userImageTexture = null;
+        IsApplicationFirstTimeOpened = false;
         
         //DB Tasks
         StartCoroutine(RemoveFCMDeviceToken());
@@ -323,7 +324,6 @@ public partial class FbManager : MonoBehaviour
         PlayerPrefs.SetString("Username", "null");
         PlayerPrefs.SetString("Password", "null");
         HandleFriendsUserLogout();
-        IsApplicationFirstTimeOpened = false;
         ScreenManager.instance.ChangeScreenForwards("Welcome");
     }
     #endregion

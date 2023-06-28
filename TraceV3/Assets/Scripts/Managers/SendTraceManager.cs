@@ -15,7 +15,7 @@ public class SendTraceManager : MonoBehaviour
     [SerializeField]private float maxRadius;
     [SerializeField]private float minRadius;
     public float radius;
-    public List<String> users;
+    public List<String> usersToSendTo;
     
     
     private void Awake()
@@ -43,11 +43,11 @@ public class SendTraceManager : MonoBehaviour
     {
         Vector2 location = _onlineMapsLocationService.GetUserLocation();
         Debug.Log("SendTraceImage Lat:" + location.x);
-        FbManager.instance.UploadTrace(fileLocation, radius, location, mediaType,users);
+        FbManager.instance.UploadTrace(fileLocation, radius, location, mediaType,usersToSendTo);
         
         StartCoroutine(FbManager.instance.GetMyUserNickName(nickName =>
         {
-            foreach (var userId in users)
+            foreach (var userId in usersToSendTo)
             {
                 BackgroundNotificationManager.Instance.SendNotificationUsingFirebaseUserId(userId, nickName + " sent you a Trace!");
             }

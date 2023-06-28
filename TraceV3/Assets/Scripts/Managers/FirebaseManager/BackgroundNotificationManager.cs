@@ -24,6 +24,12 @@ public class BackgroundNotificationManager : UnitySingleton<BackgroundNotificati
     public async void SendNotificationUsingFirebaseUserId(string firebaseUserId, string title = "", string message = "")
     {
         var fcmToken = await FbManager.instance.GetDeviceTokenForUser(firebaseUserId);
+        if (fcmToken == null || fcmToken == "null")
+        {
+            Debug.Log("user FCM token null or does not exist");
+            return;
+        }
+        Debug.Log("SendNotificationUsingFirebaseUserId FCM TOKEN:" + fcmToken);
         StartCoroutine(SendNotificationUsingFcmTokenEnumerator(fcmToken, title, message));
     }
     
