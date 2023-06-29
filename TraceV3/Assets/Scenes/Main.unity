@@ -6260,8 +6260,10 @@ MonoBehaviour:
   scaleAmount: 150
   markerManager: {fileID: 6068666308761308078}
   showDebugTextures: 0
-  primaryTexture: {fileID: 2800000, guid: 461a193e6a31647dc945c1965b17f817, type: 3}
-  secondaryTexture: {fileID: 2800000, guid: ba0eba50915c3481eaf48f417a250cfa, type: 3}
+  primaryReceiverTexture: {fileID: 2800000, guid: 2ed2f6f9dbef546448312c0a05d7d2d6, type: 3}
+  secondaryReceiverTexture: {fileID: 2800000, guid: baff221098fcd46efa76f3c581c30c22, type: 3}
+  primarySentTexture: {fileID: 2800000, guid: 9921c82fbd969414583e28ceeea9b23a, type: 3}
+  secondarySentTexture: {fileID: 2800000, guid: 0390d46395e294dc5bff2e9d6eeef462, type: 3}
 --- !u!114 &6068666308761308095
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,4 +1,4 @@
-using System;
+using System;using System.Collections.Generic;
 using UnityEngine;
 public class DrawTraceOnMap : MonoBehaviour
 {
@@ -9,12 +9,20 @@ public class DrawTraceOnMap : MonoBehaviour
     [SerializeField] private int scaleAmount;
     [SerializeField] private OnlineMapsMarkerManager markerManager;
     [SerializeField] private bool showDebugTextures;
-    [SerializeField] private Texture2D primaryTexture;
-    [SerializeField] private Texture2D secondaryTexture;
+    [SerializeField] private Texture2D primaryReceiverTexture;
+    [SerializeField] private Texture2D secondaryReceiverTexture;
+    [SerializeField] private Texture2D primarySentTexture;
+    [SerializeField] private Texture2D secondarySentTexture;
 
-    public void DrawCirlce(double lat, double lng, float radius, Color color, string markerID)
+    public void DrawCirlce(double lat, double lng, float radius, TraceType traceType, string markerID)
     {
-        markerManager.AddTraceToMap(lat, lng, radius, primaryTexture, secondaryTexture, markerID);
+        if (traceType == TraceType.RECEIVED)
+        {
+            markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverTexture, secondaryReceiverTexture, markerID);
+        }else if (traceType == TraceType.SENT)
+        {
+            markerManager.AddTraceToMap(lat, lng, radius, primarySentTexture, secondarySentTexture, markerID);
+        }
 
         if (showDebugTextures)
         {
@@ -51,13 +59,10 @@ public class DrawTraceOnMap : MonoBehaviour
             }
             
             // Create a new polygon to draw a circle
-            OnlineMapsDrawingElementManager.AddItem(new OnlineMapsDrawingPoly(points, color, 3, new Color(10, 10, 10, 0.1f)));
+            OnlineMapsDrawingElementManager.AddItem(new OnlineMapsDrawingPoly(points, Color.white, 3, new Color(10, 10, 10, 0.1f)));
         }
     }
     
-
-
-
     public void Clear()
     {
         for (int i = OnlineMapsDrawingElementManager.CountItems; i >=  0; i--)
@@ -69,4 +74,6 @@ public class DrawTraceOnMap : MonoBehaviour
             OnlineMapsMarkerManager.RemoveItemAt(i);
         }
     }
+    public enum TraceType {RECEIVED, SENT};
 }
+
