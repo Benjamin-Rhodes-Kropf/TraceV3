@@ -44,7 +44,7 @@ public class ViewTraceManager :  MonoBehaviour, IDragHandler, IEndDragHandler
         m_transform.position = new Vector3(m_transform.position.x, startLocation, m_transform.position.z);
         Dy = 0;
         changeInYVal = 0;
-        m_targetYVal = 1200;
+        m_targetYVal = 1400;
         canUsePhysics = false;
     }
     

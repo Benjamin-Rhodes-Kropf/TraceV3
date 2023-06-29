@@ -5242,6 +5242,18 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 600464280}
+    - target: {fileID: 3462241307661885656, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 546
+      objectReference: {fileID: 0}
+    - target: {fileID: 3462241307661885658, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3462241307661885662, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_targetYVal
+      value: 1400
+      objectReference: {fileID: 0}
     - target: {fileID: 4832528176042883204, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: _drawTraceOnMap
       value: 
@@ -5336,7 +5348,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9172647568999289980, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9172647569576335169, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -6350,7 +6362,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7069077438171782112, guid: 48051510910734c74ae02d431ff9434b, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7069077438171782116, guid: 48051510910734c74ae02d431ff9434b, type: 3}
       propertyPath: m_Pivot.x
