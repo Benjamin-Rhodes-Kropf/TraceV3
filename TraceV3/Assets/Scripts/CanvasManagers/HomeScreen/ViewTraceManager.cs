@@ -26,14 +26,12 @@ public class ViewTraceManager :  MonoBehaviour, IDragHandler, IEndDragHandler
     [Header("Swipe Physics Limits")]
     [SerializeField] private float changeInYDvLimit;
     [SerializeField] private float changeInYvalExitLimit;
-
     
     [Header("State")]
     [SerializeField] private bool isDragging;
     [SerializeField] private bool hasBegunExit;
     [SerializeField] private bool canUsePhysics;
-
-
+    
     private void OnEnable()
     {
         Reset();
