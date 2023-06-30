@@ -26,8 +26,6 @@ namespace CanvasManagers
         {
             this._view = view;
             _view._usernameInput.onValueChanged.AddListener(OnInputValueChange);
-            
-            
             _view._contactsButton.onClick.AddListener(OnContactsSelection);
             _view._friendsButton.onClick.AddListener(OnFriendsSelection);
             _view._requestsButton.onClick.AddListener(OnRequestsSelection);
@@ -365,6 +363,7 @@ namespace CanvasManagers
         private void OnContactsSelection()
         {
             AddressBookContactsAccessStatus status = AddressBook.GetContactsAccessStatus();
+            Debug.Log("Contact Status:" + status);
             AddressBook.RequestContactsAccess(callback: OnRequestContactsAccessFinish);
             LoadAllContacts();
             SelectionPanelClick("Contacts");
@@ -373,6 +372,12 @@ namespace CanvasManagers
         {
             Debug.Log("Request for contacts access finished.");
             Debug.Log("Address book contacts access status: " + result.AccessStatus);
+            if (result.AccessStatus == AddressBookContactsAccessStatus.Denied)
+            {
+                //Todo:This Does not work
+                Debug.Log("Prompt Again");
+                AddressBook.ReadContactsWithUserPermission(callback: null);
+            }
         }
         
         private void OnReadContactsFinish(AddressBookReadContactsResult result, Error error)

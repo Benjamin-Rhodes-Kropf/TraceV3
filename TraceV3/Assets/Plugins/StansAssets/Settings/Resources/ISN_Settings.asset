@@ -23,8 +23,8 @@ MonoBehaviour:
   AVKit: 0
   CoreLocation: 0
   AssetsLibrary: 0
-  AppDelegate: 0
-  UserNotifications: 0
+  AppDelegate: 1
+  UserNotifications: 1
   MediaPlayer: 0
   EventKit: 0
   InAppProducts: []

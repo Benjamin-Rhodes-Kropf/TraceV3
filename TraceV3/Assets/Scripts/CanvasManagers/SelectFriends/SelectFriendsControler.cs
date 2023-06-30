@@ -25,8 +25,13 @@ public class SelectFriendsControler : MonoBehaviour
         var users = UserDataManager.Instance.GetAllFriends();
         foreach (var user in users)
         {
-            //Debug.Log("SelectFriendsControler: LoadAllFriends:" + user.DisplayName);
             UpdateFriendViewInfo(user);
+        }
+
+        if (users.Count < 1)
+        {
+            Debug.Log("No Friends Yet");
+            _view.DisplayNoFriendsText();
         }
     }
     

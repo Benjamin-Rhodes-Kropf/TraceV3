@@ -41,20 +41,16 @@ public partial class FbManager : MonoBehaviour
 
     [Header("User Data")] 
     public Texture userImageTexture;
-    //public bool firstTimeUsingTrace;
     public string userId;
-
-
+    
     [Header("Essential Properties")]
     public UserModel thisUserModel;
-    
     public bool IsFirebaseUserInitialised
     {
         get;
         private set;
     }
-   
-
+    
    [SerializeField] private List<UserModel> users;
    public List<UserModel> AllUsers
    {
@@ -127,13 +123,12 @@ public partial class FbManager : MonoBehaviour
         _allSentRequests = new List<FriendRequests>();
         _allFriends = new List<FriendModel>();
     }
-
     private void Start()
     {
         StartCoroutine(AutoLogin());
     }
 
-    #region Current User
+    #region This User
     #region -User Login/Logout
     public IEnumerator AutoLogin()
     {
@@ -267,8 +262,19 @@ public partial class FbManager : MonoBehaviour
         _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildRemoved += HandleRemovedFriends;
         
         //Also Bad, We Dont Use Any Of These
-        SubscribeToReceivingTraces();
-        SubscribeToSentTraces();
+        SubscribeOrUnSubscribeToReceivingTraces(true);
+        SubscribeOrUnsubscribeToSentTraces(true);
+    }
+    private void UnsubscribeFromListiners()
+    { 
+        _databaseReference.Child("allFriendRequests").ChildAdded -= HandleFriendRequest; 
+        _databaseReference.Child("allFriendRequests").ChildRemoved -= HandleRemovedRequests; 
+        _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildAdded -= HandleFriends; 
+        _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildRemoved -= HandleRemovedFriends;
+        
+        //Also Bad, We Dont Use Any Of These
+        SubscribeOrUnSubscribeToReceivingTraces(false);
+        SubscribeOrUnsubscribeToSentTraces(false);
     }
 
     private void GetCurrentUserData(string password)
@@ -310,12 +316,11 @@ public partial class FbManager : MonoBehaviour
         
         //DB Tasks
         StartCoroutine(RemoveFCMDeviceToken());
+        //UnsubscribeFromListiners();
         StartCoroutine(SetUserLoginStatus(false, isSusscess =>
         {
             if (isSusscess) print("Updated Login Status");
         }));
-        
-        //Local Tasks
         TraceManager.instance.recivedTraceObjects.Clear();
         TraceManager.instance.sentTraceObjects.Clear();
         HomeScreenManager.isInSendTraceView = false;
@@ -700,49 +705,32 @@ public partial class FbManager : MonoBehaviour
     } //not sure if this works
     #endregion
     #region -User Actions
-    public IEnumerator ActionFriendRequest(string _userID, System.Action<CallbackObject> callback)
-    {
-        CallbackObject callbackObject = new CallbackObject();
-        
-        Debug.Log("Db making friendship reuest to:" + _userID);
-        Debug.Log("Signed In User ID "+_firebaseUser.UserId);
-        
-        string key = _databaseReference.Child("friendRequests").Child(_firebaseUser.UserId).Push().Key;
-        Dictionary<string, Object> childUpdates = new Dictionary<string, Object>();
-        childUpdates["/friendRequests/" + _firebaseUser.UserId + "/" + key] = _userID;
-        _databaseReference.UpdateChildrenAsync(childUpdates);
+    
+    #endregion
+    #region User Tracking
+    //Todo Write tracking functions to manage in app use
+    
 
-        yield return new WaitForSeconds(0.1f);
-        
-        callbackObject.IsSuccessful = true;
-        callbackObject.message = "";
-        callback(callbackObject);
-    }
-    private IEnumerator ActionAcceptFriend(string _username, string _nickName, System.Action<String> callback)
+    #endregion
+    #region -User Subscriptions
+    public void SubscribeOrUnSubscribeToReceivingTraces(bool subscribe)
     {
-        var DBTask = _databaseReference.Child("users").Child(_firebaseUser.UserId).Child("Friends").Child(_username).SetValueAsync(_nickName);
-        
-        yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
-        
-        if (DBTask.IsFaulted)
+        var refrence = FirebaseDatabase.DefaultInstance.GetReference("RecivedTraces").Child(_firebaseUser.UserId);
+        if (subscribe)
         {
-            Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+            refrence.ChildAdded += HandleChildAdded;
+            refrence.ChildChanged += HandleChildChanged;
+            refrence.ChildRemoved += HandleChildRemoved;
+            refrence.ChildMoved += HandleChildMoved;
         }
         else
         {
-            callback("Success");
+            refrence.ChildAdded -= HandleChildAdded;
+            refrence.ChildChanged -= HandleChildChanged;
+            refrence.ChildRemoved -= HandleChildRemoved;
+            refrence.ChildMoved -= HandleChildMoved;
         }
-    }
-    #endregion
-    #region -User Subscriptions
-    public void SubscribeToReceivingTraces()
-    {
-        var refrence = FirebaseDatabase.DefaultInstance.GetReference("RecivedTraces").Child(_firebaseUser.UserId);
-        refrence.ChildAdded += HandleChildAdded;
-        refrence.ChildChanged += HandleChildChanged;
-        refrence.ChildRemoved += HandleChildRemoved;
-        refrence.ChildMoved += HandleChildMoved;
-
+        
         void HandleChildAdded(object sender, ChildChangedEventArgs args) {
             if (args.DatabaseError != null) {
                 Debug.LogError(args.DatabaseError.Message);
@@ -783,13 +771,25 @@ public partial class FbManager : MonoBehaviour
             Debug.Log("value:" +  args.Snapshot.GetRawJsonValue());
         }
     }
-    public void SubscribeToSentTraces()
+
+
+    public void SubscribeOrUnsubscribeToSentTraces(bool subscribe)
     {
         var refrence = FirebaseDatabase.DefaultInstance.GetReference("SentTraces").Child(_firebaseUser.UserId);
-        refrence.ChildAdded += HandleChildAdded;
-        refrence.ChildChanged += HandleChildChanged;
-        refrence.ChildRemoved += HandleChildRemoved;
-        refrence.ChildMoved += HandleChildMoved;
+        if (subscribe)
+        {
+            refrence.ChildAdded += HandleChildAdded;
+            refrence.ChildChanged += HandleChildChanged;
+            refrence.ChildRemoved += HandleChildRemoved;
+            refrence.ChildMoved += HandleChildMoved;
+        }
+        else
+        {
+            refrence.ChildAdded -= HandleChildAdded;
+            refrence.ChildChanged -= HandleChildChanged;
+            refrence.ChildRemoved -= HandleChildRemoved;
+            refrence.ChildMoved -= HandleChildMoved;
+        }
 
         void HandleChildAdded(object sender, ChildChangedEventArgs args) {
             if (args.DatabaseError != null) {
@@ -881,7 +881,7 @@ public partial class FbManager : MonoBehaviour
     }
     #endregion
     #endregion
-    #region Other User
+    #region Other Users
     #region -Search for User
     public IEnumerator SearchForUserIDByUsername(String username, System.Action<CallbackObject> callback)
     {
@@ -943,6 +943,7 @@ public partial class FbManager : MonoBehaviour
     }
     #endregion
     #region -Get User Info
+    // TODO: Redundant function
     public IEnumerator GetUserProfilePhotoByUrl(string _url, System.Action<CallbackObject> callback)
     {
         CallbackObject callbackObject = new CallbackObject();
@@ -965,6 +966,7 @@ public partial class FbManager : MonoBehaviour
             }
         });
         
+        //todo: remove this
         yield return new WaitForSecondsRealtime(0.5f); //hmm not sure why (needs to wait for GetDownloadUrlAsync to complete)
         
         request = UnityWebRequestTexture.GetTexture((url)+"");
@@ -982,8 +984,6 @@ public partial class FbManager : MonoBehaviour
             callback(callbackObject);
         }
     }
-    
-    // TODO: Redundant function
     public IEnumerator GetUserProfilePhotoByUserID(String userID, System.Action<CallbackObject> callback)
     {
         CallbackObject callbackObject = new CallbackObject();
@@ -1019,10 +1019,21 @@ public partial class FbManager : MonoBehaviour
             }));
         }
     }
-    #endregion
-    #endregion
+    public void GetProfilePhotoFromFirebaseStorage(string userId, Action<Texture> onSuccess, Action<string> onFailed) {
+        StartCoroutine(GetProfilePhotoFromFirebaseStorageRoutine(userId, (myReturnValue) => {
+            if (myReturnValue != null)
+            {
+                onSuccess?.Invoke(myReturnValue);
+            }
 
-    #region Traces
+            {
+                onFailed?.Invoke("Image not Found");
+            }
+        }));
+    }
+    #endregion
+    #endregion
+    #region Sending and Recieving Traces
     public void UploadTrace(string fileLocation, float radius, Vector2 location, MediaType mediaType, List<string> users)
     {
         Debug.Log(" UploadTrace()");
@@ -1090,7 +1101,6 @@ public partial class FbManager : MonoBehaviour
         //Update Map
         TraceManager.instance.recivedTraceObjects[TraceManager.instance.GetRecivedTraceIndexByID(traceID)].hasBeenOpened = true;
     }
-    
     public IEnumerator GetRecievedTrace(string traceID)
     {
         var DBTask = _databaseReference.Child("Traces").Child(traceID).GetValueAsync();
@@ -1376,10 +1386,7 @@ public partial class FbManager : MonoBehaviour
             callback(path);
         }
     }
-
-
     #endregion
-    
     
     private void DeleteFile(String _location) 
     { 
@@ -1392,17 +1399,5 @@ public partial class FbManager : MonoBehaviour
                 // Uh-oh, an error occurred!
             }
         });
-    }
-    public void GetProfilePhotoFromFirebaseStorage(string userId, Action<Texture> onSuccess, Action<string> onFailed) {
-        StartCoroutine(GetProfilePhotoFromFirebaseStorageRoutine(userId, (myReturnValue) => {
-            if (myReturnValue != null)
-            {
-                onSuccess?.Invoke(myReturnValue);
-            }
-
-            {
-                onFailed?.Invoke("Image not Found");
-            }
-        }));
     }
 }

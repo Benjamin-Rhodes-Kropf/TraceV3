@@ -10,7 +10,7 @@ namespace CanvasManagers
 {
     public class ContactsCanvas : MonoBehaviour
     {
-        [FormerlySerializedAs("_friendPrefab")] public FriendView friendViewPrefab;
+        public FriendView friendViewPrefab;
         public TMP_InputField _usernameInput;
         public TMP_Text _numberOfFriendsCountTitle;
         public TMP_Text _numberOfFriendsCountScroll;

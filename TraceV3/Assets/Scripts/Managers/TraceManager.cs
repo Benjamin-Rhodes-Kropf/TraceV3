@@ -8,7 +8,6 @@ using UnityEngine;
 
 public class TraceManager : MonoBehaviour
 {
-    // =========================NOTE============================ //
     // Required package "com.unity.mobile.notifications": "2.1.1",
     public static TraceManager instance;
     [SerializeField] private HomeScreenManager homeScreenManager;
@@ -48,6 +47,7 @@ public class TraceManager : MonoBehaviour
         recivedTraceObjectsByDistanceToUser = new List<TraceObject>();
         _areTracesInitialized = false;
         Application.runInBackground = true;
+        SubscribeToRemoteNotifications();
         onlineMapsLocationService.updatePosition = true;
         
         //handle map updates
@@ -131,7 +131,6 @@ public class TraceManager : MonoBehaviour
         distance -= radiusOfTraceInMeters; //account for trace radius
         return distance;
     }
-
     public IOrderedEnumerable<TraceObject> OrderTracesByDistanceToUser()
     {
         foreach (var traceObject in recivedTraceObjects)
@@ -213,13 +212,11 @@ public class TraceManager : MonoBehaviour
         ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng, trace.radius, trace.senderName + " Left You a Trace Here", trace.senderName);
         //ScheduleNotificationOnExitFromARadius(trace.lat, trace.lng, trace.text);
     }
-
     public void StopLocationServices()
     {
         //If required then we can stop the location service by this
         Input.location.Stop();
     }
-
     public int GetRecivedTraceIndexByID(string traceID)
     {
         int counter = 0;
@@ -235,7 +232,38 @@ public class TraceManager : MonoBehaviour
         return -1;
     }
 
-    // Update is called once per frame
+    //Todo: Make this Work with remote notifications
+    public void SubscribeToRemoteNotifications()
+    {
+        iOSNotificationCenter.OnRemoteNotificationReceived += remoteNotification =>
+        {
+            var enterLocationTrigger = new iOSNotificationLocationTrigger
+            {
+                Center = new Vector2(0, 0),
+                Radius = 100,
+                NotifyOnEntry = true,
+                NotifyOnExit = false
+            };
+            Debug.Log("Push Notification is set for a radius of " + enterLocationTrigger.Radius + "Meters"
+                      + " When user enters in " + "Latitude = " + 0 + "===" + "Longitude = " + 0);
+
+            var entryBasedNotification = new iOSNotification
+            {
+                Title = "SenderName",
+                Subtitle =  "Left You A Trace Here",
+                Body = "",
+                //Body = message == "" ? "Radius latitude was > " + latitude + " and longitude was > " + longitude : message,
+                ShowInForeground = true,
+                ForegroundPresentationOption = PresentationOption.Alert | PresentationOption.Sound,
+                Trigger = enterLocationTrigger
+            };
+            // Schedule notification for entry base
+            iOSNotificationCenter.ScheduleNotification(entryBasedNotification);
+        };
+    }
+
+
+    // Update is called once per frame //todo: move out of update
     void Update()
     {
         Vector2 previousUserLocation = userLocation;

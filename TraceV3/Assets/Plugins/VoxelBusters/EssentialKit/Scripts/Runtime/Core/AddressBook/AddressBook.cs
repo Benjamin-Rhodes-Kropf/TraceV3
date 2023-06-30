@@ -85,20 +85,24 @@ namespace VoxelBusters.EssentialKit
             var     permissionHandler   = NativeFeatureUsagePermissionHandler.Default;
             if (showPrepermissionDialog && (permissionHandler != null))
             {
+                Debug.Log("Requesting ContactsAccess");
                 permissionHandler.ShowPrepermissionDialog(
                     permissionType: NativeFeatureUsagePermissionType.kAddressBook,
                     onAllowCallback: () =>
                     {
                         // ask user permission
+                        Debug.Log("RequestContactsAccessInternal(callback);");
                         RequestContactsAccessInternal(callback);
                     },
                     onDenyCallback: () =>
                     {
+                        Debug.Log("RequestContactsAccess onDenyCallback");
                         CallbackDispatcher.InvokeOnMainThread(callback, result: null, error: new Error(description: "User cancelled."));
                     });
             }
             else
             {
+                Debug.Log("RequestContactsAccessInternal(callback);");
                 RequestContactsAccessInternal(callback);
             }
         }

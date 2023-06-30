@@ -10,6 +10,7 @@ public class SelectFriendsCanvas : MonoBehaviour{
     [Header("Friend Info")]
     public SendToFriendView friendViewPrefab;
     public Transform _displayFrindsParent;
+    public GameObject _youDontHaveAnyFriendsYetText;
     public List<SendToFriendView> _friendsList;
     public GameObject _friendsScroll;
     
@@ -23,17 +24,32 @@ public class SelectFriendsCanvas : MonoBehaviour{
 
     private void OnEnable()
     {
+        //objects
+        _youDontHaveAnyFriendsYetText.SetActive(false);
+        
+        //controler
         if (_friendsList == null)
             _friendsList = new List<SendToFriendView>();
         if (_controller == null)
             _controller = gameObject.AddComponent<SelectFriendsControler>();
         _controller.Init(this);
-        UpdateFriendsView += _controller.UpdateFriendsLayout;
 
-        // foreach (var g in GameObject.FindGameObjectsWithTag("UserSelection"))
-        // {
-        //     Destroy(g);
-        // }
+        //listners
+        UpdateFriendsView += _controller.UpdateFriendsLayout;
+    }
+
+    public void DisplayNoFriendsText()
+    {
+        Debug.Log("Displaying No Friends Text");
+        _youDontHaveAnyFriendsYetText.SetActive(true);
+    }
+    
+    public void BackToMainScene() {
+        //change the bool so that the main canavs can be enabled after the main scene is loaded
+        ScreenManager.instance.isComingFromCameraScene = true;
+        SceneManager.UnloadSceneAsync(1);
+        ScreenManager.instance.camManager.cameraPanel.SetActive(false);//disabling the camera panel
+        ScreenManager.instance.ChangeScreenNoAnim("HomeScreen");
     }
     
     public void SendButtonPressed()

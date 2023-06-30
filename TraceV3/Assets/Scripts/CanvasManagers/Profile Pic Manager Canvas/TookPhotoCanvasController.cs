@@ -1,6 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Text.RegularExpressions;
 using UnityEngine;
+using NativeGalleryNamespace;
+using Unity.VisualScripting;
+using UnityEngine.Networking;
+using UnityEngine.UI;
 
 public class TookPhotoCanvasController
 {
@@ -20,16 +26,83 @@ public class TookPhotoCanvasController
         LoadImageFromPath();
     }
     
+    // private void LoadImageFromPath()
+    // {
+    //     if (TakePhotoCanvasController.imagePath == "")
+    //         return;
+    //     
+    //     Texture2D tex = new Texture2D(2, 2);
+    //     byte[] imageBytes = System.IO.File.ReadAllBytes(TakePhotoCanvasController.imagePath);
+    //     tex.LoadImage(imageBytes);
+    //     _profilePicture = CropTexture(tex);
+    //     _view._profilePicture.sprite = _profilePicture;
+    // }
+    
     private void LoadImageFromPath()
     {
+        Debug.Log("Load Image From Path:" + TakePhotoCanvasController.imagePath);
         if (TakePhotoCanvasController.imagePath == "")
             return;
-        
-        Texture2D tex = new Texture2D(2, 2);
-        byte[] imageBytes = System.IO.File.ReadAllBytes(TakePhotoCanvasController.imagePath);
-        tex.LoadImage(imageBytes);
-        _profilePicture = CropTexture(tex);
-        _view._profilePicture.sprite = _profilePicture;
+        Debug.Log("Load Image From Path: Image Not Null");
+
+        //deal with diffrent image types
+        if (IsHEICFile(TakePhotoCanvasController.imagePath))
+        {
+            Debug.Log("Load Image From Path: Image is HEIC");
+            LoadHeicImage(TakePhotoCanvasController.imagePath);
+        }
+        else
+        {
+            Debug.Log("Load Image From Path: Image is not HEIC");
+            // Handle other image formats (e.g., PNG, JPG)
+            byte[] imageBytes = System.IO.File.ReadAllBytes(TakePhotoCanvasController.imagePath);
+            Texture2D tex = new Texture2D(2, 2);
+            tex.LoadImage(imageBytes);
+            _profilePicture = CropTexture(tex);
+            _view._profilePicture.sprite = _profilePicture;
+        }
+    }
+    private bool IsHEICFile(string filePath)
+    {
+        string extension = Path.GetExtension(filePath);
+        // Check if the extension indicates a HEIC file
+        if (Regex.IsMatch(extension, @"\.(heic|heif)$", RegexOptions.IgnoreCase))
+        {
+            return true;
+        }
+
+        return false;
+    }
+    
+    private void LoadHeicImage(string filePath)
+    {
+        Debug.Log("Load Heic Image");
+        string url = "file://" + filePath;
+
+        // Load the HEIC file using UnityWebRequest
+        WWW request = new WWW(url);
+        while (!request.isDone) { }
+        Debug.Log("Load Heic Image REQUEST DONE");
+
+        if (string.IsNullOrEmpty(request.error))
+        {
+            Debug.Log("Load Heic Image is not null");
+            // Get the loaded texture
+            Texture2D texture = request.texture;
+            byte[] jpgData = texture.EncodeToJPG();
+            
+            // Create a new texture from the JPG data
+            Debug.Log("Texture2D jpgTexture = new Texture2D(2, 2);");
+            Texture2D jpgTexture = new Texture2D(2, 2);
+            jpgTexture.LoadImage(jpgData);
+            Debug.Log("jpgTexture.LoadImage(jpgData);");
+            _profilePicture = CropTexture(jpgTexture);
+            _view._profilePicture.sprite = _profilePicture;
+        }
+        else
+        {
+            Debug.LogError("Failed to load HEIC image: " + request.error);
+        }
     }
 
     private Sprite CropTexture(Texture2D texture)

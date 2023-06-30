@@ -155,6 +155,11 @@ using UnityEngine;
             rsY = 0;
             rsZ = 0;
         }
+
+        public void ZoomToObject()
+        {
+            
+        }
         private void Start()
         {
             map = OnlineMaps.instance; ;

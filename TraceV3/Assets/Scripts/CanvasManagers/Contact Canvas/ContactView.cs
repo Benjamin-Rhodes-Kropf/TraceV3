@@ -33,12 +33,12 @@ public class ContactView : MonoBehaviour
          }
       });
       _addButton.onClick.RemoveAllListeners();
-      _addButton.onClick.AddListener(OnAddClick);
+      _addButton.onClick.AddListener(OnContactButtonAddClicked);
       _removeButton.onClick.RemoveAllListeners();
       _removeButton.onClick.AddListener(OnRemoveClick);
    }
 
-   private void OnAddClick()
+   private void OnContactButtonAddClicked()
    {
       HelperMethods.SendSMS(_phoneNumber.text, "I've been using this app for the past week and its lowk rly fun leaveatraceapp.com");
    }

@@ -15,10 +15,23 @@ MonoBehaviour:
   Frameworks:
   - FrameworkName: 16
   - FrameworkName: 17
+  - FrameworkName: 2
+  - FrameworkName: 78
+  - FrameworkName: 56
+  - FrameworkName: 85
   EmbededFrameworks: []
   Libraries: []
   Flags: []
   PlistVariables:
+  - Name: LSApplicationQueriesSchemes
+    Type: 3
+    StringValue: 
+    IntegerValue: 0
+    FloatValue: 0
+    BooleanValue: 1
+    ChildrenIds:
+    - 0exdbq3hUnbJ0hFT1OPc
+    - 9cCe4mrEKYof3ZPIM1Wx
   - Name: NSContactsUsageDescription
     Type: 0
     StringValue: Please change 'Contacts Usage Description' with IOS Native Contacts
@@ -186,6 +199,78 @@ MonoBehaviour:
       BooleanValue: 1
       ChildrenIds: []
     uniqueIdKey: sUJhbO4jiKYeHXpVOPOB
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: instagram
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: 0exdbq3hUnbJ0hFT1OPc
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: whatsapp
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: 9cCe4mrEKYof3ZPIM1Wx
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: instagram
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: x1fIp1kDxWH1eC3wCWxg
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: whatsapp
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: TQXqF2AlvcncvFBrmlNL
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: instagram
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: 7cFSkpfYHiUe5oOeTG16
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: whatsapp
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: IjXKZYNqvtw22E9A6HTV
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: instagram
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: BgwiBFpEQxb5si1UALHB
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: whatsapp
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: DCuWuJV4ZVjnuNwnqUCX
   Languages: []
   ShellScripts: []
   m_BuildProperties:
@@ -216,7 +301,7 @@ MonoBehaviour:
       iCloudDocument: 0
       CustomContainers: []
     PushNotifications:
-      Enabled: 0
+      Enabled: 1
       Development: 1
     GameCenter:
       Enabled: 0
@@ -259,6 +344,8 @@ MonoBehaviour:
       Enabled: 0
     WirelessAccessoryConfiguration:
       Enabled: 0
-  Files: []
+  Files:
+  - XCodePath: 
+    Asset: {fileID: 8300000, guid: 3794b815828e84d12a4a2a224e5b11bd, type: 3}
   EntitlementsMode: 0
   EntitlementsFile: {fileID: 0}

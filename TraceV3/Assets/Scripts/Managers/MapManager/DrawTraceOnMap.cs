@@ -38,8 +38,7 @@ public class DrawTraceOnMap : MonoBehaviour
             
             // Convert remote coordinate to tile position
             map.projection.CoordinatesToTile(nlng, nlat, 20, out tx2, out ty2);
-                
-                
+            
             // Calculate radius in tiles
             double r = tx2 - tx1;
             
@@ -59,7 +58,7 @@ public class DrawTraceOnMap : MonoBehaviour
             }
             
             // Create a new polygon to draw a circle
-            OnlineMapsDrawingElementManager.AddItem(new OnlineMapsDrawingPoly(points, Color.white, 3, new Color(10, 10, 10, 0.1f)));
+            OnlineMapsDrawingElementManager.AddItem(new OnlineMapsDrawingPoly(points, Color.white, 1, new Color(10, 10, 10, 0.1f)));
         }
     }
     

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using SA.iOS.Contacts;
@@ -6,8 +7,7 @@ using UnityEngine;
 
 public class ContactManger : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private void OnEnable()
     {
         Debug.Log("Attempting To Get Contanct Information");
         var status = ISN_CNContactStore.GetAuthorizationStatus(ISN_CNEntityType.Contacts);
@@ -32,6 +32,12 @@ public class ContactManger : MonoBehaviour
                 Debug.Log("Error: " + result.Error.Message);
             }
         });
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        
     }
 
     // Update is called once per frame

@@ -56,8 +56,6 @@ public class TakePhotoCanvasController
         
         imagePath = path;
         ScreenManager.instance.ChangeScreenForwards("TookPhoto");
-
-       
     }
 
 }

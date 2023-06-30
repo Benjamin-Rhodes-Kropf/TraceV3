@@ -11,6 +11,8 @@ public class ScaleMapElements : MonoBehaviour
     [SerializeField] private float radiusSize;
     [SerializeField] private float scaleLimitForSwitchImage;
     [SerializeField] private AnimationCurve scaler;
+    [SerializeField] private AnimationCurve scalerFineTune;
+
     
     private void Update()
     {
@@ -25,7 +27,7 @@ public class ScaleMapElements : MonoBehaviour
         
         var traceScale = new double();
         var zoomfloat = map.floatZoom;
-        traceScale = scaler.Evaluate(zoomfloat);
+        traceScale = scaler.Evaluate(zoomfloat)+scalerFineTune.Evaluate(zoomfloat);
 
         //Sets the way a trace looks and changes with zoom depending on scale
         for (int i = 1; i < markerManager.items.Count; i++)

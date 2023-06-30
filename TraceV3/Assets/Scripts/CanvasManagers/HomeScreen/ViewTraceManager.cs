@@ -52,13 +52,14 @@ public class ViewTraceManager :  MonoBehaviour, IDragHandler, IEndDragHandler
         senderDateDisplay.text = sendDate;
         canUsePhysics = true;
         hasBegunExit = false;
+        m_targetYVal = 1400;
     }
 
     public void ClosePreview()
     {
         Debug.Log("ExitTrace");
-        m_targetYVal = 0;
         hasBegunExit = true;
+        m_targetYVal = -1000;
     }
     
     public void Update()
@@ -91,7 +92,6 @@ public class ViewTraceManager :  MonoBehaviour, IDragHandler, IEndDragHandler
         {
             Dy = 0;
         }
-        
     }
     
     public void OnDrag(PointerEventData eventData)
