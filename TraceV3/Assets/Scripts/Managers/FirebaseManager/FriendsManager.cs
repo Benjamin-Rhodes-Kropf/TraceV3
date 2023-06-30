@@ -25,14 +25,14 @@ public partial class FbManager
 
                 if (receiverId != _firebaseUser.UserId)
                 {
-                    //_databaseReference.Child("allFriendRequests").ChildAdded -= HandleFriendRequest;
+                    _databaseReference.Child("allFriendRequests").ChildAdded -= HandleFriendRequest;
                     return;
                 }
                 
                 if (FriendRequestManager.Instance.IsRequestAllReadyInList(senderId) || senderId == _firebaseUser.UserId)
                 {
                     Debug.Log("RequestAllReadyInList: " + senderId);
-                    //_databaseReference.Child("allFriendRequests").ChildAdded -= HandleFriendRequest;
+                    _databaseReference.Child("allFriendRequests").ChildAdded -= HandleFriendRequest; //Todo Why do this?
                     return;
                 }
 
@@ -275,10 +275,9 @@ public partial class FbManager
         // Get the current user's ID
         var userId = _firebaseUser.UserId;
         var friendRequestsRef = _databaseReference.Child("allFriendRequests");
-
         var task = friendRequestsRef.OrderByChild("receiverId").EqualTo(userId).GetValueAsync();
-        while (task.IsCompleted is false)
-            yield return new WaitForEndOfFrame();
+        
+        while (task.IsCompleted is false) yield return new WaitForEndOfFrame();
 
         if (task.IsCanceled || task.IsFaulted)
         {

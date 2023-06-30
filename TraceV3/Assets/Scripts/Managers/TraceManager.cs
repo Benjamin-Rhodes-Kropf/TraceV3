@@ -47,7 +47,6 @@ public class TraceManager : MonoBehaviour
         recivedTraceObjectsByDistanceToUser = new List<TraceObject>();
         _areTracesInitialized = false;
         Application.runInBackground = true;
-        SubscribeToRemoteNotifications();
         onlineMapsLocationService.updatePosition = true;
         
         //handle map updates
@@ -232,35 +231,6 @@ public class TraceManager : MonoBehaviour
         return -1;
     }
 
-    //Todo: Make this Work with remote notifications
-    public void SubscribeToRemoteNotifications()
-    {
-        iOSNotificationCenter.OnRemoteNotificationReceived += remoteNotification =>
-        {
-            var enterLocationTrigger = new iOSNotificationLocationTrigger
-            {
-                Center = new Vector2(0, 0),
-                Radius = 100,
-                NotifyOnEntry = true,
-                NotifyOnExit = false
-            };
-            Debug.Log("Push Notification is set for a radius of " + enterLocationTrigger.Radius + "Meters"
-                      + " When user enters in " + "Latitude = " + 0 + "===" + "Longitude = " + 0);
-
-            var entryBasedNotification = new iOSNotification
-            {
-                Title = "SenderName",
-                Subtitle =  "Left You A Trace Here",
-                Body = "",
-                //Body = message == "" ? "Radius latitude was > " + latitude + " and longitude was > " + longitude : message,
-                ShowInForeground = true,
-                ForegroundPresentationOption = PresentationOption.Alert | PresentationOption.Sound,
-                Trigger = enterLocationTrigger
-            };
-            // Schedule notification for entry base
-            iOSNotificationCenter.ScheduleNotification(entryBasedNotification);
-        };
-    }
 
 
     // Update is called once per frame //todo: move out of update

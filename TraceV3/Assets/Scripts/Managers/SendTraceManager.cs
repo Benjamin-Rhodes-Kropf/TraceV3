@@ -45,7 +45,7 @@ public class SendTraceManager : MonoBehaviour
         Debug.Log("SendTraceImage Lat:" + location.x);
         FbManager.instance.UploadTrace(fileLocation, radius, location, mediaType,usersToSendTo);
         
-        StartCoroutine(FbManager.instance.GetMyUserNickName(nickName =>
+        StartCoroutine(FbManager.instance.GetThisUserNickName(nickName =>
         {
             foreach (var userId in usersToSendTo)
             {

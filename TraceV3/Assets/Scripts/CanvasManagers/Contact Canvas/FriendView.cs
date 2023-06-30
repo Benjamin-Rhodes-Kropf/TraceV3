@@ -128,7 +128,7 @@ public class FriendView : MonoBehaviour
             _addRemoveButton.interactable = true;
             Debug.Log("friend requested at:" + friendUID);
 
-            StartCoroutine(FbManager.instance.GetMyUserNickName(nickName =>
+            StartCoroutine(FbManager.instance.GetThisUserNickName(nickName =>
             {
                 BackgroundNotificationManager.Instance.SendNotificationUsingFirebaseUserId(friendUID,
                     "You Received a Friend Request from " + nickName);

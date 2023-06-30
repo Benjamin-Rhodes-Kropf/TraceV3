@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Helper;
+using Unity.Notifications.iOS;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -20,6 +21,36 @@ public class BackgroundNotificationManager : UnitySingleton<BackgroundNotificati
     //     
     //     StartCoroutine(SendNotificationUsingFcmTokenEnumerator(fcmToken, title, message));
     // }
+
+    //Todo: Make this Work with remote notifications
+    public void SubscribeToRemoteNotifications()
+    {
+        iOSNotificationCenter.OnRemoteNotificationReceived += remoteNotification =>
+        {
+            var enterLocationTrigger = new iOSNotificationLocationTrigger
+            {
+                Center = new Vector2(0, 0),
+                Radius = 100,
+                NotifyOnEntry = true,
+                NotifyOnExit = false
+            };
+            Debug.Log("Push Notification is set for a radius of " + enterLocationTrigger.Radius + "Meters"
+                      + " When user enters in " + "Latitude = " + 0 + "===" + "Longitude = " + 0);
+
+            var entryBasedNotification = new iOSNotification
+            {
+                Title = "SenderName",
+                Subtitle =  "Left You A Trace Here",
+                Body = "",
+                //Body = message == "" ? "Radius latitude was > " + latitude + " and longitude was > " + longitude : message,
+                ShowInForeground = true,
+                ForegroundPresentationOption = PresentationOption.Alert | PresentationOption.Sound,
+                Trigger = enterLocationTrigger
+            };
+            // Schedule notification for entry base
+            iOSNotificationCenter.ScheduleNotification(entryBasedNotification);
+        };
+    }
 
     public async void SendNotificationUsingFirebaseUserId(string firebaseUserId, string title = "", string message = "")
     {
