@@ -235,7 +235,7 @@ namespace CanvasManagers
      
         private void LoadAllRequests()
         {
-            var users = UserDataManager.Instance.GetFriendRequested();
+            var users = UserDataManager.Instance.GetReceivedFriendRequested();
             ClearRequestView();
             _allRequests = new List<RequestView>();
             if (users.Count > 0)

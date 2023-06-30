@@ -58,6 +58,10 @@ namespace CanvasManagers
             UpdateRequestView += _controller.UpdateRequestLayout;
             UpdateFriendsView += _controller.UpdateFriendsLayout;
             UpdateRedMarks += _controller.UpdateSelectionPanelView;
+
+            Debug.Log("# OF FRIENDS:" + FbManager.instance._allFriends.Count);
+            Debug.Log("# OF SENT REQUESTS:" + FbManager.instance._allSentRequests.Count);
+            Debug.Log("# OF RECEIVED REQUESTS:" + FbManager.instance._allReceivedRequests.Count);
         }
 
         private void OnDisable()

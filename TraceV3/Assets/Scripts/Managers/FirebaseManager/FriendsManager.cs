@@ -8,7 +8,7 @@ using Firebase.Database;
 
 public partial class FbManager
 {
-    [HideInInspector] public List<string> _previousRequestFrom;
+    //[HideInInspector] public List<string> _previousRequestFrom;
     public List<FriendRequests> _allReceivedRequests;
     public List<FriendRequests> _allSentRequests;
     public List<FriendModel> _allFriends;
@@ -16,6 +16,7 @@ public partial class FbManager
     #region Continues Listners
     private void HandleFriendRequest(object sender, ChildChangedEventArgs args)
     {
+        Debug.Log("HandleFriendRequest");
         try
         {
             if (args.Snapshot != null && args.Snapshot.Value != null)
@@ -72,6 +73,7 @@ public partial class FbManager
     }
     private void HandleRemovedRequests(object sender, ChildChangedEventArgs args)
     {
+        Debug.Log("HandleRemovedRequests");
         try
         {
             if (args.Snapshot is not { Value: { } }) return;
@@ -89,6 +91,7 @@ public partial class FbManager
     }
     private void HandleFriends(object sender, ChildChangedEventArgs args)
     {
+        Debug.Log("HandleFriends");
         try
         {
             if (args.Snapshot == null || args.Snapshot.Value == null) return;
@@ -113,7 +116,6 @@ public partial class FbManager
                 ContactsCanvas.UpdateFriendsView?.Invoke();
             ContactsCanvas.UpdateRedMarks();
             _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildAdded -= HandleFriends;
-
         }
         catch (Exception e)
         {
@@ -138,51 +140,12 @@ public partial class FbManager
             Console.WriteLine(e);
         }
     }
-
     private void HandleFriendsUserLogout()
     {
         _allReceivedRequests.Clear();
         _allSentRequests.Clear();
         _allFriends.Clear();
     }
-    //THESE ARE NOT NEEDED BECAUSE THEY ARE LISTENER FUNCTIONS... WE DONT NEED TO CHECK ALL THE TIME
-    // IEnumerator CheckForFriendRequest()
-    // {
-    //     while (true)
-    //     {
-    //         yield return new WaitForSeconds(_timeToRepeatForCheckingRequest);
-    //         _databaseReference.Child("allFriendRequests").ChildAdded += HandleFriendRequest;
-    //     }
-    // }
-
-    // IEnumerator CheckIfFriendRequestRemoved()
-    // {
-    //     while (true)
-    //     {
-    //         yield return new WaitForSeconds(_timeToRepeatForCheckingRequest);
-    //         _databaseReference.Child("allFriendRequests").ChildRemoved += HandleRemovedRequests;
-    //     }
-    // }
-
-
-    // IEnumerator CheckForNewFriends()
-    // {
-    //     while (true)
-    //     {
-    //         yield return new WaitForSeconds(_timeToRepeatForCheckingRequest);
-    //         _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildAdded += HandleFriends;
-    //     }
-    // }
-    
-    // IEnumerator CheckIfFriendRemoved()
-    // {
-    //     while (true)
-    //     {
-    //         yield return new WaitForSeconds(_timeToRepeatForCheckingRequest);
-    //         _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildRemoved += HandleRemovedFriends;
-    //     }
-    // }
-
     #endregion
 
     public IEnumerator SendFriendRequest(string friendId, Action<bool> callback)
@@ -270,8 +233,9 @@ public partial class FbManager
     }
 
     #region Query Functions
-    private IEnumerator RetrieveFriendRequests()
+    private IEnumerator RetrieveReceivedFriendRequests()
     {
+        Debug.Log("RetrieveReceivedFriendRequests");
         // Get the current user's ID
         var userId = _firebaseUser.UserId;
         var friendRequestsRef = _databaseReference.Child("allFriendRequests");

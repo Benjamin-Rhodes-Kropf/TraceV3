@@ -18,13 +18,10 @@ public class UserDataManager
             return instance;
         }
     }
-
-
     private UserDataManager()
     {
         
     }
-    
     public List<UserModel> GetUsersByLetters(string name)
     {
         List<UserModel> selectedUsers = new List<UserModel>();
@@ -40,18 +37,15 @@ public class UserDataManager
 
         return selectedUsers;
     }
-
-    
-
     public bool IsUsernameAvailable(string userName)
     {
         var users = GetUsersByLetters(userName);
         return users.Count < 1;
     }
-
-
-    public List<UserModel> GetFriendRequested()
+    
+    public List<UserModel> GetReceivedFriendRequested()
     {
+        Debug.Log("GetReceivedFriendRequested");
         List<UserModel> users = new List<UserModel>();
         foreach (var request in FbManager.instance._allReceivedRequests)
         {
@@ -68,9 +62,9 @@ public class UserDataManager
         }
         return users;
     }
-    
     public List<UserModel> GetSentFriendRequests()
     {
+        Debug.Log("GetSentFriendRequests");
         List<UserModel> users = new List<UserModel>();
         foreach (var request in FriendRequestManager.Instance._allSentRequests)
         {
@@ -84,9 +78,10 @@ public class UserDataManager
         }
         return users;
     }
+    
     public List<UserModel> GetRequestsByName(string name, bool isReceived =  true)
     {
-        var users = isReceived ? GetFriendRequested() : GetSentFriendRequests();
+        var users = isReceived ? GetReceivedFriendRequested() : GetSentFriendRequests();
         List<UserModel> selectedUsers = new List<UserModel>();
         if (string.IsNullOrEmpty(name) is false && users.Count > 0)
         {
@@ -101,7 +96,6 @@ public class UserDataManager
         }
         return selectedUsers;
     }
-    
     public List<UserModel> GetAllFriends()
     {
         List<UserModel> users = new List<UserModel>();
@@ -116,7 +110,6 @@ public class UserDataManager
         }
         return users;
     }
-
     public List<UserModel> GetFriendsByName(string name)
     {
         var users = GetAllFriends();
@@ -134,7 +127,6 @@ public class UserDataManager
         }
         return selectedUsers;
     }
-
     public void GetAllUsersBySearch(string name, out List<UserModel> friends, out List<UserModel> requests, out List<UserModel> requestsSent, out List<UserModel> others)
     {
         friends = new List<UserModel>();
@@ -147,5 +139,4 @@ public class UserDataManager
         requestsSent = GetRequestsByName(name, false);
         others = GetUsersByLetters(name);
     }
-    
 }

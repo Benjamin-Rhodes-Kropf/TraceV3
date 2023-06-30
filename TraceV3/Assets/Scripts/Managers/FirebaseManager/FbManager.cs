@@ -18,6 +18,7 @@ using DownloadHandler = Networking.DownloadHandler;
 using Object = System.Object;
 
 
+[System.Serializable]
 public partial class FbManager : MonoBehaviour
 {
     [Header("Dont Destroy")]
@@ -38,11 +39,12 @@ public partial class FbManager : MonoBehaviour
     [SerializeField] private string adminUser;
     [SerializeField] private string adminPass;
     [SerializeField] private bool resetPlayerPrefs;
-
+    
     [Header("User Data")] 
     public Texture userImageTexture;
     public UserModel thisUserModel;
-    [SerializeField] private List<UserModel> users; 
+    [SerializeField] private List<UserModel> users;
+    
     
     public List<UserModel> AllUsers
     {
@@ -115,7 +117,6 @@ public partial class FbManager : MonoBehaviour
         Debug.Log("initializing firebase");
         _firebaseAuth = FirebaseAuth.DefaultInstance;
         _databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
-        _previousRequestFrom = new List<string>();
         _allReceivedRequests = new List<FriendRequests>();
         _allSentRequests = new List<FriendRequests>();
         _allFriends = new List<FriendModel>();
@@ -218,7 +219,7 @@ public partial class FbManager : MonoBehaviour
         //once user logged in
         GetAllUserNames(); //Todo: we really should not be doing this
         GetCurrentUserData(_password);
-        StartCoroutine(RetrieveFriendRequests());
+        StartCoroutine(RetrieveReceivedFriendRequests());
         StartCoroutine(RetrieveSentFriendRequests());
         StartCoroutine(RetrieveFriends());
         ContinuesListners();
