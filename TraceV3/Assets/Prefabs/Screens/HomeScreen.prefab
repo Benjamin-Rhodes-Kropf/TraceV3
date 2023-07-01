@@ -1510,7 +1510,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &3462241307661885661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3992,7 +3992,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
-  m_RaycastPadding: {x: -70, y: -50, z: -70, w: -50}
+  m_RaycastPadding: {x: -70, y: -50, z: -70, w: -65}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
