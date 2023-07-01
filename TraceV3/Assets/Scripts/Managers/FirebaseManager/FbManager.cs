@@ -39,6 +39,9 @@ public partial class FbManager : MonoBehaviour
     [SerializeField] private string adminUser;
     [SerializeField] private string adminPass;
     [SerializeField] private bool resetPlayerPrefs;
+
+    [Header("Maps References")]
+    [SerializeField] private DrawTraceOnMap _drawTraceOnMap;
     
     [Header("User Data")] 
     public Texture userImageTexture;
@@ -314,21 +317,21 @@ public partial class FbManager : MonoBehaviour
         {
             UnsubscribeFromListiners();
             HandleFriendsManagerClearData();
+            _drawTraceOnMap.Clear();
+            TraceManager.instance.recivedTraceObjects.Clear();
+            TraceManager.instance.sentTraceObjects.Clear();
+            HomeScreenManager.isInSendTraceView = false;
+            thisUserModel = new UserModel();
+            _firebaseAuth.SignOut();
+            PlayerPrefs.SetString("Username", "null");
+            PlayerPrefs.SetString("Password", "null");
+            StartCoroutine(SetUserLoginStatus(false, isSusscess =>
+            {
+                if (isSusscess) print("Updated Login Status");
+            }));
         }
-
-        StartCoroutine(RemoveFCMDeviceToken());
-        StartCoroutine(SetUserLoginStatus(false, isSusscess =>
-        {
-            if (isSusscess) print("Updated Login Status");
-        }));
-        TraceManager.instance.recivedTraceObjects.Clear();
-        TraceManager.instance.sentTraceObjects.Clear();
-        HomeScreenManager.isInSendTraceView = false;
-        thisUserModel = new UserModel();
-        _firebaseAuth.SignOut();
-        PlayerPrefs.SetString("Username", "null");
-        PlayerPrefs.SetString("Password", "null");
         
+        StartCoroutine(RemoveFCMDeviceToken());
         ScreenManager.instance.ChangeScreenForwards("Welcome");
     }
     #endregion

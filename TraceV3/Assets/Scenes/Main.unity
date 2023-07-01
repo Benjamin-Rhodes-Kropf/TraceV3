@@ -1559,6 +1559,7 @@ MonoBehaviour:
   adminUser: userthree@gmail.com
   adminPass: Bark2004!
   resetPlayerPrefs: 0
+  _drawTraceOnMap: {fileID: 6068666308761308086}
   userImageTexture: {fileID: 0}
   thisUserModel:
     userId: 
@@ -2928,6 +2929,50 @@ PrefabInstance:
     - target: {fileID: 7534142397042419429, guid: 77f5644476108469381764824c2bf626, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7534142397184204226, guid: 77f5644476108469381764824c2bf626, type: 3}
+      propertyPath: m_RaycastPadding.w
+      value: -300
+      objectReference: {fileID: 0}
+    - target: {fileID: 7534142397184204226, guid: 77f5644476108469381764824c2bf626, type: 3}
+      propertyPath: m_RaycastPadding.x
+      value: -400
+      objectReference: {fileID: 0}
+    - target: {fileID: 7534142397184204226, guid: 77f5644476108469381764824c2bf626, type: 3}
+      propertyPath: m_RaycastPadding.y
+      value: -300
+      objectReference: {fileID: 0}
+    - target: {fileID: 7534142397184204226, guid: 77f5644476108469381764824c2bf626, type: 3}
+      propertyPath: m_RaycastPadding.z
+      value: -2000
+      objectReference: {fileID: 0}
+    - target: {fileID: 7534142397184204227, guid: 77f5644476108469381764824c2bf626, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7534142397184204227, guid: 77f5644476108469381764824c2bf626, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7534142397184204227, guid: 77f5644476108469381764824c2bf626, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 600464280}
+    - target: {fileID: 7534142397184204227, guid: 77f5644476108469381764824c2bf626, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7534142397184204227, guid: 77f5644476108469381764824c2bf626, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: SelectionHaptic
+      objectReference: {fileID: 0}
+    - target: {fileID: 7534142397184204227, guid: 77f5644476108469381764824c2bf626, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: HapticManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7534142397184204227, guid: 77f5644476108469381764824c2bf626, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 7534142397557080701, guid: 77f5644476108469381764824c2bf626, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -5002,6 +5047,22 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 9133073691250878120, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
+      propertyPath: m_RaycastPadding.w
+      value: -30
+      objectReference: {fileID: 0}
+    - target: {fileID: 9133073691250878120, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
+      propertyPath: m_RaycastPadding.x
+      value: -15
+      objectReference: {fileID: 0}
+    - target: {fileID: 9133073691250878120, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
+      propertyPath: m_RaycastPadding.y
+      value: -30
+      objectReference: {fileID: 0}
+    - target: {fileID: 9133073691250878120, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
+      propertyPath: m_RaycastPadding.z
+      value: -15
+      objectReference: {fileID: 0}
     - target: {fileID: 9133073691508210380, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -5029,6 +5090,62 @@ PrefabInstance:
     - target: {fileID: 9133073691508210380, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 9133073691508210383, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
+      propertyPath: m_Color.b
+      value: 0.5019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 9133073691508210383, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
+      propertyPath: m_Color.g
+      value: 0.5019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 9133073691508210383, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
+      propertyPath: m_Color.r
+      value: 0.5019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 9133073691508210383, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
+      propertyPath: m_RaycastPadding.w
+      value: -70
+      objectReference: {fileID: 0}
+    - target: {fileID: 9133073691508210383, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
+      propertyPath: m_RaycastPadding.x
+      value: -100
+      objectReference: {fileID: 0}
+    - target: {fileID: 9133073691508210383, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
+      propertyPath: m_RaycastPadding.y
+      value: -70
+      objectReference: {fileID: 0}
+    - target: {fileID: 9133073691508210383, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
+      propertyPath: m_RaycastPadding.z
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 9133073692670474465, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
+      propertyPath: m_Color.b
+      value: 0.5019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 9133073692670474465, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
+      propertyPath: m_Color.g
+      value: 0.5019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 9133073692670474465, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
+      propertyPath: m_Color.r
+      value: 0.5019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 9133073692670474465, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
+      propertyPath: m_RaycastPadding.w
+      value: -70
+      objectReference: {fileID: 0}
+    - target: {fileID: 9133073692670474465, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
+      propertyPath: m_RaycastPadding.x
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 9133073692670474465, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
+      propertyPath: m_RaycastPadding.y
+      value: -70
+      objectReference: {fileID: 0}
+    - target: {fileID: 9133073692670474465, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
+      propertyPath: m_RaycastPadding.z
+      value: -100
       objectReference: {fileID: 0}
     - target: {fileID: 9133073692670474478, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -5149,6 +5266,22 @@ PrefabInstance:
     - target: {fileID: 9133073692678122615, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9133073692790371070, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
+      propertyPath: m_RaycastPadding.w
+      value: -70
+      objectReference: {fileID: 0}
+    - target: {fileID: 9133073692790371070, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
+      propertyPath: m_RaycastPadding.x
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 9133073692790371070, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
+      propertyPath: m_RaycastPadding.y
+      value: -70
+      objectReference: {fileID: 0}
+    - target: {fileID: 9133073692790371070, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
+      propertyPath: m_RaycastPadding.z
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 9133073692790371071, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -5427,7 +5560,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9172647568999289980, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9172647569576335169, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -6537,7 +6670,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7069077438171782112, guid: 48051510910734c74ae02d431ff9434b, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7069077438171782116, guid: 48051510910734c74ae02d431ff9434b, type: 3}
       propertyPath: m_Pivot.x

@@ -206,7 +206,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         }
 
         //changed from g to m
-        Debug.Log("m_transform.localPosition.y:" + m_transform.localPosition.y);
+        //Debug.Log("m_transform.localPosition.y:" + m_transform.localPosition.y);
         if (hasBegunCloseTrace && m_transform.localPosition.y < m_YResetLimit && canCloseTrace)
         {
             Debug.Log("RESET OPEN TRACE");
