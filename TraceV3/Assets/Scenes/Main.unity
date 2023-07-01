@@ -1570,7 +1570,9 @@ MonoBehaviour:
     PhotoURL: 
     Password: 
   users: []
-  _previousRequestFrom: []
+  _allReceivedRequests: []
+  _allSentRequests: []
+  _allFriends: []
 --- !u!1 &1264560429
 GameObject:
   m_ObjectHideFlags: 0
@@ -2678,7 +2680,7 @@ PrefabInstance:
     - target: {fileID: 7534142396318167323, guid: 77f5644476108469381764824c2bf626, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 1196670846}
+      objectReference: {fileID: 3427427977734507227}
     - target: {fileID: 7534142396318167323, guid: 77f5644476108469381764824c2bf626, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
@@ -2689,7 +2691,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7534142396318167323, guid: 77f5644476108469381764824c2bf626, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: LogOut
+      value: Logout
       objectReference: {fileID: 0}
     - target: {fileID: 7534142396318167323, guid: 77f5644476108469381764824c2bf626, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -2697,7 +2699,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7534142396318167323, guid: 77f5644476108469381764824c2bf626, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: FbManager, Assembly-CSharp
+      value: SettingsCanvas, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7534142396318167323, guid: 77f5644476108469381764824c2bf626, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -5425,7 +5427,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9172647568999289980, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9172647569576335169, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target

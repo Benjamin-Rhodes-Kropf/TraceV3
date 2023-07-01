@@ -74,7 +74,7 @@ public class RequestView : MonoBehaviour
     //  TODO: ii. Remove Request From Firebase
     public void OnClickRemove()
     {
-        FbManager.instance.CancelFriendRequest(requestId);        
+        FbManager.instance.CancelFriendRequest(senderId);        
         FriendRequestManager.Instance.RemoveRequestFromList(requestId, _buttonText.text != "Sent");
         ContactsCanvas.UpdateRedMarks?.Invoke();
         gameObject.SetActive(false);

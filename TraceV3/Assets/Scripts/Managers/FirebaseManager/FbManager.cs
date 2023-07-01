@@ -151,7 +151,7 @@ public partial class FbManager : MonoBehaviour
                 else
                 {
                     Debug.LogError("FbManager: failed to auto login");
-                    LogOut();
+                    LogOut(LoginStatus.LoggedOut);
                 }
             }));
         }
@@ -219,8 +219,8 @@ public partial class FbManager : MonoBehaviour
         //once user logged in
         GetAllUserNames(); //Todo: we really should not be doing this
         GetCurrentUserData(_password);
-        StartCoroutine(RetrieveReceivedFriendRequests());
-        StartCoroutine(RetrieveSentFriendRequests());
+        //StartCoroutine(RetrieveReceivedFriendRequests());
+        //StartCoroutine(RetrieveSentFriendRequests());
         StartCoroutine(RetrieveFriends());
         ContinuesListners();
         InitializeFCMService();
@@ -243,8 +243,12 @@ public partial class FbManager : MonoBehaviour
     private void ContinuesListners()
     {
         //this is bad... this is called any time any friend request occurs globally in the database
-        _databaseReference.Child("allFriendRequests").ChildAdded += HandleFriendRequest;
-        _databaseReference.Child("allFriendRequests").ChildRemoved += HandleRemovedRequests;
+        _databaseReference.Child("FriendsReceive").Child(_firebaseUser.UserId).ChildAdded += HandleReceivedFriendRequest;
+        _databaseReference.Child("FriendsReceive").Child(_firebaseUser.UserId).ChildRemoved += HandleReceivedRemovedRequests;
+        
+        _databaseReference.Child("FriendsSent").Child(_firebaseUser.UserId).ChildAdded += HandleSentFriendRequest;
+        _databaseReference.Child("FriendsSent").Child(_firebaseUser.UserId).ChildRemoved += HandleSentRemovedRequests;
+        
         _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildAdded += HandleFriends;
         _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildRemoved += HandleRemovedFriends;
         
@@ -254,8 +258,12 @@ public partial class FbManager : MonoBehaviour
     }
     private void UnsubscribeFromListiners()
     { 
-        _databaseReference.Child("allFriendRequests").ChildAdded -= HandleFriendRequest; 
-        _databaseReference.Child("allFriendRequests").ChildRemoved -= HandleRemovedRequests; 
+        _databaseReference.Child("FriendsReceive").Child(_firebaseUser.UserId).ChildAdded -= HandleReceivedFriendRequest;
+        _databaseReference.Child("FriendsReceive").Child(_firebaseUser.UserId).ChildRemoved -= HandleReceivedRemovedRequests;
+
+        _databaseReference.Child("FriendsSent").Child(_firebaseUser.UserId).ChildAdded -= HandleSentFriendRequest;
+        _databaseReference.Child("FriendsSent").Child(_firebaseUser.UserId).ChildRemoved -= HandleSentRemovedRequests;
+        
         _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildAdded -= HandleFriends; 
         _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildRemoved -= HandleRemovedFriends;
         
@@ -293,7 +301,7 @@ public partial class FbManager : MonoBehaviour
         });
     }
     
-    public void LogOut()
+    public void LogOut(LoginStatus loginStatus)
     {
         Debug.Log("FBManager: logging out");
        
@@ -302,7 +310,12 @@ public partial class FbManager : MonoBehaviour
         IsApplicationFirstTimeOpened = false;
         
         //DB Tasks
-        UnsubscribeFromListiners();
+        if (loginStatus == LoginStatus.LoggedIn)
+        {
+            UnsubscribeFromListiners();
+            HandleFriendsManagerClearData();
+        }
+
         StartCoroutine(RemoveFCMDeviceToken());
         StartCoroutine(SetUserLoginStatus(false, isSusscess =>
         {
@@ -315,7 +328,7 @@ public partial class FbManager : MonoBehaviour
         _firebaseAuth.SignOut();
         PlayerPrefs.SetString("Username", "null");
         PlayerPrefs.SetString("Password", "null");
-        HandleFriendsUserLogout();
+        
         ScreenManager.instance.ChangeScreenForwards("Welcome");
     }
     #endregion
@@ -572,7 +585,7 @@ public partial class FbManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("task failed:" + task.Result);
+            //Debug.Log("task failed:" + task.Result);
         }
 
         DownloadHandler.Instance.DownloadImage(url, callback, () =>
@@ -1195,5 +1208,10 @@ public partial class FbManager : MonoBehaviour
                 // Uh-oh, an error occurred!
             }
         });
+    }
+
+    public enum LoginStatus
+    {
+        LoggedIn, LoggedOut
     }
 }

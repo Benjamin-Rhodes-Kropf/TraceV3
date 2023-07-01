@@ -52,23 +52,22 @@ public class FriendRequestManager
         }
     }
 
-    private FriendRequests GetRequestByRequestID(string requestId, bool isRecievedRequest = true)
+    private FriendRequests GetReceivedRequestByRequestID(string requestId)
     {
-        if (isRecievedRequest)
-        {
-            FriendRequests friendRequest =
-                (from request in FbManager.instance._allReceivedRequests
-                    where request.RequestID.Equals(requestId)
-                    select request).FirstOrDefault();
-            return friendRequest;
-        }
-        else
-        {
-            if (_allSentRequests.ContainsKey(requestId))
-                return _allSentRequests[requestId];
-            else
-                return null;
-        }
+        FriendRequests friendRequest =
+            (from request in FbManager.instance._allReceivedRequests
+                where request.RequestID.Equals(requestId)
+                select request).FirstOrDefault();
+        return friendRequest;
+        
+    }
+    private FriendRequests GetSentRequestByRequestID(string requestId)
+    {
+        FriendRequests friendRequest =
+            (from request in FbManager.instance._allSentRequests
+                where request.RequestID.Equals(requestId)
+                select request).FirstOrDefault();
+        return friendRequest;
     }
 
     public bool IsRequestAllReadyInList(string senderId, bool isReceivedRequest = true)
@@ -87,8 +86,7 @@ public class FriendRequestManager
             return false;
         }        
     }
-
-
+    
     public void RemoveRequestFromList(string senderId, bool isReceivedRequest  = true)
     {
         var request = GetRequestBySenderID(senderId, isReceivedRequest);
@@ -98,8 +96,7 @@ public class FriendRequestManager
         else
             _allSentRequests.Remove(senderId);
     }
-
-
+    
     public string GetRequestID(string senderId, bool isReceivedRequest = true)
     {
         string requestID = "";
@@ -111,18 +108,26 @@ public class FriendRequestManager
         return requestID;
     }
 
-    public void RemoveRequest(string requestId)
+    public void RemoveRecievedRequest(string requestId)
     {
-        var receivedRequest = GetRequestByRequestID(requestId);
+        var receivedRequest = GetReceivedRequestByRequestID(requestId);
         if (receivedRequest != null)
             FbManager.instance._allReceivedRequests.Remove(receivedRequest);
-        else
-        {
-            _allSentRequests.Remove(requestId);
-        }
+
+        //update view
         if (ContactsCanvas.UpdateRequestView != null)
             ContactsCanvas.UpdateRequestView?.Invoke();
-
+    }
+    
+    public void RemoveSentRequest(string requestId)
+    {
+        var sentRequest = GetSentRequestByRequestID(requestId);
+        if (sentRequest != null)
+            FbManager.instance._allSentRequests.Remove(sentRequest);
+        
+        //update view
+        if (ContactsCanvas.UpdateRequestView != null)
+            ContactsCanvas.UpdateRequestView?.Invoke();
     }
 
     public void RemoveRequestByUserID(string userId)

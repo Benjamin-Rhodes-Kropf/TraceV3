@@ -9,7 +9,7 @@ public class SettingsCanvas : MonoBehaviour
    public TMP_Text _usernameText;
    public TMP_Text _profileNameText;
    public Image _profileImage;
-   
+
    private SettingCanvasController _controller;
    
    #region UnityEvents
@@ -46,6 +46,11 @@ public class SettingsCanvas : MonoBehaviour
       string subject = MyEscapeURL("[Get Help]");
       string body = MyEscapeURL("Hello! My name is " + FbManager.instance.thisUserModel.Username + " and I need some help with");
       Application.OpenURL("mailto:" + email + "?subject=" + subject + "&body=" + body);
+   }
+
+   public void Logout()
+   {
+      FbManager.instance.LogOut(FbManager.LoginStatus.LoggedIn);
    }
    string MyEscapeURL(string url)
    {

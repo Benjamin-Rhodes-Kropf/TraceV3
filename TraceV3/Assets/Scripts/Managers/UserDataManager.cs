@@ -52,7 +52,6 @@ public class UserDataManager
             Debug.Log("GetFriendRequested from:" + request.SenderID);
                 foreach (var user in FbManager.instance.AllUsers)
                 {
-                    Debug.Log("Compare:" + user.userId + "to: " + request.SenderID);
                     if (string.Equals(user.userId, request.SenderID))
                     {
                         Debug.Log("ADDED USER:" + user.userId);
@@ -65,15 +64,15 @@ public class UserDataManager
     public List<UserModel> GetSentFriendRequests()
     {
         Debug.Log("GetSentFriendRequests");
+        
         List<UserModel> users = new List<UserModel>();
-        foreach (var request in FriendRequestManager.Instance._allSentRequests)
+        foreach (var request in FbManager.instance._allSentRequests)
         {
-            Debug.Log("GetSentFriendRequested from Key:" + request.Key +" Value:" + request.Value);
+            Debug.Log("GetSentFriendRequested from Key:" + request.ReceiverId);
             var _userSearchQuery =
                 from user in FbManager.instance.AllUsers
-                where string.Equals(user.userId, request.Value.ReceiverId, StringComparison.Ordinal)
+                where string.Equals(user.userId, request.ReceiverId, StringComparison.Ordinal)
                 select user;
-
             users.AddRange(_userSearchQuery.ToArray());
         }
         return users;
