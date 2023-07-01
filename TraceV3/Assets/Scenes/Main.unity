@@ -6077,8 +6077,8 @@ MonoBehaviour:
   useProxy: 1
   useSoftwareJPEGDecoder: 0
   width: 4096
-  _activeTypeSettings: 07User ID21018benrk10006Map ID228225cle5v79j8000201k1lr5tl86v12Access
-    Token293290pk.eyJ1IjoiYmVucmsxMDAiLCJhIjoiY2xid3VqdWJjMDdodDNubjdpaTU2OWZiYSJ9.3ytRbwK51mPCf73LWaJjmA
+  _activeTypeSettings: 07User ID21018benrk10006Map ID228225cljkem6q300e201qp76zfaaya12Access
+    Token293290pk.eyJ1IjoiYmVucmsxMDAiLCJhIjoiY2xlNXRqMmZwMGc4cTNwbnh4OWcxYjhhbSJ9.tKfaEUT7hvBsZml5ucE5CA
   _zoom: 18
   latitude: 0
   longitude: 12.554555376143025
@@ -6335,7 +6335,7 @@ MonoBehaviour:
   recivedTraceObjectsByDistanceToUser: []
   startingPointLatitude: 0
   startingPointLongitude: 0
-  maxDist: 0
+  maxDist: 1
 --- !u!114 &6068666308761308085
 MonoBehaviour:
   m_ObjectHideFlags: 0

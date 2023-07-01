@@ -40,7 +40,7 @@ public class ContactView : MonoBehaviour
 
    private void OnContactButtonAddClicked()
    {
-      HelperMethods.SendSMS(_phoneNumber.text, "I've been using this app for the past week and its lowk rly fun leaveatraceapp.com");
+      HelperMethods.SendSMS(_phoneNumber.text, "What up! I've been using this app for the past week and its lowk rly fun leaveatraceapp.com");
    }
 
    private void OnRemoveClick()

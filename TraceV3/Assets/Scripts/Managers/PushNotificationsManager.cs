@@ -31,10 +31,8 @@ public class PushNotificationsManager : UnitySingleton<PushNotificationsManager>
         Firebase.Messaging.FirebaseMessaging.SubscribeAsync("all");
     }
     
-    
     private void OnTokenReceived(object sender, Firebase.Messaging.TokenReceivedEventArgs token) {
         UnityEngine.Debug.Log("Received Registration Token: " + token.Token);
-        //Constants.DEVICE_NOTIFICATION_TOKEN = token.Token;
     }
     
     private void OnMessageReceived(object sender, Firebase.Messaging.MessageReceivedEventArgs e) {

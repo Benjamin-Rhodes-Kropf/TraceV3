@@ -315,7 +315,7 @@ public partial class FbManager : MonoBehaviour
         //DB Tasks
         if (loginStatus == LoginStatus.LoggedIn)
         {
-            UnsubscribeFromListiners();
+            //UnsubscribeFromListiners();
             HandleFriendsManagerClearData();
             _drawTraceOnMap.Clear();
             TraceManager.instance.recivedTraceObjects.Clear();
@@ -330,10 +330,10 @@ public partial class FbManager : MonoBehaviour
                 if (isSusscess) print("Updated Login Status");
             }));
         }
-        
         StartCoroutine(RemoveFCMDeviceToken());
         ScreenManager.instance.ChangeScreenForwards("Welcome");
     }
+    
     #endregion
     #region -User Registration
     private string GenerateUserProfileJson(string username, string name, string userPhotoLink, string email, string phone) {
@@ -683,55 +683,55 @@ public partial class FbManager : MonoBehaviour
         if (subscribe)
         {
             refrence.ChildAdded += HandleChildAdded;
-            refrence.ChildChanged += HandleChildChanged;
-            refrence.ChildRemoved += HandleChildRemoved;
-            refrence.ChildMoved += HandleChildMoved;
+            //refrence.ChildChanged += HandleChildChanged;
+            //refrence.ChildRemoved += HandleChildRemoved;
+            //refrence.ChildMoved += HandleChildMoved;
         }
         else
         {
             refrence.ChildAdded -= HandleChildAdded;
-            refrence.ChildChanged -= HandleChildChanged;
-            refrence.ChildRemoved -= HandleChildRemoved;
-            refrence.ChildMoved -= HandleChildMoved;
+            //refrence.ChildChanged -= HandleChildChanged;
+            //refrence.ChildRemoved -= HandleChildRemoved;
+            //refrence.ChildMoved -= HandleChildMoved;
         }
         
         void HandleChildAdded(object sender, ChildChangedEventArgs args) {
             if (args.DatabaseError != null) {
-                Debug.LogError(args.DatabaseError.Message);
+                Debug.Log("HandleChildAdded Error");
                 return;
             }
             StartCoroutine(GetRecievedTrace(args.Snapshot.Key));
         }
 
-        void HandleChildChanged(object sender, ChildChangedEventArgs args) {
-            if (args.DatabaseError != null) {
-                Debug.LogError(args.DatabaseError.Message);
-                return;
-            }
-            // Do something with the data in args.Snapshot
-            Debug.Log("child changed:" +args.Snapshot);
-            Debug.Log("value:" +  args.Snapshot.GetRawJsonValue());
-        }
+        // void HandleChildChanged(object sender, ChildChangedEventArgs args) {
+        //     if (args.DatabaseError != null) {
+        //         Debug.LogError(args.DatabaseError.Message);
+        //         return;
+        //     }
+        //     // Do something with the data in args.Snapshot
+        //     Debug.Log("child changed:" +args.Snapshot);
+        //     Debug.Log("value:" +  args.Snapshot.GetRawJsonValue());
+        // }
 
-        void HandleChildRemoved(object sender, ChildChangedEventArgs args) {
-            if (args.DatabaseError != null) {
-                Debug.LogError(args.DatabaseError.Message);
-                return;
-            }
-            // Do something with the data in args.Snapshot
-            Debug.Log("child removed:" +args.Snapshot);
-            Debug.Log("value:" +  args.Snapshot.GetRawJsonValue());
-        }
+        // void HandleChildRemoved(object sender, ChildChangedEventArgs args) {
+        //     if (args.DatabaseError != null) {
+        //         Debug.LogError(args.DatabaseError.Message);
+        //         return;
+        //     }
+        //     // Do something with the data in args.Snapshot
+        //     Debug.Log("child removed:" +args.Snapshot);
+        //     Debug.Log("value:" +  args.Snapshot.GetRawJsonValue());
+        // }
 
-        void HandleChildMoved(object sender, ChildChangedEventArgs args) {
-            if (args.DatabaseError != null) {
-                Debug.LogError(args.DatabaseError.Message);
-                return;
-            }
-            // Do something with the data in args.Snapshot
-            Debug.Log("child moved:" +args.Snapshot);
-            Debug.Log("value:" +  args.Snapshot.GetRawJsonValue());
-        }
+        // void HandleChildMoved(object sender, ChildChangedEventArgs args) {
+        //     if (args.DatabaseError != null) {
+        //         Debug.LogError(args.DatabaseError.Message);
+        //         return;
+        //     }
+        //     // Do something with the data in args.Snapshot
+        //     Debug.Log("child moved:" +args.Snapshot);
+        //     Debug.Log("value:" +  args.Snapshot.GetRawJsonValue());
+        // }
     }
 
 
@@ -741,21 +741,21 @@ public partial class FbManager : MonoBehaviour
         if (subscribe)
         {
             refrence.ChildAdded += HandleChildAdded;
-            refrence.ChildChanged += HandleChildChanged;
-            refrence.ChildRemoved += HandleChildRemoved;
-            refrence.ChildMoved += HandleChildMoved;
+            //refrence.ChildChanged += HandleChildChanged;
+            //refrence.ChildRemoved += HandleChildRemoved;
+            //refrence.ChildMoved += HandleChildMoved;
         }
         else
         {
             refrence.ChildAdded -= HandleChildAdded;
-            refrence.ChildChanged -= HandleChildChanged;
-            refrence.ChildRemoved -= HandleChildRemoved;
-            refrence.ChildMoved -= HandleChildMoved;
+            //refrence.ChildChanged -= HandleChildChanged;
+            //refrence.ChildRemoved -= HandleChildRemoved;
+            //refrence.ChildMoved -= HandleChildMoved;
         }
 
         void HandleChildAdded(object sender, ChildChangedEventArgs args) {
             if (args.DatabaseError != null) {
-                Debug.LogError(args.DatabaseError.Message);
+                Debug.Log("HandleChildAdded Error");
                 return;
             }
             StartCoroutine(GetSentTrace(args.Snapshot.Key));
@@ -763,35 +763,35 @@ public partial class FbManager : MonoBehaviour
             //Debug.Log("value:" +  args.Snapshot.GetRawJsonValue());
         }
 
-        void HandleChildChanged(object sender, ChildChangedEventArgs args) {
-            if (args.DatabaseError != null) {
-                Debug.LogError(args.DatabaseError.Message);
-                //return;
-            }
-            // Do something with the data in args.Snapshot
-            Debug.Log("child changed:" +args.Snapshot);
-            Debug.Log("value:" +  args.Snapshot.GetRawJsonValue());
-        }
+        // void HandleChildChanged(object sender, ChildChangedEventArgs args) {
+        //     if (args.DatabaseError != null) {
+        //         Debug.Log("HandleChildAdded Error");
+        //         //return;
+        //     }
+        //     // Do something with the data in args.Snapshot
+        //     Debug.Log("child changed:" +args.Snapshot);
+        //     Debug.Log("value:" +  args.Snapshot.GetRawJsonValue());
+        // }
 
-        void HandleChildRemoved(object sender, ChildChangedEventArgs args) {
-            if (args.DatabaseError != null) {
-                Debug.LogError(args.DatabaseError.Message);
-                return;
-            }
-            // Do something with the data in args.Snapshot
-            Debug.Log("child removed:" +args.Snapshot);
-            Debug.Log("value:" +  args.Snapshot.GetRawJsonValue());
-        }
+        // void HandleChildRemoved(object sender, ChildChangedEventArgs args) {
+        //     if (args.DatabaseError != null) {
+        //         Debug.LogError(args.DatabaseError.Message);
+        //         return;
+        //     }
+        //     // Do something with the data in args.Snapshot
+        //     Debug.Log("child removed:" +args.Snapshot);
+        //     Debug.Log("value:" +  args.Snapshot.GetRawJsonValue());
+        // }
 
-        void HandleChildMoved(object sender, ChildChangedEventArgs args) {
-            if (args.DatabaseError != null) {
-                Debug.LogError(args.DatabaseError.Message);
-                return;
-            }
-            // Do something with the data in args.Snapshot
-            Debug.Log("child moved:" +args.Snapshot);
-            Debug.Log("value:" +  args.Snapshot.GetRawJsonValue());
-        }
+        // void HandleChildMoved(object sender, ChildChangedEventArgs args) {
+        //     if (args.DatabaseError != null) {
+        //         Debug.LogError(args.DatabaseError.Message);
+        //         return;
+        //     }
+        //     // Do something with the data in args.Snapshot
+        //     Debug.Log("child moved:" +args.Snapshot);
+        //     Debug.Log("value:" +  args.Snapshot.GetRawJsonValue());
+        // }
     }
     public void SubscribeToFriendShipRequests()
     {
