@@ -52,31 +52,7 @@ public class BackgroundNotificationManager : UnitySingleton<BackgroundNotificati
             iOSNotificationCenter.ScheduleNotification(entryBasedNotification);
         };
     }
-    IEnumerator SendNotification(string token, string title, string body)
-    {
-        var url = "https://trace-node-js.vercel.app/sendNotification";
-        var requestData = new Dictionary<string, string>
-        {
-            {"token", token},
-            {"title", title},
-            {"body", body}
-        };
-        var request = new UnityWebRequest(url, "POST");
-        byte[] bodyData = Encoding.UTF8.GetBytes(JsonUtility.ToJson(requestData));
-        request.uploadHandler = new UploadHandlerRaw(bodyData);
-        request.downloadHandler = new DownloadHandlerBuffer();
-        request.SetRequestHeader("Content-Type", "application/json");
-        yield return request.SendWebRequest();
-
-        if (request.isNetworkError || request.isHttpError)
-        {
-            Debug.LogError($"Error sending notification: {request.error}");
-        }
-        else
-        {
-            Debug.Log("Notification sent successfully!");
-        }
-    }
+    
     public async void SendNotificationUsingFirebaseUserId(string firebaseUserId, string title = "", string message = "")
     {
         var fcmToken = await FbManager.instance.GetDeviceTokenForUser(firebaseUserId);
