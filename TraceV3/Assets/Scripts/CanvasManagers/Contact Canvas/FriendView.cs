@@ -127,7 +127,7 @@ public class FriendView : MonoBehaviour
             UpdateRequestStatus(true);
             _addRemoveButton.interactable = true;
             Debug.Log("friend requested at:" + friendUID);
-            BackgroundNotificationManager.Instance.SendNotificationUsingFirebaseUserId(friendUID, "Friend Request" , "from "+FbManager.instance.thisUserModel.DisplayName);
+            BackgroundNotificationManager.Instance.SendNotificationUsingFirebaseUserId(friendUID, FbManager.instance.thisUserModel.DisplayName , "sent you friend request");
         }));
     }
 

@@ -182,12 +182,6 @@ public partial class FbManager
 
             if (string.IsNullOrEmpty(friendId)) return;
             
-            // if (FriendsModelManager.Instance.IsAlreadyFriend(friendId) || friendId == _firebaseUser.UserId)
-            // {
-            //     _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildAdded -= HandleFriends;
-            //     return;
-            // }
-            // Display the friend request to the user and provide options to accept or decline it
             var friend = new FriendModel
             {
                 friend = friendId
@@ -195,10 +189,10 @@ public partial class FbManager
             
             print("New Friend Added :: "+ friendId);
             _allFriends.Add(friend);
+            BackgroundNotificationManager.Instance.SendNotificationUsingFirebaseUserId(friendId, FbManager.instance.thisUserModel.DisplayName , "accepted your friend request!");
             if (ContactsCanvas.UpdateFriendsView != null)
                 ContactsCanvas.UpdateFriendsView?.Invoke();
             ContactsCanvas.UpdateRedMarks();
-            //_databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildAdded -= HandleFriends;
         }
         catch (Exception e)
         {

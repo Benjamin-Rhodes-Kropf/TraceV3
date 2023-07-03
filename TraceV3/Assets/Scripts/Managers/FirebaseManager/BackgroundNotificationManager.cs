@@ -23,11 +23,14 @@ public class BackgroundNotificationManager : UnitySingleton<BackgroundNotificati
     //     StartCoroutine(SendNotificationUsingFcmTokenEnumerator(fcmToken, title, message));
     // }
 
-    //Todo: Make this Work with remote notifications
-    public void SubscribeToRemoteNotifications()
+    public void Start()
     {
+        Application.runInBackground = true;
+        FirebaseMessaging.TokenReceived += OnTokenReceived;
+        FirebaseMessaging.MessageReceived += OnMessageReceived;
         iOSNotificationCenter.OnRemoteNotificationReceived += remoteNotification =>
         {
+            Debug.Log("OnRemoteNotificationReceived!");
             var enterLocationTrigger = new iOSNotificationLocationTrigger
             {
                 Center = new Vector2(0, 0),
@@ -51,6 +54,46 @@ public class BackgroundNotificationManager : UnitySingleton<BackgroundNotificati
             // Schedule notification for entry base
             iOSNotificationCenter.ScheduleNotification(entryBasedNotification);
         };
+    }
+    
+    private void OnTokenReceived(object sender, TokenReceivedEventArgs token)
+    {
+        Debug.Log("Received a new Token!");
+        // Handle token received event, if needed
+    }
+
+    private void OnMessageReceived(object sender, MessageReceivedEventArgs e)
+    {
+        // Handle incoming message
+        Debug.Log("Received a new message!");
+
+        // Extract custom data from the message
+        if (e.Message.Data != null)
+        {
+            foreach (var entry in e.Message.Data)
+            {
+                string key = entry.Key;
+                string value = entry.Value;
+                Debug.LogFormat("Custom Data - Key: {0}, Value: {1}", key, value);
+
+                // Handle custom data here
+                if (key == "customKey1")
+                {
+                    // Handle customKey1 data
+                }
+                else if (key == "customKey2")
+                {
+                    // Handle customKey2 data
+                }
+                // Add more conditions as needed for other custom keys
+            }
+        }
+    }
+    public void OnRemoteNotificationReceived(string notification)
+    {
+        Debug.Log("Received remote notification from iOS: " + notification);
+
+        // Parse the notification data and handle it as needed
     }
     
     public async void SendNotificationUsingFirebaseUserId(string firebaseUserId, string title = "", string message = "")

@@ -13,6 +13,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] private GameObject imageObject;
     [SerializeField] private GameObject videoObject;
     [SerializeField] private string traceID;
+    [SerializeField] private string senderID;
     [SerializeField] private TMP_Text senderNameDisplay;
     [SerializeField] private TMP_Text senderDateDisplay;
    
@@ -94,11 +95,12 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         m_targetYVal = 1200;
     }
     
-    public void ActivatePhotoFormat(string traceID, string sendDate, string senderName)
+    public void ActivatePhotoFormat(string traceID, string sendDate, string senderName, string senderID)
     {
         this.traceID = traceID;
         senderNameDisplay.text = senderName;
         senderDateDisplay.text = sendDate;
+        this.senderID = senderID;
         canUsePhysics = true;
         isPhoto = true;
         imageObject.SetActive(true);
@@ -198,7 +200,9 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
             //Update Map and Database
             FbManager.instance.MarkTraceAsOpened(traceID);
             TraceManager.instance.UpdateTracesOnMap();
+            BackgroundNotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.DisplayName , "opened your trace!");
         }
+        
         if (hasBegunOpenTrace && changeInYVal < changeInYvalCloseLimit && !isDragging && canCloseTrace)
         {
             hasBegunCloseTrace = true;

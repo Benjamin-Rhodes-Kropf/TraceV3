@@ -94,7 +94,7 @@ public class TraceManager : MonoBehaviour
         {
             accessibleTraces.Sort((i1, i2) => i1.Item2.CompareTo(i2.Item2));
             var traceToOpen = accessibleTraces[accessibleTraces.Count - 1];
-            homeScreenManager.OpenTrace(traceToOpen.Item1.id, traceToOpen.Item1.senderName,traceToOpen.Item1.sendTime, traceToOpen.Item1.mediaType);
+            homeScreenManager.OpenTrace(traceToOpen.Item1.id,  traceToOpen.Item1.senderName,traceToOpen.Item1.senderID,traceToOpen.Item1.sendTime, traceToOpen.Item1.mediaType);
         }
         else if(viewableAbleTraces.Count > 0)
         {

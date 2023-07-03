@@ -20,7 +20,7 @@ public class HomeScreenManager : MonoBehaviour
         viewTraceManager.ActivateView(senderName, sendDate);   
     }
     
-    public void OpenTrace(string traceID, string senderName, string sendDate, string mediaType) //Todo: Make mediaType an Enum
+    public void OpenTrace(string traceID, string senderName, string senderID, string sendDate, string mediaType) //Todo: Make mediaType an Enum
     {
         Debug.Log("Open Trace");
         if (traceID == null)
@@ -38,7 +38,7 @@ public class HomeScreenManager : MonoBehaviour
             {
                 if (texture != null)
                 {
-                    openTraceManager.ActivatePhotoFormat(traceID, sendDate, senderName);
+                    openTraceManager.ActivatePhotoFormat(traceID, sendDate, senderName, senderID);
                     openTraceManager.displayTrace.texture = texture;
                 }
                 else

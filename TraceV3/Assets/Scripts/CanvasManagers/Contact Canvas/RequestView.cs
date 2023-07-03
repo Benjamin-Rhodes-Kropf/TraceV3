@@ -62,6 +62,8 @@ public class RequestView : MonoBehaviour
         {
             if (isUpdated)
             {
+                Debug.Log("requestID:" + requestId);
+                Debug.Log("snederID:" + senderId);
                 FriendRequestManager.Instance.RemoveRequestFromList(senderId);
                 ContactsCanvas.UpdateRedMarks?.Invoke();
                 this.gameObject.SetActive(false);
