@@ -128,37 +128,10 @@ public partial class FbManager : MonoBehaviour
    private void Start()
     {
         StartCoroutine(AutoLogin());
-        StartCoroutine(SendNotification("token","title","body"));
+        //StartCoroutine(SendNotification("token","title","body"));
     }
-   
-   IEnumerator SendNotification(string token, string title, string body)
-   {
-       Debug.Log("Send Notification");
-       var url = "https://trace-node-js.vercel.app/sendNotification";
-       var requestData = new Dictionary<string, string>
-       {
-           {"token", token},
-           {"title", title},
-           {"body", body}
-       };
-       var request = new UnityWebRequest(url, "POST");
-       byte[] bodyData = Encoding.UTF8.GetBytes(JsonUtility.ToJson(requestData));
-       request.uploadHandler = new UploadHandlerRaw(bodyData);
-       request.downloadHandler = new DownloadHandlerBuffer();
-       request.SetRequestHeader("Content-Type", "application/json");
-       yield return request.SendWebRequest();
 
-       if (request.isNetworkError || request.isHttpError)
-       {
-           Debug.LogError($"Error sending notification: {request.error}");
-       }
-       else
-       {
-           Debug.Log("Notification sent successfully!");
-       }
-   }
-
-    #region This User
+   #region This User
     #region -User Login/Logout
     public IEnumerator AutoLogin()
     {

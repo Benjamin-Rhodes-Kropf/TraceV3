@@ -62,44 +62,56 @@ public class BackgroundNotificationManager : UnitySingleton<BackgroundNotificati
             return;
         }
         Debug.Log("SendNotificationUsingFirebaseUserId FCM TOKEN:" + fcmToken);
-        StartCoroutine(SendNotificationUsingFcmTokenEnumerator(fcmToken, title, message));
+        StartCoroutine(SendNotification(fcmToken, title, message));
     }
     
-    private static IEnumerator SendNotificationUsingFcmTokenEnumerator(string deviceToken, string title, string message)
+    IEnumerator SendNotification(string token, string title, string body)
     {
-        // Check Android Permissions
-        Permissions.CheckAndroidPermissions();
-    
-        Debug.Log("Sending Notification to: " + deviceToken);
-    
-        // Create the data to send in the notification
-        var bodyObject = new BackgroundNotification.Body
+        Debug.Log("Send Notification");
+        Debug.Log("token:" + token);
+        Debug.Log("title:" + title);
+        Debug.Log("body:" + body);
+        var url = "https://trace-notification-s5iopr6l5a-uc.a.run.app/sendNotification";
+        // var requestData = new Dictionary<string, string>
+        // {
+        //     {"token", token},
+        //     {"title", title},
+        //     {"body", body}
+        // };
+        var requestData = new RequestData();
+        requestData.token = token;
+        requestData.title = title;
+        requestData.body = body;
+        
+        var request = new UnityWebRequest(url, "POST");
+        byte[] bodyData = Encoding.UTF8.GetBytes(JsonUtility.ToJson(requestData));
+        Debug.Log(JsonUtility.ToJson(requestData));
+        request.uploadHandler = new UploadHandlerRaw(bodyData);
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+        yield return request.SendWebRequest();
+
+        if (request.isNetworkError || request.isHttpError)
         {
-            registrationToken = deviceToken
-        };
-    
-        // Serialize the data to JSON
-        var body = JsonUtility.ToJson(bodyObject);
-    
-        // Create a POST request to the Firebase Cloud Messaging API
-        const string url = BaseUrl + "sendNotification";
-        using var www = new UnityWebRequest(url, "POST");
-        var bodyRaw = Encoding.UTF8.GetBytes(body);
-        www.uploadHandler = new UploadHandlerRaw(bodyRaw);
-        www.downloadHandler = new DownloadHandlerBuffer();
-        www.SetRequestHeader("Content-Type", "application/json");
-        yield return www.SendWebRequest();
-    
-        if (www.result == UnityWebRequest.Result.ConnectionError ||
-            www.result == UnityWebRequest.Result.ProtocolError)
-            Debug.Log("SendNotificationUsingFcmTokenEnumerator (" + www.error + "): " + www.downloadHandler?.text);
+            Debug.LogError($"Error sending notification: {request.error}");
+        }
         else
-            Debug.Log("SendNotificationUsingFcmTokenEnumerator (Success):" + www.downloadHandler?.text);
+        {
+            Debug.Log("Notification sent successfully!");
+        }
     }
-    
+
     // private static IEnumerator SendNotificationUsingFcmTokenEnumerator(string deviceToken, string title, string message)
     // {
     //        
     // }
     
+}
+
+[Serializable]
+public class RequestData
+{
+    public string token;
+    public string title;
+    public string body;
 }
