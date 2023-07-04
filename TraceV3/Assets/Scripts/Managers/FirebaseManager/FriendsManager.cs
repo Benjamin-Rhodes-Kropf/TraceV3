@@ -189,7 +189,6 @@ public partial class FbManager
             
             print("New Friend Added :: "+ friendId);
             _allFriends.Add(friend);
-            BackgroundNotificationManager.Instance.SendNotificationUsingFirebaseUserId(friendId, FbManager.instance.thisUserModel.DisplayName , "accepted your friend request!");
             if (ContactsCanvas.UpdateFriendsView != null)
                 ContactsCanvas.UpdateFriendsView?.Invoke();
             ContactsCanvas.UpdateRedMarks();

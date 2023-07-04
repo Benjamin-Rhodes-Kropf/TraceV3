@@ -69,7 +69,7 @@ public class RequestView : MonoBehaviour
                 this.gameObject.SetActive(false);
             }
         })));
-        
+        BackgroundNotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderId, FbManager.instance.thisUserModel.DisplayName , "accepted your friend request!");
     }
 
     //  TODO: i.  Remove Request From Local List
