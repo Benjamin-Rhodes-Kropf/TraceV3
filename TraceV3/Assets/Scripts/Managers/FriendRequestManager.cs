@@ -31,9 +31,10 @@ public class FriendRequestManager
     private FriendRequests GetRequestBySenderID(string senderId, bool isReceivedRequest = true)
     {
         RemoveDuplicates();
+        Debug.Log("GetRequestBySenderID: isReceivedRequest:" + isReceivedRequest.ToString());
         if (isReceivedRequest)
         {
-                FriendRequests friendRequest =
+            FriendRequests friendRequest =
                     (from request in FbManager.instance._allReceivedRequests
                         where request.SenderID.Equals(senderId)
                         select request).FirstOrDefault();
@@ -42,11 +43,20 @@ public class FriendRequestManager
         }
         else
         {
+                Debug.Log("_allSentRequests.Keys");
                 foreach (var id in _allSentRequests.Keys)
                 {
+                    Debug.Log("GetRequestBySenderID:" + _allSentRequests[id].ReceiverId + "compare to:" + id);
+                }
+                foreach (var id in _allSentRequests.Keys)
+                {
+                    Debug.Log("GetRequestBySenderID:" + _allSentRequests[id].ReceiverId + "compare to:" + id);
                     var isExist = _allSentRequests[id].ReceiverId == senderId;
                     if (isExist)
+                    {
+                        Debug.Log("return" + isExist);
                         return _allSentRequests[id];
+                    }
                 }
                 return null;
         }
@@ -94,7 +104,14 @@ public class FriendRequestManager
         if (isReceivedRequest)
             FbManager.instance._allReceivedRequests.Remove(request);
         else
+        {
+            Debug.Log("_allSentRequests.Remove(senderId):" + senderId);
             _allSentRequests.Remove(senderId);
+            foreach (var thing in _allSentRequests)
+            {
+                Debug.Log("Key" + thing.Key);   
+            }
+        }
     }
     
     public string GetRequestID(string senderId, bool isReceivedRequest = true)

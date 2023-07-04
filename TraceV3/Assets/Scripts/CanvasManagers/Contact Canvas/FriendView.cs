@@ -133,7 +133,10 @@ public class FriendView : MonoBehaviour
 
     private void RemoveFriends()
     {
-        // FriendsModelManager.Instance.RemoveFriendFromList(_uid);
+        Debug.Log("RemoveFriends");
+        FriendRequestManager.Instance.RemoveRequestFromList(_uid, false); //new
+        
+        
         FbManager.instance.RemoveFriends(_uid);
         gameObject.SetActive(false);
     }

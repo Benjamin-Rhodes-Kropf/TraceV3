@@ -317,22 +317,22 @@ public partial class FbManager : MonoBehaviour
         //DB Tasks
         if (loginStatus == LoginStatus.LoggedIn)
         {
-            //UnsubscribeFromListiners();
+            UnsubscribeFromListiners();
             HandleFriendsManagerClearData();
+            StartCoroutine(RemoveFCMDeviceToken());
             _drawTraceOnMap.Clear();
-            TraceManager.instance.recivedTraceObjects.Clear();
-            TraceManager.instance.sentTraceObjects.Clear();
-            HomeScreenManager.isInSendTraceView = false;
-            thisUserModel = new UserModel();
-            _firebaseAuth.SignOut();
-            PlayerPrefs.SetString("Username", "null");
-            PlayerPrefs.SetString("Password", "null");
             StartCoroutine(SetUserLoginStatus(false, isSusscess =>
             {
                 if (isSusscess) print("Updated Login Status");
             }));
         }
-        StartCoroutine(RemoveFCMDeviceToken());
+        TraceManager.instance.recivedTraceObjects.Clear();
+        TraceManager.instance.sentTraceObjects.Clear();
+        HomeScreenManager.isInSendTraceView = false;
+        thisUserModel = new UserModel();
+        _firebaseAuth.SignOut();
+        PlayerPrefs.SetString("Username", "null");
+        PlayerPrefs.SetString("Password", "null");
         ScreenManager.instance.ChangeScreenForwards("Welcome");
     }
     
