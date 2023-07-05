@@ -42,8 +42,17 @@ public class ViewTraceManager :  MonoBehaviour, IDragHandler, IEndDragHandler
         m_transform.position = new Vector3(m_transform.position.x, startLocation, m_transform.position.z);
         Dy = 0;
         changeInYVal = 0;
-        m_targetYVal = 1400;
+        m_targetYVal = 2000;
         canUsePhysics = false;
+        
+        if (ScreenSizeManager.instance.simPhoneModel == iPhoneModel.iPhone4_4S)
+        {
+            m_targetYVal = 2000;
+        }
+        if (ScreenSizeManager.instance.simPhoneModel == iPhoneModel.iPhone11)
+        {
+            m_targetYVal = 2000;
+        }
     }
     
     public void ActivateView(string senderName, string sendDate)
@@ -52,7 +61,15 @@ public class ViewTraceManager :  MonoBehaviour, IDragHandler, IEndDragHandler
         senderDateDisplay.text = sendDate;
         canUsePhysics = true;
         hasBegunExit = false;
-        m_targetYVal = 1400;
+        if (ScreenSizeManager.instance.simPhoneModel == iPhoneModel.iPhone4_4S)
+        {
+            m_targetYVal = 2000;
+        }
+        if (ScreenSizeManager.instance.simPhoneModel == iPhoneModel.iPhone11)
+        {
+            m_targetYVal = 2000;
+        }
+        
     }
 
     public void ClosePreview()
