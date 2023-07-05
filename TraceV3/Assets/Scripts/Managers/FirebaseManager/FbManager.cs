@@ -128,7 +128,6 @@ public partial class FbManager : MonoBehaviour
    private void Start()
     {
         StartCoroutine(AutoLogin());
-        //StartCoroutine(SendNotification("token","title","body"));
     }
 
    #region This User
@@ -139,14 +138,12 @@ public partial class FbManager : MonoBehaviour
         {
             yield return null;
         }
-        
         String savedUsername = PlayerPrefs.GetString("Username");
         String savedPassword = PlayerPrefs.GetString("Password");
         
         Debug.Log("saved user:" +  PlayerPrefs.GetString("Username"));
         if (savedUsername != "null" && savedPassword != "null")
         {
-            Debug.Log("auto logging in");
             StartCoroutine(FbManager.instance.Login(savedUsername, savedPassword, (myReturnValue) => {
                 if (myReturnValue.IsSuccessful)
                 {
@@ -162,7 +159,6 @@ public partial class FbManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("pulling up login options");
             ScreenManager.instance.WelcomeScreen();
         }
     }
@@ -224,8 +220,6 @@ public partial class FbManager : MonoBehaviour
         //once user logged in
         GetAllUserNames(); //Todo: we really should not be doing this
         GetCurrentUserData(_password);
-        //StartCoroutine(RetrieveReceivedFriendRequests());
-        //StartCoroutine(RetrieveSentFriendRequests());
         StartCoroutine(RetrieveFriends());
         ContinuesListners();
         InitializeFCMService();

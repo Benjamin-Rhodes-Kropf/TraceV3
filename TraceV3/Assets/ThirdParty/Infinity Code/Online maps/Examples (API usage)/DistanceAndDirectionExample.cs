@@ -34,7 +34,7 @@ namespace InfinityCode.OnlineMapsExamples
                 // Calculate the distance in km between locations.
                 float distance = OnlineMapsUtils.DistanceBetweenPoints(userCoordinares, markerCoordinates).magnitude;
 
-                Debug.Log("Distance: " + distance);
+                //Debug.Log("Distance: " + distance);
 
                 int zoom = 15;
                 int maxX = 1 << (zoom - 1);

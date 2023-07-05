@@ -277,7 +277,7 @@ public class TraceManager : MonoBehaviour
                 var dist = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates((float)traceobject.lat, (float)traceobject.lng, currentLatitude, currentLongitude, (float)(traceobject.radius*1000));
                 if (!traceobject.hasBeenAdded && !traceobject.hasBeenOpened)
                 {
-                    Debug.Log("Dist is: " + dist);
+                    //Debug.Log("Dist is: " + dist);
                     if (dist < 0)
                     {
                         drawTraceOnMap.DrawCirlce(traceobject.lat, traceobject.lng, (traceobject.radius), DrawTraceOnMap.TraceType.RECEIVED, traceobject.id);
