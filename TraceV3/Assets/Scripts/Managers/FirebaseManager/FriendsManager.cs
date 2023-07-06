@@ -205,11 +205,7 @@ public partial class FbManager
             if (args.Snapshot == null || args.Snapshot.Value == null) return;
             var friendId = args.Snapshot.Key.ToString();
             FriendsModelManager.Instance.RemoveFriendFromList(friendId);
-            
-           
-            
             _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildRemoved -= HandleRemovedFriends;
-
         }
         catch (Exception e)
         {

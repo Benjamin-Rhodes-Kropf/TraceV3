@@ -10,6 +10,7 @@ public class ScaleMapElements : MonoBehaviour
     [SerializeField]private OnlineMaps map;
     [SerializeField] private float radiusSize;
     [SerializeField] private float scaleLimitForSwitchImage;
+    [SerializeField] private float scaleOfPin;
     [SerializeField] private AnimationCurve scaler;
     [SerializeField] private AnimationCurve scalerFineTune;
 
@@ -43,7 +44,7 @@ public class ScaleMapElements : MonoBehaviour
             if ( traceScale * radiusSize * item.radius < scaleLimitForSwitchImage)
             {
                 item.SwitchDisplayedImage(false);
-                item.scale = 0.1f;
+                item.scale = scaleOfPin;
             }
             else
             {

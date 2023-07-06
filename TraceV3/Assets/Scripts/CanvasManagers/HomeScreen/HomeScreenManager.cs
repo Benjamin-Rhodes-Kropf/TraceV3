@@ -11,6 +11,8 @@ public class HomeScreenManager : MonoBehaviour
     
     [Header("External")] 
     public static bool isInSendTraceView;
+
+    [SerializeField] private OnlineMaps _maps;
     [SerializeField] private OpenTraceManager openTraceManager;
     [SerializeField] private ViewTraceManager viewTraceManager;
     [SerializeField] private Animator homeScreenAnimator; //Todo: add animation
@@ -19,7 +21,6 @@ public class HomeScreenManager : MonoBehaviour
     {
         viewTraceManager.ActivateView(senderName, sendDate);   
     }
-    
     public void OpenTrace(string traceID, string senderName, string senderID, string sendDate, string mediaType) //Todo: Make mediaType an Enum
     {
         Debug.Log("Open Trace");
@@ -67,5 +68,9 @@ public class HomeScreenManager : MonoBehaviour
             return;
         }
         
+    }
+    public void UpdateMap()
+    {
+        TraceManager.instance.UpdateMap(new Vector2(0,0));
     }
 }

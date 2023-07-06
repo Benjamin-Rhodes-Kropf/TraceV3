@@ -50,7 +50,7 @@ public class SettingsCanvas : MonoBehaviour
 
    public void Logout()
    {
-      FbManager.instance.LogOut(FbManager.LoginStatus.LoggedIn);
+      FbManager.instance.Logout(FbManager.LoginStatus.LoggedIn);
    }
    string MyEscapeURL(string url)
    {

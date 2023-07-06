@@ -28,32 +28,32 @@ public class BackgroundNotificationManager : UnitySingleton<BackgroundNotificati
         Application.runInBackground = true;
         FirebaseMessaging.TokenReceived += OnTokenReceived;
         FirebaseMessaging.MessageReceived += OnMessageReceived;
-        iOSNotificationCenter.OnRemoteNotificationReceived += remoteNotification =>
-        {
-            Debug.Log("OnRemoteNotificationReceived!");
-            var enterLocationTrigger = new iOSNotificationLocationTrigger
-            {
-                Center = new Vector2(0, 0),
-                Radius = 100,
-                NotifyOnEntry = true,
-                NotifyOnExit = false
-            };
-            Debug.Log("Push Notification is set for a radius of " + enterLocationTrigger.Radius + "Meters"
-                      + " When user enters in " + "Latitude = " + 0 + "===" + "Longitude = " + 0);
-
-            var entryBasedNotification = new iOSNotification
-            {
-                Title = "SenderName",
-                Subtitle =  "Left You A Trace Here",
-                Body = "",
-                //Body = message == "" ? "Radius latitude was > " + latitude + " and longitude was > " + longitude : message,
-                ShowInForeground = true,
-                ForegroundPresentationOption = PresentationOption.Alert | PresentationOption.Sound,
-                Trigger = enterLocationTrigger
-            };
-            // Schedule notification for entry base
-            iOSNotificationCenter.ScheduleNotification(entryBasedNotification);
-        };
+        // iOSNotificationCenter.OnRemoteNotificationReceived += remoteNotification =>
+        // {
+        //     Debug.Log("OnRemoteNotificationReceived!");
+        //     var enterLocationTrigger = new iOSNotificationLocationTrigger
+        //     {
+        //         Center = new Vector2(0, 0),
+        //         Radius = 100,
+        //         NotifyOnEntry = true,
+        //         NotifyOnExit = false
+        //     };
+        //     Debug.Log("Push Notification is set for a radius of " + enterLocationTrigger.Radius + "Meters"
+        //               + " When user enters in " + "Latitude = " + 0 + "===" + "Longitude = " + 0);
+        //
+        //     var entryBasedNotification = new iOSNotification
+        //     {
+        //         Title = "SenderName",
+        //         Subtitle =  "Left You A Trace Here",
+        //         Body = "",
+        //         //Body = message == "" ? "Radius latitude was > " + latitude + " and longitude was > " + longitude : message,
+        //         ShowInForeground = true,
+        //         ForegroundPresentationOption = PresentationOption.Alert | PresentationOption.Sound,
+        //         Trigger = enterLocationTrigger
+        //     };
+        //     // Schedule notification for entry base
+        //     iOSNotificationCenter.ScheduleNotification(entryBasedNotification);
+        // };
     }
     
     private void OnTokenReceived(object sender, TokenReceivedEventArgs token)

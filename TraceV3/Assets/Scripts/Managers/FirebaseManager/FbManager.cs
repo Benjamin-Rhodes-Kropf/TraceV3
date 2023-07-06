@@ -128,7 +128,6 @@ public partial class FbManager : MonoBehaviour
    private void Start()
     {
         StartCoroutine(AutoLogin());
-        //StartCoroutine(SendNotification("token","title","body"));
     }
 
    #region This User
@@ -139,14 +138,12 @@ public partial class FbManager : MonoBehaviour
         {
             yield return null;
         }
-        
         String savedUsername = PlayerPrefs.GetString("Username");
         String savedPassword = PlayerPrefs.GetString("Password");
         
         Debug.Log("saved user:" +  PlayerPrefs.GetString("Username"));
         if (savedUsername != "null" && savedPassword != "null")
         {
-            Debug.Log("auto logging in");
             StartCoroutine(FbManager.instance.Login(savedUsername, savedPassword, (myReturnValue) => {
                 if (myReturnValue.IsSuccessful)
                 {
@@ -156,13 +153,12 @@ public partial class FbManager : MonoBehaviour
                 else
                 {
                     Debug.LogError("FbManager: failed to auto login");
-                    LogOut(LoginStatus.LoggedOut);
+                    Logout(LoginStatus.LoggedOut);
                 }
             }));
         }
         else
         {
-            Debug.Log("pulling up login options");
             ScreenManager.instance.WelcomeScreen();
         }
     }
@@ -222,10 +218,8 @@ public partial class FbManager : MonoBehaviour
         PlayerPrefs.Save();
 
         //once user logged in
-        GetAllUserNames(); //Todo: we really should not be doing this
+        GetAllUsers(); //Todo: we really should not be doing this
         GetCurrentUserData(_password);
-        //StartCoroutine(RetrieveReceivedFriendRequests());
-        //StartCoroutine(RetrieveSentFriendRequests());
         StartCoroutine(RetrieveFriends());
         ContinuesListners();
         InitializeFCMService();
@@ -244,7 +238,6 @@ public partial class FbManager : MonoBehaviour
         
         callback(callbackObject);
     }
-
     private void ContinuesListners()
     {
         //this is bad... this is called any time any friend request occurs globally in the database
@@ -257,7 +250,10 @@ public partial class FbManager : MonoBehaviour
         _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildAdded += HandleFriends;
         _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildRemoved += HandleRemovedFriends;
         
-        //Also Bad, We Dont Use Any Of These
+        _databaseReference.Child("users").Child(_firebaseUser.UserId).ChildAdded += HandleUserAdded;
+        _databaseReference.Child("users").Child(_firebaseUser.UserId).ChildRemoved += HandleRemoveUser;
+        
+        //Also Bad, We Dont Use Any Of These //todo: move these functions into this function
         SubscribeOrUnSubscribeToReceivingTraces(true);
         SubscribeOrUnsubscribeToSentTraces(true);
     }
@@ -272,11 +268,13 @@ public partial class FbManager : MonoBehaviour
         _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildAdded -= HandleFriends; 
         _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildRemoved -= HandleRemovedFriends;
         
+        _databaseReference.Child("users").Child(_firebaseUser.UserId).ChildAdded -= HandleUserAdded;
+        _databaseReference.Child("users").Child(_firebaseUser.UserId).ChildRemoved -= HandleRemoveUser;
+        
         //Also Bad, We Dont Use Any Of These
         SubscribeOrUnSubscribeToReceivingTraces(false);
         SubscribeOrUnsubscribeToSentTraces(false);
     }
-
     private void GetCurrentUserData(string password)
     {
        
@@ -305,8 +303,7 @@ public partial class FbManager : MonoBehaviour
             }
         });
     }
-    
-    public void LogOut(LoginStatus loginStatus)
+    public void Logout(LoginStatus loginStatus)
     {
         Debug.Log("FBManager: logging out");
        
@@ -335,8 +332,8 @@ public partial class FbManager : MonoBehaviour
         PlayerPrefs.SetString("Password", "null");
         ScreenManager.instance.ChangeScreenForwards("Welcome");
     }
-    
     #endregion
+    
     #region -User Registration
     private string GenerateUserProfileJson(string username, string name, string userPhotoLink, string email, string phone) {
         TraceUserInfoStructure traceUserInfoStructure = new TraceUserInfoStructure(username, name, userPhotoLink, email, phone);
@@ -615,7 +612,7 @@ public partial class FbManager : MonoBehaviour
     }
     
     //Todo: Do this in the cloud... we cant store all users locally
-    private void GetAllUserNames()
+    private void GetAllUsers()
     {
         // Create a list to store the usernames
         users = new List<UserModel>();
@@ -668,6 +665,32 @@ public partial class FbManager : MonoBehaviour
                  return;
              }
         });
+    }
+    private void HandleUserAdded(object sender, ChildChangedEventArgs args)
+    {
+        try
+        {
+            if (args.Snapshot == null || args.Snapshot.Value == null) return;
+            var userID = args.Snapshot.Key.ToString();
+
+            if (string.IsNullOrEmpty(userID)) return;
+            
+            var user = new UserModel()
+            {
+                userId = userID
+            };
+            
+            print("New User Added :: "+ userID);
+            users.Add(user);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+    private void HandleRemoveUser(object sender, ChildChangedEventArgs args)
+    {
+        //todo: handle remove user
     }
     #endregion
     #region -User Actions
@@ -735,8 +758,6 @@ public partial class FbManager : MonoBehaviour
         //     Debug.Log("value:" +  args.Snapshot.GetRawJsonValue());
         // }
     }
-
-
     public void SubscribeOrUnsubscribeToSentTraces(bool subscribe)
     {
         var refrence = FirebaseDatabase.DefaultInstance.GetReference("TracesSent").Child(_firebaseUser.UserId);
@@ -855,6 +876,10 @@ public partial class FbManager : MonoBehaviour
         //PUSH DATA TO REAL TIME DB
         string key = _databaseReference.Child("Traces").Push().Key;
         Dictionary<string, Object> childUpdates = new Dictionary<string, Object>();
+        
+        //draw temp circle until it uploads and the map is cleared on update
+        _drawTraceOnMap.DrawCirlce(location.x, location.y, radius, DrawTraceOnMap.TraceType.SENDING, "temp");
+        
         //update global traces
         childUpdates["Traces/" + key + "/senderID"] = _firebaseUser.UserId;
         childUpdates["Traces/" + key + "/senderName"] = thisUserModel.DisplayName;
@@ -878,15 +903,10 @@ public partial class FbManager : MonoBehaviour
             //update data for within trace
             childUpdates["Traces/" + key + "/Reciver/" + user + "/HasViewed"] = false;
             childUpdates["Traces/" + key + "/Reciver/" + user + "/ProfilePhoto"] = "null";
-            
             //update data for each user
             childUpdates["TracesRecived/" + user +"/"+ key + "/Opened"] = false;
         }
         childUpdates["TracesSent/" + _firebaseUser.UserId.ToString() +"/" + key] = DateTime.UtcNow.ToString();
-        _databaseReference.UpdateChildrenAsync(childUpdates);
-        
-        
-        
         //UPLOAD IMAGE
         StorageReference traceReference = _firebaseStorageReference.Child("/Traces/" + key);
         traceReference.PutFileAsync(fileLocation)
@@ -899,9 +919,10 @@ public partial class FbManager : MonoBehaviour
                 else {
                     // Metadata contains file metadata such as size, content-type, and download URL.
                     StorageMetadata metadata = task.Result;
-                    string md5Hash = metadata.Md5Hash;
+                    // string md5Hash = metadata.Md5Hash;
                     Debug.Log("FB: Finished uploading...");
-                    Debug.Log("FB: md5 hash = " + md5Hash);
+                    //upload metadata to real time DB
+                    _databaseReference.UpdateChildrenAsync(childUpdates);
                 }
             });
     }
