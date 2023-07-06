@@ -17,7 +17,11 @@ public enum iPhoneModel
     iPhoneSE2,
     iPhone12Mini,
     iPhone12_12Pro,
-    iPhone12ProMax
+    iPhone12ProMax,
+    iPhone14ProMax_14Plus_13ProMax_,
+    iPhone13_13Pro_14_14Pro,
+    iPhone13Mini,
+    iPhoneSE3
 }
 
 public class ScreenSizeManager : MonoBehaviour
@@ -100,7 +104,24 @@ public class ScreenSizeManager : MonoBehaviour
 
             case "iPhone 12 Pro Max":
                 return iPhoneModel.iPhone12ProMax;
-
+            
+            case "iPhone 14 Pro Max":
+            case "iPhone 14 Plus":
+            case "iPhone 13 Pro Max":
+                return iPhoneModel.iPhone14ProMax_14Plus_13ProMax_;
+            
+            case "iPhone 13":
+            case "iPhone 13 Pro":
+            case "iPhone 14":
+            case "iPhone 14 Pro":
+                return iPhoneModel.iPhone13_13Pro_14_14Pro;
+            
+            case "iPhone 13 Mini":
+                return iPhoneModel.iPhone13Mini;
+            
+            case "iPhone SE 3":
+                return iPhoneModel.iPhoneSE3;
+            
             default:
                 Debug.LogWarning("Unknown device model: " + deviceModel);
                 return iPhoneModel.iPhoneXR; // Default to a common iPhone size
