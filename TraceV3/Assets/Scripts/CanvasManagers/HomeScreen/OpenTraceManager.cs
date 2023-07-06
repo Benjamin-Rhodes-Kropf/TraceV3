@@ -76,52 +76,67 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     {
         switch(ScreenSizeManager.instance.currentModel)
         {
-            case iPhoneModel.iPhone7_8:
-                openUp_targetYVal = 750;
-                g_offset = -500;
+            //g_offset is just openUp_targetYVal * 0.75
+            case iPhoneModel.iPhone7_8: //working
+                openUp_targetYVal = 780;
+                g_offset = -585;
                 return;
-            case iPhoneModel.iPhone7Plus_8Plus:
+            case iPhoneModel.iPhone7Plus_8Plus: //working
                 openUp_targetYVal = 1100;
+                g_offset = -825;
                 return;
-            case iPhoneModel.iPhoneX_XS:
+            case iPhoneModel.iPhoneX_XS: //working
                 openUp_targetYVal = 1150;
+                g_offset = -862;
                 return;
-            case iPhoneModel.iPhoneXR:
-                openUp_targetYVal = 800;
+            case iPhoneModel.iPhoneXR: //working
+                openUp_targetYVal = 850;
+                g_offset = -610;
                 return;
-            case iPhoneModel.iPhoneXSMax:
+            case iPhoneModel.iPhoneXSMax: //working
                 openUp_targetYVal = 1250;
+                g_offset = -937;
                 return;
-            case iPhoneModel.iPhone11:
-                openUp_targetYVal = 800;
+            case iPhoneModel.iPhone11: //working
+                openUp_targetYVal = 835;
+                g_offset = -615;
                 return;
-            case iPhoneModel.iPhone11Pro: //not in simulator but I generalized
+            case iPhoneModel.iPhone11Pro: //working
                 openUp_targetYVal = 1150;
+                g_offset = -862;
                 return;
-            case iPhoneModel.iPhone11ProMax: //not in simulator but I generalized
+            case iPhoneModel.iPhone11ProMax: //working
                 openUp_targetYVal = 1250;
+                g_offset = -937;
                 return;
             case iPhoneModel.iPhoneSE2: //not working at all????????
                 openUp_targetYVal = 2000;
+                g_offset = -1500;
                 return;
-            case iPhoneModel.iPhone12Mini:
+            case iPhoneModel.iPhone12Mini: //Working
                 openUp_targetYVal = 1120;
+                g_offset = -830;
                 return;
             case iPhoneModel.iPhone12_12Pro: //Working
                 openUp_targetYVal = 1200;
                 g_offset = -900;
                 return;
-            case iPhoneModel.iPhone12ProMax:
+            case iPhoneModel.iPhone12ProMax: //working
                 openUp_targetYVal = 1350;
+                g_offset = -991;
                 return;
-            case iPhoneModel.iPhone14ProMax_14Plus_13ProMax_:
+            case iPhoneModel.iPhone14ProMax_14Plus_13ProMax_: //working
                 openUp_targetYVal = 1350;
+                g_offset = -991;
                 return;
-            case iPhoneModel.iPhone13_13Pro_14_14Pro:
-                openUp_targetYVal = 1250;
+            case iPhoneModel.iPhone13_13Pro_14_14Pro: //working
+                openUp_targetYVal = 1200;
+                g_offset = -906;
                 return;
             case iPhoneModel.iPhone13Mini:
                 openUp_targetYVal = 1120;
+                g_offset = -830;
+
                 return;
         }
     }
