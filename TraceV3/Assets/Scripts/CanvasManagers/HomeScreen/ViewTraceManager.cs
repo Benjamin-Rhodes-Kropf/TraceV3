@@ -36,6 +36,10 @@ public class ViewTraceManager :  MonoBehaviour, IDragHandler, IEndDragHandler
     {
         Reset();
     }
+    
+    switch
+    
+    
     public void Reset()
     {
         canUsePhysics = false;
@@ -44,14 +48,17 @@ public class ViewTraceManager :  MonoBehaviour, IDragHandler, IEndDragHandler
         changeInYVal = 0;
         m_targetYVal = 2000;
         canUsePhysics = false;
-        
-        if (ScreenSizeManager.instance.simPhoneModel == iPhoneModel.iPhone4_4S)
+
+        if (ScreenSizeManager.instance.currentModel == iPhoneModel.iPhone4_4S)
         {
             m_targetYVal = 2000;
+            Debug.Log("Iphone 444444444444444444444");
         }
-        if (ScreenSizeManager.instance.simPhoneModel == iPhoneModel.iPhone11)
+        if (ScreenSizeManager.instance.currentModel == iPhoneModel.iPhone11)
         {
             m_targetYVal = 2000;
+            Debug.Log("Iphone 11111111111111111111111");
+
         }
     }
     
@@ -61,14 +68,7 @@ public class ViewTraceManager :  MonoBehaviour, IDragHandler, IEndDragHandler
         senderDateDisplay.text = sendDate;
         canUsePhysics = true;
         hasBegunExit = false;
-        if (ScreenSizeManager.instance.simPhoneModel == iPhoneModel.iPhone4_4S)
-        {
-            m_targetYVal = 2000;
-        }
-        if (ScreenSizeManager.instance.simPhoneModel == iPhoneModel.iPhone11)
-        {
-            m_targetYVal = 2000;
-        }
+        
         
     }
 

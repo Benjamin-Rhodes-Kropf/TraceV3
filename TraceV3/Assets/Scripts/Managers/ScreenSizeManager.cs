@@ -29,7 +29,6 @@ public class ScreenSizeManager : MonoBehaviour
     [Header("Dont Destroy")]
     public static ScreenSizeManager instance;
     public iPhoneModel currentModel;
-    public iPhoneModel simPhoneModel;
     private void Awake()
     {
         // Don't destroy on load
@@ -41,11 +40,13 @@ public class ScreenSizeManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         // Retrieve the device model using SystemInfo.deviceModel
-        string deviceModel = SystemInfo.deviceModel;
-        currentModel = GetiPhoneModel(deviceModel);
-
-        // Log the current iPhone model
-        Debug.Log("Current iPhone Model: " + currentModel);
+        #if UNITY_EDITOR
+        #else
+                string deviceModel = SystemInfo.deviceModel;
+                currentModel = GetiPhoneModel(deviceModel);
+        #endif
+                // Log the current iPhone model
+                Debug.Log("Current iPhone Model: " + currentModel);
     }
 
     private iPhoneModel GetiPhoneModel(string deviceModel)
