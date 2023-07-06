@@ -70,6 +70,61 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] private AnimationCurve arrowScale;
     [SerializeField] private AnimationCurve colorScale;
     [SerializeField] private Gradient gradient;
+    public int openUp_targetYVal = 0;
+    //public int down_targetYVal = -1000;
+    private void Awake()
+    {
+        switch(ScreenSizeManager.instance.currentModel)
+        {
+            case iPhoneModel.iPhone7_8:
+                openUp_targetYVal = 750;
+                g_offset = -500;
+                return;
+            case iPhoneModel.iPhone7Plus_8Plus:
+                openUp_targetYVal = 1100;
+                return;
+            case iPhoneModel.iPhoneX_XS:
+                openUp_targetYVal = 1150;
+                return;
+            case iPhoneModel.iPhoneXR:
+                openUp_targetYVal = 800;
+                return;
+            case iPhoneModel.iPhoneXSMax:
+                openUp_targetYVal = 1250;
+                return;
+            case iPhoneModel.iPhone11:
+                openUp_targetYVal = 800;
+                return;
+            case iPhoneModel.iPhone11Pro: //not in simulator but I generalized
+                openUp_targetYVal = 1150;
+                return;
+            case iPhoneModel.iPhone11ProMax: //not in simulator but I generalized
+                openUp_targetYVal = 1250;
+                return;
+            case iPhoneModel.iPhoneSE2: //not working at all????????
+                openUp_targetYVal = 2000;
+                return;
+            case iPhoneModel.iPhone12Mini:
+                openUp_targetYVal = 1120;
+                return;
+            case iPhoneModel.iPhone12_12Pro: //Working
+                openUp_targetYVal = 1200;
+                g_offset = -900;
+                return;
+            case iPhoneModel.iPhone12ProMax:
+                openUp_targetYVal = 1350;
+                return;
+            case iPhoneModel.iPhone14ProMax_14Plus_13ProMax_:
+                openUp_targetYVal = 1350;
+                return;
+            case iPhoneModel.iPhone13_13Pro_14_14Pro:
+                openUp_targetYVal = 1250;
+                return;
+            case iPhoneModel.iPhone13Mini:
+                openUp_targetYVal = 1120;
+                return;
+        }
+    }
     private void OnEnable()
     {
         Reset();
@@ -92,7 +147,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         Dy = 0;
         changeInYVal = 0;
         gTransformVelocity = 0;
-        m_targetYVal = 1200;
+        m_targetYVal = openUp_targetYVal;
     }
     
     public void ActivatePhotoFormat(string traceID, string sendDate, string senderName, string senderID)
