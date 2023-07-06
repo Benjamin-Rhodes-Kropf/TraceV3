@@ -10,18 +10,30 @@ public class DrawTraceOnMap : MonoBehaviour
     [SerializeField] private OnlineMapsMarkerManager markerManager;
     [SerializeField] private bool showDebugTextures;
     [SerializeField] private Texture2D primaryReceiverTexture;
+    [SerializeField] private Texture2D primaryReceivingHollowTexture;
     [SerializeField] private Texture2D secondaryReceiverTexture;
+    
     [SerializeField] private Texture2D primarySentTexture;
+    [SerializeField] private Texture2D primarySendingTextureHollow;
     [SerializeField] private Texture2D secondarySentTexture;
+
 
     public void DrawCirlce(double lat, double lng, float radius, TraceType traceType, string markerID)
     {
-        if (traceType == TraceType.RECEIVED)
+        switch (traceType)
         {
-            markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverTexture, secondaryReceiverTexture, markerID);
-        }else if (traceType == TraceType.SENT)
-        {
-            markerManager.AddTraceToMap(lat, lng, radius, primarySentTexture, secondarySentTexture, markerID);
+            case TraceType.SENT:
+                markerManager.AddTraceToMap(lat, lng, radius, primarySentTexture, secondarySentTexture, primarySendingTextureHollow, markerID);
+                return;
+            case TraceType.RECEIVED:
+                markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, markerID);
+                return;
+            case TraceType.SENDING:
+                markerManager.AddTraceToMap(lat, lng, radius, primarySendingTextureHollow, secondarySentTexture, primarySendingTextureHollow, markerID);
+                return;
+            case TraceType.OPENING:
+                markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, markerID);
+                return;
         }
 
         if (showDebugTextures)
@@ -73,6 +85,6 @@ public class DrawTraceOnMap : MonoBehaviour
             OnlineMapsMarkerManager.RemoveItemAt(i);
         }
     }
-    public enum TraceType {RECEIVED, SENT};
+    public enum TraceType {RECEIVED, SENT, SENDING, OPENING};
 }
 

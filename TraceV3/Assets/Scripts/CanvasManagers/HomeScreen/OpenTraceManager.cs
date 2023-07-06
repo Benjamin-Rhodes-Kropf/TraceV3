@@ -9,6 +9,9 @@ using UnityEngine.Video;
 
 public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
 {
+    [Header("Parent")] [SerializeField] 
+    private HomeScreenManager _homeScreenManager;
+    
     [Header("Trace Stuff")]
     [SerializeField] private GameObject imageObject;
     [SerializeField] private GameObject videoObject;
@@ -93,6 +96,9 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         changeInYVal = 0;
         gTransformVelocity = 0;
         m_targetYVal = 1200;
+
+        TraceManager.instance.currentlyClickingTraceID = "";
+        _homeScreenManager.UpdateMap();
     }
     
     public void ActivatePhotoFormat(string traceID, string sendDate, string senderName, string senderID)

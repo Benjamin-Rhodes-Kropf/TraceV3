@@ -30,7 +30,7 @@ namespace InfinityCode.OnlineMapsExamples
                 string label = jitem.ChildValue<string>("label");
 
                 //Todo: add load values for secondary texture
-                OnlineMapsMarker marker = manager.Create(mx, my,0, texture, null, label);
+                OnlineMapsMarker marker = manager.Create(mx, my,0, texture, null, null, label);
                 
                 marker.range = jitem.ChildValue<OnlineMapsRange>("range");
                 marker.align = (OnlineMapsAlign)jitem.ChildValue<int>("align");

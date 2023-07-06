@@ -43,6 +43,8 @@ public class OnlineMapsMarker : OnlineMapsMarkerBase
     [SerializeField]
     private Texture2D _primaryZoomedInTexture;
     [SerializeField]
+    private Texture2D _primaryHollowInTexture;
+    [SerializeField]
     private Texture2D _secondaryZoomedOutTexture;
     //privates
     private Color32[] _rotatedColors;
@@ -236,6 +238,26 @@ public class OnlineMapsMarker : OnlineMapsMarkerBase
         set
         {
             _primaryZoomedInTexture = value;
+            if (map != null)
+            {
+                Init();
+                map.Redraw();
+            }
+        }
+    }
+    
+    /// <summary>
+    /// Texture marker. <br/>
+    /// Texture format: ARGB32.<br/>
+    /// <strong>Must enable "Read / Write enabled".</strong><br/>
+    /// After changing the texture you need to call OnlineMapsMarker.Init.
+    /// </summary>
+    public Texture2D primaryHollowInTexture
+    {
+        get { return _primaryHollowInTexture; }
+        set
+        {
+            _primaryHollowInTexture = value;
             if (map != null)
             {
                 Init();

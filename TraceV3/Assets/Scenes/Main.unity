@@ -5997,6 +5997,10 @@ PrefabInstance:
       propertyPath: m_PresetInfoIsWorld
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 483622975114895334, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: _homeScreenManager
+      value: 
+      objectReference: {fileID: 878571056}
     - target: {fileID: 3462241307661885656, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 546
@@ -6009,6 +6013,10 @@ PrefabInstance:
       propertyPath: m_targetYVal
       value: 1400
       objectReference: {fileID: 0}
+    - target: {fileID: 4832528175236426936, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: _maps
+      value: 
+      objectReference: {fileID: 6068666308761308066}
     - target: {fileID: 4832528176042883204, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: _drawTraceOnMap
       value: 
@@ -6625,7 +6633,7 @@ MonoBehaviour:
   useSoftwareJPEGDecoder: 0
   width: 4096
   _activeTypeSettings: 07User ID21018benrk10006Map ID228225cljkem6q300e201qp76zfaaya12Access
-    Token293290pk.eyJ1IjoiYmVucmsxMDAiLCJhIjoiY2xlNXRqMmZwMGc4cTNwbnh4OWcxYjhhbSJ9.tKfaEUT7hvBsZml5ucE5CA
+    Token293290pk.eyJ1IjoiYmVucmsxMDAiLCJhIjoiY2xid3VqdWJjMDdodDNubjdpaTU2OWZiYSJ9.3ytRbwK51mPCf73LWaJjmA
   _zoom: 18
   latitude: 0
   longitude: 12.554555376143025
@@ -6691,7 +6699,7 @@ MonoBehaviour:
   createMarkerInUserPosition: 1
   disableEmulatorInPublish: 1
   emulatorCompass: 0
-  emulatorPosition: {x: -70.41367, y: 41.64435}
+  emulatorPosition: {x: -70.040565, y: 41.93938}
   findLocationByIP: 0
   lerpCompassValue: 1
   markerScale: 1
@@ -6877,6 +6885,7 @@ MonoBehaviour:
   drawTraceOnMap: {fileID: 6068666308761308086}
   sentRecivedToggle: {fileID: 72317452}
   userLocation: {x: 0, y: 0}
+  currentlyClickingTraceID: 
   recivedTraceObjects: []
   sentTraceObjects: []
   recivedTraceObjectsByDistanceToUser: []
@@ -6899,6 +6908,7 @@ MonoBehaviour:
   map: {fileID: 6068666308761308066}
   radiusSize: 0.122
   scaleLimitForSwitchImage: 0.04
+  scaleOfPin: 0.04
   scaler:
     serializedVersion: 2
     m_Curve:
@@ -7017,10 +7027,12 @@ MonoBehaviour:
   scaleAmount: 150
   markerManager: {fileID: 6068666308761308078}
   showDebugTextures: 0
-  primaryReceiverTexture: {fileID: 2800000, guid: 2ed2f6f9dbef546448312c0a05d7d2d6, type: 3}
-  secondaryReceiverTexture: {fileID: 2800000, guid: baff221098fcd46efa76f3c581c30c22, type: 3}
-  primarySentTexture: {fileID: 2800000, guid: 9921c82fbd969414583e28ceeea9b23a, type: 3}
-  secondarySentTexture: {fileID: 2800000, guid: 0390d46395e294dc5bff2e9d6eeef462, type: 3}
+  primaryReceiverTexture: {fileID: 2800000, guid: 9a0fa4f20e2d042388c09beb83813530, type: 3}
+  primaryReceivingHollowTexture: {fileID: 2800000, guid: 6a02290f2ce2a45d0923befa818a8a27, type: 3}
+  secondaryReceiverTexture: {fileID: 2800000, guid: f5d8ab6989be7440ab73d475447d9dc8, type: 3}
+  primarySentTexture: {fileID: 2800000, guid: 376c3c79a8a484acfa2c25b50680b2b6, type: 3}
+  primarySendingTextureHollow: {fileID: 2800000, guid: eec53750067d14ff897dcb3a1bdbdb1a, type: 3}
+  secondarySentTexture: {fileID: 2800000, guid: 1b1282ba964874ad29fe4a229cdffa16, type: 3}
 --- !u!114 &6068666308761308095
 MonoBehaviour:
   m_ObjectHideFlags: 0

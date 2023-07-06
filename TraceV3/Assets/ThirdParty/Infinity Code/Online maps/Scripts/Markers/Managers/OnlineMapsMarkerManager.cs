@@ -35,7 +35,7 @@ public class OnlineMapsMarkerManager : OnlineMapsMarkerManagerBase<OnlineMapsMar
     /// <returns>Instance of the marker</returns>
     public static OnlineMapsMarker CreateItem(Vector2 location, string label)
     {
-        if (instance != null) return instance.Create(location.x, location.y, 0,null,null, label);
+        if (instance != null) return instance.Create(location.x, location.y, 0,null,null, null, label);
         return null;
     }
 
@@ -48,7 +48,7 @@ public class OnlineMapsMarkerManager : OnlineMapsMarkerManagerBase<OnlineMapsMar
     /// <returns>Instance of the marker</returns>
     public static OnlineMapsMarker CreateItem(Vector2 location, Texture2D texture = null, string label = "")
     {
-        if (instance != null) return instance.Create(location.x, location.y, 0, texture,null, label);
+        if (instance != null) return instance.Create(location.x, location.y, 0, texture,null, null, label);
         return null;
     }
 
@@ -61,7 +61,7 @@ public class OnlineMapsMarkerManager : OnlineMapsMarkerManagerBase<OnlineMapsMar
     /// <returns>Instance of the marker</returns>
     public static OnlineMapsMarker CreateItem(double longitude, double latitude, string label)
     {
-        if (instance != null) return instance.Create(longitude, latitude,0, null,null, label);
+        if (instance != null) return instance.Create(longitude, latitude,0, null,null, null, label);
         return null;
     }
 
@@ -75,7 +75,7 @@ public class OnlineMapsMarkerManager : OnlineMapsMarkerManagerBase<OnlineMapsMar
     /// <returns>Instance of the marker</returns>
     public static OnlineMapsMarker CreateItem(double longitude, double latitude, Texture2D texture = null, string label = "")
     {
-        if (instance != null) return instance.Create(longitude, latitude,0, texture,null, label);
+        if (instance != null) return instance.Create(longitude, latitude,0, texture,null, null, label);
         return null;
     }
     
@@ -89,7 +89,7 @@ public class OnlineMapsMarkerManager : OnlineMapsMarkerManagerBase<OnlineMapsMar
     /// <returns>Instance of the marker</returns>
     public static OnlineMapsMarker CreateItem(double longitude, double latitude, float radius,  Texture2D texture = null, string label = "")
     {
-        if (instance != null) return instance.Create(longitude, latitude, radius, texture,null, label);
+        if (instance != null) return instance.Create(longitude, latitude, radius, texture,null, null, label);
         return null;
     }
 
@@ -102,7 +102,7 @@ public class OnlineMapsMarkerManager : OnlineMapsMarkerManagerBase<OnlineMapsMar
     /// <returns>Instance of the marker</returns
     public OnlineMapsMarker Create(Vector2 location, Texture2D texture = null, string label = "")
     {
-        if (instance != null) return Create(location.x, location.y,0, texture,null, label);
+        if (instance != null) return Create(location.x, location.y,0, texture,null, null, label);
         return null;
     }
     
@@ -116,7 +116,7 @@ public class OnlineMapsMarkerManager : OnlineMapsMarkerManagerBase<OnlineMapsMar
     /// <returns>Instance of the marker</returns
     public OnlineMapsMarker Create(Vector2 location, float radius, Texture2D texture = null, string label = "", string traceID = "")
     {
-        if (instance != null) return Create(location.x, location.y,  radius, texture, null, label, traceID);
+        if (instance != null) return Create(location.x, location.y,  radius, texture, null, null, label, traceID);
         return null;
     }
 
@@ -128,13 +128,14 @@ public class OnlineMapsMarkerManager : OnlineMapsMarkerManagerBase<OnlineMapsMar
     /// <param name="primaryTexture">Texture of the marker</param>
     /// <param name="label">Tooltip</param>
     /// <returns>Instance of the marker</returns>
-    public OnlineMapsMarker Create(double longitude, double latitude, float radius, Texture2D primaryTexture = null, Texture2D secondaryTexture = null, string label = "", string traceID = "")
+    public OnlineMapsMarker Create(double longitude, double latitude, float radius, Texture2D primaryTexture = null, Texture2D primaryHollow = null, Texture2D secondaryTexture = null, string label = "", string traceID = "")
     {
         if (primaryTexture == null) primaryTexture = defaultTexture;
         //Todo: Refactor to not include radius in _CreateItem
         OnlineMapsMarker marker = _CreateItem(longitude, latitude, radius);
         marker.manager = this;
         marker.displayedTexture = primaryTexture;
+        marker.primaryHollowInTexture = primaryHollow;
         marker.primaryZoomedInTexture = primaryTexture;
         marker.secondaryZoomedOutTexture = secondaryTexture;
         marker.radius = radius;
@@ -219,15 +220,16 @@ public class OnlineMapsMarkerManager : OnlineMapsMarkerManagerBase<OnlineMapsMar
             marker.Init();
         }
     }
+    
     public void GenerateMarker() {
         double lng, lat;
         if (map.control.GetCoords(out lng, out lat)) Create(lng, lat, 0);
     }
     
-    public void AddTraceToMap(double lat, double lng, float radius, Texture2D primaryTexture, Texture2D secondaryTexture, string traceID) {
-        Create(lng, lat, radius, primaryTexture, secondaryTexture, "", traceID);
+    public void AddTraceToMap(double lat, double lng, float radius, Texture2D primaryTexture, Texture2D secondaryTexture, Texture2D primaryHollow, string traceID) {
+        Create(lng, lat, radius, primaryTexture, primaryHollow,  secondaryTexture,"", traceID);
     }
-
+    
     public Vector2 GetMouseLatAndLong()
     {
         double lng, lat;

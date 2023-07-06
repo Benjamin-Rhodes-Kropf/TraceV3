@@ -17,6 +17,7 @@ public class TraceManager : MonoBehaviour
     [SerializeField] private DrawTraceOnMap drawTraceOnMap;
     [SerializeField] private SendOrRecievedViewSelectorManager sentRecivedToggle;
     [SerializeField] private Vector2 userLocation;
+    public string currentlyClickingTraceID;
     public List<TraceObject> recivedTraceObjects;
     public List<TraceObject> sentTraceObjects;
     public List<TraceObject> recivedTraceObjectsByDistanceToUser;
@@ -94,6 +95,17 @@ public class TraceManager : MonoBehaviour
         {
             accessibleTraces.Sort((i1, i2) => i1.Item2.CompareTo(i2.Item2));
             var traceToOpen = accessibleTraces[accessibleTraces.Count - 1];
+            currentlyClickingTraceID = traceToOpen.Item1.id;
+            
+            //get marker currently being opened and change its texture to hollow
+            foreach (var marker in markerManager.items)
+            {
+                if (marker.traceID == traceToOpen.Item1.id)
+                {
+                    marker.displayedTexture = marker.primaryHollowInTexture;
+                }
+            }
+            
             homeScreenManager.OpenTrace(traceToOpen.Item1.id,  traceToOpen.Item1.senderName,traceToOpen.Item1.senderID,traceToOpen.Item1.sendTime, traceToOpen.Item1.mediaType);
         }
         else if(viewableAbleTraces.Count > 0)
@@ -269,7 +281,7 @@ public class TraceManager : MonoBehaviour
             // Add Notifications for the Next 10 Distance Filtered Traces
             UpdateNotificationsForNext50Traces();
         }
-
+        
         if (!HomeScreenManager.isInSendTraceView)
         {
             foreach (var traceobject in recivedTraceObjects)
@@ -277,16 +289,31 @@ public class TraceManager : MonoBehaviour
                 var dist = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates((float)traceobject.lat, (float)traceobject.lng, currentLatitude, currentLongitude, (float)(traceobject.radius*1000));
                 if (!traceobject.hasBeenAdded && !traceobject.hasBeenOpened)
                 {
-                    //Debug.Log("Dist is: " + dist);
-                    if (dist < 0)
+                    if (currentlyClickingTraceID == traceobject.id)
                     {
-                        drawTraceOnMap.DrawCirlce(traceobject.lat, traceobject.lng, (traceobject.radius), DrawTraceOnMap.TraceType.RECEIVED, traceobject.id);
-                        traceobject.canBeOpened = true;
+                        if (dist < 0)
+                        {
+                            drawTraceOnMap.DrawCirlce(traceobject.lat, traceobject.lng, (traceobject.radius), DrawTraceOnMap.TraceType.OPENING, traceobject.id);
+                            traceobject.canBeOpened = true;
+                        }
+                        else
+                        {
+                            drawTraceOnMap.DrawCirlce(traceobject.lat, traceobject.lng, (traceobject.radius), DrawTraceOnMap.TraceType.RECEIVED, traceobject.id);
+                            traceobject.canBeOpened = false;
+                        }
                     }
                     else
                     {
-                        drawTraceOnMap.DrawCirlce(traceobject.lat, traceobject.lng, (traceobject.radius), DrawTraceOnMap.TraceType.RECEIVED, traceobject.id);
-                        traceobject.canBeOpened = false;
+                        if (dist < 0)
+                        {
+                            drawTraceOnMap.DrawCirlce(traceobject.lat, traceobject.lng, (traceobject.radius), DrawTraceOnMap.TraceType.RECEIVED, traceobject.id);
+                            traceobject.canBeOpened = true;
+                        }
+                        else
+                        {
+                            drawTraceOnMap.DrawCirlce(traceobject.lat, traceobject.lng, (traceobject.radius), DrawTraceOnMap.TraceType.RECEIVED, traceobject.id);
+                            traceobject.canBeOpened = false;
+                        }
                     }
                     traceobject.hasBeenAdded = true;
                 }
