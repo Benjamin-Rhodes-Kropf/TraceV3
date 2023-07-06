@@ -52,8 +52,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] private bool canCloseTrace;
     [SerializeField] private bool hasBegunOpenTrace;
     [SerializeField] private bool hasBegunCloseTrace;
-    [SerializeField] private bool hasSentNotification;
-
+    
     [Header("Swipe Physics Secondary")]
     [SerializeField] private GameObject g_gameObject;
     [SerializeField] private RectTransform g_transform;
@@ -71,6 +70,76 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] private AnimationCurve arrowScale;
     [SerializeField] private AnimationCurve colorScale;
     [SerializeField] private Gradient gradient;
+    public int openUp_targetYVal = 0;
+    //public int down_targetYVal = -1000;
+    private void Awake()
+    {
+        switch(ScreenSizeManager.instance.currentModel)
+        {
+            //g_offset is just openUp_targetYVal * 0.75
+            case iPhoneModel.iPhone7_8: //working
+                openUp_targetYVal = 780;
+                g_offset = -585;
+                return;
+            case iPhoneModel.iPhone7Plus_8Plus: //working
+                openUp_targetYVal = 1100;
+                g_offset = -825;
+                return;
+            case iPhoneModel.iPhoneX_XS: //working
+                openUp_targetYVal = 1150;
+                g_offset = -862;
+                return;
+            case iPhoneModel.iPhoneXR: //working
+                openUp_targetYVal = 850;
+                g_offset = -610;
+                return;
+            case iPhoneModel.iPhoneXSMax: //working
+                openUp_targetYVal = 1250;
+                g_offset = -937;
+                return;
+            case iPhoneModel.iPhone11: //working
+                openUp_targetYVal = 835;
+                g_offset = -615;
+                return;
+            case iPhoneModel.iPhone11Pro: //working
+                openUp_targetYVal = 1150;
+                g_offset = -862;
+                return;
+            case iPhoneModel.iPhone11ProMax: //working
+                openUp_targetYVal = 1250;
+                g_offset = -937;
+                return;
+            case iPhoneModel.iPhoneSE2: //not working at all????????
+                openUp_targetYVal = 2000;
+                g_offset = -1500;
+                return;
+            case iPhoneModel.iPhone12Mini: //Working
+                openUp_targetYVal = 1120;
+                g_offset = -830;
+                return;
+            case iPhoneModel.iPhone12_12Pro: //Working
+                openUp_targetYVal = 1200;
+                g_offset = -900;
+                return;
+            case iPhoneModel.iPhone12ProMax: //working
+                openUp_targetYVal = 1350;
+                g_offset = -991;
+                return;
+            case iPhoneModel.iPhone14ProMax_14Plus_13ProMax_: //working
+                openUp_targetYVal = 1350;
+                g_offset = -991;
+                return;
+            case iPhoneModel.iPhone13_13Pro_14_14Pro: //working
+                openUp_targetYVal = 1200;
+                g_offset = -906;
+                return;
+            case iPhoneModel.iPhone13Mini:
+                openUp_targetYVal = 1120;
+                g_offset = -830;
+
+                return;
+        }
+    }
     private void OnEnable()
     {
         Reset();
@@ -86,14 +155,14 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         hasBegunCloseTrace = false;
         canCloseTrace = false;
         canUsePhysics = false;
-
+        
         m_transform.position = new Vector3(m_transform.position.x, startLocation, m_transform.position.z);
         g_transform.position = new Vector3(g_transform.position.x, startLocation, g_transform.position.z);
         openTraceBackground.SetActive(true);
         Dy = 0;
         changeInYVal = 0;
         gTransformVelocity = 0;
-        m_targetYVal = 1200;
+        m_targetYVal = openUp_targetYVal;
     }
     
     public void ActivatePhotoFormat(string traceID, string sendDate, string senderName, string senderID)
@@ -107,10 +176,9 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         imageObject.SetActive(true);
         videoObject.SetActive(false);
     }
-    public void ActivateVideoFormat(string traceID, string sendDate, string senderName, string senderID)
+    public void ActivateVideoFormat(string traceID, string sendDate, string senderName)
     {
         this.traceID = traceID;
-        this.senderID = senderID;
         senderNameDisplay.text = senderName;
         senderDateDisplay.text = sendDate;
         canUsePhysics = true;
@@ -191,7 +259,6 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         
         if (hasBegunOpenTrace && !canCloseTrace && g_transform.localPosition.y > 1000)
         {
-            Debug.Log("Play Video");
             //State
             canCloseTrace = true;
             
@@ -200,13 +267,10 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
             {
                 videoPlayer.Play();
             }
-            //good
-            Debug.Log("Mark Trace As Opened");
+            //Update Map and Database
             FbManager.instance.MarkTraceAsOpened(traceID);
-            Debug.Log("UpdateTracesOnMap");
             TraceManager.instance.UpdateTracesOnMap();
-            Debug.Log("SendNotification");
-            BackgroundNotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID,FbManager.instance.thisUserModel.DisplayName,"Opened Your Trace");
+            BackgroundNotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.DisplayName , "opened your trace!");
         }
         
         if (hasBegunOpenTrace && changeInYVal < changeInYvalCloseLimit && !isDragging && canCloseTrace)
@@ -220,11 +284,9 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         if (hasBegunCloseTrace && m_transform.localPosition.y < m_YResetLimit && canCloseTrace)
         {
             Debug.Log("RESET OPEN TRACE");
-            hasBegunCloseTrace = false;
             Reset();
         }
     }
-    
 
     public void OnDrag(PointerEventData eventData)
     {
