@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -11,6 +12,8 @@ public class SettingsCanvas : MonoBehaviour
    public Image _profileImage;
 
    private SettingCanvasController _controller;
+
+   [SerializeField] private VerticalLayoutGroup _verticalLayoutGroup;
    
    #region UnityEvents
 
@@ -29,7 +32,13 @@ public class SettingsCanvas : MonoBehaviour
    }
 
    #endregion
-   
+
+   private void Awake()
+   {
+    	if (ScreenSizeManager.instance.currentModel == iPhoneModel.iPhone7_8)_verticalLayoutGroup.spacing = -73;
+		if (ScreenSizeManager.instance.currentModel == iPhoneModel.iPhone7Plus_8Plus)_verticalLayoutGroup.spacing = -73;
+	}
+
    public void About() {
       Application.OpenURL("https://www.leaveatrace.app/");
    }

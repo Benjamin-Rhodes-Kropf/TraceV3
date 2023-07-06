@@ -8,8 +8,17 @@ public class EditProfileManager : MonoBehaviour
 {
     [SerializeField]private TMP_Text[] displayName, userName;
     [SerializeField]private TMP_Text emailId;
+    [SerializeField] private VerticalLayoutGroup _verticalLayoutGroup;
+
 
     public RawImage profileImage;
+    
+    private void Awake()
+    {
+        if (ScreenSizeManager.instance.currentModel == iPhoneModel.iPhone7_8)_verticalLayoutGroup.spacing = -45;
+        if (ScreenSizeManager.instance.currentModel == iPhoneModel.iPhone7Plus_8Plus)_verticalLayoutGroup.spacing = -45;
+    }
+    
     void Start()
     {
         FbManager.instance.thisUserModel.ProfilePicture((sprite =>
