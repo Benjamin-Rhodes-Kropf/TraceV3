@@ -2068,6 +2068,17 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1602044759 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9172647569718595226, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+  m_PrefabInstance: {fileID: 4832528175979643528}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1793062011
 GameObject:
   m_ObjectHideFlags: 0
@@ -6001,6 +6012,10 @@ PrefabInstance:
       propertyPath: _homeScreenManager
       value: 
       objectReference: {fileID: 878571056}
+    - target: {fileID: 483622975894523694, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_RaycastPadding.w
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3462241307661885656, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 546
@@ -6021,6 +6036,18 @@ PrefabInstance:
       propertyPath: _drawTraceOnMap
       value: 
       objectReference: {fileID: 6068666308761308086}
+    - target: {fileID: 7434560988704233784, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_TargetGraphic
+      value: 
+      objectReference: {fileID: 1602044759}
+    - target: {fileID: 7434560988704233784, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1301840576}
+    - target: {fileID: 7434560988704233784, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 600464280}
     - target: {fileID: 9172647568999289976, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -6111,7 +6138,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9172647568999289980, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9172647569576335169, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -6121,6 +6148,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 1301840576}
+    - target: {fileID: 9172647569718595227, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9172647569718595227, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -6161,6 +6192,14 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_Target
       value: 
       objectReference: {fileID: 6068666308761308073}
+    - target: {fileID: 9172647570776497706, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_Maskable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9172647570776497706, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9172647570814228992, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -6173,6 +6212,14 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
       objectReference: {fileID: 6068666308761308073}
+    - target: {fileID: 9172647571138235206, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_Maskable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9172647571138235206, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
 --- !u!1001 &5630928292033386849

@@ -45,9 +45,8 @@ namespace CanvasManagers
         {
             _view.LoadingState(true);
             string email = "";
-             email = _view.emailText.text;
-
-            Debug.Log("OnClickRegister");
+             email = _view.emailText.text.ToString().ToLower();
+             Debug.Log("OnClickRegister");
 
 #if UNITY_EDITOR
 #else
@@ -55,7 +54,7 @@ namespace CanvasManagers
 #endif
             
             Debug.LogError("Email is ::  "+ email);
-            _view.StartCoroutine(FbManager.instance.RegisterNewUser(email, _view.passwordText.text, "UserName", "", (response, errorCode) =>
+            _view.StartCoroutine(FbManager.instance.RegisterNewUser(email, _view.passwordText.text, "null", "", (response, errorCode) =>
             {
                  _view.LoadingState(false);
                 Debug.Log("Registered Response received from Firebase: " + response);

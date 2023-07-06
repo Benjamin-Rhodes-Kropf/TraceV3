@@ -250,8 +250,9 @@ public partial class FbManager : MonoBehaviour
         _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildAdded += HandleFriends;
         _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildRemoved += HandleRemovedFriends;
         
-        _databaseReference.Child("users").Child(_firebaseUser.UserId).ChildAdded += HandleUserAdded;
-        _databaseReference.Child("users").Child(_firebaseUser.UserId).ChildRemoved += HandleRemoveUser;
+        _databaseReference.Child("users").ChildAdded += HandleUserAdded;
+        _databaseReference.Child("users").ChildChanged += HandleUserChanged;
+        _databaseReference.Child("users").ChildRemoved += HandleRemoveUser;
         
         //Also Bad, We Dont Use Any Of These //todo: move these functions into this function
         SubscribeOrUnSubscribeToReceivingTraces(true);
@@ -616,7 +617,7 @@ public partial class FbManager : MonoBehaviour
     {
         // Create a list to store the usernames
         users = new List<UserModel>();
-        
+        //return;
         Debug.Log("Getting users");
         // Get a reference to the "users" node in the database
         DatabaseReference usersRef = _databaseReference.Child("users");
@@ -630,12 +631,6 @@ public partial class FbManager : MonoBehaviour
                  DataSnapshot snapshot = task.Result;
                  var  allUsersSnapshots = snapshot.Children.ToArrayPooled();
 
-                 //just to verify each user delete in build
-                 foreach (var snap in allUsersSnapshots)
-                 {
-                     Debug.Log("SNAP :" + snap.Key);
-                 }
-                 
                  foreach (var snap in allUsersSnapshots)
                  {
                      Debug.Log("SNAP :" + snap.Key);
@@ -668,26 +663,115 @@ public partial class FbManager : MonoBehaviour
     }
     private void HandleUserAdded(object sender, ChildChangedEventArgs args)
     {
+        Debug.Log("HandleUserAdded");
         try
         {
             if (args.Snapshot == null || args.Snapshot.Value == null) return;
             var userID = args.Snapshot.Key.ToString();
-
             if (string.IsNullOrEmpty(userID)) return;
             
-            var user = new UserModel()
+            UserModel userData = new UserModel();
+            userData.userId =  args.Snapshot.Key.ToString(); 
+            Debug.Log("HandleUserAdded UserID:" + userData.userId);
+            userData.Email = args.Snapshot.Child("email").Value.ToString();
+            Debug.Log("HandleUserAdded email:" + userData.Email);
+            userData.DisplayName =args.Snapshot.Child("name").Value.ToString();
+            Debug.Log("HandleUserAdded name:" + userData.DisplayName);
+            userData.Username = args.Snapshot.Child("username").Value.ToString();
+            if (userData.Username == "null" || string.IsNullOrEmpty(userData.Username))
             {
-                userId = userID
-            };
-            
-            print("New User Added :: "+ userID);
-            users.Add(user);
+                Debug.Log("User Is Not Setup Correctly");
+                return;
+            }
+            Debug.Log("HandleUserAdded username:" + userData.Username);
+            userData.PhoneNumber =  args.Snapshot.Child("phone").Value.ToString();
+            if (userData.PhoneNumber == "") //todo add more
+            {
+                return;
+            }
+            Debug.Log("HandleUserAdded phone:" + userData.PhoneNumber);
+            userData.PhotoURL = args.Snapshot.Child("userPhotoUrl").Value.ToString();
+            Debug.Log("HandleUserAdded photo:" + userData.PhotoURL);
+            users.Add(userData);
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
         }
     }
+    
+    private void HandleUserChanged(object sender, ChildChangedEventArgs args)
+    {
+        Debug.Log("HandleUserChanged");
+        try
+        {
+            if (args.Snapshot == null || args.Snapshot.Value == null) return;
+            var userID = args.Snapshot.Key.ToString();
+            if (string.IsNullOrEmpty(userID)) return;
+            var userToChange = GetUserByID(userID);
+            if (userToChange == null)
+            {
+                //create a new user
+                userToChange = new UserModel();
+                userToChange.userId = userID;
+                userToChange.Email = args.Snapshot.Child("email").Value.ToString();
+                Debug.Log("HandleUserAdded email:" + userToChange.Email);
+                userToChange.DisplayName =args.Snapshot.Child("name").Value.ToString();
+                Debug.Log("HandleUserAdded name:" + userToChange.DisplayName);
+                userToChange.Username = args.Snapshot.Child("username").Value.ToString();
+                if (userToChange.Username == "null" || string.IsNullOrEmpty(userToChange.Username))
+                {
+                    Debug.Log("User Is Not Setup Correctly");
+                    return;
+                }
+                Debug.Log("HandleUserAdded username:" + userToChange.Username);
+                userToChange.PhoneNumber =  args.Snapshot.Child("phone").Value.ToString();
+                Debug.Log("HandleUserAdded phone:" + userToChange.PhoneNumber);
+                userToChange.PhotoURL = args.Snapshot.Child("userPhotoUrl").Value.ToString();
+                Debug.Log("HandleUserAdded photo:" + userToChange.PhotoURL);
+                users.Add(userToChange);
+                return;
+            }
+            
+            //add to existing user
+            userToChange.Email = args.Snapshot.Child("email").Value.ToString();
+            Debug.Log("HandleUserAdded email:" + userToChange.Email);
+            userToChange.DisplayName =args.Snapshot.Child("name").Value.ToString();
+            Debug.Log("HandleUserAdded name:" + userToChange.DisplayName);
+            userToChange.Username = args.Snapshot.Child("username").Value.ToString();
+            if (userToChange.Username == "null" || string.IsNullOrEmpty(userToChange.Username))
+            {
+                Debug.Log("User Is Not Setup Correctly");
+                return;
+            }
+            Debug.Log("HandleUserAdded username:" + userToChange.Username);
+            userToChange.PhoneNumber =  args.Snapshot.Child("phone").Value.ToString();
+            if (userToChange.PhoneNumber == "") //todo add more
+            {
+                return;
+            }
+            Debug.Log("HandleUserAdded phone:" + userToChange.PhoneNumber);
+            userToChange.PhotoURL = args.Snapshot.Child("userPhotoUrl").Value.ToString();
+            Debug.Log("HandleUserAdded photo:" + userToChange.PhotoURL);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
+    private UserModel GetUserByID(string userToGetID)
+    {
+        foreach (var userObject in users)
+        {
+            if (userObject.userId == userToGetID)
+            {
+                return userObject;
+            }
+        }
+        return null;
+    }
+    
     private void HandleRemoveUser(object sender, ChildChangedEventArgs args)
     {
         //todo: handle remove user

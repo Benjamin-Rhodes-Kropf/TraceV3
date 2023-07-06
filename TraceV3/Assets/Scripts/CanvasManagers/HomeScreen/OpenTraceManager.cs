@@ -73,10 +73,10 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] private AnimationCurve arrowScale;
     [SerializeField] private AnimationCurve colorScale;
     [SerializeField] private Gradient gradient;
-    private void OnEnable()
-    {
-        Reset();
-    }
+    // private void OnEnable()
+    // {
+    //     Reset();
+    // }
     public void Reset()
     {
         videoPlayer.enabled = false;
