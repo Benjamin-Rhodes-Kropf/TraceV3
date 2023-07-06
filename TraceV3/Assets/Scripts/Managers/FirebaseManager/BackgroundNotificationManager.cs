@@ -98,6 +98,7 @@ public class BackgroundNotificationManager : UnitySingleton<BackgroundNotificati
     
     public async void SendNotificationUsingFirebaseUserId(string firebaseUserId, string title = "", string message = "")
     {
+        Debug.Log("SendNotificationUsingFirebaseUserId firebaseUserId:" + firebaseUserId);
         var fcmToken = await FbManager.instance.GetDeviceTokenForUser(firebaseUserId);
         if (fcmToken == null || fcmToken == "null")
         {
@@ -108,7 +109,7 @@ public class BackgroundNotificationManager : UnitySingleton<BackgroundNotificati
         StartCoroutine(SendNotification(fcmToken, title, message));
     }
     
-    IEnumerator SendNotification(string token, string title, string body)
+    public IEnumerator SendNotification(string token, string title, string body)
     {
         Debug.Log("Send Notification");
         Debug.Log("token:" + token);

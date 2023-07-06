@@ -13,4 +13,13 @@ public class HapticManager : MonoBehaviour
     {
         MMVibrationManager.Haptic(HapticTypes.LightImpact);
     }
+    
+    public void SuccessHaptic()
+    {
+        MMVibrationManager.Haptic(HapticTypes.Success);
+    }
+    public void ErrorHaptic()
+    {
+        MMVibrationManager.Haptic(HapticTypes.Failure);
+    }
 }

@@ -8,8 +8,8 @@ using UnityEngine.Video;
 
 public class HomeScreenManager : MonoBehaviour
 {
-    
-    [Header("External")] 
+
+    [Header("External")]
     public static bool isInSendTraceView;
 
     [SerializeField] private OnlineMaps _maps;
@@ -34,7 +34,6 @@ public class HomeScreenManager : MonoBehaviour
         //determine what type of trace it is
         if (mediaType == MediaType.PHOTO.ToString())
         {
-            Debug.Log("mediaType == MediaType.PHOTO.ToString()");
             StartCoroutine(FbManager.instance.GetTracePhotoByUrl(traceID, (texture) =>
             {
                 if (texture != null)
@@ -58,7 +57,7 @@ public class HomeScreenManager : MonoBehaviour
                 {
                     Debug.Log("Open Trace View");
                     openTraceManager.videoPlayer.url = path;
-                    openTraceManager.ActivateVideoFormat(traceID,sendDate,senderName);
+                    openTraceManager.ActivateVideoFormat(traceID,sendDate,senderName, senderID);
                 }
                 else
                 {
@@ -69,6 +68,7 @@ public class HomeScreenManager : MonoBehaviour
         }
         
     }
+    
     public void UpdateMap()
     {
         TraceManager.instance.UpdateMap(new Vector2(0,0));

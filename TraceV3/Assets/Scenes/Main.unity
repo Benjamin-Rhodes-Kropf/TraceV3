@@ -3999,7 +3999,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4054229930254301890, guid: 4a809169fd8e0404292f52a7b03b5adc, type: 3}
       propertyPath: maxDuration
-      value: 30
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4054229930379256796, guid: 4a809169fd8e0404292f52a7b03b5adc, type: 3}
       propertyPath: m_IsActive
@@ -6032,6 +6032,10 @@ PrefabInstance:
       propertyPath: _maps
       value: 
       objectReference: {fileID: 6068666308761308066}
+    - target: {fileID: 4832528175236426936, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: _haptic
+      value: 
+      objectReference: {fileID: 600464280}
     - target: {fileID: 4832528176042883204, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: _drawTraceOnMap
       value: 

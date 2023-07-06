@@ -9,9 +9,6 @@ using UnityEngine.Video;
 
 public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
 {
-    [Header("Parent")] [SerializeField] 
-    private HomeScreenManager _homeScreenManager;
-    
     [Header("Trace Stuff")]
     [SerializeField] private GameObject imageObject;
     [SerializeField] private GameObject videoObject;
@@ -55,7 +52,8 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] private bool canCloseTrace;
     [SerializeField] private bool hasBegunOpenTrace;
     [SerializeField] private bool hasBegunCloseTrace;
-    
+    [SerializeField] private bool hasSentNotification;
+
     [Header("Swipe Physics Secondary")]
     [SerializeField] private GameObject g_gameObject;
     [SerializeField] private RectTransform g_transform;
@@ -73,10 +71,10 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] private AnimationCurve arrowScale;
     [SerializeField] private AnimationCurve colorScale;
     [SerializeField] private Gradient gradient;
-    // private void OnEnable()
-    // {
-    //     Reset();
-    // }
+    private void OnEnable()
+    {
+        Reset();
+    }
     public void Reset()
     {
         videoPlayer.enabled = false;
@@ -88,7 +86,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         hasBegunCloseTrace = false;
         canCloseTrace = false;
         canUsePhysics = false;
-        
+
         m_transform.position = new Vector3(m_transform.position.x, startLocation, m_transform.position.z);
         g_transform.position = new Vector3(g_transform.position.x, startLocation, g_transform.position.z);
         openTraceBackground.SetActive(true);
@@ -96,9 +94,6 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         changeInYVal = 0;
         gTransformVelocity = 0;
         m_targetYVal = 1200;
-
-        TraceManager.instance.currentlyClickingTraceID = "";
-        _homeScreenManager.UpdateMap();
     }
     
     public void ActivatePhotoFormat(string traceID, string sendDate, string senderName, string senderID)
@@ -112,9 +107,10 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         imageObject.SetActive(true);
         videoObject.SetActive(false);
     }
-    public void ActivateVideoFormat(string traceID, string sendDate, string senderName)
+    public void ActivateVideoFormat(string traceID, string sendDate, string senderName, string senderID)
     {
         this.traceID = traceID;
+        this.senderID = senderID;
         senderNameDisplay.text = senderName;
         senderDateDisplay.text = sendDate;
         canUsePhysics = true;
@@ -195,6 +191,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         
         if (hasBegunOpenTrace && !canCloseTrace && g_transform.localPosition.y > 1000)
         {
+            Debug.Log("Play Video");
             //State
             canCloseTrace = true;
             
@@ -203,10 +200,13 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
             {
                 videoPlayer.Play();
             }
-            //Update Map and Database
+            //good
+            Debug.Log("Mark Trace As Opened");
             FbManager.instance.MarkTraceAsOpened(traceID);
+            Debug.Log("UpdateTracesOnMap");
             TraceManager.instance.UpdateTracesOnMap();
-            BackgroundNotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.DisplayName , "opened your trace!");
+            Debug.Log("SendNotification");
+            BackgroundNotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID,FbManager.instance.thisUserModel.DisplayName,"Opened Your Trace");
         }
         
         if (hasBegunOpenTrace && changeInYVal < changeInYvalCloseLimit && !isDragging && canCloseTrace)
@@ -220,9 +220,11 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         if (hasBegunCloseTrace && m_transform.localPosition.y < m_YResetLimit && canCloseTrace)
         {
             Debug.Log("RESET OPEN TRACE");
+            hasBegunCloseTrace = false;
             Reset();
         }
     }
+    
 
     public void OnDrag(PointerEventData eventData)
     {

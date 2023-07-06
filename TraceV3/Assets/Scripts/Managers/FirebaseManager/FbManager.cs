@@ -1222,6 +1222,7 @@ public partial class FbManager : MonoBehaviour
 
         
     }
+    
     public IEnumerator GetTracePhotoByUrl(string _url, System.Action<Texture> callback)
     {
         var request = new UnityWebRequest();
