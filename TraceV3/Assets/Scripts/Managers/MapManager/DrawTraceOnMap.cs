@@ -20,22 +20,7 @@ public class DrawTraceOnMap : MonoBehaviour
 
     public void DrawCirlce(double lat, double lng, float radius, TraceType traceType, string markerID)
     {
-        switch (traceType)
-        {
-            case TraceType.SENT:
-                markerManager.AddTraceToMap(lat, lng, radius, primarySentTexture, secondarySentTexture, primarySendingTextureHollow, markerID);
-                return;
-            case TraceType.RECEIVED:
-                markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, markerID);
-                return;
-            case TraceType.SENDING:
-                markerManager.AddTraceToMap(lat, lng, radius, primarySendingTextureHollow, secondarySentTexture, primarySendingTextureHollow, markerID);
-                return;
-            case TraceType.OPENING:
-                markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, markerID);
-                return;
-        }
-
+        PlaceTrace(lat, lng, radius, traceType, markerID);
         if (showDebugTextures)
         {
             OnlineMapsMarkerManager.CreateItem(lng, lat, "Marker " + OnlineMapsMarkerManager.CountItems);
@@ -70,7 +55,26 @@ public class DrawTraceOnMap : MonoBehaviour
             }
             
             // Create a new polygon to draw a circle
-            OnlineMapsDrawingElementManager.AddItem(new OnlineMapsDrawingPoly(points, Color.white, 1, new Color(10, 10, 10, 0.1f)));
+            OnlineMapsDrawingElementManager.AddItem(new OnlineMapsDrawingPoly(points, Color.white, 2, new Color(10, 10, 10, 0.1f)));
+        }
+    }
+
+    public void PlaceTrace(double lat, double lng, float radius, TraceType traceType, string markerID)
+    {
+        switch (traceType)
+        {
+            case TraceType.SENT:
+                markerManager.AddTraceToMap(lat, lng, radius, primarySentTexture, secondarySentTexture, primarySendingTextureHollow, markerID);
+                return;
+            case TraceType.RECEIVED:
+                markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, markerID);
+                return;
+            case TraceType.SENDING:
+                markerManager.AddTraceToMap(lat, lng, radius, primarySendingTextureHollow, secondarySentTexture, primarySendingTextureHollow, markerID);
+                return;
+            case TraceType.OPENING:
+                markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, markerID);
+                return;
         }
     }
     

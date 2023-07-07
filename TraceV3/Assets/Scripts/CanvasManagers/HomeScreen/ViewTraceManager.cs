@@ -114,10 +114,11 @@ public class ViewTraceManager :  MonoBehaviour, IDragHandler, IEndDragHandler
     
     public void ActivateView(string senderName, string sendDate)
     {
+        Reset();
         senderNameDisplay.text = senderName;
         senderDateDisplay.text = sendDate;
         canUsePhysics = true;
-        hasBegunExit = false;
+        hasBegunExit = false; 
     }
 
     public void ClosePreview()

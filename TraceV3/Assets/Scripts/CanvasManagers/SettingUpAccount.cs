@@ -24,8 +24,13 @@ public class SettingUpAccount : MonoBehaviour
                     {
                         if (isUrlSet)
                         {
+                            Debug.Log("SetUserProfilePhotoUrl");
                             ScreenManager.instance.ChangeScreenFade("HomeScreen");
-                            print("Called");
+                        }
+                        else
+                        {
+                            Debug.Log("Failed To SetUserProfilePhotoUrl");
+                            ScreenManager.instance.ChangeScreenFade("HomeScreen");
                         }
                     }));
             }

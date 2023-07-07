@@ -21,8 +21,6 @@ public class TakePhotoCanvasController
         _view._galleryButton.onClick.AddListener(OnGalleryClick);
     }
 
-
-
     public void Uninit()
     {
         _view._cameraButton.onClick.RemoveAllListeners();
@@ -46,7 +44,7 @@ public class TakePhotoCanvasController
     {
         NativeMethodsManager.OpenGalleryToPickMedia(TakePictureFromGallery);
     }
-    
+
     private void TakePictureFromGallery(string path)
     {
         Debug.LogError("Path :: "+ path);
@@ -57,5 +55,4 @@ public class TakePhotoCanvasController
         imagePath = path;
         ScreenManager.instance.ChangeScreenForwards("TookPhoto");
     }
-
 }

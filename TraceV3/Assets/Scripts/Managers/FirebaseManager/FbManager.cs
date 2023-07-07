@@ -148,6 +148,7 @@ public partial class FbManager : MonoBehaviour
                 if (myReturnValue.IsSuccessful)
                 {
                     Debug.Log("FbManager: Logged in!");
+                    
                     ScreenManager.instance.ChangeScreenFade("HomeScreen");
                 }
                 else
@@ -162,6 +163,7 @@ public partial class FbManager : MonoBehaviour
             ScreenManager.instance.WelcomeScreen();
         }
     }
+    
     public IEnumerator Login(string _email, string _password,  System.Action<CallbackObject> callback)
     {
         //Fb Login
@@ -278,7 +280,6 @@ public partial class FbManager : MonoBehaviour
     }
     private void GetCurrentUserData(string password)
     {
-       
         // Get a reference to the "users" node in the database
         DatabaseReference usersRef = _databaseReference.Child("users");
         

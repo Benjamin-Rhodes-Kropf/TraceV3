@@ -66,6 +66,10 @@ namespace CanvasManagers
             
             _view._submitButton.interactable = true;
 
+        #if UNITY_EDITOR
+                    _view._submitButton.interactable = true;
+                    return;
+        #endif
         }
     }
 }

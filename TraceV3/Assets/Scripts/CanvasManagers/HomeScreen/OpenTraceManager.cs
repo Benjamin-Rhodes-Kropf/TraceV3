@@ -46,7 +46,8 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] private float changeInYvalCloseLimit;
     [SerializeField] private float dyForScreenSwitchLimit;
     [SerializeField] private float stopAtScreenTopLimit;
-
+    [SerializeField] private int openUp_targetYVal = 0;
+    [SerializeField] private int imageHeightTarget;
 
     [Header("State")] 
     [SerializeField] private bool isPhoto;
@@ -73,7 +74,6 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] private AnimationCurve arrowScale;
     [SerializeField] private AnimationCurve colorScale;
     [SerializeField] private Gradient gradient;
-    public int openUp_targetYVal = 0;
     //public int down_targetYVal = -1000;
 
     private void OnEnable()
@@ -89,62 +89,87 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
             case iPhoneModel.iPhone7_8: //working
                 openUp_targetYVal = 780;
                 g_offset = -585;
+                imageHeightTarget = 3800;
                 return;
             case iPhoneModel.iPhone7Plus_8Plus: //working
                 openUp_targetYVal = 1100;
                 g_offset = -825;
+                imageHeightTarget = 3800;
                 return;
             case iPhoneModel.iPhoneX_XS: //working
                 openUp_targetYVal = 1150;
                 g_offset = -862;
+                imageHeightTarget = 3650;
+                videoScaleConstant = 0.84f;
                 return;
             case iPhoneModel.iPhoneXR: //working
                 openUp_targetYVal = 850;
                 g_offset = -610;
+                imageHeightTarget = 2710;
                 return;
             case iPhoneModel.iPhoneXSMax: //working
                 openUp_targetYVal = 1250;
                 g_offset = -937;
+                imageHeightTarget = 4000;
+                videoScaleConstant = 0.76f;
                 return;
             case iPhoneModel.iPhone11: //working
                 openUp_targetYVal = 835;
                 g_offset = -615;
+                imageHeightTarget = 2680;
+                videoScaleConstant = 1.13f;
                 return;
             case iPhoneModel.iPhone11Pro: //working
                 openUp_targetYVal = 1150;
                 g_offset = -862;
+                imageHeightTarget = 3650;
+                videoScaleConstant = 0.84f;
                 return;
             case iPhoneModel.iPhone11ProMax: //working
                 openUp_targetYVal = 1250;
                 g_offset = -937;
+                imageHeightTarget = 4000;
                 return;
             case iPhoneModel.iPhoneSE2: //not working at all????????
                 openUp_targetYVal = 2000;
                 g_offset = -1500;
+                imageHeightTarget = 3800;
                 return;
             case iPhoneModel.iPhone12Mini: //Working
                 openUp_targetYVal = 1120;
                 g_offset = -830;
+                imageHeightTarget = 3490;
+                videoScaleConstant = 0.86f;
                 return;
             case iPhoneModel.iPhone12_12Pro: //Working
                 openUp_targetYVal = 1200;
                 g_offset = -900;
+                imageHeightTarget = 3800;
+                videoScaleConstant = 0.84f;
                 return;
             case iPhoneModel.iPhone12ProMax: //working
                 openUp_targetYVal = 1350;
                 g_offset = -991;
+                imageHeightTarget = 4160;
+                videoScaleConstant = 0.80f;
                 return;
             case iPhoneModel.iPhone14ProMax_14Plus_13ProMax_: //working
                 openUp_targetYVal = 1350;
                 g_offset = -991;
+                imageHeightTarget = 4160;
+                videoScaleConstant = 0.82f;
                 return;
             case iPhoneModel.iPhone13_13Pro_14_14Pro: //working
                 openUp_targetYVal = 1200;
                 g_offset = -906;
+                imageHeightTarget = 3823;
+                videoScaleConstant = 0.84f;
                 return;
             case iPhoneModel.iPhone13Mini:
                 openUp_targetYVal = 1120;
                 g_offset = -830;
+                imageHeightTarget = 3500;
+                videoScaleConstant = 0.86f;
                 return;
         }
     }
@@ -266,6 +291,13 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
             Dy = 0;
         }
         
+        if (changeInYVal > changeInYvalGoLimit && !hasBegunOpenTrace  && !isDragging && Dy > dyForScreenSwitchLimit)
+        {
+            Debug.Log("OpenTrace");
+            hasBegunOpenTrace = true;
+            m_targetYVal = imageHeightTarget;
+        }
+        
         if (changeInYVal < changeInYvalExitLimit && !isDragging && Dy < dyLimitForScreenExit)
         {
             Debug.Log("ExitTrace");
@@ -273,13 +305,6 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
             canCloseTrace = true;
             m_targetYVal = 0;
             videoPlayer.Pause();
-        }
-        
-        if (changeInYVal > changeInYvalGoLimit && !hasBegunOpenTrace  && !isDragging && Dy > dyForScreenSwitchLimit)
-        {
-            Debug.Log("OpenTrace");
-            hasBegunOpenTrace = true;
-            m_targetYVal = 3800;
         }
 
         //Slow down window as it hits the top Of the screen

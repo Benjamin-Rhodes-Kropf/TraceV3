@@ -75,7 +75,13 @@ namespace CanvasManagers
 
         public void Varify_OTP()
         {
+#if UNITY_EDITOR
+            Debug.Log("is in UnityEditor Force Next Screen");
+            ScreenManager.instance.ChangeScreenForwards("Username");
+            return;
+#endif
             Debug.LogError("Verify_OTP Called");
+
             Credential credential =
                 provider.GetCredential(_verficationId, _view._numberValidationView._verificationCode.text);
 
