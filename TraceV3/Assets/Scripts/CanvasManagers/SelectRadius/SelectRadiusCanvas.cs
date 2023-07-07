@@ -16,9 +16,9 @@ public class SelectRadiusCanvas : MonoBehaviour
     [SerializeField] private OnlineMaps map;
     [SerializeField] private Image radius;
 
-
     [SerializeField]private UnityEngine.UI.Slider _radiusSlider;
     [SerializeField] public AnimationCurve radiusSize;
+    [SerializeField] private AnimationCurve zoomScaleValue;
     [SerializeField] public AnimationCurve scaler;
     [SerializeField]private Button _isVisableToggleButton;
     [SerializeField]private bool _isTraceVisable;
@@ -85,7 +85,7 @@ public class SelectRadiusCanvas : MonoBehaviour
     {
         SendTraceManager.instance.SetRadius(_radiusSlider.value);
         dragAndZoomInertia.setZoomMode(true);
-        dragAndZoomInertia.setTargetZoom(20-(_radiusSlider.value*1.8f));
+        dragAndZoomInertia.setTargetZoom(zoomScaleValue.Evaluate(_radiusSlider.value));
     }
 
     private void FixedUpdate()

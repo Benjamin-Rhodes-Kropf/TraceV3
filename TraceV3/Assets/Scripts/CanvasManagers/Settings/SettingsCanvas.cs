@@ -19,6 +19,9 @@ public class SettingsCanvas : MonoBehaviour
 
    private void OnEnable()
    {
+      if (ScreenSizeManager.instance.currentModel == iPhoneModel.iPhone7_8)_verticalLayoutGroup.spacing = -73;
+      if (ScreenSizeManager.instance.currentModel == iPhoneModel.iPhone7Plus_8Plus)_verticalLayoutGroup.spacing = -73;
+
       if (_controller == null)
          _controller = new SettingCanvasController();
             
@@ -32,13 +35,7 @@ public class SettingsCanvas : MonoBehaviour
    }
 
    #endregion
-
-   private void Awake()
-   {
-    	if (ScreenSizeManager.instance.currentModel == iPhoneModel.iPhone7_8)_verticalLayoutGroup.spacing = -73;
-		if (ScreenSizeManager.instance.currentModel == iPhoneModel.iPhone7Plus_8Plus)_verticalLayoutGroup.spacing = -73;
-	}
-
+   
    public void About() {
       Application.OpenURL("https://www.leaveatrace.app/");
    }

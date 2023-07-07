@@ -55,7 +55,7 @@ public partial class FbManager
                 
                 Debug.Log("HandleReceivedFriendRequest ADD");
                 _allReceivedRequests.Add(request); //Todo: this ain't workin it causes double requests
-                SoundManager.instance.PlaySound(SoundManager.SoundType.Notification);
+                //SoundManager.instance.PlaySound(SoundManager.SoundType.Notification); //todo: this sound sucks
                 HelperMethods.PlayHeptics();
                 ContactsCanvas.UpdateRedMarks?.Invoke();
 
@@ -135,7 +135,7 @@ public partial class FbManager
                 
                 Debug.Log("_allSentRequests.Add");
                 _allSentRequests.Add(request); //Todo: this ain't workin it causes double requests
-                SoundManager.instance.PlaySound(SoundManager.SoundType.Notification);
+                //SoundManager.instance.PlaySound(SoundManager.SoundType.Notification); //todo: this sound sucks
                 HelperMethods.PlayHeptics();
                 ContactsCanvas.UpdateRedMarks?.Invoke();
 

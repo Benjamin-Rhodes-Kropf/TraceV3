@@ -50,80 +50,70 @@ public class ScreenSizeManager : MonoBehaviour
 
     private iPhoneModel GetiPhoneModel(string deviceModel)
     {
+        Debug.Log("Device Model:" + deviceModel);
         switch (deviceModel)
         {
-            case "iPhone 7":
-            case "iPhone 8":
+            case "iPhone9,1":
+            case "iPhone10,1":
                 return iPhoneModel.iPhone7_8;
             
-            case "iPhone 7 Plus":
-            case "iPhone 8 Plus":
+            case "iPhone9,2":
+            case "iPhone10,5":
                 return iPhoneModel.iPhone7Plus_8Plus;
 
-            case "iPhone X":
-            case "iPhone XS":
+            case "iPhone10,6":
+            case "iPhone11,2":
                 return iPhoneModel.iPhoneX_XS;
 
-            case "iPhone XR":
+            case "iPhone11,8":
                 return iPhoneModel.iPhoneXR;
 
-            case "iPhone XS Max":
+            case "iPhone11,4":
+            case "iPhone11,6":
                 return iPhoneModel.iPhoneXSMax;
 
-            case "iPhone 11":
+            case "iPhone12,1":
                 return iPhoneModel.iPhone11;
 
-            case "iPhone 11 Pro":
+            case "iPhone12,3":
                 return iPhoneModel.iPhone11Pro;
 
-            case "iPhone 11 Pro Max":
+            case "iPhone12,5":
                 return iPhoneModel.iPhone11ProMax;
 
-            case "iPhone SE 2":
+            case "iPhone12,8":
                 return iPhoneModel.iPhoneSE2;
 
-            case "iPhone 12 Mini":
+            case "iPhone13,1":
                 return iPhoneModel.iPhone12Mini;
 
-            case "iPhone 12":
-            case "iPhone 12 Pro":
+            case "iPhone13,2":
+            case "iPhone13,3":
                 return iPhoneModel.iPhone12_12Pro;
 
-            case "iPhone 12 Pro Max":
+            case "iPhone13,4":
                 return iPhoneModel.iPhone12ProMax;
             
-            case "iPhone 14 Pro Max":
-            case "iPhone 14 Plus":
-            case "iPhone 13 Pro Max":
+            case "iPhone15,3":
+            case "iPhone14,8":
+            case "iPhone14,3":
                 return iPhoneModel.iPhone14ProMax_14Plus_13ProMax_;
             
-            case "iPhone 13":
-            case "iPhone 13 Pro":
-            case "iPhone 14":
-            case "iPhone 14 Pro":
+            case "iPhone14,5":
+            case "iPhone14,2":
+            case "iPhone14,7":
+            case "iPhone15,2":
                 return iPhoneModel.iPhone13_13Pro_14_14Pro;
             
-            case "iPhone 13 Mini":
+            case "iPhone14,4":
                 return iPhoneModel.iPhone13Mini;
             
-            case "iPhone SE 3":
+            case "iPhone14,6":
                 return iPhoneModel.iPhoneSE3;
             
             default:
                 Debug.LogWarning("Unknown device model: " + deviceModel);
                 return iPhoneModel.iPhoneXR; // Default to a common iPhone size
         }
-    }
-
-    // Start is called before the first frame update
-    void Start()
-        
-    {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 }

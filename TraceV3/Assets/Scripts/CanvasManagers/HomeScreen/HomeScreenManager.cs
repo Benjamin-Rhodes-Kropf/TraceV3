@@ -57,7 +57,7 @@ public class HomeScreenManager : MonoBehaviour
                 {
                     Debug.Log("Open Trace View");
                     openTraceManager.videoPlayer.url = path;
-                    openTraceManager.ActivateVideoFormat(traceID,sendDate,senderName, senderID);
+                    StartCoroutine((openTraceManager.ActivateVideoFormat(traceID,sendDate,senderName, senderID)));
                 }
                 else
                 {

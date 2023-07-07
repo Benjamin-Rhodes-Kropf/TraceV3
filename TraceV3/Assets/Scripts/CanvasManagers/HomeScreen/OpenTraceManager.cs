@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -12,6 +13,8 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [Header("Trace Stuff")]
     [SerializeField] private GameObject imageObject;
     [SerializeField] private GameObject videoObject;
+    [SerializeField] private RectTransform _videoRectTransform;
+    [SerializeField] private float videoScaleConstant;
     [SerializeField] private string traceID;
     [SerializeField] private string senderID;
     [SerializeField] private TMP_Text senderNameDisplay;
@@ -72,7 +75,13 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] private Gradient gradient;
     public int openUp_targetYVal = 0;
     //public int down_targetYVal = -1000;
-    private void Awake()
+
+    private void OnEnable()
+    {
+        SetScreenSize();
+        Reset();
+    }
+    private void SetScreenSize()
     {
         switch(ScreenSizeManager.instance.currentModel)
         {
@@ -136,13 +145,8 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
             case iPhoneModel.iPhone13Mini:
                 openUp_targetYVal = 1120;
                 g_offset = -830;
-
                 return;
         }
-    }
-    private void OnEnable()
-    {
-        Reset();
     }
     public void Reset()
     {
@@ -164,6 +168,8 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         gTransformVelocity = 0;
         m_targetYVal = openUp_targetYVal;
     }
+
+    
     
     public void ActivatePhotoFormat(string traceID, string sendDate, string senderName, string senderID)
     {
@@ -176,18 +182,44 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         imageObject.SetActive(true);
         videoObject.SetActive(false);
     }
-    public void ActivateVideoFormat(string traceID, string sendDate, string senderName)
+    public IEnumerator ActivateVideoFormat(string traceID, string sendDate, string senderName, string senderID)
     {
         this.traceID = traceID;
+        this.senderID = senderID;
         senderNameDisplay.text = senderName;
         senderDateDisplay.text = sendDate;
-        canUsePhysics = true;
         isPhoto = false;
         imageObject.SetActive(false);
         videoObject.SetActive(true); 
         videoPlayer.enabled = true;
+        videoPlayer.Prepare();
+        Debug.Log("video player preparing");
+        while (!videoPlayer.isPrepared)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+        Debug.Log("Video Player Prepared");
         videoPlayer.Play();
-        videoPlayer.Pause();
+        videoPlayer.Pause(); 
+        ScaleVideoAspectRatio();
+        canUsePhysics = true;
+        // _videoRectTransform.sizeDelta = new Vector2(videoPlayer.width, videoPlayer.height);
+        // Debug.Log("Video Height: " + videoPlayer.height + " Video Width: " + videoPlayer.width);
+    }
+
+    public void ScaleVideoAspectRatio()
+    {
+        float videoAspectRatio = (float)videoPlayer.width / videoPlayer.height;
+        float screenAspectRatio = (float)Screen.width / Screen.height;
+
+        if (videoAspectRatio > screenAspectRatio)
+        {
+            _videoRectTransform.sizeDelta = new Vector2(Screen.width, Screen.width / videoAspectRatio)*videoScaleConstant;
+        }
+        else
+        {
+            _videoRectTransform.sizeDelta = new Vector2(Screen.height * videoAspectRatio, Screen.height)*videoScaleConstant;
+        }
     }
 
     public void CloseView()
@@ -278,9 +310,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
             hasBegunCloseTrace = true;
             m_targetYVal = -1000;
         }
-
-        //changed from g to m
-        //Debug.Log("m_transform.localPosition.y:" + m_transform.localPosition.y);
+        
         if (hasBegunCloseTrace && m_transform.localPosition.y < m_YResetLimit && canCloseTrace)
         {
             Debug.Log("RESET OPEN TRACE");

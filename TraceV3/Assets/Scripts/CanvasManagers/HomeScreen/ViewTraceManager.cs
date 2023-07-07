@@ -33,9 +33,8 @@ public class ViewTraceManager :  MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] private bool canUsePhysics;
     public int up_targetYVal = 0;
     public int down_targetYVal = -1000;
-
-
-    private void Awake()
+    
+    private void OnEnable()
     {
         switch(ScreenSizeManager.instance.currentModel)
         {
@@ -100,9 +99,6 @@ public class ViewTraceManager :  MonoBehaviour, IDragHandler, IEndDragHandler
                 down_targetYVal = -1000;
                 return;
         }
-    }
-    private void OnEnable()
-    {
         Reset();
     }
 

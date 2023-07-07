@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,12 +14,13 @@ public class EditProfileManager : MonoBehaviour
 
     public RawImage profileImage;
     
-    private void Awake()
+
+    private void OnEnable()
     {
         if (ScreenSizeManager.instance.currentModel == iPhoneModel.iPhone7_8)_verticalLayoutGroup.spacing = -45;
         if (ScreenSizeManager.instance.currentModel == iPhoneModel.iPhone7Plus_8Plus)_verticalLayoutGroup.spacing = -45;
     }
-    
+
     void Start()
     {
         FbManager.instance.thisUserModel.ProfilePicture((sprite =>
