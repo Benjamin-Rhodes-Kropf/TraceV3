@@ -13,6 +13,11 @@ public class DrawTraceOnMap : MonoBehaviour
     [SerializeField] private Texture2D primaryReceivingHollowTexture;
     [SerializeField] private Texture2D secondaryReceiverTexture;
     
+    [SerializeField] private Texture2D primaryReceiverTextureBF;
+    [SerializeField] private Texture2D primaryReceivingHollowTextureBF;
+    [SerializeField] private Texture2D secondaryReceiverTextureBF;
+
+    
     [SerializeField] private Texture2D primarySentTexture;
     [SerializeField] private Texture2D primarySendingTextureHollow;
     [SerializeField] private Texture2D secondarySentTexture;
@@ -69,6 +74,9 @@ public class DrawTraceOnMap : MonoBehaviour
             case TraceType.RECEIVED:
                 markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, markerID);
                 return;
+            case TraceType.RECEIVEDBESTFRIEND:
+                markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverTextureBF, secondaryReceiverTextureBF, primaryReceivingHollowTextureBF, markerID);
+                return;
             case TraceType.SENDING:
                 markerManager.AddTraceToMap(lat, lng, radius, primarySendingTextureHollow, secondarySentTexture, primarySendingTextureHollow, markerID);
                 return;
@@ -89,6 +97,6 @@ public class DrawTraceOnMap : MonoBehaviour
             OnlineMapsMarkerManager.RemoveItemAt(i);
         }
     }
-    public enum TraceType {RECEIVED, SENT, SENDING, OPENING};
+    public enum TraceType {RECEIVED, RECEIVEDBESTFRIEND, SENT, SENDING, OPENING};
 }
 

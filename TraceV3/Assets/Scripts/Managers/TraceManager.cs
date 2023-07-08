@@ -12,6 +12,7 @@ public class TraceManager : MonoBehaviour
     public static TraceManager instance;
     [SerializeField] private HomeScreenManager homeScreenManager;
     [SerializeField] private OnlineMapsControlBase onlineMapsControlBase;
+    [SerializeField] private OnlineMaps onlineMaps;
     [SerializeField] private OnlineMapsMarkerManager markerManager;
     [SerializeField] private OnlineMapsLocationService onlineMapsLocationService;
     [SerializeField] private DrawTraceOnMap drawTraceOnMap;
@@ -25,6 +26,7 @@ public class TraceManager : MonoBehaviour
     [Header("Variables")] 
     [SerializeField] private float startingPointLatitude;
     [SerializeField] private float startingPointLongitude;
+    [SerializeField] private AnimationCurve _clickRadiusAnimationCurve;
     
     [Header("Maximum Distance in meters")]
     [SerializeField] private double maxDist;
@@ -66,7 +68,10 @@ public class TraceManager : MonoBehaviour
         {
             foreach (var trace in recivedTraceObjects)
             {
-                var distance = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.lat, (float)trace.lng, trace.radius*1000f);
+                Debug.Log("Click Radius:"+trace.radius*_clickRadiusAnimationCurve.Evaluate(onlineMaps.floatZoom));
+                double distance = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.lat, (float)trace.lng, trace.radius*_clickRadiusAnimationCurve.Evaluate(onlineMaps.floatZoom));
+                //double distance = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.lat, (float)trace.lng, trace.radius*1000f);
+
                 Debug.Log( "Trace:"+trace.id +" Dist: " + distance);
                 if (distance < 0 && !trace.hasBeenOpened && trace.canBeOpened)
                 {
@@ -297,8 +302,9 @@ public class TraceManager : MonoBehaviour
                             traceobject.canBeOpened = true;
                         }
                         else
-                        {
+                        {                               
                             drawTraceOnMap.DrawCirlce(traceobject.lat, traceobject.lng, (traceobject.radius), DrawTraceOnMap.TraceType.RECEIVED, traceobject.id);
+
                             traceobject.canBeOpened = false;
                         }
                     }
@@ -311,7 +317,15 @@ public class TraceManager : MonoBehaviour
                         }
                         else
                         {
-                            drawTraceOnMap.DrawCirlce(traceobject.lat, traceobject.lng, (traceobject.radius), DrawTraceOnMap.TraceType.RECEIVED, traceobject.id);
+                            if (FriendsModelManager.GetFriendModelByOtherFriendID(traceobject.senderID).isBestFriend)
+                            {
+
+                                drawTraceOnMap.DrawCirlce(traceobject.lat, traceobject.lng, (traceobject.radius), DrawTraceOnMap.TraceType.RECEIVEDBESTFRIEND, traceobject.id);
+                            }
+                            else
+                            {
+                                drawTraceOnMap.DrawCirlce(traceobject.lat, traceobject.lng, (traceobject.radius), DrawTraceOnMap.TraceType.RECEIVED, traceobject.id);
+                            }
                             traceobject.canBeOpened = false;
                         }
                     }

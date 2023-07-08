@@ -23,7 +23,7 @@ public class FriendsModelManager
         
     }
 
-    private FriendModel GetFriendModelByOtherFriendID(string otherFriend)
+    public static  FriendModel GetFriendModelByOtherFriendID(string otherFriend)
     {
         RemoveDuplicates();
         var friend =
@@ -74,7 +74,7 @@ public class FriendsModelManager
             ContactsCanvas.UpdateFriendsView?.Invoke();
     }
     
-    private void RemoveDuplicates()
+    private static void RemoveDuplicates()
     {
         List<FriendModel> distinctList1 = FbManager.instance._allFriends.Distinct().ToList();
         if (distinctList1.Count() != FbManager.instance._allFriends.Count())
