@@ -1,62 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="35eba2b8-d075-4655-b3f1-10e75e4c2302" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../../../NiceVibrations/OlderVersions/v1.7/NiceVibrations-v-1-7.unitypackage.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../NiceVibrations/OlderVersions/v2.0.1/NiceVibrations-v-2-0-1.unitypackage.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../Objects/Markers/Blue Full.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../Objects/Markers/Blue Half.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../Objects/Markers/Blue None.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../Objects/Markers/Green Full.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../Objects/Markers/Green Full.png.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../Objects/Markers/Green Half.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../Objects/Markers/Green None.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../Objects/Markers/Green None.png.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../Objects/Markers/Yellow Full.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../Objects/Markers/Yellow Full.png.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../Objects/Markers/Yellow Half.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../Objects/Markers/Yellow Half.png.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../Objects/Markers/Yellow None.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../Objects/Markers/Yellow None.png.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../../Recordings/recording_2023_07_05_21_12_52_597.mp4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../../Recordings/recording_2023_07_05_21_13_20_774.mp4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../../Recordings/recording_2023_07_05_21_17_02_787.mp4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../../Recordings/recording_2023_07_05_21_29_21_337.mp4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../../Recordings/recording_2023_07_05_21_30_40_147.mp4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../../Recordings/recording_2023_07_05_21_31_16_720.mp4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../../Recordings/recording_2023_07_05_21_32_24_974.mp4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../../../Recordings/recording_2023_07_05_21_59_34_045.mp4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../Objects/Markers/HeartedTrace.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../Objects/Markers/HeartedTrace.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Objects/Markers/Blue Half.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../Objects/Markers/MiniHeartedTrace.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../Objects/Markers/MiniHeartedTrace.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Objects/Markers/Green Half.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../Objects/Markers/MiniNormalTrace (1).png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../Objects/Markers/MiniNormalTrace (1).png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Objects/Markers/Blue Full.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../Objects/Markers/MiniSentTrace (1).png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../Objects/Markers/MiniSentTrace (1).png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Objects/Markers/Blue None.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../Objects/Markers/NormalTrace (1).png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../Objects/Markers/NormalTrace (1).png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../Objects/Markers/SentTrace.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../Objects/Markers/SentTrace.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../Plugins/iOS/Firebase/libFirebaseCppApp.a.meta" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Plugins/iOS/Firebase/libFirebaseCppApp.a.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../SaveImages/Traces/Image.png" beforeDir="false" afterPath="$PROJECT_DIR$/../../../SaveImages/Traces/Image.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../Scenes/Main.unity" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Scenes/Main.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HomeScreenManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/HomeScreenManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OpenTraceManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/OpenTraceManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Settings/SettingsCanvas.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Settings/SettingsCanvas.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Managers/FirebaseManager/BackgroundNotificationManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../Managers/FirebaseManager/BackgroundNotificationManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Managers/FirebaseManager/FbManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../Managers/FirebaseManager/FbManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Managers/FirebaseManager/FriendsManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../Managers/FirebaseManager/FriendsManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Managers/MapManager/DrawTraceOnMap.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../Managers/MapManager/DrawTraceOnMap.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Managers/MapManager/ScaleMapElements.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../Managers/MapManager/ScaleMapElements.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Managers/TraceManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../Managers/TraceManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../StreamingAssets/build_info" beforeDir="false" afterPath="$PROJECT_DIR$/../../../StreamingAssets/build_info" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../ThirdParty/Infinity Code/Online maps/Examples (API usage)/DistanceAndDirectionExample.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../../ThirdParty/Infinity Code/Online maps/Examples (API usage)/DistanceAndDirectionExample.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../ThirdParty/Infinity Code/Online maps/Examples (API usage)/SaveMapStateExample.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../../ThirdParty/Infinity Code/Online maps/Examples (API usage)/SaveMapStateExample.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../ThirdParty/Infinity Code/Online maps/Scripts/Markers/Instances/OnlineMapsMarker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../../ThirdParty/Infinity Code/Online maps/Scripts/Markers/Instances/OnlineMapsMarker.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../ThirdParty/Infinity Code/Online maps/Scripts/Markers/Managers/OnlineMapsMarkerManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../../ThirdParty/Infinity Code/Online maps/Scripts/Markers/Managers/OnlineMapsMarkerManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../../ProjectSettings/ProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../ProjectSettings/ProjectSettings.asset" afterDir="false" />
-    </list>
+    <list default="true" id="35eba2b8-d075-4655-b3f1-10e75e4c2302" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -71,10 +16,12 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true"
+  }
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -85,5 +32,16 @@
       <updated>1688659946932</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

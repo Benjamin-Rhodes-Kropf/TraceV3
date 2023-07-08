@@ -473,12 +473,11 @@ public partial class FbManager : MonoBehaviour
     }
     public IEnumerator SetUserNickName(string _nickName, System.Action<bool> callback)
     {
-        Debug.Log("Db update nick to :" + _nickName);
         //Set the currently logged in user nickName in the database
         var DBTask = _databaseReference.Child("users").Child(_firebaseUser.UserId).Child("name").SetValueAsync(_nickName);
         
         //yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
-
+        //todo: which of these is better?
         while (DBTask.IsCompleted is false)
             yield return new WaitForEndOfFrame();
         

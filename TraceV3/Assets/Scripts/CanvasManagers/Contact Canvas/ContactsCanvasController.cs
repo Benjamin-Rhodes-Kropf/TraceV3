@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using SA.iOS.Contacts;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
@@ -115,20 +116,14 @@ namespace CanvasManagers
                 }
             }
             
-
             if (contacts.Count > 0)
             {
                 var text = GameObject.Instantiate(_view._searchTabTextPrefab, _view._searchscrollParent);
                 text.text = "Contacts";
                 searchList.Add(text.gameObject);
-                foreach (var contact in contacts)
-                {
-                    ContactView view = GameObject.Instantiate(_view._contactPrfab,_view._searchscrollParent);
-                    view.UpdateContactInfo(contact);
-                    searchList.Add(view.gameObject);
-                }
+                LazyLoader(contacts);
             }
-            
+
             if (others.Count > 0)
             {
                 var text = GameObject.Instantiate(_view._searchTabTextPrefab, _view._searchscrollParent);
@@ -232,7 +227,18 @@ namespace CanvasManagers
             SelectionPanelClick("Requests");
         }
 
-     
+        private async Task LazyLoader(List<IAddressBookContact> contacts)
+        {
+            foreach (var contact in contacts)
+            {
+                await Task.Delay(50); //prevent crash slow load
+                ContactView view = GameObject.Instantiate(_view._contactPrfab,_view._searchscrollParent);
+                view.UpdateContactInfo(contact);
+                searchList.Add(view.gameObject);
+            }
+        }
+
+        
         private void LoadAllRequests()
         {
             var users = UserDataManager.Instance.GetReceivedFriendRequested();
@@ -380,7 +386,7 @@ namespace CanvasManagers
             }
         }
         
-        private void OnReadContactsFinish(AddressBookReadContactsResult result, Error error)
+        private async void OnReadContactsFinish(AddressBookReadContactsResult result, Error error)
         {
             if (error == null)
             {
@@ -389,8 +395,12 @@ namespace CanvasManagers
                 Debug.Log("Total contacts fetched: " + contacts.Length);
                 Debug.Log("Below are the contact details (capped to first 10 results only):");
                 isLoaded = true;
+                await Task.Delay(100);
                 foreach (var contact in contacts)
+                {
+                    await Task.Delay(50);
                     LogContactInfo(contact);
+                }
             }
             else
             {
@@ -403,7 +413,7 @@ namespace CanvasManagers
                 return;
 
 #if UNITY_EDITOR
-
+            
 #elif UNITY_IOS
             _allContacts = new List<IAddressBookContact>();
             AddressBook.ReadContactsWithUserPermission(OnReadContactsFinish);

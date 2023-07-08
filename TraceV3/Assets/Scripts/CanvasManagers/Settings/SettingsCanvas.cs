@@ -43,19 +43,20 @@ public class SettingsCanvas : MonoBehaviour
    }
    private void TakePictureFromGallery(string path)
    {
-      Debug.Log("Path :: "+ path);
+      Debug.Log("ImageConvert: Path :: "+ path);
       if (string.IsNullOrEmpty(path))
          return;
       
       
       // Check if the image is in HEIC format
-      // Check if the image is in HEIC format
       if (Path.GetExtension(path).Equals(".heic", System.StringComparison.OrdinalIgnoreCase))
       {
+         Debug.Log("ImageConvert: ConvertHeicToPng");
          ConvertHeicToPng(path);
       }
       else
       {
+         Debug.Log("ImageConvert: LoadImageToTexture");
          LoadImageToTexture(path);
       }
    }
@@ -65,24 +66,24 @@ public class SettingsCanvas : MonoBehaviour
       byte[] imageBytes = File.ReadAllBytes(path);
 
       // Call Objective-C code to convert the image
-      byte[] pngBytes = ConvertHEICtoPNG(imageBytes, imageBytes.Length);
+      //byte[] pngBytes = ConvertHEICtoPNG(imageBytes, imageBytes.Length);
 
       // Save PNG bytes to a file
-      string outputPath = Application.persistentDataPath + "/converted_image.png";
-      File.WriteAllBytes(outputPath, pngBytes);
-      if (File.Exists(outputPath))
-      {
-         Debug.Log("IT WORKED!!!!");
-      }
-      else
-      {
-         Debug.Log("IT DID NOT WORK!");
-      }
+      //string outputPath = Application.persistentDataPath + "/converted_image.png";
+      //File.WriteAllBytes(outputPath, pngBytes);
+      // if (File.Exists(outputPath))
+      // {
+      //    Debug.Log("ImageConvert: IT WORKED!!!!");
+      // }
+      // else
+      // {
+      //    Debug.Log("ImageConvert: IT DID NOT WORK!");
+      // }
    }
 
    // Objective-C bridge method declaration
-   [DllImport("__Internal")]
-   private static extern byte[] ConvertHEICtoPNG(byte[] heicBytes, int heicLength);
+   // [DllImport("__Internal")]
+   // private static extern byte[] ConvertHEICtoPNG(byte[] heicBytes, int heicLength);
 
    private void LoadImageToTexture(string imagePath)
    {

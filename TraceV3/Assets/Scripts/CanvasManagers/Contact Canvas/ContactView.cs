@@ -30,7 +30,7 @@ public class ContactView : MonoBehaviour
                new Vector2(0.5f, 0.5f));
 
             _contactImage.sprite = sprite;
-            // _contactImage.sprite = CropTexture(texture); //todo: Fix amount of data loading at one time
+            _contactImage.sprite = CropTexture(texture);
          }
       });
       _addButton.onClick.RemoveAllListeners();

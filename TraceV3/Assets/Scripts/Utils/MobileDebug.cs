@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class MobileDebug : MonoBehaviour
@@ -19,6 +18,5 @@ public class MobileDebug : MonoBehaviour
             Debug.Log("Debug Disabled");
         }
     }
-
     //public LayerMask layerMaskForMapDetection;
 }
