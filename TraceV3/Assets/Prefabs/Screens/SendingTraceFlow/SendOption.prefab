@@ -481,6 +481,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _profilePic: {fileID: 6787435730439471094}
   _nickName: {fileID: 930913082205093117}
+  friendViewToggle: {fileID: 930913082284463444}
   sendToThisFriend: 1
 --- !u!1 &930913082832265698
 GameObject:

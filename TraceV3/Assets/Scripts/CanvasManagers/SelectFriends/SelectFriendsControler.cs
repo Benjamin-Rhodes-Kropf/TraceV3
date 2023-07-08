@@ -8,6 +8,8 @@ public class SelectFriendsControler : MonoBehaviour
 {
     private SelectFriendsCanvas _view;
     private List<SendToFriendView> _allFriendsView;
+    public Transform bestFriendText;
+    public Transform allFriendsText;
     public void Init(SelectFriendsCanvas view)
     {
         this._view = view;
@@ -22,27 +24,38 @@ public class SelectFriendsControler : MonoBehaviour
     
     private void LoadAllFriends()
     {
+        Debug.Log("LoadAllFriends");
+        int numOfBestFriends = 0;
         var users = UserDataManager.Instance.GetAllFriends();
         foreach (var user in users)
         {
-            UpdateFriendViewInfo(user);
+            bool isBestFriend = FriendsModelManager.Instance.IsBestFriend(user.userId);
+            if (isBestFriend) numOfBestFriends++;
+            UpdateFriendViewInfo(user, isBestFriend);
         }
-
         if (users.Count < 1)
         {
             Debug.Log("No Friends Yet");
             _view.DisplayNoFriendsText();
         }
+        _view.CheckAndChangeVisualsForNoFriends(numOfBestFriends); 
     }
     
-    private void FrindsListInit()
+    private void UpdateFriendViewInfo(UserModel user, bool isBestFriend)
     {
-        
-    }
-    private void UpdateFriendViewInfo(UserModel user)
-    {
+        Debug.Log("UpdateFriendViewInfo");
+        int bestFriendsIndex = bestFriendText.GetSiblingIndex();
+        int allFriendsIndex = allFriendsText.GetSiblingIndex();
         SendToFriendView view = GameObject.Instantiate(_view.friendViewPrefab, _view._displayFrindsParent);
-        view.UpdateFrindData(user,true);
+        if (isBestFriend)
+        {
+            view.GetComponent<Transform>().SetSiblingIndex(bestFriendsIndex+1);
+        }
+        else
+        {
+            view.GetComponent<Transform>().SetSiblingIndex(allFriendsIndex+1);
+        }
+        view.UpdateFrindData(isBestFriend, user,false);
         _allFriendsView.Add(view);
         _view._friendsList.Add(view);
     }
@@ -70,24 +83,8 @@ public class SelectFriendsControler : MonoBehaviour
             if (view.sendToThisFriend)
             {
                 Debug.Log("UpdateFriendsSendTo:" + view.friendUID);
-                //_SendToUIDs.Add(view.friendUID);
                 SendTraceManager.instance.usersToSendTo.Add(view.friendUID);
             }
         }
-        
-    }
-
-    
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

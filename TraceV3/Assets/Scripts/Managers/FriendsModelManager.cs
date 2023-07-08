@@ -64,7 +64,6 @@ public class FriendsModelManager
                 break;
             }
         }
-        
     }
 
     public void RemoveFriendFromList(string otherFriend)
@@ -74,8 +73,7 @@ public class FriendsModelManager
         if (ContactsCanvas.UpdateFriendsView != null)
             ContactsCanvas.UpdateFriendsView?.Invoke();
     }
-
-
+    
     private void RemoveDuplicates()
     {
         List<FriendModel> distinctList1 = FbManager.instance._allFriends.Distinct().ToList();

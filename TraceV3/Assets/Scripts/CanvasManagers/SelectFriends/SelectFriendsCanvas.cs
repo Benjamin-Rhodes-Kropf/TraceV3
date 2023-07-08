@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class SelectFriendsCanvas : MonoBehaviour{
     
@@ -13,39 +14,58 @@ public class SelectFriendsCanvas : MonoBehaviour{
     public GameObject _youDontHaveAnyFriendsYetText;
     public List<SendToFriendView> _friendsList;
     public GameObject _friendsScroll;
+    [SerializeField] private SelectFriendsControler _controller;
+    [SerializeField] private Transform bestFriendText;
+    [SerializeField] private GameObject bestFriendLine;
+    [SerializeField] private GameObject bestFriendSpace;
+    [SerializeField] private Transform allFriendText;
     
-    private SelectFriendsControler _controller;
+    //visuals
+    public bool selectAllFriends;
+    public bool toggleBestFriends;
     
-    public static Action UpdateFriendsView;
-    public static Action UpdateFriendsSendTo;
-
-
     #region UnityEvents
 
     private void OnEnable()
     {
+        
         //objects
         _youDontHaveAnyFriendsYetText.SetActive(false);
-        
-        //controler
+        //controller
         if (_friendsList == null)
             _friendsList = new List<SendToFriendView>();
         if (_controller == null)
+        {
             _controller = gameObject.AddComponent<SelectFriendsControler>();
+            _controller.bestFriendText = bestFriendText;
+            _controller.allFriendsText = allFriendText;
+        }
+        selectAllFriends = true;
         _controller.Init(this);
+    }
 
-        //listners
-        UpdateFriendsView += _controller.UpdateFriendsLayout;
+    public void CheckAndChangeVisualsForNoFriends(int numOfBestFriends)
+    {
+        if (numOfBestFriends != 0)
+        {
+            bestFriendText.gameObject.SetActive(true);
+            bestFriendLine.SetActive(true);
+            bestFriendLine.SetActive(true);
+        }
+        else
+        {
+            bestFriendText.gameObject.SetActive(false);
+            bestFriendLine.SetActive(false);
+            bestFriendSpace.SetActive(false);
+        }
     }
 
     public void DisplayNoFriendsText()
     {
-        Debug.Log("Displaying No Friends Text");
         _youDontHaveAnyFriendsYetText.SetActive(true);
     }
     
     public void BackToMainScene() {
-        //change the bool so that the main canavs can be enabled after the main scene is loaded
         ScreenManager.instance.isComingFromCameraScene = true;
         SceneManager.UnloadSceneAsync(1);
         ScreenManager.instance.camManager.cameraPanel.SetActive(false);//disabling the camera panel
@@ -57,6 +77,48 @@ public class SelectFriendsCanvas : MonoBehaviour{
         StartCoroutine(LoadMap());
         Debug.Log("SendButtonPressed()");
         _controller.UpdateFriendsSendTo();
+    }
+
+    public void ToggleAllFriends()
+    {
+        selectAllFriends = !selectAllFriends;
+        if (selectAllFriends)
+        {
+            foreach (var friendObject in _friendsList)
+            {
+                friendObject.SetToggleState(true);
+            }
+            toggleBestFriends = true;
+        }else {
+            foreach (var friendObject in _friendsList)
+            {
+                friendObject.SetToggleState(false);
+            }
+            toggleBestFriends = false;
+        }
+    }
+    
+    public void ToggleBestFriends()
+    {
+        toggleBestFriends = !toggleBestFriends;
+        if (toggleBestFriends)
+        {
+            foreach (var friendObject in _friendsList)
+            {
+                if (friendObject._isBestFriend)
+                {
+                    friendObject.SetToggleState(true);
+                }
+            }
+        }else {
+            foreach (var friendObject in _friendsList)
+            {
+                if (friendObject._isBestFriend)
+                {
+                    friendObject.SetToggleState(false);
+                }
+            }
+        }
     }
     
     //load map before screen switch
@@ -75,8 +137,6 @@ public class SelectFriendsCanvas : MonoBehaviour{
     {
         ClearFriendsList();
         _controller.UnInitialize();
-        UpdateFriendsView -= _controller.UpdateFriendsLayout;
-        //UpdateFriendsSendTo -= _controller.UpdateFriendsSendTo;
     }
 
     public void ClearFriendsList()

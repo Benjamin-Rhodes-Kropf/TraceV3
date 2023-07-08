@@ -144,12 +144,6 @@ public class BackgroundNotificationManager : UnitySingleton<BackgroundNotificati
             Debug.Log("Notification sent successfully!");
         }
     }
-
-    // private static IEnumerator SendNotificationUsingFcmTokenEnumerator(string deviceToken, string title, string message)
-    // {
-    //        
-    // }
-    
 }
 
 [Serializable]

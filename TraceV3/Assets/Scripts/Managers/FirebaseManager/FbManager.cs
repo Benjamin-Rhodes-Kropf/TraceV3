@@ -222,7 +222,6 @@ public partial class FbManager : MonoBehaviour
         //once user logged in
         GetAllUsers(); //Todo: we really should not be doing this
         GetCurrentUserData(_password);
-        StartCoroutine(RetrieveFriends());
         ContinuesListners();
         InitializeFCMService();
         
@@ -414,10 +413,6 @@ public partial class FbManager : MonoBehaviour
         var DBTaskSetUserFriends = _databaseReference.Child("Friends").Child(_firebaseUser.UserId).Child("Don't Delete This Child").SetValueAsync("*");
         while (DBTaskSetUserFriends.IsCompleted is false)
             yield return new WaitForEndOfFrame();
-        
-        // yield return new WaitUntil(predicate: () => DBTaskSetUserFriends.IsCompleted);
-        
-        
         
         //if nothing has gone wrong try logging in with new users information
         StartCoroutine(Login(_email, _password, (myReturnValue) => {

@@ -179,15 +179,15 @@ public partial class FbManager
         {
             if (args.Snapshot == null || args.Snapshot.Value == null) return;
             var friendId = args.Snapshot.Key.ToString();
-
+            var bestFriend = System.Convert.ToBoolean(args.Snapshot.Value.ToString());
+            
             if (string.IsNullOrEmpty(friendId)) return;
             
             var friend = new FriendModel
             {
-                friend = friendId
+                friend = friendId,
+                isBestFriend = bestFriend
             };
-            
-            print("New Friend Added :: "+ friendId);
             _allFriends.Add(friend);
             if (ContactsCanvas.UpdateFriendsView != null)
                 ContactsCanvas.UpdateFriendsView?.Invoke();
@@ -469,47 +469,51 @@ public partial class FbManager
     #endregion
 
     #region Friendship
-    public IEnumerator RetrieveFriends()
-    {
-        // Get the current user's ID
-        string userId = _firebaseUser.UserId;
-        DatabaseReference friendRequestsRef = _databaseReference.Child("Friends");
-
-        var task = friendRequestsRef.Child(userId).GetValueAsync();
-
-        while (task.IsCompleted is false)
-            yield return new WaitForEndOfFrame();
-
-        if (task.IsCanceled || task.IsFaulted)
-        {
-            print(task.Exception.Message);
-        }
-        else
-        {
-            DataSnapshot snapshot = task.Result; 
-            foreach (var friend in snapshot.Children)
-            {
-                var friendID = friend.Key.ToString();
-                // print("IsBest Friends :: " + friend.Value.ToString());
-                var isBestFriend = false;
-    
-                if (friend.Value.ToString().Equals("*") is false)
-                    isBestFriend= System.Convert.ToBoolean(friend.Value.ToString());
-                
-                if (FriendsModelManager.Instance.IsAlreadyFriend(friendID) is false)
-                {
-                    var fri = new FriendModel
-                    {
-                        friend = friendID,
-                        isBestFriend = isBestFriend
-                    };
-                    _allFriends.Add(fri);
-                }
-            }
-        }
-
-        
-    }
+    // public IEnumerator RetrieveFriends()
+    // {
+    //     // Get the current user's ID
+    //     string userId = _firebaseUser.UserId;
+    //     DatabaseReference friendRequestsRef = _databaseReference.Child("Friends");
+    //
+    //     var task = friendRequestsRef.Child(userId).GetValueAsync();
+    //
+    //     while (task.IsCompleted is false)
+    //         yield return new WaitForEndOfFrame();
+    //
+    //     if (task.IsCanceled || task.IsFaulted)
+    //     {
+    //         print(task.Exception.Message);
+    //     }
+    //     else
+    //     {
+    //         DataSnapshot snapshot = task.Result; 
+    //         foreach (var friend in snapshot.Children)
+    //         {
+    //             var friendID = friend.Key.ToString();
+    //             var isBestFriend = false;
+    //             
+    //             
+    //             if (friend.Value.ToString() != "*")
+    //             {
+    //                 isBestFriend = System.Convert.ToBoolean(friend.Value.ToString());
+    //                 
+    //                 if (FriendsModelManager.Instance.IsAlreadyFriend(friendID) is false && friendID != "*")
+    //                 {
+    //                     var fri = new FriendModel
+    //                     {
+    //                         friend = friendID,
+    //                         isBestFriend = isBestFriend
+    //                     };
+    //                     Debug.Log("friendID:" + friendID);
+    //                     Debug.Log("isBestFriend:" + isBestFriend);
+    //                     _allFriends.Add(fri);
+    //                 }
+    //             }
+    //         }
+    //     }
+    //
+    //     
+    // }
     public void RemoveFriends(string friendshipId)
     {
         // Delete the friend request node
