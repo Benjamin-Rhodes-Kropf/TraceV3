@@ -110,13 +110,14 @@ public class TraceManager : MonoBehaviour
                     marker.displayedTexture = marker.primaryHollowInTexture;
                 }
             }
-            
+            HapticManager.instance.SelectionHaptic();
             homeScreenManager.OpenTrace(traceToOpen.Item1.id,  traceToOpen.Item1.senderName,traceToOpen.Item1.senderID,traceToOpen.Item1.sendTime, traceToOpen.Item1.mediaType);
         }
         else if(viewableAbleTraces.Count > 0)
         {
             viewableAbleTraces.Sort((i1, i2) => i1.Item2.CompareTo(i2.Item2));
             var traceToView = viewableAbleTraces[viewableAbleTraces.Count - 1];
+            HapticManager.instance.SelectionHaptic();
             homeScreenManager.ViewTrace( traceToView.Item1.senderName,traceToView.Item1.sendTime);
         }
     }

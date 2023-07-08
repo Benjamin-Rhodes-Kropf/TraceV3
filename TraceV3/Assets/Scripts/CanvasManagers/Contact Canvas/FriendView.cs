@@ -156,6 +156,7 @@ public class FriendView : MonoBehaviour
                 _bestFriend.sprite = isBestFriend ? _heartSprite[0] : _heartSprite[1];
                 FriendsModelManager.Instance.SetBestFriend(friendUID, isBestFriend);
                 TraceManager.instance.UpdateMap(new Vector2(0,0));
+                
             }
 
             _bestFriendButton.interactable = true;
