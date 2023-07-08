@@ -561,7 +561,7 @@ public static class NativeGallery
 			if( ( mediaType & MediaType.Image ) == MediaType.Image )
 			{
 				editorFilters.Add( "Image files" );
-				editorFilters.Add( "png,jpg,jpeg,heic" );
+				editorFilters.Add( "png,jpg,jpeg" );
 			}
 
 			if( ( mediaType & MediaType.Video ) == MediaType.Video )

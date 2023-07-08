@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -51,20 +52,38 @@ public class SettingsCanvas : MonoBehaviour
       // Check if the image is in HEIC format
       if (Path.GetExtension(path).Equals(".heic", System.StringComparison.OrdinalIgnoreCase))
       {
-         ConvertHeicToTexture(path);
+         ConvertHeicToPng(path);
       }
       else
       {
          LoadImageToTexture(path);
       }
    }
-   private void ConvertHeicToTexture(string path)
+   private void ConvertHeicToPng(string path)
    {
-      // Convert the HEIC image to a Texture2D
-      byte[] heicBytes = File.ReadAllBytes(path);
-      //byte[] pngBytes = ImageConversion.ConvertHeicToPng(heicBytes);
-      //LoadImageBytesToTexture(pngBytes);
+      // Load the HEIC image bytes
+      byte[] imageBytes = File.ReadAllBytes(path);
+
+      // Call Objective-C code to convert the image
+      byte[] pngBytes = ConvertHEICtoPNG(imageBytes, imageBytes.Length);
+
+      // Save PNG bytes to a file
+      string outputPath = Application.persistentDataPath + "/converted_image.png";
+      File.WriteAllBytes(outputPath, pngBytes);
+      if (File.Exists(outputPath))
+      {
+         Debug.Log("IT WORKED!!!!");
+      }
+      else
+      {
+         Debug.Log("IT DID NOT WORK!");
+      }
    }
+
+   // Objective-C bridge method declaration
+   [DllImport("__Internal")]
+   private static extern byte[] ConvertHEICtoPNG(byte[] heicBytes, int heicLength);
+
    private void LoadImageToTexture(string imagePath)
    {
       // Load the image data from file
