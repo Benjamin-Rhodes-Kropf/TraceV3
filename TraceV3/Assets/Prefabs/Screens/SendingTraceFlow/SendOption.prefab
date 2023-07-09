@@ -111,7 +111,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.559, y: 0.5}
   m_AnchorMax: {x: 0.559, y: 0.5}
-  m_AnchoredPosition: {x: -49.662903, y: 0}
+  m_AnchoredPosition: {x: -50.842957, y: 0}
   m_SizeDelta: {x: 456.6742, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &930913082205093116
@@ -298,7 +298,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 389651761264416052}
         m_TargetAssemblyTypeName: SendToFriendView, Assembly-CSharp
-        m_MethodName: friendPressed
+        m_MethodName: TogglePressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -396,9 +396,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 930913082759604384}
-  - component: {fileID: 930913082759604386}
-  - component: {fileID: 930913082759604387}
   - component: {fileID: 389651761264416052}
+  - component: {fileID: 1270297391421787847}
+  - component: {fileID: 4496097213744924790}
   m_Layer: 5
   m_Name: SendOption
   m_TagString: UserSelection
@@ -427,9 +427,26 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 694, y: 134.9138}
+  m_SizeDelta: {x: 714, y: 134.9138}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &930913082759604386
+--- !u!114 &389651761264416052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 930913082759604385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84587a5700a2d4fd59e8b256a9dd212a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _profilePic: {fileID: 6787435730439471094}
+  _nickName: {fileID: 930913082205093117}
+  friendViewToggle: {fileID: 930913082284463444}
+  sendToThisFriend: 1
+  _isBestFriend: 0
+--- !u!222 &1270297391421787847
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -437,7 +454,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 930913082759604385}
   m_CullTransparentMesh: 1
---- !u!114 &930913082759604387
+--- !u!114 &4496097213744924790
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -467,22 +484,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 10
---- !u!114 &389651761264416052
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 930913082759604385}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84587a5700a2d4fd59e8b256a9dd212a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _profilePic: {fileID: 6787435730439471094}
-  _nickName: {fileID: 930913082205093117}
-  friendViewToggle: {fileID: 930913082284463444}
-  sendToThisFriend: 1
 --- !u!1 &930913082832265698
 GameObject:
   m_ObjectHideFlags: 0

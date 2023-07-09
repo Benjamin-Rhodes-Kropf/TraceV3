@@ -251,11 +251,9 @@ public partial class FbManager : MonoBehaviour
         _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildAdded += HandleFriends;
         _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildRemoved += HandleRemovedFriends;
         
-        _databaseReference.Child("users").ChildAdded += HandleUserAdded;
         _databaseReference.Child("users").ChildChanged += HandleUserChanged;
         _databaseReference.Child("users").ChildRemoved += HandleRemoveUser;
         
-        //Also Bad, We Dont Use Any Of These //todo: move these functions into this function
         SubscribeOrUnSubscribeToReceivingTraces(true);
         SubscribeOrUnsubscribeToSentTraces(true);
     }
@@ -271,12 +269,13 @@ public partial class FbManager : MonoBehaviour
         _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildRemoved -= HandleRemovedFriends;
         
         _databaseReference.Child("users").Child(_firebaseUser.UserId).ChildAdded -= HandleUserAdded;
+        _databaseReference.Child("users").ChildChanged += HandleUserChanged;
         _databaseReference.Child("users").Child(_firebaseUser.UserId).ChildRemoved -= HandleRemoveUser;
         
-        //Also Bad, We Dont Use Any Of These
         SubscribeOrUnSubscribeToReceivingTraces(false);
         SubscribeOrUnsubscribeToSentTraces(false);
     }
+    
     private void GetCurrentUserData(string password)
     {
         // Get a reference to the "users" node in the database
@@ -293,7 +292,7 @@ public partial class FbManager : MonoBehaviour
                     //string frindCount = snapshot.Child("friendCount").Value.ToString();
                     string displayName = snapshot.Child("name").Value.ToString();
                     string username = snapshot.Child("username").Value.ToString();
-                    string phoneNumber = snapshot.Child("phone").Value.ToString();
+                    string phoneNumber = snapshot.Child("phoneNumber").Value.ToString();
                     string photoURL = snapshot.Child("userPhotoUrl").Value.ToString();
                     thisUserModel = new UserModel(_firebaseUser.UserId,email,0,displayName,username,phoneNumber,photoURL, password);
                     IsFirebaseUserInitialised = true;
@@ -555,6 +554,33 @@ public partial class FbManager : MonoBehaviour
             callback(true,url);
         }
     }
+    public void UploadProfilePicture(Texture raw)
+    {
+// Cast the original texture to Texture2D
+        Texture2D convertedTexture  = (Texture2D)raw;
+        
+// Apply the changes to make them visible
+        convertedTexture.Apply();
+
+        StartCoroutine(FbManager.instance.UploadProfilePhoto(convertedTexture.EncodeToPNG(), (isUploaded, url) =>
+        {
+            if (isUploaded)
+            {
+                StartCoroutine(FbManager.instance.SetUserProfilePhotoUrl(url,
+                    (isUrlSet) =>
+                    {
+                        if (isUrlSet)
+                        {
+                            Debug.Log("SetUserProfilePhotoUrl");
+                        }
+                        else
+                        {
+                            Debug.Log("Failed To SetUserProfilePhotoUrl");
+                        }
+                    }));
+            }
+        }));
+    }
     #endregion
     #region -User Info
     public void GetProfilePhotoFromFirebaseStorage(string userId, Action<Texture> onSuccess, Action<string> onFailed) {
@@ -636,7 +662,7 @@ public partial class FbManager : MonoBehaviour
                          userData.Email = snap.Child("email").Value.ToString();
                          userData.DisplayName =snap.Child("name").Value.ToString();
                          userData.Username = snap.Child("username").Value.ToString();
-                         userData.PhoneNumber =  snap.Child("phone").Value.ToString();
+                         userData.PhoneNumber =  snap.Child("phoneNumber").Value.ToString();
                          userData.PhotoURL = snap.Child("userPhotoUrl").Value.ToString();
                          users.Add(userData); 
                      }
@@ -656,6 +682,7 @@ public partial class FbManager : MonoBehaviour
              }
         });
     }
+    
     private void HandleUserAdded(object sender, ChildChangedEventArgs args)
     {
         Debug.Log("HandleUserAdded");
@@ -679,7 +706,7 @@ public partial class FbManager : MonoBehaviour
                 return;
             }
             Debug.Log("HandleUserAdded username:" + userData.Username);
-            userData.PhoneNumber =  args.Snapshot.Child("phone").Value.ToString();
+            userData.PhoneNumber =  args.Snapshot.Child("phoneNumber").Value.ToString();
             if (userData.PhoneNumber == "") //todo add more
             {
                 return;
@@ -707,24 +734,31 @@ public partial class FbManager : MonoBehaviour
             if (userToChange == null)
             {
                 //create a new user
-                userToChange = new UserModel();
-                userToChange.userId = userID;
-                userToChange.Email = args.Snapshot.Child("email").Value.ToString();
-                Debug.Log("HandleUserAdded email:" + userToChange.Email);
-                userToChange.DisplayName =args.Snapshot.Child("name").Value.ToString();
-                Debug.Log("HandleUserAdded name:" + userToChange.DisplayName);
-                userToChange.Username = args.Snapshot.Child("username").Value.ToString();
-                if (userToChange.Username == "null" || string.IsNullOrEmpty(userToChange.Username))
+                try
                 {
-                    Debug.Log("User Is Not Setup Correctly");
-                    return;
+                    userToChange = new UserModel();
+                    userToChange.userId = userID;
+                    userToChange.Email = args.Snapshot.Child("email").Value.ToString();
+                    Debug.Log("HandleUserAdded email:" + userToChange.Email);
+                    userToChange.DisplayName = args.Snapshot.Child("name").Value.ToString();
+                    Debug.Log("HandleUserAdded name:" + userToChange.DisplayName);
+                    userToChange.Username = args.Snapshot.Child("username").Value.ToString();
+                    if (userToChange.Username == "null" || string.IsNullOrEmpty(userToChange.Username))
+                    {
+                        Debug.Log("User Is Not Setup Correctly");
+                        return;
+                    }
+                    Debug.Log("HandleUserAdded username:" + userToChange.Username);
+                    userToChange.PhoneNumber = args.Snapshot.Child("phoneNumber").Value.ToString();
+                    Debug.Log("HandleUserAdded phone:" + userToChange.PhoneNumber);
+                    userToChange.PhotoURL = args.Snapshot.Child("userPhotoUrl").Value.ToString();
+                    Debug.Log("HandleUserAdded photo:" + userToChange.PhotoURL);
+                    users.Add(userToChange);
                 }
-                Debug.Log("HandleUserAdded username:" + userToChange.Username);
-                userToChange.PhoneNumber =  args.Snapshot.Child("phone").Value.ToString();
-                Debug.Log("HandleUserAdded phone:" + userToChange.PhoneNumber);
-                userToChange.PhotoURL = args.Snapshot.Child("userPhotoUrl").Value.ToString();
-                Debug.Log("HandleUserAdded photo:" + userToChange.PhotoURL);
-                users.Add(userToChange);
+                catch
+                {
+                    Debug.Log("Friend Malformed");
+                }
                 return;
             }
             
@@ -740,7 +774,7 @@ public partial class FbManager : MonoBehaviour
                 return;
             }
             Debug.Log("HandleUserAdded username:" + userToChange.Username);
-            userToChange.PhoneNumber =  args.Snapshot.Child("phone").Value.ToString();
+            userToChange.PhoneNumber =  args.Snapshot.Child("phoneNumber").Value.ToString();
             if (userToChange.PhoneNumber == "") //todo add more
             {
                 return;
@@ -947,7 +981,7 @@ public partial class FbManager : MonoBehaviour
     #endregion
     
     #region Sending and Recieving Traces
-    public void UploadTrace(string fileLocation, float radius, Vector2 location, MediaType mediaType, List<string> users)
+    public void UploadTrace(string fileLocation, float radius, Vector2 location, MediaType mediaType, List<string> usersToSendToList)
     {
         Debug.Log(" UploadTrace()");
         Debug.Log(" UploadTrace(): File Location:" + fileLocation);
@@ -976,15 +1010,22 @@ public partial class FbManager : MonoBehaviour
         {
             childUpdates["Traces/" + key + "/isVisable"] = false;
         }
-        
-        foreach (var user in users)
+
+        int count = 0;
+        foreach (var user in usersToSendToList)
         {
+            count++;
             //update data for within trace
             childUpdates["Traces/" + key + "/Reciver/" + user + "/HasViewed"] = false;
             childUpdates["Traces/" + key + "/Reciver/" + user + "/ProfilePhoto"] = "null";
             //update data for each user
-            childUpdates["TracesRecived/" + user +"/"+ key + "/Opened"] = false;
+            childUpdates["TracesRecived/" + user +"/"+ key + "/Sender"] = thisUserModel.userId;
+            Debug.Log("Count" + count);
         }
+        Debug.Log("Userse to Send to Count:" + usersToSendToList.Count);
+        childUpdates["Traces/" + key + "/numPeopleSent"] = count;
+
+        
         childUpdates["TracesSent/" + _firebaseUser.UserId.ToString() +"/" + key] = DateTime.UtcNow.ToString();
         //UPLOAD IMAGE
         StorageReference traceReference = _firebaseStorageReference.Child("/Traces/" + key);
@@ -1028,6 +1069,7 @@ public partial class FbManager : MonoBehaviour
             double lat = 0;
             double lng = 0;
             float radius = 0;
+            int numPeopleSent = 0;
             string mediaType = "";
             string senderID = "";
             string senderName = "";
@@ -1090,6 +1132,9 @@ public partial class FbManager : MonoBehaviour
                         senderName = thing.Value.ToString();
                         break;
                     }
+                    case "numPeopleSent":
+                        numPeopleSent = Int32.Parse(thing.Value.ToString());
+                        break;
                     case "sendTime":
                     {
                         sendTime = thing.Value.ToString();
@@ -1104,7 +1149,7 @@ public partial class FbManager : MonoBehaviour
             }
             if (lat != 0 && lng != 0 && radius != 0) //check for malformed data entry
             {
-                var trace = new TraceObject(lng, lat, radius, senderID, senderName, sendTime, 20, mediaType,traceID);
+                var trace = new TraceObject(lng, lat, radius, numPeopleSent, senderID, senderName, sendTime, 20, mediaType,traceID);
                 TraceManager.instance.recivedTraceObjects.Add(trace);
             }
         }
@@ -1125,6 +1170,7 @@ public partial class FbManager : MonoBehaviour
             float radius = 0;
             bool hasBeenOpened;
             string senderID = "";
+            int numPeopleSent = 0;
             string senderName = "";
             string sendTime = "";
             string mediaType = "";
@@ -1189,6 +1235,9 @@ public partial class FbManager : MonoBehaviour
                         sendTime = thing.Value.ToString();
                         break;
                     }
+                    case "numPeopleSent":
+                        numPeopleSent = Int32.Parse(thing.Value.ToString());
+                        break;
                     case "mediaType":
                     {
                         mediaType = thing.Value.ToString();
@@ -1200,17 +1249,11 @@ public partial class FbManager : MonoBehaviour
                         break;
                     }
                 }
-
-                //Todo: remove trace when all users have viewed
-                // if (thing.Key == thisUserModel.userId)
-                // {
-                //     Debug.Log("User ID Present In Trace");
-                // }
             }
             
             if (lat != 0 && lng != 0 && radius != 0)
             {
-                var trace = new TraceObject(lng, lat, radius,senderID,senderName, sendTime, 20, mediaType,traceID);
+                var trace = new TraceObject(lng, lat, radius, numPeopleSent, senderID,senderName, sendTime, 20, mediaType,traceID);
                 TraceManager.instance.sentTraceObjects.Add(trace);
             }
         }

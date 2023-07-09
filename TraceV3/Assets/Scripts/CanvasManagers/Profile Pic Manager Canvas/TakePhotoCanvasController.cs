@@ -42,7 +42,7 @@ public class TakePhotoCanvasController
     
     private void OnGalleryClick()
     {
-        NativeMethodsManager.OpenGalleryToPickMedia(TakePictureFromGallery);
+        ScreenManager.instance.ChangeScreenForwards("TookPhoto");
     }
 
     private void TakePictureFromGallery(string path)
@@ -53,6 +53,7 @@ public class TakePhotoCanvasController
             return;
         
         imagePath = path;
+        
         ScreenManager.instance.ChangeScreenForwards("TookPhoto");
     }
 }

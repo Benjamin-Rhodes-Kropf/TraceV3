@@ -45,7 +45,7 @@ public class SettingCanvasController
         _view._profileNameText.text = FbManager.instance.thisUserModel.DisplayName;
         FbManager.instance.thisUserModel.ProfilePicture(sprite =>
         {
-            _view._profileImage.sprite = sprite;
+            _view._profileImage.texture = sprite.texture;
         });
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 [Serializable]
 public class UserModel
@@ -30,7 +31,6 @@ public class UserModel
         {
             callback(profilePicture);
         }
-        
     }
 
     public void DownloadProfilePicture(Action<Sprite> callback)

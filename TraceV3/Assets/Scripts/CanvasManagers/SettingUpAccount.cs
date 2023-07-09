@@ -7,34 +7,13 @@ public class SettingUpAccount : MonoBehaviour
 {
     private void OnEnable()
     {
-        if (FbManager.instance.IsFirebaseUserInitialised)
-            UploadProfilePicture();
+        StartCoroutine(WaitThenChangeScreen());
     }
 
-
-    private void UploadProfilePicture()
+    IEnumerator WaitThenChangeScreen()
     {
-        var bytes = TookPhotoCanvasController._profilePicture.texture.EncodeToPNG();
-        StartCoroutine(FbManager.instance.UploadProfilePhoto(bytes, (isUploaded, url) =>
-        {
-            if (isUploaded)
-            {
-                StartCoroutine(FbManager.instance.SetUserProfilePhotoUrl(url,
-                    (isUrlSet) =>
-                    {
-                        if (isUrlSet)
-                        {
-                            Debug.Log("SetUserProfilePhotoUrl");
-                            ScreenManager.instance.ChangeScreenFade("HomeScreen");
-                        }
-                        else
-                        {
-                            Debug.Log("Failed To SetUserProfilePhotoUrl");
-                            ScreenManager.instance.ChangeScreenFade("HomeScreen");
-                        }
-                    }));
-            }
-        }));
+        yield return new WaitForSeconds(2f);
+        ScreenManager.instance.ChangeScreenFade("HomeScreen");
+
     }
-    
 }

@@ -60,7 +60,7 @@ public class SendToFriendView : MonoBehaviour
 
     public void SetToggleState(bool setToggleState)
     {
-        Debug.Log("Set Toggle State");
+        Debug.Log("Set Toggle State to:" + setToggleState);
         friendViewToggle.SetIsOnWithoutNotify(setToggleState);
         sendToThisFriend = setToggleState;
     }

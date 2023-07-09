@@ -392,7 +392,7 @@ public static class NativeGallery
 
 #if UNITY_EDITOR
 		extension = extension.ToLowerInvariant();
-		if( extension == "png" || extension == "jpg" || extension == "jpeg" || extension == "gif" || extension == "bmp" || extension == "tiff" )
+		if( extension == "png" || extension == "heic" || extension == "jpg" || extension == "jpeg" || extension == "gif" || extension == "bmp" || extension == "tiff" )
 			return MediaType.Image;
 		else if( extension == "mp4" || extension == "mov" || extension == "wav" || extension == "avi" )
 			return MediaType.Video;
@@ -561,7 +561,7 @@ public static class NativeGallery
 			if( ( mediaType & MediaType.Image ) == MediaType.Image )
 			{
 				editorFilters.Add( "Image files" );
-				editorFilters.Add( "png,jpg,jpeg" );
+				editorFilters.Add( "png,jpg,jpeg,heic" );
 			}
 
 			if( ( mediaType & MediaType.Video ) == MediaType.Video )

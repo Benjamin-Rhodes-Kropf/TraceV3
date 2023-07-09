@@ -11,7 +11,7 @@ public class SettingsCanvas : MonoBehaviour
 {
    public TMP_Text _usernameText;
    public TMP_Text _profileNameText;
-   public Image _profileImage;
+   public RawImage _profileImage;
 
    private SettingCanvasController _controller;
 
@@ -41,79 +41,20 @@ public class SettingsCanvas : MonoBehaviour
       Debug.Log("ChangeProfileImage");
       NativeMethodsManager.OpenGalleryToPickMedia(TakePictureFromGallery);
    }
+
    private void TakePictureFromGallery(string path)
    {
-      Debug.Log("ImageConvert: Path :: "+ path);
+      Debug.Log("ImageConvert: Path :: " + path);
       if (string.IsNullOrEmpty(path))
          return;
       
       
-      // Check if the image is in HEIC format
-      if (Path.GetExtension(path).Equals(".heic", System.StringComparison.OrdinalIgnoreCase))
-      {
-         Debug.Log("ImageConvert: ConvertHeicToPng");
-         ConvertHeicToPng(path);
-      }
-      else
-      {
-         Debug.Log("ImageConvert: LoadImageToTexture");
-         LoadImageToTexture(path);
-      }
-   }
-   private void ConvertHeicToPng(string path)
-   {
-      // Load the HEIC image bytes
-      byte[] imageBytes = File.ReadAllBytes(path);
 
-      // Call Objective-C code to convert the image
-      //byte[] pngBytes = ConvertHEICtoPNG(imageBytes, imageBytes.Length);
-
-      // Save PNG bytes to a file
-      //string outputPath = Application.persistentDataPath + "/converted_image.png";
-      //File.WriteAllBytes(outputPath, pngBytes);
-      // if (File.Exists(outputPath))
-      // {
-      //    Debug.Log("ImageConvert: IT WORKED!!!!");
-      // }
-      // else
-      // {
-      //    Debug.Log("ImageConvert: IT DID NOT WORK!");
-      // }
-   }
-
-   // Objective-C bridge method declaration
-   // [DllImport("__Internal")]
-   // private static extern byte[] ConvertHEICtoPNG(byte[] heicBytes, int heicLength);
-
-   private void LoadImageToTexture(string imagePath)
-   {
-      // Load the image data from file
-      byte[] imageData = File.ReadAllBytes(imagePath);
-
-      // Convert the image data to a Texture2D
-      LoadImageBytesToTexture(imageData);
-   }
-   private void LoadImageBytesToTexture(byte[] imageBytes)
-   {
-      // Create a new Texture2D object
-      Texture2D texture = new Texture2D(2, 2);
-
-      // Load the image data into the texture
-      bool success = texture.LoadImage(imageBytes);
-
-      if (success)
-      {
-         // Texture loaded successfully
-         // You can now use the 'texture' variable as the image texture
-         // For example, assign it to a material or display it on a UI element
-         Debug.Log("Texture loaded successfully");
-         // Do something with the texture...
-      }
-      else
-      {
-         // Failed to load texture
-         Debug.Log("Failed to load texture");
-      }
+      // Set the texture to the RawImage component
+      //_profileImage.texture = texture;
+      
+      _profileImage.texture = HelperMethods.PrepareProfilePhoto(path);
+      FbManager.instance.UploadProfilePicture(_profileImage.texture);
    }
    
    //other

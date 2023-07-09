@@ -14,7 +14,7 @@ using UnityEngine;
         /// <summary>
         /// Deceleration rate (0 - 1).
         /// </summary>
-        [SerializeField]private float friction = 0.9f;
+        [SerializeField]private float friction = 0.97f;
         [SerializeField]private int maxSamples = 5;
         
         [Header("Select Radius Mode")]

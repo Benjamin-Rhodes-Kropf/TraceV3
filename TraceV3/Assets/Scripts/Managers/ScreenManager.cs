@@ -40,6 +40,10 @@ public class ScreenManager : MonoBehaviour
     //Reset Hierarchy
     void OnEnable()
     {
+        activeParent.gameObject.SetActive(true);
+        inactiveParent.gameObject.SetActive(false);
+        inactivePopupParent.gameObject.SetActive(false);
+        
         Debug.Log("ScreenManager:" + "Awake");
         //dont destroy
         if (instance == null)
@@ -73,10 +77,6 @@ public class ScreenManager : MonoBehaviour
         {
             isComingFromCameraScene = false;
         }
-        
-        activeParent.gameObject.SetActive(true);
-        inactiveParent.gameObject.SetActive(false);
-        inactivePopupParent.gameObject.SetActive(false);
     }
     void Start()
     {

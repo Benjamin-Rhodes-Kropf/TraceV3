@@ -118,7 +118,7 @@ public class TraceManager : MonoBehaviour
             viewableAbleTraces.Sort((i1, i2) => i1.Item2.CompareTo(i2.Item2));
             var traceToView = viewableAbleTraces[viewableAbleTraces.Count - 1];
             HapticManager.instance.SelectionHaptic();
-            homeScreenManager.ViewTrace( traceToView.Item1.senderName,traceToView.Item1.sendTime);
+            homeScreenManager.ViewTrace( traceToView.Item1.senderName,traceToView.Item1.sendTime, traceToView.Item1.numPeopleSent);
         }
     }
     
@@ -254,40 +254,8 @@ public class TraceManager : MonoBehaviour
     // Update is called once per frame //todo: move out of update
     void Update()
     {
-        Vector2 previousUserLocation = userLocation;
-        if (onlineMapsLocationService.IsLocationServiceRunning())
-        {
-            userLocation = onlineMapsLocationService.position;
-        }
-        else
-        {
-            userLocation = onlineMapsLocationService.emulatorPosition;
-        }
-        if (previousUserLocation != userLocation)
-        {
-            recivedTraceObjectsByDistanceToUser = OrderTracesByDistanceToUser().ToList();
-        }
-        
         var currentLatitude = userLocation.y;
         var currentLongitude = userLocation.x;
-
-        // Showing current updated coordinates
-        _distance = ApproximateDistanceBetweenTwoLatLongsInM(_previousLatitude, _previousLongitude, currentLatitude, currentLongitude);
-
-        // Detecting the Significant Location Change
-        if (_distance > maxDist)
-        {
-            // Remove All Pending Notifications
-            iOSNotificationCenter.RemoveAllScheduledNotifications();
-
-            // Set current player's location
-            _previousLatitude = currentLatitude;
-            _previousLongitude = currentLongitude;
-
-            // Add Notifications for the Next 10 Distance Filtered Traces
-            UpdateNotificationsForNext50Traces();
-        }
-        
         if (!HomeScreenManager.isInSendTraceView)
         {
             foreach (var traceobject in recivedTraceObjects)
@@ -318,9 +286,8 @@ public class TraceManager : MonoBehaviour
                         }
                         else
                         {
-                            if (FriendsModelManager.GetFriendModelByOtherFriendID(traceobject.senderID).isBestFriend)
+                            if (FriendsModelManager.GetFriendModelByOtherFriendID(traceobject.senderID).isBestFriend && FbManager.instance._allFriends.Count > 1)
                             {
-
                                 drawTraceOnMap.DrawCirlce(traceobject.lat, traceobject.lng, (traceobject.radius), DrawTraceOnMap.TraceType.RECEIVEDBESTFRIEND, traceobject.id);
                             }
                             else
@@ -383,7 +350,56 @@ public class TraceManager : MonoBehaviour
             traceobject.hasBeenAdded = false;
         }
     }
+    void OnApplicationQuit()
+    {
+        Debug.Log("Application ending after " + Time.time + " seconds");
+        ScheduleNotifications();
+    }
+    
+    private void OnApplicationPaused()
+    {
+        Debug.Log("Application Paused after " + Time.time + " seconds");
+        ScheduleNotifications();
+    }
+
+    private void ScheduleNotifications()
+    {
+        Vector2 previousUserLocation = userLocation;
+        if (onlineMapsLocationService.IsLocationServiceRunning())
+        {
+            userLocation = onlineMapsLocationService.position;
+        }
+        else
+        {
+            userLocation = onlineMapsLocationService.emulatorPosition;
+        }
+        if (previousUserLocation != userLocation)
+        {
+            recivedTraceObjectsByDistanceToUser = OrderTracesByDistanceToUser().ToList();
+        }
+        
+        var currentLatitude = userLocation.y;
+        var currentLongitude = userLocation.x;
+
+        // Showing current updated coordinates
+        _distance = ApproximateDistanceBetweenTwoLatLongsInM(_previousLatitude, _previousLongitude, currentLatitude, currentLongitude);
+
+        // Detecting the Significant Location Change
+        if (_distance > maxDist)
+        {
+            // Remove All Pending Notifications
+            iOSNotificationCenter.RemoveAllScheduledNotifications();
+
+            // Set current player's location
+            _previousLatitude = currentLatitude;
+            _previousLongitude = currentLongitude;
+
+            // Add Notifications for the Next 10 Distance Filtered Traces
+            UpdateNotificationsForNext50Traces();
+        }
+    }
 }
+
 
 [Serializable]
 public class TraceObject
@@ -392,6 +408,7 @@ public class TraceObject
     public double lat;
     public double lng;
     public float radius;
+    public int numPeopleSent;
     public double distanceToUser;
     public string mediaType;
     public string text;
@@ -403,12 +420,13 @@ public class TraceObject
     public string sendTime;
     public double endTimeStamp;
     
-    public TraceObject(double longitude, double latitude, float radius, string senderID, string senderName, string sendTime, double endTimeStamp, string mediaType, string id)
+    public TraceObject(double longitude, double latitude, float radius, int numPeopleSent, string senderID, string senderName, string sendTime, double endTimeStamp, string mediaType, string id)
     {
         lng = longitude;
         lat = latitude;
         this.radius = radius;
         this.senderID = senderID;
+        this.numPeopleSent = numPeopleSent;
         this.senderName = senderName;
         this.sendTime = sendTime;
         this.endTimeStamp = endTimeStamp;

@@ -15,11 +15,11 @@ namespace CanvasManagers
     public class ContactsCanvasController
     {
         private ContactsCanvas _view;
-
         private Image _previousSelectedButton;
         private Color32 _selectedButtonColor = new Color32(128, 128, 128, 255);
         private Color32 _unSelectedButtonColor = new Color32(128, 128, 128, 0);
         private List<IAddressBookContact> _allContacts;
+        
         
         private static Regex _compiledUnicodeRegex = new Regex(@"[^\u0000-\u007F]", RegexOptions.Compiled);
         
@@ -121,7 +121,12 @@ namespace CanvasManagers
                 var text = GameObject.Instantiate(_view._searchTabTextPrefab, _view._searchscrollParent);
                 text.text = "Contacts";
                 searchList.Add(text.gameObject);
-                LazyLoader(contacts);
+                foreach (var contact in contacts)
+                {
+                    ContactView view = GameObject.Instantiate(_view._contactPrfab,_view._searchscrollParent);
+                    view.UpdateContactInfo(contact);
+                    searchList.Add(view.gameObject);
+                }
             }
 
             if (others.Count > 0)
@@ -227,16 +232,20 @@ namespace CanvasManagers
             SelectionPanelClick("Requests");
         }
 
-        private async Task LazyLoader(List<IAddressBookContact> contacts)
-        {
-            foreach (var contact in contacts)
-            {
-                await Task.Delay(50); //prevent crash slow load
-                ContactView view = GameObject.Instantiate(_view._contactPrfab,_view._searchscrollParent);
-                view.UpdateContactInfo(contact);
-                searchList.Add(view.gameObject);
-            }
-        }
+        // private async Task LazyLoader(List<IAddressBookContact> contacts)
+        // {
+        //     foreach (var contact in contacts)
+        //     {
+        //         if (!_view.isActiveAndEnabled)
+        //         {
+        //             return;
+        //         }
+        //         await Task.Delay(50); //prevent crash slow load
+        //         ContactView view = GameObject.Instantiate(_view._contactPrfab,_view._searchscrollParent);
+        //         view.UpdateContactInfo(contact);
+        //         searchList.Add(view.gameObject);
+        //     }
+        // }
 
         
         private void LoadAllRequests()
@@ -386,7 +395,7 @@ namespace CanvasManagers
             }
         }
         
-        private async void OnReadContactsFinish(AddressBookReadContactsResult result, Error error)
+        private void OnReadContactsFinish(AddressBookReadContactsResult result, Error error)
         {
             if (error == null)
             {
@@ -395,10 +404,10 @@ namespace CanvasManagers
                 Debug.Log("Total contacts fetched: " + contacts.Length);
                 Debug.Log("Below are the contact details (capped to first 10 results only):");
                 isLoaded = true;
-                await Task.Delay(100);
+                // await Task.Delay(100);
                 foreach (var contact in contacts)
                 {
-                    await Task.Delay(50);
+                    // await Task.Delay(50);
                     LogContactInfo(contact);
                 }
             }

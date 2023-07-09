@@ -8,7 +8,6 @@ public class TakePhotoCanvas : MonoBehaviour
 {
    public Button _cameraButton;
    public Button _galleryButton;
-
    private TakePhotoCanvasController _controller;
 
    private void OnEnable()

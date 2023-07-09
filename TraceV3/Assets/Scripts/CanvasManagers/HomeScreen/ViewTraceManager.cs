@@ -112,12 +112,13 @@ public class ViewTraceManager :  MonoBehaviour, IDragHandler, IEndDragHandler
         canUsePhysics = false;
     }
     
-    public void ActivateView(string senderName, string sendDate)
+    public void ActivateView(string senderName, string sendDate, int numOfPeopleSent)
     {
         Reset();
         senderNameDisplay.text = senderName;
-        senderDateDisplay.text = sendDate;
-        canUsePhysics = true;
+        Debug.Log("numPeople:" +numOfPeopleSent);
+        senderDateDisplay.text = "Left " + HelperMethods.ReformatDate(sendDate) + HelperMethods.ReformatRecipients(numOfPeopleSent);;
+        canUsePhysics = true; 
         hasBegunExit = false; 
     }
 

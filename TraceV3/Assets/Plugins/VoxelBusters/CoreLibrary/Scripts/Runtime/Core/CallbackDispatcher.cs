@@ -78,7 +78,7 @@ namespace VoxelBusters.CoreLibrary
             // validate arguments
             if (callback == null)
             {
-                //DebugLogger.LogWarning("Callback is null.");
+                DebugLogger.LogWarning("Callback is null.");
                 return;
             }
 
@@ -100,7 +100,7 @@ namespace VoxelBusters.CoreLibrary
             // validate arguments
             if (callback == null)
             {
-                //DebugLogger.LogWarning("Callback is null.");
+                DebugLogger.LogWarning("Callback is null.");
                 return;
             }
 

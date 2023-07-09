@@ -42,7 +42,6 @@ public class SendTraceManager : MonoBehaviour
     public void SendTrace()
     {
         Vector2 location = _onlineMapsLocationService.GetUserLocation();
-        Debug.Log("SendTraceImage Lat:" + location.x);
         FbManager.instance.UploadTrace(fileLocation, radius, location, mediaType,usersToSendTo);
         foreach (var user in usersToSendTo)
         {

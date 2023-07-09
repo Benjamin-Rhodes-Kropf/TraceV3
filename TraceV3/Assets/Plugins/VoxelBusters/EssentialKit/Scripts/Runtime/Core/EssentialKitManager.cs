@@ -23,27 +23,27 @@ namespace VoxelBusters.EssentialKit
 
         protected override void OnSingletonAwake()
         {
-            base.OnSingletonAwake();
-
-            CallbackDispatcher.Initialize();
-
-            // set environment variables
-            var     settings    = EssentialKitSettings.Instance;
-            DebugLogger.SetLogLevel(settings.ApplicationSettings.LogLevel);
-
-            // initialize features
-           
-            if (settings.NetworkServicesSettings.IsEnabled)
-            {
-                NetworkServices.Initialize();
-            }
-            if (settings.ApplicationSettings.RateMyAppSettings.IsEnabled)
-            {
-                if (null == FindObjectOfType<RateMyApp>())
-                {
-                    ActivateRateMyAppService();
-                }
-            }
+            // base.OnSingletonAwake();
+            //
+            // CallbackDispatcher.Initialize();
+            //
+            // // set environment variables
+            // var     settings    = EssentialKitSettings.Instance;
+            // DebugLogger.SetLogLevel(settings.ApplicationSettings.LogLevel);
+            //
+            // // initialize features
+            //
+            // if (settings.NetworkServicesSettings.IsEnabled)
+            // {
+            //     NetworkServices.Initialize();
+            // }
+            // if (settings.ApplicationSettings.RateMyAppSettings.IsEnabled)
+            // {
+            //     if (null == FindObjectOfType<RateMyApp>())
+            //     {
+            //         ActivateRateMyAppService();
+            //     }
+            // }
         }
 
         #endregion

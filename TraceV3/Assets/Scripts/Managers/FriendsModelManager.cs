@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,15 +24,12 @@ public class FriendsModelManager
         
     }
 
-    public static  FriendModel GetFriendModelByOtherFriendID(string otherFriend)
+    public static FriendModel GetFriendModelByOtherFriendID(string otherFriend)
     {
         RemoveDuplicates();
-        var friend =
-            
-            (from fri in FbManager.instance._allFriends
-                where fri.friend.Equals(otherFriend)
-                select fri).First();
-
+        var friend = (from fri in FbManager.instance._allFriends
+            where (fri.friend == otherFriend)
+            select fri).First();
         return friend;
     }
 

@@ -95,7 +95,6 @@ namespace VoxelBusters.EssentialKit.AddressBookCore
 
         public void LoadImage(EventCallback<TextureData> callback)
         {
-
             // send the default image if exists
             TextureData proxyData = null;
             if (defaultImage != null)
@@ -126,6 +125,8 @@ namespace VoxelBusters.EssentialKit.AddressBookCore
                     }
 
                     // send result to caller object
+                    Debug.Log("BIG ERRORR");
+                    return;
                     CallbackDispatcher.InvokeOnMainThread(callback, result, error);
                 });
             }
