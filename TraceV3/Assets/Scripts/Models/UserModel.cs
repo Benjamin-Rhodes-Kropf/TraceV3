@@ -44,8 +44,7 @@ public class UserModel
             Debug.Log(message);
         });
     }
-
-
+    
     private Texture2D ChangeTextureType(Texture texture)
     {
         return Texture2D.CreateExternalTexture(
@@ -55,6 +54,7 @@ public class UserModel
             false, false,
             texture.GetNativeTexturePtr());
     }
+    
 
     public UserModel()
     {

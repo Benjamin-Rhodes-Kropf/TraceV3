@@ -60,6 +60,7 @@ public partial class FbManager : MonoBehaviour
         private set;
     }
     
+    
    void Awake()
    {
        if (resetPlayerPrefs)
@@ -148,7 +149,6 @@ public partial class FbManager : MonoBehaviour
                 if (myReturnValue.IsSuccessful)
                 {
                     Debug.Log("FbManager: Logged in!");
-                    
                     ScreenManager.instance.ChangeScreenFade("HomeScreen");
                 }
                 else
@@ -221,10 +221,15 @@ public partial class FbManager : MonoBehaviour
 
         //once user logged in
         GetAllUsers(); //Todo: we really should not be doing this
-        GetCurrentUserData(_password);
         ContinuesListners();
         InitializeFCMService();
-        
+        GetCurrentUserData(_password);
+
+        // while (!IsFirebaseUserInitAttempt)
+        // {
+        //     yield return new WaitForEndOfFrame();
+        // }
+
         //set login status
         if (callbackObject.IsSuccessful == true)
         {
@@ -239,6 +244,9 @@ public partial class FbManager : MonoBehaviour
         
         callback(callbackObject);
     }
+
+    
+    
     private void ContinuesListners()
     {
         //this is bad... this is called any time any friend request occurs globally in the database
@@ -284,12 +292,12 @@ public partial class FbManager : MonoBehaviour
         // Attach a listener to the "users" node
         usersRef.Child(_firebaseUser.UserId).GetValueAsync().ContinueWith(task =>
         {
+            DataSnapshot snapshot = null;
             if (task.IsCompleted)
             {
                 // Iterate through the children of the "users" node and add each username to the list
-                DataSnapshot snapshot = task.Result;
+                snapshot = task.Result;
                     string email = snapshot.Child("email").Value.ToString();
-                    //string frindCount = snapshot.Child("friendCount").Value.ToString();
                     string displayName = snapshot.Child("name").Value.ToString();
                     string username = snapshot.Child("username").Value.ToString();
                     string phoneNumber = snapshot.Child("phoneNumber").Value.ToString();
@@ -652,7 +660,7 @@ public partial class FbManager : MonoBehaviour
 
                  foreach (var snap in allUsersSnapshots)
                  {
-                     Debug.Log("SNAP :" + snap.Key);
+                     //Debug.Log("SNAP :" + snap.Key);
                      try
                      {
                          UserModel userData = new UserModel();
