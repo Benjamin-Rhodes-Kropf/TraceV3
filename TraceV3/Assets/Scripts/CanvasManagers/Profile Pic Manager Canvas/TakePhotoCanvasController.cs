@@ -12,9 +12,7 @@ public class TakePhotoCanvasController
     {
         _view = view;
     }
-
-
-
+    
     public void Init()
     {
         _view._cameraButton.onClick.AddListener(OnGalleryClick);
@@ -42,7 +40,7 @@ public class TakePhotoCanvasController
     
     private void OnGalleryClick()
     {
-        ScreenManager.instance.ChangeScreenForwards("TookPhoto");
+        NativeMethodsManager.OpenGalleryToPickMedia(TakePictureFromGallery);
     }
 
     private void TakePictureFromGallery(string path)

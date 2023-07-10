@@ -16,7 +16,7 @@ using UnityEngine;
         /// </summary>
         [SerializeField]private float friction = 0.97f;
         [SerializeField]private int maxSamples = 5;
-        
+
         [Header("Select Radius Mode")]
         [SerializeField]private bool targetZoomMode;
         [SerializeField]private float targetZoom;
@@ -34,7 +34,7 @@ using UnityEngine;
         private double ptx;
         private double pty;
         private float pz;
-        
+
 
         private OnlineMaps map;
         private OnlineMapsControlBase control;
@@ -106,7 +106,6 @@ using UnityEngine;
                 else if (ptx < 0) ptx += max;
 
                 map.SetTilePosition(ptx, pty, 20);
-                map.floatZoom += rsZ;
 
                 // Reduces the current speed.
                 rsX *= friction;

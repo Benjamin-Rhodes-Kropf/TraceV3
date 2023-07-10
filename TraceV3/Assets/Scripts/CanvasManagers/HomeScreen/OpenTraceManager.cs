@@ -196,23 +196,24 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
 
     
     
-    public void ActivatePhotoFormat(string traceID, string sendDate, string senderName, string senderID)
+    public void ActivatePhotoFormat(string traceID, string sendDate, string senderName, string senderID, int numOfPeopleSent)
     {
         this.traceID = traceID;
         senderNameDisplay.text = senderName;
-        senderDateDisplay.text = sendDate;
+        senderDateDisplay.text = "Left " + HelperMethods.ReformatDate(sendDate) + HelperMethods.ReformatRecipients(numOfPeopleSent);
         this.senderID = senderID;
         canUsePhysics = true;
         isPhoto = true;
         imageObject.SetActive(true);
         videoObject.SetActive(false);
     }
-    public IEnumerator ActivateVideoFormat(string traceID, string sendDate, string senderName, string senderID)
+    public IEnumerator ActivateVideoFormat(string traceID, string sendDate, string senderName, string senderID, int numOfPeopleSent)
     {
         this.traceID = traceID;
         this.senderID = senderID;
         senderNameDisplay.text = senderName;
-        senderDateDisplay.text = sendDate;
+        senderDateDisplay.text = "Left " + HelperMethods.ReformatDate(sendDate) + HelperMethods.ReformatRecipients(numOfPeopleSent);
+
         isPhoto = false;
         imageObject.SetActive(false);
         videoObject.SetActive(true); 

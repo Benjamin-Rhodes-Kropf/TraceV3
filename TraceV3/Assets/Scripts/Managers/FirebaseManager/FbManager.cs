@@ -548,9 +548,7 @@ public partial class FbManager : MonoBehaviour
         else
         {
             Debug.LogError("Image Uploaded Successfully");
-            Debug.Log("Download URL: " + task.Result);
             var url = task.Result.Path + "";
-            Debug.Log("Actual  URL: " + url);
             callback(true,url);
         }
     }
@@ -659,17 +657,47 @@ public partial class FbManager : MonoBehaviour
                      {
                          UserModel userData = new UserModel();
                          userData.userId =  snap.Key.ToString(); 
+                         if (snap.Child("email").Value.ToString() == "" || snap.Child("email").Value.ToString() == null)
+                         {
+                             Debug.Log("Caught and Error");
+                             continue;
+                         }
                          userData.Email = snap.Child("email").Value.ToString();
+                         
+                         if (snap.Child("name").Value.ToString() == "" || snap.Child("name").Value.ToString() == null)
+                         {
+                             Debug.Log("Caught and Error");
+                             continue;
+                         }
                          userData.DisplayName =snap.Child("name").Value.ToString();
+                         
+                         if (snap.Child("username").Value.ToString() == "" || snap.Child("username").Value.ToString() == null)
+                         {
+                             Debug.Log("Caught and Error");
+                             continue;
+                         }
                          userData.Username = snap.Child("username").Value.ToString();
+                         
+                         if (snap.Child("phoneNumber").Value.ToString() == "" || snap.Child("phoneNumber").Value.ToString() == null)
+                         {
+                             Debug.Log("Caught and Error");
+                             continue;
+                         }
                          userData.PhoneNumber =  snap.Child("phoneNumber").Value.ToString();
+                         
+                         if (snap.Child("userPhotoUrl").Value.ToString() == "" || snap.Child("userPhotoUrl").Value.ToString() == null)
+                         {
+                             Debug.Log("Caught and Error");
+                             continue;
+                         }
                          userData.PhotoURL = snap.Child("userPhotoUrl").Value.ToString();
+                         
+                         
                          users.Add(userData); 
                      }
                      catch (Exception e)
                      {
-                         Console.WriteLine(e);
-                         throw;
+                         Debug.Log("failed to get user");
                      }
                  }
                  return;

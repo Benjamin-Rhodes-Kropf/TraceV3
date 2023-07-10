@@ -28,7 +28,7 @@ public class HomeScreenManager : MonoBehaviour
         _tutorialCanvas.SetActive(!_tutorialCanvas.gameObject.active);
     }
     
-    public void OpenTrace(string traceID, string senderName, string senderID, string sendDate, string mediaType) //Todo: Make mediaType an Enum
+    public void OpenTrace(string traceID, string senderName, string senderID, string sendDate, string mediaType, int numOfPeopleSent) //Todo: Make mediaType an Enum
     {
         Debug.Log("Open Trace");
         if (traceID == null)
@@ -45,7 +45,7 @@ public class HomeScreenManager : MonoBehaviour
             {
                 if (texture != null)
                 {
-                    openTraceManager.ActivatePhotoFormat(traceID, sendDate, senderName, senderID);
+                    openTraceManager.ActivatePhotoFormat(traceID, sendDate, senderName, senderID, numOfPeopleSent);
                     openTraceManager.displayTrace.texture = texture;
                 }
                 else
@@ -64,7 +64,7 @@ public class HomeScreenManager : MonoBehaviour
                 {
                     Debug.Log("Open Trace View");
                     openTraceManager.videoPlayer.url = path;
-                    StartCoroutine((openTraceManager.ActivateVideoFormat(traceID,sendDate,senderName, senderID)));
+                    StartCoroutine((openTraceManager.ActivateVideoFormat(traceID,sendDate,senderName, senderID, numOfPeopleSent)));
                 }
                 else
                 {

@@ -111,7 +111,7 @@ public class TraceManager : MonoBehaviour
                 }
             }
             HapticManager.instance.SelectionHaptic();
-            homeScreenManager.OpenTrace(traceToOpen.Item1.id,  traceToOpen.Item1.senderName,traceToOpen.Item1.senderID,traceToOpen.Item1.sendTime, traceToOpen.Item1.mediaType);
+            homeScreenManager.OpenTrace(traceToOpen.Item1.id,  traceToOpen.Item1.senderName,traceToOpen.Item1.senderID,traceToOpen.Item1.sendTime, traceToOpen.Item1.mediaType, traceToOpen.Item1.numPeopleSent);
         }
         else if(viewableAbleTraces.Count > 0)
         {
@@ -204,8 +204,8 @@ public class TraceManager : MonoBehaviour
 
         var entryBasedNotification = new iOSNotification
         {
-            Title = SenderName,
-            Subtitle =  "Left You A Trace Here",
+            Title = "You Found Trace!",
+            Subtitle =  "Left Here By " + SenderName,
             Body = "",
             //Body = message == "" ? "Radius latitude was > " + latitude + " and longitude was > " + longitude : message,
             ShowInForeground = true,
@@ -254,8 +254,40 @@ public class TraceManager : MonoBehaviour
     // Update is called once per frame //todo: move out of update
     void Update()
     {
+        Vector2 previousUserLocation = userLocation;
+        if (onlineMapsLocationService.IsLocationServiceRunning())
+        {
+            userLocation = onlineMapsLocationService.position;
+        }
+        else
+        {
+            userLocation = onlineMapsLocationService.emulatorPosition;
+        }
+        if (previousUserLocation != userLocation)
+        {
+            recivedTraceObjectsByDistanceToUser = OrderTracesByDistanceToUser().ToList();
+        }
+        
         var currentLatitude = userLocation.y;
         var currentLongitude = userLocation.x;
+
+        // Showing current updated coordinates
+        _distance = ApproximateDistanceBetweenTwoLatLongsInM(_previousLatitude, _previousLongitude, currentLatitude, currentLongitude);
+
+        // Detecting the Significant Location Change
+        if (_distance > maxDist)
+        {
+            // Remove All Pending Notifications
+            iOSNotificationCenter.RemoveAllScheduledNotifications();
+
+            // Set current player's location
+            _previousLatitude = currentLatitude;
+            _previousLongitude = currentLongitude;
+
+            // Add Notifications for the Next 10 Distance Filtered Traces
+            UpdateNotificationsForNext50Traces();
+        }
+
         if (!HomeScreenManager.isInSendTraceView)
         {
             foreach (var traceobject in recivedTraceObjects)

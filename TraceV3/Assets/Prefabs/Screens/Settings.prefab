@@ -271,7 +271,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _usernameText: {fileID: 7534142396275643223}
   _profileNameText: {fileID: 7534142396806151336}
-  _profileImage: {fileID: 264732558249322479}
+  _profileImage: {fileID: 0}
   _verticalLayoutGroup: {fileID: 7534142397959908235}
 --- !u!1 &3187474647992904441
 GameObject:
