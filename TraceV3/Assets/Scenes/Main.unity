@@ -5661,7 +5661,15 @@ PrefabInstance:
     - target: {fileID: 1361899929754955314, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
-      objectReference: {fileID: 6068666308761308073}
+      objectReference: {fileID: 6068666308761308082}
+    - target: {fileID: 1361899929754955314, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: StartZoomToUser
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361899929754955314, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
+      value: DragAndZoomInertia, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 1361899930089332810, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -7352,7 +7360,7 @@ MonoBehaviour:
   markerShader: {fileID: 30, guid: 0000000000000000f000000000000000, type: 0}
   sizeInScene: {x: 1024, y: 1024}
   colliderType: 1
-  compressTextures: 1
+  compressTextures: 0
   drawingsGameObject: {fileID: 0}
   drawingMode: 0
   drawingShader: {fileID: 4800000, guid: 07fd051d8972c7a4bac96bfa8038d08b, type: 3}
@@ -7472,6 +7480,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   friction: 0.91
   maxSamples: 2
+  _locationService: {fileID: 6068666308761308073}
   targetZoomMode: 0
   targetZoom: 0
   isInteract: 0
