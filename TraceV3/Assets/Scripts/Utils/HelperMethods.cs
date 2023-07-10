@@ -496,14 +496,6 @@ public static class HelperMethods
 
         if (currentDateTime.Year >= otherDateTime.Year)
         {
-            if (timeDifference.Days == 1)
-            {
-                return Math.Round(timeDifference.TotalDays) + " day ago";
-            }
-            if (timeDifference.Days < 14)
-            {
-                return Math.Round(timeDifference.TotalDays) + " days ago";
-            }
             if (Math.Round(timeDifference.TotalHours) == 1)
             {
                 return Math.Round(timeDifference.TotalHours) + " hour ago";
@@ -515,6 +507,14 @@ public static class HelperMethods
             if (Math.Round(timeDifference.TotalMinutes) == 1)
             {
                 return Math.Round(timeDifference.TotalMinutes) + " minute ago";
+            }
+            if (timeDifference.Days == 1)
+            {
+                return Math.Round(timeDifference.TotalDays) + " day ago";
+            }
+            if (timeDifference.Days < 14)
+            {
+                return Math.Round(timeDifference.TotalDays) + " days ago";
             }
             return Math.Round(timeDifference.TotalMinutes) + " minutes ago";
         }
