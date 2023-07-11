@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
+using NatML.Devices;
 using UnityEngine;
 using UnityEngine.Video;
 using UnityEngine.Networking;
@@ -13,7 +14,9 @@ public class UIController : MonoBehaviour
 {
     public VideoKitAudioManager microPhoneAudioKit;
     public VideoPlayer previewVideoPlayer;
-    public VideoKitCameraManager swapCamera;
+    public VideoKitCameraManager cameraManager;
+    public bool isFlashOn;
+    public GameObject whiteScreen;
     public VideoKitRecorder vidRecorder;
     bool isVideoPlayerOpenedForRestingTheSceneToClearGarbageValues = false;
     bool isImagePreviewOpenedForRestingTheSceneToClearGarbageValues = false;
@@ -50,16 +53,34 @@ public class UIController : MonoBehaviour
     }
     //for switching the camera
     public void SwitchCamera() {
-        if (swapCamera.facing == VideoKitCameraManager.Facing.PreferUser)
+        if (cameraManager.facing == VideoKitCameraManager.Facing.PreferUser)
         {
-            swapCamera.facing = VideoKitCameraManager.Facing.PreferWorld;
+            cameraManager.facing = VideoKitCameraManager.Facing.PreferWorld;
         }
         else
         {
-            swapCamera.facing = VideoKitCameraManager.Facing.PreferUser;
-
+            cameraManager.facing = VideoKitCameraManager.Facing.PreferUser;
         }
     }
+
+    public void ToggleFlash()
+    {
+        Debug.Log("Is Flash Supported:" + cameraManager.device.flashSupported);
+        isFlashOn = !isFlashOn;
+        Debug.Log("CameraFlashMode:" + isFlashOn);
+        if (isFlashOn)
+        {
+#if UNITY_IPHONE
+            cameraManager.device.torchMode = CameraDevice.TorchMode.Maximum;
+        }
+        else
+        {
+            cameraManager.device.torchMode = CameraDevice.TorchMode.Off;
+        }
+#endif
+    }
+    
+    
     //It will close the image previewer
     public void CloseImagePreview()
     {
@@ -90,6 +111,8 @@ public class UIController : MonoBehaviour
         SendTraceManager.instance.fileLocation = "file://" + path;
     #endif 
     }
+    
+    
     public void CaputureImage()
     {
         //turning off the UI so that i won't visible in image.
@@ -98,7 +121,13 @@ public class UIController : MonoBehaviour
     }
     IEnumerator RecordFrame()
     {
+        if (isFlashOn)
+        {
+            StartCoroutine(FlashCamera());
+            yield return new WaitForSeconds(0.2f);
+        }
         yield return new WaitForEndOfFrame();
+       
         var texture = ScreenCapture.CaptureScreenshotAsTexture();
         
         //Show the image captured
@@ -106,7 +135,6 @@ public class UIController : MonoBehaviour
         camManger.imagePreviewPanel.SetActive(true);
         camManger.videoPreviewPanel.SetActive(false);
         cameraView.SetActive(false);
-        
         //SAVE IMAGE TO DEVICE STORAGE
         byte[] bytes = texture.EncodeToPNG();
         var dirPath = "";
@@ -124,10 +152,22 @@ public class UIController : MonoBehaviour
         File.WriteAllBytes(dirPath + "Image" + ".png", bytes);
         Debug.Log("file location:" + dirPath + "Image" + ".png");
     }
+
+    IEnumerator FlashCamera()
+    {
+        #if UNITY_IPHONE
+        cameraManager.device.torchMode = CameraDevice.TorchMode.Maximum;
+        yield return new WaitForSeconds(0.5f);
+        cameraManager.device.torchMode = CameraDevice.TorchMode.Off;
+        #endif
+    }
     
     //This is an event which is handle the video preview work afetr the recording is done
     public void OnRecordingCompleted(RecordingSession session)
     {
+        #if UNITY_IPHONE
+        cameraManager.device.torchMode = CameraDevice.TorchMode.Off;
+        #endif
         // Get the recording path
         path = session.path;
         Debug.Log(path+" This is the temp path");
@@ -143,6 +183,7 @@ public class UIController : MonoBehaviour
         previewVideoPlayer.Play();
         //disabling the camera view
         cameraView.SetActive(false);
+        cameraManager.device.torchMode = CameraDevice.TorchMode.Off;
     }
     //To save the video in mobile gallery
     public void SaveVideo() {
