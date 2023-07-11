@@ -18,6 +18,7 @@ public class TraceManager : MonoBehaviour
     [SerializeField] private DrawTraceOnMap drawTraceOnMap;
     [SerializeField] private SendOrRecievedViewSelectorManager sentRecivedToggle;
     [SerializeField] private Vector2 userLocation;
+    [SerializeField] private DragAndZoomInertia _dragAndZoomInertia;
     public string currentlyClickingTraceID;
     public List<TraceObject> recivedTraceObjects;
     public List<TraceObject> sentTraceObjects;
@@ -111,6 +112,7 @@ public class TraceManager : MonoBehaviour
                 }
             }
             HapticManager.instance.SelectionHaptic();
+            StartCoroutine(_dragAndZoomInertia.ZoomToObject(new Vector2((float)traceToOpen.Item1.lng, (float)traceToOpen.Item1.lat), -traceToOpen.Item1.radius, 0.1f));
             homeScreenManager.OpenTrace(traceToOpen.Item1.id,  traceToOpen.Item1.senderName,traceToOpen.Item1.senderID,traceToOpen.Item1.sendTime, traceToOpen.Item1.mediaType, traceToOpen.Item1.numPeopleSent);
         }
         else if(viewableAbleTraces.Count > 0)
@@ -118,6 +120,7 @@ public class TraceManager : MonoBehaviour
             viewableAbleTraces.Sort((i1, i2) => i1.Item2.CompareTo(i2.Item2));
             var traceToView = viewableAbleTraces[viewableAbleTraces.Count - 1];
             HapticManager.instance.SelectionHaptic();
+            StartCoroutine(_dragAndZoomInertia.ZoomToObject(new Vector2((float)traceToView.Item1.lng, (float)traceToView.Item1.lat), -traceToView.Item1.radius, 0.1f));
             homeScreenManager.ViewTrace( traceToView.Item1.senderName,traceToView.Item1.sendTime, traceToView.Item1.numPeopleSent);
         }
     }
@@ -188,6 +191,9 @@ public class TraceManager : MonoBehaviour
             var trace = recivedTraceObjects[i];
             ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng,trace.radius, " ", trace.senderName);
         }
+        
+        //Schedule prompt to tell user to send a trace
+        ScheduleNotificationOnExitInARadius(onlineMapsLocationService.position.x, onlineMapsLocationService.position.y, 1);
     }
     
     private static void ScheduleNotificationOnEnterInARadius(float latitude, float longitude, float radius, string message, string SenderName)
@@ -211,6 +217,30 @@ public class TraceManager : MonoBehaviour
             ShowInForeground = true,
             ForegroundPresentationOption = PresentationOption.Alert | PresentationOption.Sound,
             Trigger = enterLocationTrigger
+        };
+        
+        // Schedule notification for entry base
+        iOSNotificationCenter.ScheduleNotification(entryBasedNotification);
+    }
+    
+    private static void ScheduleNotificationOnExitInARadius(float latitude, float longitude, float radius)
+    {
+        var exitLocationTrigger = new iOSNotificationLocationTrigger
+        {
+            Center = new Vector2(latitude, longitude),
+            Radius = radius,
+            NotifyOnEntry = false,
+            NotifyOnExit = true
+        };
+        
+        var entryBasedNotification = new iOSNotification
+        {
+            Title = "Cool Spot?",
+            Subtitle =  "Leave a Trace!",
+            Body = "",
+            ShowInForeground = true,
+            ForegroundPresentationOption = PresentationOption.Alert | PresentationOption.Sound,
+            Trigger = exitLocationTrigger
         };
         
         // Schedule notification for entry base

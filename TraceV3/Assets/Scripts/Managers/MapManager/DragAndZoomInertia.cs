@@ -15,7 +15,9 @@ public class DragAndZoomInertia : MonoBehaviour
     /// </summary>
     [SerializeField]private float friction = 0.97f;
     [SerializeField]private int maxSamples = 5;
-    public OnlineMapsLocationService _locationService;
+    [SerializeField]private OnlineMapsLocationService _locationService;
+    [SerializeField] private AnimationCurve zoomCurveOnZoomTo;
+    [SerializeField] private HomeScreenManager _homeScreenManager;
     
     [Header("Select Radius Mode")]
     [SerializeField]private bool targetZoomMode;
@@ -49,9 +51,10 @@ public class DragAndZoomInertia : MonoBehaviour
 
     public void StartZoomToUser()
     {
-        //map.SetPosition(0,0);
-        // map.position = new Vector2(0, 0);
-        StartCoroutine(ZoomToObject(_locationService.position, 18f, 0.1f));
+        //stop if there is already one playing
+        _homeScreenManager.CloseViewTrace();
+        _homeScreenManager.CloseOpenTrace();
+        StartCoroutine(ZoomToObject(_locationService.position, 0f, 0.1f));
     }
     
     private void FixedUpdate()
@@ -178,17 +181,28 @@ public class DragAndZoomInertia : MonoBehaviour
         speedZ = new List<float>(maxSamples);
     }
 
-    public IEnumerator ZoomToObject(Vector2 objectPosition, float targetZoom, float time)
+    public IEnumerator ZoomToObject(Vector2 objectPosition, float targetZoomOffset, float time)
     {
+        //stops other ZoomToObjectCorutiens
+        isInteract = true;
+        yield return new WaitForEndOfFrame();
+        isInteract = false;
+        
         Debug.Log("Started Zoom To User");
         while (map.position != objectPosition)
         {
-            Debug.Log("MapPostion:" + map.position.x);
-            map.position = Vector2.Lerp(map.position, objectPosition, time);
-            map.floatZoom = Mathf.Lerp(map.floatZoom, targetZoom, time);
+            map.position = Vector2.Lerp(map.position, objectPosition, time*0.9f);
+            var diffrence = map.position.magnitude - objectPosition.magnitude;
+            var zoomTarget = zoomCurveOnZoomTo.Evaluate(Math.Abs(diffrence)) + targetZoomOffset;
+            map.floatZoom = Mathf.Lerp(map.floatZoom, zoomTarget, time);
             yield return new WaitForEndOfFrame();
             if (isInteract)
             {
+                break;
+            }
+            if (Math.Abs(map.floatZoom - zoomTarget) < 0.001)
+            {
+                Debug.Log("Break Zoom To Because Of Zoom");
                 break;
             }
         }

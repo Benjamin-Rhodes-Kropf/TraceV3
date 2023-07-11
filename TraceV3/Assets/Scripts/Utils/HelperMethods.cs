@@ -407,7 +407,7 @@ public static class HelperMethods
             {
                 return Math.Round(timeDifference.TotalHours) + " hour ago";
             }
-            if (timeDifference.TotalHours > 1)
+            if (timeDifference.TotalHours > 1 && timeDifference.TotalHours < 24)
             {
                 return Math.Round(timeDifference.TotalHours) + " hours ago";
             }

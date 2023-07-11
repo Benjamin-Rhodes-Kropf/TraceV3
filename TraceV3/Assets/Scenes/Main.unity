@@ -7481,6 +7481,31 @@ MonoBehaviour:
   friction: 0.91
   maxSamples: 2
   _locationService: {fileID: 6068666308761308073}
+  zoomCurveOnZoomTo:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 18
+      inSlope: -65.712685
+      outSlope: -65.712685
+      tangentMode: 0
+      weightedMode: 2
+      inWeight: 0
+      outWeight: 0.010458135
+    - serializedVersion: 3
+      time: 20
+      value: 4
+      inSlope: 0.0014048123
+      outSlope: 0.0014048123
+      tangentMode: 0
+      weightedMode: 1
+      inWeight: 1
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _homeScreenManager: {fileID: 878571056}
   targetZoomMode: 0
   targetZoom: 0
   isInteract: 0
@@ -7528,6 +7553,7 @@ MonoBehaviour:
   drawTraceOnMap: {fileID: 6068666308761308086}
   sentRecivedToggle: {fileID: 72317452}
   userLocation: {x: 0, y: 0}
+  _dragAndZoomInertia: {fileID: 6068666308761308082}
   currentlyClickingTraceID: 
   recivedTraceObjects: []
   sentTraceObjects: []
