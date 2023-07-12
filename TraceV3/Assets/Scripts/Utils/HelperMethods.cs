@@ -245,8 +245,6 @@ public static class HelperMethods
 #endif
     }
     
-    
-    
     public static Texture2D RotateTextureClockwise(Texture2D inputTexture)
     {
         int width = inputTexture.width;
@@ -270,8 +268,9 @@ public static class HelperMethods
         // Set the rotated pixels to the new texture
         rotatedTexture.SetPixels(rotatedPixels);
         rotatedTexture.Apply();
-
-        // Display the rotated texture (optional)
+        
+        //garbage collection
+        Object.Destroy(inputTexture);
         return(rotatedTexture);
     }
 
@@ -279,36 +278,32 @@ public static class HelperMethods
     [DllImport("__Internal")]
     private static extern int _ConvertHEICToPNG(string heicFilePath, string pngFilePath);
 
-    public static Texture2D PrepareProfilePhoto(string path)
-{
+    public static Texture2D PrepareProfilePhoto(string path) {
     bool isHeic = false;
     string outputFilePath = "";
 
+    //delete old profile photo
+    if (File.Exists(Application.persistentDataPath + "/profile.png"))
+    {
+        try
+        {
+            File.Delete(Application.persistentDataPath + "/profile.png");
+            Debug.Log("Deleted previous output file");
+        }
+        catch (Exception e)
+        {
+            Debug.Log("Failed to delete previous output file: " + e.Message);
+        }
+    }
+    
     // Check if the image is in HEIC format
     if (Path.GetExtension(path).Equals(".heic", System.StringComparison.OrdinalIgnoreCase))
     {
         isHeic = true;
-
-        // Delete previous output file
-        outputFilePath = Application.persistentDataPath + "/output.png";
-        if (File.Exists(outputFilePath))
-        {
-            try
-            {
-                File.Delete(outputFilePath);
-                Debug.Log("Deleted previous output file");
-            }
-            catch (Exception e)
-            {
-                Debug.Log("Failed to delete previous output file: " + e.Message);
-            }
-        }
-
-        Debug.Log("Converting HEIC To PNG");
+        outputFilePath = Application.persistentDataPath + "/profile.png";
         try
         {
             _ConvertHEICToPNG(path, outputFilePath);
-            Debug.Log("Successfully converted HEIC to PNG");
         }
         catch (Exception e)
         {
@@ -318,18 +313,16 @@ public static class HelperMethods
     else
     {
         Debug.Log("ImageConvert: Already PNG");
-        outputFilePath = path; // Set output file to input
+        outputFilePath = path;
         Debug.Log("FileType: " + Path.GetExtension(outputFilePath));
     }
-
-    Debug.Log("Reading ALL Bytes");
-
-    Texture2D texture = new Texture2D(2, 2);
+    
+    Texture2D newTexture = new Texture2D(2, 2);
     if (File.Exists(outputFilePath))
     {
         byte[] imageData = System.IO.File.ReadAllBytes(outputFilePath);
         // Load the image data into the texture
-        texture.LoadImage(imageData);
+        newTexture.LoadImage(imageData);
     }
     else
     {
@@ -339,8 +332,8 @@ public static class HelperMethods
     Debug.Log("Crop");
 
     // Crop
-    int originalWidth = texture.width;
-    int originalHeight = texture.height;
+    int originalWidth = newTexture.width;
+    int originalHeight = newTexture.height;
 
     int size = Mathf.Min(originalWidth, originalHeight);
 
@@ -356,13 +349,17 @@ public static class HelperMethods
     {
         for (int x = 0; x < size; x++)
         {
-            Color pixel = texture.GetPixel(startX + x, startY + y);
+            Color pixel = newTexture.GetPixel(startX + x, startY + y);
             croppedTexture.SetPixel(x, y, pixel);
         }
     }
-
     // Apply changes to the cropped texture
     croppedTexture.Apply();
+    
+
+    //destroy new texture
+    Object.Destroy(newTexture);
+    
     Debug.Log("Image Cropped");
 
     if (isHeic)

@@ -8,21 +8,20 @@ using Unity.Notifications.iOS;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class BackgroundNotificationManager : UnitySingleton<BackgroundNotificationManager>
+public class NotificationManager : UnitySingleton<NotificationManager>
 {
+    private static string url = "https://trace-notification-s5iopr6l5a-uc.a.run.app/sendNotification";
     private void Awake()
     {
         Application.runInBackground = true;
         FirebaseMessaging.TokenReceived += OnTokenReceived;
         FirebaseMessaging.MessageReceived += OnMessageReceived;
     }
-    
     private void OnTokenReceived(object sender, TokenReceivedEventArgs token)
     {
         Debug.Log("Received a new Token!");
         // Handle token received event, if needed
     }
-
     private void OnMessageReceived(object sender, MessageReceivedEventArgs e)
     {
         // Handle incoming message
@@ -50,6 +49,11 @@ public class BackgroundNotificationManager : UnitySingleton<BackgroundNotificati
             }
         }
     }
+    private void OnNotificationReceived(string payload)
+    {
+        Debug.Log("Received notification: " + payload);
+        // Process the notification payload and perform desired actions in Unity
+    }
 
     public async void SendNotificationUsingFirebaseUserId(string firebaseUserId, string title = "", string message = "")
     {
@@ -63,20 +67,8 @@ public class BackgroundNotificationManager : UnitySingleton<BackgroundNotificati
         Debug.Log("SendNotificationUsingFirebaseUserId FCM TOKEN:" + fcmToken);
         StartCoroutine(SendNotification(fcmToken, title, message));
     }
-    
     public IEnumerator SendNotification(string token, string title, string body)
     {
-        Debug.Log("Send Notification");
-        Debug.Log("token:" + token);
-        Debug.Log("title:" + title);
-        Debug.Log("body:" + body);
-        var url = "https://trace-notification-s5iopr6l5a-uc.a.run.app/sendNotification";
-        // var requestData = new Dictionary<string, string>
-        // {
-        //     {"token", token},
-        //     {"title", title},
-        //     {"body", body}
-        // };
         var requestData = new RequestData();
         requestData.token = token;
         requestData.title = title;
