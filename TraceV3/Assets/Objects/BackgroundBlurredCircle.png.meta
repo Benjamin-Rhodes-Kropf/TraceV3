@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4f2d1ba32eced4da697ef140f9c7643c
+guid: 69648cdaa58974a15bf09726dfc3a52b
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -105,9 +105,9 @@ TextureImporter:
     buildTarget: iPhone
     maxTextureSize: 256
     resizeAlgorithm: 0
-    textureFormat: -1
+    textureFormat: 50
     textureCompression: 1
-    compressionQuality: 50
+    compressionQuality: 0
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 1

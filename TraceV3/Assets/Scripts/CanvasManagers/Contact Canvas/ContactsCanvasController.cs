@@ -232,22 +232,6 @@ namespace CanvasManagers
             SelectionPanelClick("Requests");
         }
 
-        // private async Task LazyLoader(List<IAddressBookContact> contacts)
-        // {
-        //     foreach (var contact in contacts)
-        //     {
-        //         if (!_view.isActiveAndEnabled)
-        //         {
-        //             return;
-        //         }
-        //         await Task.Delay(50); //prevent crash slow load
-        //         ContactView view = GameObject.Instantiate(_view._contactPrfab,_view._searchscrollParent);
-        //         view.UpdateContactInfo(contact);
-        //         searchList.Add(view.gameObject);
-        //     }
-        // }
-
-        
         private void LoadAllRequests()
         {
             var users = UserDataManager.Instance.GetReceivedFriendRequested();
@@ -404,10 +388,8 @@ namespace CanvasManagers
                 Debug.Log("Total contacts fetched: " + contacts.Length);
                 Debug.Log("Below are the contact details (capped to first 10 results only):");
                 isLoaded = true;
-                // await Task.Delay(100);
                 foreach (var contact in contacts)
                 {
-                    // await Task.Delay(50);
                     LogContactInfo(contact);
                 }
             }

@@ -9,6 +9,7 @@ public class SendTraceManager : MonoBehaviour
     public static SendTraceManager instance;
     
     [Header("Trace Values")]
+    public bool isSendingTrace;
     public string fileLocation;
     public MediaType mediaType;
     public OnlineMapsLocationService _onlineMapsLocationService;
@@ -45,7 +46,7 @@ public class SendTraceManager : MonoBehaviour
         FbManager.instance.UploadTrace(fileLocation, radius, location, mediaType,usersToSendTo);
         foreach (var user in usersToSendTo)
         {
-            BackgroundNotificationManager.Instance.SendNotificationUsingFirebaseUserId(user, FbManager.instance.thisUserModel.DisplayName, "sent you a trace!");
+            NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user, FbManager.instance.thisUserModel.DisplayName, "sent you a trace!");
         }
     }
 }

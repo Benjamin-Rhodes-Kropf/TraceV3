@@ -18,8 +18,18 @@ public class HomeScreenManager : MonoBehaviour
     [SerializeField] private ViewTraceManager viewTraceManager;
     [SerializeField] private Animator homeScreenAnimator; //Todo: add animation
 
+    public void CloseViewTrace()
+    {
+        viewTraceManager.ClosePreview();
+    }
+    public void CloseOpenTrace()
+    {
+        openTraceManager.CloseView();
+    }
+
     public void ViewTrace(string senderName, string sendDate, int numOfPeopleSent)
     {
+        CloseOpenTrace();
         viewTraceManager.ActivateView(senderName, sendDate, numOfPeopleSent);   
     }
 
@@ -30,6 +40,7 @@ public class HomeScreenManager : MonoBehaviour
     
     public void OpenTrace(string traceID, string senderName, string senderID, string sendDate, string mediaType, int numOfPeopleSent) //Todo: Make mediaType an Enum
     {
+        CloseViewTrace();
         Debug.Log("Open Trace");
         if (traceID == null)
         {

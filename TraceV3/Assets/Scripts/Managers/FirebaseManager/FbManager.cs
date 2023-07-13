@@ -43,7 +43,7 @@ public partial class FbManager : MonoBehaviour
 
     [Header("Maps References")]
     [SerializeField] private DrawTraceOnMap _drawTraceOnMap;
-    
+
     [Header("User Data")] 
     public Texture userImageTexture;
     public UserModel thisUserModel;
@@ -1021,14 +1021,17 @@ public partial class FbManager : MonoBehaviour
     {
         Debug.Log(" UploadTrace()");
         Debug.Log(" UploadTrace(): File Location:" + fileLocation);
+        
 
         //PUSH DATA TO REAL TIME DB
         string key = _databaseReference.Child("Traces").Push().Key;
         Dictionary<string, Object> childUpdates = new Dictionary<string, Object>();
         
         //draw temp circle until it uploads and the map is cleared on update
-        _drawTraceOnMap.DrawCirlce(location.x, location.y, radius, DrawTraceOnMap.TraceType.SENDING, "temp");
-        
+        SendTraceManager.instance.isSendingTrace = true;
+        _drawTraceOnMap.sendingTraceTraceLoadingObject = new TraceObject(location.x, location.y, radius, usersToSendToList.Count, "null",thisUserModel.DisplayName,  DateTime.UtcNow.ToString(), 24, mediaType.ToString(), "temp");
+        _drawTraceOnMap.DrawCirlce(location.x, location.y, radius, DrawTraceOnMap.TraceType.SENDING, "null");
+            
         //update global traces
         childUpdates["Traces/" + key + "/senderID"] = _firebaseUser.UserId;
         childUpdates["Traces/" + key + "/senderName"] = thisUserModel.DisplayName;
@@ -1071,6 +1074,8 @@ public partial class FbManager : MonoBehaviour
                     // Uh-oh, an error occurred!
                     Debug.Log("FB Error: Failed to Upload File");
                     Debug.Log("FB Error:" + task.Exception.ToString());
+                    SendTraceManager.instance.isSendingTrace = false;
+                    //tell user there was an error
                 }
                 else {
                     // Metadata contains file metadata such as size, content-type, and download URL.
@@ -1079,6 +1084,7 @@ public partial class FbManager : MonoBehaviour
                     Debug.Log("FB: Finished uploading...");
                     //upload metadata to real time DB
                     _databaseReference.UpdateChildrenAsync(childUpdates);
+                    SendTraceManager.instance.isSendingTrace = false;
                 }
             });
     }
@@ -1187,6 +1193,7 @@ public partial class FbManager : MonoBehaviour
             {
                 var trace = new TraceObject(lng, lat, radius, numPeopleSent, senderID, senderName, sendTime, 20, mediaType,traceID);
                 TraceManager.instance.recivedTraceObjects.Add(trace);
+                TraceManager.instance.UpdateMap(new Vector2());
             }
         }
     }
@@ -1291,10 +1298,9 @@ public partial class FbManager : MonoBehaviour
             {
                 var trace = new TraceObject(lng, lat, radius, numPeopleSent, senderID,senderName, sendTime, 20, mediaType,traceID);
                 TraceManager.instance.sentTraceObjects.Add(trace);
+                TraceManager.instance.UpdateMap(new Vector2());
             }
         }
-
-        
     }
     
     public IEnumerator GetTracePhotoByUrl(string _url, System.Action<Texture> callback)

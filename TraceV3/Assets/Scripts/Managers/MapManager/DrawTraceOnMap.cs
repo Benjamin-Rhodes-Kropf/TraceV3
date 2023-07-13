@@ -5,7 +5,10 @@ public class DrawTraceOnMap : MonoBehaviour
     /// <summary>
     /// Number of segments
     /// </summary>
+    
     public int segments = 240;
+    public TraceObject sendingTraceTraceLoadingObject;
+    
     [SerializeField] private int scaleAmount;
     [SerializeField] private OnlineMapsMarkerManager markerManager;
     [SerializeField] private bool showDebugTextures;
@@ -17,11 +20,10 @@ public class DrawTraceOnMap : MonoBehaviour
     [SerializeField] private Texture2D primaryReceivingHollowTextureBF;
     [SerializeField] private Texture2D secondaryReceiverTextureBF;
 
-    
     [SerializeField] private Texture2D primarySentTexture;
     [SerializeField] private Texture2D primarySendingTextureHollow;
     [SerializeField] private Texture2D secondarySentTexture;
-
+    
 
     public void DrawCirlce(double lat, double lng, float radius, TraceType traceType, string markerID)
     {
@@ -97,6 +99,7 @@ public class DrawTraceOnMap : MonoBehaviour
             OnlineMapsMarkerManager.RemoveItemAt(i);
         }
     }
+    
     public enum TraceType {RECEIVED, RECEIVEDBESTFRIEND, SENT, SENDING, OPENING};
 }
 

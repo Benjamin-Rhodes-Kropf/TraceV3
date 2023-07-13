@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1526980366}
-  m_IndirectSpecularColor: {r: 0.44657838, g: 0.49641234, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.4440765, g: 0.49331635, b: 0.57239074, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -416,7 +416,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   microPhoneAudioKit: {fileID: 584265350}
   previewVideoPlayer: {fileID: 1235855379}
-  swapCamera: {fileID: 429262142}
+  cameraManager: {fileID: 429262142}
+  whiteScreen: {fileID: 0}
   vidRecorder: {fileID: 1170218936}
   camManger: {fileID: 0}
   path: 

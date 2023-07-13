@@ -25,6 +25,13 @@ public class CameraManager : MonoBehaviour//PressInputBase
     public void SwitchCamera() {
         ScreenManager.instance.uiController.SwitchCamera();
     }
+
+    public void ToggleFlash()
+    {
+        //ScreenManager.instance.uiController.ToggleFlash();
+    }
+    
+    
     //closing the video preview
     public void CloseVideoPreview()
     {

@@ -9,6 +9,7 @@ public class PushNotificationsManager : UnitySingleton<PushNotificationsManager>
 {
     private void OnEnable()
     {
+        Debug.Log("PushNotificationManagerIsUp");
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
         {
             var dependencyStatus = task.Result;
@@ -37,6 +38,14 @@ public class PushNotificationsManager : UnitySingleton<PushNotificationsManager>
     
     private void OnMessageReceived(object sender, Firebase.Messaging.MessageReceivedEventArgs e) {
         UnityEngine.Debug.Log("Received a new message from: " + e.Message.From);
+        if (e.Message.Notification != null)
+        {
+            Debug.Log("Received a notification");
+            var data = e.Message.Data;
+            foreach (var dat in data)
+            {
+                Debug.Log("Data:" + dat.Key + " Value" + dat.Value);
+            }
+        }
     }
-
 }

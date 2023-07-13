@@ -30,7 +30,6 @@ namespace CanvasManagers
                 _controller = new PhoneNumberCanvasController(this);
             
             _controller.Init();
-            // verifyNumberButton.interactable = false;
         }
 
         private void OnDisable()

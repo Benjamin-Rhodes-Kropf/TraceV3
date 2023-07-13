@@ -836,6 +836,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99d2eaf152fdf435085541abd42f8a5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isSendingTrace: 0
   fileLocation: 
   mediaType: 0
   _onlineMapsLocationService: {fileID: 6068666308761308073}
@@ -1173,7 +1174,7 @@ Canvas:
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
-  m_OverridePixelPerfect: 0
+  m_OverridePixelPerfect: 1
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
@@ -2122,6 +2123,37 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5104588007871874798, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
   m_PrefabInstance: {fileID: 7569371838178514455}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1741795905
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1741795906}
+  m_Layer: 0
+  m_Name: NotificationManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1741795906
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1741795905}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 585, y: 1266, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1770422148
 GameObject:
   m_ObjectHideFlags: 0
@@ -2712,6 +2744,10 @@ PrefabInstance:
     - target: {fileID: 3187474646987867824, guid: 77f5644476108469381764824c2bf626, type: 3}
       propertyPath: m_PresetInfoIsWorld
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3187474646987867825, guid: 77f5644476108469381764824c2bf626, type: 3}
+      propertyPath: m_OverridePixelPerfect
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3187474646987867826, guid: 77f5644476108469381764824c2bf626, type: 3}
       propertyPath: m_Name
@@ -3500,6 +3536,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1301840576}
+    - target: {fileID: 575017508544871187, guid: 1653381633492462d84fe2442e452de7, type: 3}
+      propertyPath: m_OverridePixelPerfect
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1356891048163636785, guid: 1653381633492462d84fe2442e452de7, type: 3}
       propertyPath: m_Name
       value: Big Welcome Canvas
@@ -3961,6 +4001,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -588.27594
       objectReference: {fileID: 0}
+    - target: {fileID: 4753539908005840736, guid: 130a0751f81704172bfda12f495d109b, type: 3}
+      propertyPath: m_OverridePixelPerfect
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4753539908005840739, guid: 130a0751f81704172bfda12f495d109b, type: 3}
       propertyPath: m_Name
       value: Edit Profile Username
@@ -4103,6 +4147,34 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 258
       objectReference: {fileID: 0}
+    - target: {fileID: 3185637558038364246, guid: 4a809169fd8e0404292f52a7b03b5adc, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3185637558038364246, guid: 4a809169fd8e0404292f52a7b03b5adc, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3185637558038364246, guid: 4a809169fd8e0404292f52a7b03b5adc, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2355076385525282639}
+    - target: {fileID: 3185637558038364246, guid: 4a809169fd8e0404292f52a7b03b5adc, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3185637558038364246, guid: 4a809169fd8e0404292f52a7b03b5adc, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ToggleFlash
+      objectReference: {fileID: 0}
+    - target: {fileID: 3185637558038364246, guid: 4a809169fd8e0404292f52a7b03b5adc, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: CameraManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3185637558038364246, guid: 4a809169fd8e0404292f52a7b03b5adc, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 3185637558892989755, guid: 4a809169fd8e0404292f52a7b03b5adc, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.8
@@ -4230,6 +4302,10 @@ PrefabInstance:
     - target: {fileID: 4054229930047875653, guid: 4a809169fd8e0404292f52a7b03b5adc, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4054229930047875663, guid: 4a809169fd8e0404292f52a7b03b5adc, type: 3}
+      propertyPath: m_OverridePixelPerfect
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4054229930254301890, guid: 4a809169fd8e0404292f52a7b03b5adc, type: 3}
       propertyPath: maxDuration
@@ -4460,6 +4536,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8443994850256168699, guid: 9095f30e97e904c7981e34f79fd69e0b, type: 3}
+      propertyPath: m_OverridePixelPerfect
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8443994850256168702, guid: 9095f30e97e904c7981e34f79fd69e0b, type: 3}
       propertyPath: m_Name
       value: Enter Code Canvas
@@ -4516,6 +4596,10 @@ PrefabInstance:
     - target: {fileID: 2819453848376147881, guid: ace107588013241bc9829bd17e207b10, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2819453848376147882, guid: ace107588013241bc9829bd17e207b10, type: 3}
+      propertyPath: m_OverridePixelPerfect
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2819453848376147885, guid: ace107588013241bc9829bd17e207b10, type: 3}
       propertyPath: m_Pivot.x
@@ -4962,6 +5046,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6454114606808003542, guid: e8f927e5e67e1423cb2ad88e4c1dd981, type: 3}
+      propertyPath: m_OverridePixelPerfect
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6454114606808003545, guid: e8f927e5e67e1423cb2ad88e4c1dd981, type: 3}
       propertyPath: m_Name
       value: Create Account
@@ -5048,6 +5136,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 906833078}
     m_Modifications:
+    - target: {fileID: 369989446514306115, guid: 833b541c13d454e5e95a103968c5ed53, type: 3}
+      propertyPath: m_OverridePixelPerfect
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1156313670966436193, guid: 833b541c13d454e5e95a103968c5ed53, type: 3}
       propertyPath: m_Name
       value: Select Radius
@@ -5661,7 +5753,15 @@ PrefabInstance:
     - target: {fileID: 1361899929754955314, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
-      objectReference: {fileID: 6068666308761308073}
+      objectReference: {fileID: 6068666308761308082}
+    - target: {fileID: 1361899929754955314, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: StartZoomToUser
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361899929754955314, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
+      value: DragAndZoomInertia, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 1361899930089332810, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -5746,13 +5846,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1361899930089332811, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OverridePixelPerfect
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361899930089332812, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1361899930089332814, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_Name
       value: HomeScreen
       objectReference: {fileID: 0}
     - target: {fileID: 1361899930089332814, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361899930544575295, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1361899930544575295, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -5761,11 +5873,19 @@ PrefabInstance:
     - target: {fileID: 1361899930544575295, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
-      objectReference: {fileID: 6068666308761308086}
+      objectReference: {fileID: 6068666308761308084}
     - target: {fileID: 1361899930544575295, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Target
       value: 
       objectReference: {fileID: 6068666308761308084}
+    - target: {fileID: 1361899930544575295, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: TraceViewSwitched
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361899930544575295, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
+      value: TraceManager, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 1361899930664674163, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -6222,6 +6342,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4292849032805161054, guid: 78c53f8c413384d77b81bcaccef03f6f, type: 3}
+      propertyPath: m_OverridePixelPerfect
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4292849033004913974, guid: 78c53f8c413384d77b81bcaccef03f6f, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -6588,6 +6712,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 9133073692678122600, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
+      propertyPath: m_OverridePixelPerfect
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9133073692678122601, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
       propertyPath: m_PresetInfoIsWorld
       value: 0
@@ -6737,6 +6865,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 906833078}
     m_Modifications:
+    - target: {fileID: 6824431495080613346, guid: 6fc6ea478a71d44a78dbec55284168bc, type: 3}
+      propertyPath: m_OverridePixelPerfect
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6824431495080613347, guid: 6fc6ea478a71d44a78dbec55284168bc, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -6863,6 +6995,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 906833078}
     m_Modifications:
+    - target: {fileID: 2642260664614321440, guid: ae868d5e5921242b8bcfed1755db6449, type: 3}
+      propertyPath: m_OverridePixelPerfect
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2642260664614321443, guid: ae868d5e5921242b8bcfed1755db6449, type: 3}
       propertyPath: m_Name
       value: Setting Up Account Screen
@@ -7055,6 +7191,10 @@ PrefabInstance:
     - target: {fileID: 7491614989248559818, guid: 891593adc1a6d4e968fbeef13a2051ec, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7491614989248559819, guid: 891593adc1a6d4e968fbeef13a2051ec, type: 3}
+      propertyPath: m_OverridePixelPerfect
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7491614989248559822, guid: 891593adc1a6d4e968fbeef13a2051ec, type: 3}
       propertyPath: m_Name
@@ -7310,7 +7450,7 @@ MonoBehaviour:
   useProxy: 1
   useSoftwareJPEGDecoder: 0
   width: 4096
-  _activeTypeSettings: 07User ID21018benrk10006Map ID228225cljkem6q300e201qp76zfaaya12Access
+  _activeTypeSettings: 07User ID21018benrk10006Map ID228225cle5v79j8000201k1lr5tl86v12Access
     Token293290pk.eyJ1IjoiYmVucmsxMDAiLCJhIjoiY2xid3VqdWJjMDdodDNubjdpaTU2OWZiYSJ9.3ytRbwK51mPCf73LWaJjmA
   _zoom: 18
   latitude: 0
@@ -7351,7 +7491,7 @@ MonoBehaviour:
   markerMaterial: {fileID: 0}
   markerShader: {fileID: 30, guid: 0000000000000000f000000000000000, type: 0}
   sizeInScene: {x: 1024, y: 1024}
-  colliderType: 1
+  colliderType: 0
   compressTextures: 1
   drawingsGameObject: {fileID: 0}
   drawingMode: 0
@@ -7377,7 +7517,7 @@ MonoBehaviour:
   createMarkerInUserPosition: 1
   disableEmulatorInPublish: 1
   emulatorCompass: 0
-  emulatorPosition: {x: -70.040565, y: 41.939}
+  emulatorPosition: {x: -71.2169, y: 42.3199}
   findLocationByIP: 0
   lerpCompassValue: 1
   markerScale: 1
@@ -7472,6 +7612,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   friction: 0.91
   maxSamples: 2
+  _locationService: {fileID: 6068666308761308073}
+  zoomCurveOnZoomTo:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 18
+      inSlope: -65.712685
+      outSlope: -65.712685
+      tangentMode: 0
+      weightedMode: 2
+      inWeight: 0
+      outWeight: 0.010458135
+    - serializedVersion: 3
+      time: 20
+      value: 4
+      inSlope: 0.0014048123
+      outSlope: 0.0014048123
+      tangentMode: 0
+      weightedMode: 1
+      inWeight: 1
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _homeScreenManager: {fileID: 878571056}
   targetZoomMode: 0
   targetZoom: 0
   isInteract: 0
@@ -7519,6 +7685,7 @@ MonoBehaviour:
   drawTraceOnMap: {fileID: 6068666308761308086}
   sentRecivedToggle: {fileID: 72317452}
   userLocation: {x: 0, y: 0}
+  _dragAndZoomInertia: {fileID: 6068666308761308082}
   currentlyClickingTraceID: 
   recivedTraceObjects: []
   sentTraceObjects: []
@@ -7530,30 +7697,54 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 900000
-      inSlope: -2162.2832
-      outSlope: -356224.16
-      tangentMode: 1
-      weightedMode: 2
+      value: 1000000
+      inSlope: -82161.31
+      outSlope: -82161.31
+      tangentMode: 0
+      weightedMode: 0
       inWeight: 0
-      outWeight: 0.13243243
+      outWeight: 0.078828834
     - serializedVersion: 3
-      time: 15
-      value: 1000
-      inSlope: -810.8226
+      time: 16
+      value: 100
+      inSlope: -15601.27
       outSlope: 0
       tangentMode: 65
       weightedMode: 0
-      inWeight: 0.44189185
+      inWeight: 0.22353601
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 21
-      value: 1000
+      value: 100
       inSlope: 0
       outSlope: 0
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _clickRadiusTraceScaleAnimationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -7754,6 +7945,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   segments: 240
+  sendingTraceTraceLoadingObject:
+    id: 
+    lat: 0
+    lng: 0
+    radius: 0
+    numPeopleSent: 0
+    distanceToUser: 0
+    mediaType: 
+    text: 
+    senderID: 
+    senderName: 
+    hasBeenAdded: 0
+    canBeOpened: 0
+    hasBeenOpened: 0
+    sendTime: 
+    endTimeStamp: 0
   scaleAmount: 150
   markerManager: {fileID: 6068666308761308078}
   showDebugTextures: 0
@@ -7934,6 +8141,10 @@ PrefabInstance:
     - target: {fileID: 5104588007614267539, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5104588007614267542, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
+      propertyPath: m_OverridePixelPerfect
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5104588007614267543, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
       propertyPath: m_Pivot.x
@@ -8275,6 +8486,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7069077438171782117, guid: 48051510910734c74ae02d431ff9434b, type: 3}
+      propertyPath: m_OverridePixelPerfect
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7793653265278976770, guid: 48051510910734c74ae02d431ff9434b, type: 3}
       propertyPath: waitBeforeFade
       value: 0
@@ -8440,6 +8655,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7229461239080990453, guid: 0182f395cb0f241fabe8a4f4bc5e7ae3, type: 3}
+      propertyPath: m_OverridePixelPerfect
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7229461239080990454, guid: 0182f395cb0f241fabe8a4f4bc5e7ae3, type: 3}
       propertyPath: m_Name
       value: Take a Photo
@@ -8580,6 +8799,10 @@ PrefabInstance:
     - target: {fileID: 3005870983050038692, guid: 980d7ebe780ea47c89292499ca129e21, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3005870983050038695, guid: 980d7ebe780ea47c89292499ca129e21, type: 3}
+      propertyPath: m_OverridePixelPerfect
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5506471330733881690, guid: 980d7ebe780ea47c89292499ca129e21, type: 3}
       propertyPath: m_AnchorMax.y
@@ -9262,6 +9485,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6333345546469988996, guid: a1330c0b556b6411ea3a51a6068f0fc5, type: 3}
+      propertyPath: m_OverridePixelPerfect
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6333345546469988997, guid: a1330c0b556b6411ea3a51a6068f0fc5, type: 3}
       propertyPath: m_PresetInfoIsWorld
       value: 0
@@ -9362,6 +9589,10 @@ PrefabInstance:
     - target: {fileID: 3394844666557505409, guid: 6196f72a1ea204df5b295d2bb9350f68, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3394844666557505410, guid: 6196f72a1ea204df5b295d2bb9350f68, type: 3}
+      propertyPath: m_OverridePixelPerfect
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3394844666557505411, guid: 6196f72a1ea204df5b295d2bb9350f68, type: 3}
       propertyPath: m_PresetInfoIsWorld
@@ -9731,6 +9962,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4627721917624743950, guid: 5a0ee7a27e0d64ffa95cb6c84dc8703a, type: 3}
+      propertyPath: m_OverridePixelPerfect
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4627721917911595956, guid: 5a0ee7a27e0d64ffa95cb6c84dc8703a, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -9975,6 +10210,10 @@ PrefabInstance:
     - target: {fileID: 3348918397490637924, guid: 60e4f9f6103fa4e638917ffab0737b02, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3348918397490637927, guid: 60e4f9f6103fa4e638917ffab0737b02, type: 3}
+      propertyPath: m_OverridePixelPerfect
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5450950603388410010, guid: 60e4f9f6103fa4e638917ffab0737b02, type: 3}
       propertyPath: m_AnchorMax.y
