@@ -836,6 +836,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99d2eaf152fdf435085541abd42f8a5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isSendingTrace: 0
   fileLocation: 
   mediaType: 0
   _onlineMapsLocationService: {fileID: 6068666308761308073}
@@ -5849,13 +5850,21 @@ PrefabInstance:
       propertyPath: m_OverridePixelPerfect
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1361899930089332812, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1361899930089332814, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_Name
       value: HomeScreen
       objectReference: {fileID: 0}
     - target: {fileID: 1361899930089332814, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361899930544575295, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1361899930544575295, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -5864,11 +5873,19 @@ PrefabInstance:
     - target: {fileID: 1361899930544575295, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
-      objectReference: {fileID: 6068666308761308086}
+      objectReference: {fileID: 6068666308761308084}
     - target: {fileID: 1361899930544575295, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Target
       value: 
       objectReference: {fileID: 6068666308761308084}
+    - target: {fileID: 1361899930544575295, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: TraceViewSwitched
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361899930544575295, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
+      value: TraceManager, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 1361899930664674163, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -7475,7 +7492,7 @@ MonoBehaviour:
   markerShader: {fileID: 30, guid: 0000000000000000f000000000000000, type: 0}
   sizeInScene: {x: 1024, y: 1024}
   colliderType: 0
-  compressTextures: 0
+  compressTextures: 1
   drawingsGameObject: {fileID: 0}
   drawingMode: 0
   drawingShader: {fileID: 4800000, guid: 07fd051d8972c7a4bac96bfa8038d08b, type: 3}
@@ -7500,7 +7517,7 @@ MonoBehaviour:
   createMarkerInUserPosition: 1
   disableEmulatorInPublish: 1
   emulatorCompass: 0
-  emulatorPosition: {x: -70.040565, y: 41.939}
+  emulatorPosition: {x: -71.2169, y: 42.3199}
   findLocationByIP: 0
   lerpCompassValue: 1
   markerScale: 1
@@ -7904,6 +7921,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   segments: 240
+  sendingTraceTraceLoadingObject:
+    id: 
+    lat: 0
+    lng: 0
+    radius: 0
+    numPeopleSent: 0
+    distanceToUser: 0
+    mediaType: 
+    text: 
+    senderID: 
+    senderName: 
+    hasBeenAdded: 0
+    canBeOpened: 0
+    hasBeenOpened: 0
+    sendTime: 
+    endTimeStamp: 0
   scaleAmount: 150
   markerManager: {fileID: 6068666308761308078}
   showDebugTextures: 0

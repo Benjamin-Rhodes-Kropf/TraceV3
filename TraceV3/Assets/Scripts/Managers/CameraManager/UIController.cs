@@ -71,11 +71,11 @@ public class UIController : MonoBehaviour
         if (isFlashOn)
         {
 #if UNITY_IPHONE
-            cameraManager.device.torchMode = CameraDevice.TorchMode.Maximum;
+            //cameraManager.device.torchMode = CameraDevice.TorchMode.Maximum;
         }
         else
         {
-            cameraManager.device.torchMode = CameraDevice.TorchMode.Off;
+            //cameraManager.device.torchMode = CameraDevice.TorchMode.Off;
         }
 #endif
     }
@@ -121,11 +121,11 @@ public class UIController : MonoBehaviour
     }
     IEnumerator RecordFrame()
     {
-        if (isFlashOn)
-        {
-            StartCoroutine(FlashCamera());
-            yield return new WaitForSeconds(0.2f);
-        }
+        // if (isFlashOn)
+        // {
+        //     StartCoroutine(FlashCamera());
+        //     yield return new WaitForSeconds(0.2f);
+        // }
         yield return new WaitForEndOfFrame();
        
         var texture = ScreenCapture.CaptureScreenshotAsTexture();
@@ -153,21 +153,21 @@ public class UIController : MonoBehaviour
         Debug.Log("file location:" + dirPath + "Image" + ".png");
     }
 
-    IEnumerator FlashCamera()
-    {
-        #if UNITY_IPHONE
-        cameraManager.device.torchMode = CameraDevice.TorchMode.Maximum;
-        yield return new WaitForSeconds(0.5f);
-        cameraManager.device.torchMode = CameraDevice.TorchMode.Off;
-        #endif
-    }
+    // IEnumerator FlashCamera()
+    // {
+    //     // #if UNITY_IPHONE
+    //     // cameraManager.device.torchMode = CameraDevice.TorchMode.Maximum;
+    //     // yield return new WaitForSeconds(0.5f);
+    //     // cameraManager.device.torchMode = CameraDevice.TorchMode.Off;
+    //     // #endif
+    // }
     
     //This is an event which is handle the video preview work afetr the recording is done
     public void OnRecordingCompleted(RecordingSession session)
     {
-        #if UNITY_IPHONE
-        cameraManager.device.torchMode = CameraDevice.TorchMode.Off;
-        #endif
+        // #if UNITY_IPHONE
+        // cameraManager.device.torchMode = CameraDevice.TorchMode.Off;
+        // #endif
         // Get the recording path
         path = session.path;
         Debug.Log(path+" This is the temp path");
@@ -183,7 +183,6 @@ public class UIController : MonoBehaviour
         previewVideoPlayer.Play();
         //disabling the camera view
         cameraView.SetActive(false);
-        cameraManager.device.torchMode = CameraDevice.TorchMode.Off;
     }
     //To save the video in mobile gallery
     public void SaveVideo() {

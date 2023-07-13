@@ -9,6 +9,7 @@ public class SendTraceManager : MonoBehaviour
     public static SendTraceManager instance;
     
     [Header("Trace Values")]
+    public bool isSendingTrace;
     public string fileLocation;
     public MediaType mediaType;
     public OnlineMapsLocationService _onlineMapsLocationService;

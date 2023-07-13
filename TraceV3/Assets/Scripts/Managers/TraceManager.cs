@@ -56,6 +56,8 @@ public class TraceManager : MonoBehaviour
         //handle map updates
         onlineMapsControlBase.OnMapClick += HandleMapClick;
         onlineMapsLocationService.OnLocationChanged += UpdateMap;
+        
+        // UpdateMap(new Vector2(0,0)); //todo: get rid of vector 2
     }
     
     private void HandleMapClick()
@@ -124,9 +126,6 @@ public class TraceManager : MonoBehaviour
             homeScreenManager.ViewTrace( traceToView.Item1.senderName,traceToView.Item1.sendTime, traceToView.Item1.numPeopleSent);
         }
     }
-    
-    
-    
     private static double ApproximateDistanceBetweenTwoLatLongsInM(double lat1, double lon1, double lat2, double lon2)
     {
         var ldRadians = lat1 / 57.3 * 0.017453292519943295769236907684886;
@@ -161,7 +160,6 @@ public class TraceManager : MonoBehaviour
         var traceObjectsInOrderOfDistance = recivedTraceObjects.OrderBy(f => f.distanceToUser);
         return traceObjectsInOrderOfDistance;
     }
-    
     private List<TraceObject> ApplyDistanceFilterTraces(float userLat, float userLon)
     {
         var filtered = new List<(TraceObject, double)>();
@@ -175,7 +173,6 @@ public class TraceManager : MonoBehaviour
         filtered.Sort((i1, i2) => i1.Item2.CompareTo(i2.Item2));
         return filtered.Select(i => i.Item1).ToList();
     }
-    
     private void UpdateNotificationsForNext50Traces()
     {
         if (recivedTraceObjects.Count < 1)
@@ -195,7 +192,6 @@ public class TraceManager : MonoBehaviour
         //Schedule prompt to tell user to send a trace
         ScheduleNotificationOnExitInARadius(onlineMapsLocationService.position.x, onlineMapsLocationService.position.y, 1);
     }
-    
     private static void ScheduleNotificationOnEnterInARadius(float latitude, float longitude, float radius, string message, string SenderName)
     {
         var enterLocationTrigger = new iOSNotificationLocationTrigger
@@ -222,7 +218,6 @@ public class TraceManager : MonoBehaviour
         // Schedule notification for entry base
         iOSNotificationCenter.ScheduleNotification(entryBasedNotification);
     }
-    
     private static void ScheduleNotificationOnExitInARadius(float latitude, float longitude, float radius)
     {
         var exitLocationTrigger = new iOSNotificationLocationTrigger
@@ -257,7 +252,6 @@ public class TraceManager : MonoBehaviour
 
         var trace = recivedTraceObjects[0];
         ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng, trace.radius, trace.senderName + " Left You a Trace Here", trace.senderName);
-        //ScheduleNotificationOnExitFromARadius(trace.lat, trace.lng, trace.text);
     }
     public void StopLocationServices()
     {
@@ -282,7 +276,7 @@ public class TraceManager : MonoBehaviour
 
 
     // Update is called once per frame //todo: move out of update
-    void Update()
+    void UpdateTracesOnMap()
     {
         Vector2 previousUserLocation = userLocation;
         if (onlineMapsLocationService.IsLocationServiceRunning())
@@ -369,16 +363,23 @@ public class TraceManager : MonoBehaviour
             {
                 if (!traceobject.hasBeenAdded)
                 {
-                    //new Color(71,255,214)
                     drawTraceOnMap.DrawCirlce(traceobject.lat, traceobject.lng, (traceobject.radius), DrawTraceOnMap.TraceType.SENT, traceobject.id);
                     traceobject.hasBeenAdded = true;
                 }
+            }
+
+            if (SendTraceManager.instance.isSendingTrace)
+            {
+                Debug.Log("Drawing Sending Trace Loading On Map");
+                var loadingTraceObject = drawTraceOnMap.sendingTraceTraceLoadingObject;
+                drawTraceOnMap.DrawCirlce(loadingTraceObject.lat, loadingTraceObject.lng, loadingTraceObject.radius, DrawTraceOnMap.TraceType.SENDING, loadingTraceObject.id);
             }
         }
     }
 
     public void TraceViewSwitched()
     {
+        ClearTracesOnMap();
         if (!HomeScreenManager.isInSendTraceView)
         {
             foreach (var traceobject in recivedTraceObjects)
@@ -393,14 +394,16 @@ public class TraceManager : MonoBehaviour
                 traceobject.hasBeenAdded = false;
             }
         }
+        UpdateTracesOnMap();
     }
 
     public void UpdateMap(Vector2 vector2)
     {
         Debug.Log("Map Update");
+        ClearTracesOnMap();
         UpdateTracesOnMap();
     }
-    public void UpdateTracesOnMap()
+    public void ClearTracesOnMap()
     {
         drawTraceOnMap.Clear();
         foreach (var traceobject in recivedTraceObjects)

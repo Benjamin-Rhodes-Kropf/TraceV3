@@ -15,6 +15,7 @@ public class SelectFriendViewTrace : MonoBehaviour
     public void UpdateView(UserModel user)
     {
         _profileName.text = user.DisplayName;
+        
         user.ProfilePicture((sprite =>
         {
             _profilePicture.sprite = sprite;

@@ -28,7 +28,7 @@ public class CameraManager : MonoBehaviour//PressInputBase
 
     public void ToggleFlash()
     {
-        ScreenManager.instance.uiController.ToggleFlash();
+        //ScreenManager.instance.uiController.ToggleFlash();
     }
     
     

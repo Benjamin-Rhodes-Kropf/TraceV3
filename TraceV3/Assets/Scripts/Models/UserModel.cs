@@ -37,7 +37,7 @@ public class UserModel
     {
         FbManager.instance.GetProfilePhotoFromFirebaseStorage(userId, (tex) =>
         {
-           profilePicture = Sprite.Create(ChangeTextureType(tex), new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);;
+           profilePicture = Sprite.Create(ChangeTextureType(tex), new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 1.0f);;
            callback(profilePicture);
         }, (message) =>
         {
