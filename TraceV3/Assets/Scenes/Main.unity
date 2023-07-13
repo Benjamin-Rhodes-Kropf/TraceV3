@@ -1486,6 +1486,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1189385101
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1189385103}
+  - component: {fileID: 1189385102}
+  m_Layer: 0
+  m_Name: Algolia
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1189385102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1189385101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddeede524e6c24decaa5128b402f68af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1189385103
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1189385101}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 585, y: 1266, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1196670843
 GameObject:
   m_ObjectHideFlags: 0
@@ -1532,10 +1576,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dependencyStatus: 6
   firebaseStorageReferenceUrl: gs://geosnapv1.appspot.com
-  autoLogin: 1
+  autoLogin: 0
   useAdminForLogin: 0
   adminUser: userthree@gmail.com
-  adminPass: Bark2004!
+  adminPass: 13123
   resetPlayerPrefs: 0
   _drawTraceOnMap: {fileID: 6068666308761308086}
   userImageTexture: {fileID: 0}

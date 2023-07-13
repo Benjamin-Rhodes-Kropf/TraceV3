@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using UnityEngine;
 using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
+using Firebase.Firestore;
 using TMPro;
 using System.Linq;
 using System.Text;
@@ -33,6 +35,7 @@ public partial class FbManager : MonoBehaviour
     [SerializeField] private DatabaseReference _databaseReference;
     [SerializeField] private FirebaseStorage _firebaseStorage;
     [SerializeField] private StorageReference _firebaseStorageReference;
+    [SerializeField] private FirebaseFirestore _firebaseFirestore;
 
     [Header("Login Settings")] 
     [SerializeField] private bool autoLogin;
@@ -48,8 +51,9 @@ public partial class FbManager : MonoBehaviour
     public Texture userImageTexture;
     public UserModel thisUserModel;
     [SerializeField] private List<UserModel> users;
-    
-    
+
+    private Dictionary<string, object> _firestoreData;
+
     public List<UserModel> AllUsers
     {
         get { return users; }
@@ -86,6 +90,8 @@ public partial class FbManager : MonoBehaviour
 
         _firebaseStorage = FirebaseStorage.DefaultInstance;
         _firebaseStorageReference = _firebaseStorage.GetReferenceFromUrl(firebaseStorageReferenceUrl);
+
+        _firebaseFirestore = FirebaseFirestore.DefaultInstance;
         
         //Check that all of the necessary dependencies for Firebase are present on the system
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
@@ -213,7 +219,6 @@ public partial class FbManager : MonoBehaviour
         Debug.LogFormat("User signed in successfully: {0} ({1})", _firebaseUser.DisplayName, _firebaseUser.Email);
         Debug.Log("logged In: user profile photo is: " + _firebaseUser.PhotoUrl);
         callbackObject.IsSuccessful = true;
-        
         //stay logged in
         PlayerPrefs.SetString("Username", _email);
         PlayerPrefs.SetString("Password", _password);
@@ -416,7 +421,17 @@ public partial class FbManager : MonoBehaviour
         
         var json = GenerateUserProfileJson( _username, "null", "null",_email, _phoneNumber);
         _databaseReference.Child("users").Child(_firebaseUser.UserId.ToString()).SetRawJsonValueAsync(json);
-       
+        _firestoreData = new Dictionary<string, object>
+        {
+            {"email",_email},
+            {"friendCount",0},
+            {"isLogedIn",true},
+            {"isOnline",true},
+            {"score",0},
+            {"phone",""}
+        };
+
+        
         var DBTaskSetUserFriends = _databaseReference.Child("Friends").Child(_firebaseUser.UserId).Child("Don't Delete This Child").SetValueAsync("*");
         while (DBTaskSetUserFriends.IsCompleted is false)
             yield return new WaitForEndOfFrame();
@@ -455,6 +470,7 @@ public partial class FbManager : MonoBehaviour
         }
         else
         {
+            _firestoreData.Add("username",_username);
             callback(true);
         }
     }
@@ -474,6 +490,7 @@ public partial class FbManager : MonoBehaviour
         }
         else
         {
+            _firestoreData.Add("userPhotoUrl",_photoUrl);
             GetCurrentUserData("**********");
             callback(true);
         }
@@ -495,6 +512,7 @@ public partial class FbManager : MonoBehaviour
         }
         else
         {
+            _firestoreData.Add("name",_nickName);
             callback(true);
         }
     }
@@ -517,6 +535,7 @@ public partial class FbManager : MonoBehaviour
         }
         else
         {
+            _firestoreData.Add("phoneNumber",_phoneNumber);
             callback(true);
         }
     }
@@ -1013,6 +1032,45 @@ public partial class FbManager : MonoBehaviour
             Debug.Log("value:" +  args.Snapshot.GetRawJsonValue());
         }
     }
+    #endregion
+
+    #region FirestoreData
+
+    public void CreateDocumentInFireStore()
+    {
+        // GetCurrentUserData("");
+        // yield return new WaitForEndOfFrame();
+        //
+        // // var doc  = _firestoreCollectionReference.Document(_firebaseUser.UserId);
+        // Dictionary<string, object> data = new Dictionary<string, object>
+        // {
+        //     {"email",thisUserModel.Email},
+        //     {"friendCount",thisUserModel.FriendCount},
+        //     {"isLogedIn",true},
+        //     {"isOnline",true},
+        //     {"name",thisUserModel.DisplayName},
+        //     {"phone",""},
+        //     {"phoneNumber",thisUserModel.PhoneNumber},
+        //     {"score",0},
+        //     {"userPhotoUrl",thisUserModel.PhotoURL},
+        //     {"username",thisUserModel.Username}
+        // };
+        // print("email : Firestore  "+ thisUserModel.Email);
+        // print("phoneNumber : Firestore  "+ thisUserModel.Username);
+
+       _firebaseFirestore.Collection("users").Document(_firebaseUser.UserId).SetAsync(_firestoreData).ContinueWithOnMainThread(task =>
+        {
+            if (task.IsCompleted)
+            {
+                Debug.Log("Data created successfully in Firestore.");
+            }
+            else
+            {
+                Debug.LogError("Failed to create data in Firestore: " + task.Exception);
+            }
+        });
+    }
+
     #endregion
     #endregion
     

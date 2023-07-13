@@ -32,6 +32,7 @@ public class TookPhotoCanvasController
     
     private void OnDoneButtonClick()
     {
+        FbManager.instance.CreateDocumentInFireStore();
         ScreenManager.instance.ChangeScreenForwards("SettingUpAccount");
     }
     private void OnMoveBackClick()
