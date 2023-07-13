@@ -14,8 +14,22 @@ public class ScaleMapElements : MonoBehaviour
     [SerializeField] private AnimationCurve scaler;
     [SerializeField] private AnimationCurve scalerFineTune;
 
+    public void Start()
+    {
+        map.OnChangeZoom += UpdateTraceScale;
+        StartCoroutine(WaitUntilUserMapPinHasBeenCreated());
+    }
+
+    IEnumerator WaitUntilUserMapPinHasBeenCreated() //todo: not great implimentation
+    {
+        while (markerManager.items.Count == 0)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+        UpdateTraceScale();
+    }
     
-    private void Update()
+    private void UpdateTraceScale()
     {
         try
         {
@@ -23,7 +37,7 @@ public class ScaleMapElements : MonoBehaviour
         }
         catch (Exception e)
         {
-            print("Scale Marker Error :: "+e.Message);
+            Debug.LogWarning("User Pin Has Not Been Created");
         }
         
         var traceScale = new double();
@@ -33,14 +47,12 @@ public class ScaleMapElements : MonoBehaviour
         //Sets the way a trace looks and changes with zoom depending on scale
         for (int i = 1; i < markerManager.items.Count; i++)
         {
-            var user = markerManager.items[0];
-            double evaluatedSize = traceScale * radiusSize * user.radius;
-
             var item = markerManager.items[i];
-           item.SwitchDisplayedImage(true);
-            item.scale = (float)(traceScale * radiusSize * markerManager.items[i].radius);
-            
-            //Debug.Log("radius:" + item.radius);
+           // item.SwitchDisplayedImage(true);
+           // item.displayingTexture = OnlineMapsMarker.DisplayingTexture.Circle;
+           // item.scale = (float)(traceScale * radiusSize * markerManager.items[i].radius);
+           //Debug.Log("radius:" + item.radius);
+           
             if ( traceScale * radiusSize * item.radius < scaleLimitForSwitchImage)
             {
                 item.SwitchDisplayedImage(false);

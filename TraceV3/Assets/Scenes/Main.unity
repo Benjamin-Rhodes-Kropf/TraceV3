@@ -7450,7 +7450,7 @@ MonoBehaviour:
   useProxy: 1
   useSoftwareJPEGDecoder: 0
   width: 4096
-  _activeTypeSettings: 07User ID21018benrk10006Map ID228225cljkem6q300e201qp76zfaaya12Access
+  _activeTypeSettings: 07User ID21018benrk10006Map ID228225cle5v79j8000201k1lr5tl86v12Access
     Token293290pk.eyJ1IjoiYmVucmsxMDAiLCJhIjoiY2xid3VqdWJjMDdodDNubjdpaTU2OWZiYSJ9.3ytRbwK51mPCf73LWaJjmA
   _zoom: 18
   latitude: 0
@@ -7697,30 +7697,54 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 900000
-      inSlope: -2162.2832
-      outSlope: -356224.16
-      tangentMode: 1
-      weightedMode: 2
+      value: 1000000
+      inSlope: -82161.31
+      outSlope: -82161.31
+      tangentMode: 0
+      weightedMode: 0
       inWeight: 0
-      outWeight: 0.13243243
+      outWeight: 0.078828834
     - serializedVersion: 3
-      time: 15
-      value: 1000
-      inSlope: -810.8226
+      time: 16
+      value: 100
+      inSlope: -15601.27
       outSlope: 0
       tangentMode: 65
       weightedMode: 0
-      inWeight: 0.44189185
+      inWeight: 0.22353601
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 21
-      value: 1000
+      value: 100
       inSlope: 0
       outSlope: 0
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _clickRadiusTraceScaleAnimationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
