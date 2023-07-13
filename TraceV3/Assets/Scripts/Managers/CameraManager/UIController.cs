@@ -78,9 +78,10 @@ public class UIController : MonoBehaviour
             //cameraManager.device.torchMode = CameraDevice.TorchMode.Off;
         }
 #endif
+        }
     }
-    
-    
+
+
     //It will close the image previewer
     public void CloseImagePreview()
     {
@@ -185,43 +186,44 @@ public class UIController : MonoBehaviour
         cameraView.SetActive(false);
     }
     //To save the video in mobile gallery
-    public void SaveVideo() {
+    public void SaveVideo() 
+    {
         string imgName = "VID_" + System.DateTime.Now.ToString("yyyymmdd_HHmmss") + ".mp4";
         NativeGallery.Permission permission = NativeGallery.SaveVideoToGallery(path, "TraceVideo", imgName, null);
         Debug.Log("Permission result: " + permission);
     }
-    #region
-    
-    //This will reload the AR camera scene so that garbage values can be clean,
-    //which was causing jitter in audio after reopening the app on minimising
-    private void OnApplicationFocus(bool focus)
-    {
-
-        ////Check if video was playing or not, if no then reload the camera scene
-        //Debug.Log(">>>>> Application Focus Status is " + focus + " <<<<<");
-        //if (focus && (!camManger.videoPreviewPanel.activeInHierarchy && !camManger.imagePreviewPanel.activeInHierarchy))
-        //{
-        //    Debug.Log("=========  Scene Reloaded on Focus Changed" + "  =========");
-        //    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        //}
-        ////if video player or image previewer was active last time then some flag
-        ////values will be set to reset the scenes on closing of previewers
-        //else if (focus && (camManger.videoPreviewPanel.activeInHierarchy || camManger.imagePreviewPanel.activeInHierarchy))
-        //{
-        //    //if video player is active
-        //    if (camManger.videoPreviewPanel.activeInHierarchy)
-        //    {
-        //        isVideoPlayerOpenedForRestingTheSceneToClearGarbageValues = true;
-        //        Debug.Log(">>>>> Video Player is active and scene will be restrated on closing of player <<<<<");
-        //        previewVideoPlayer.Play();
-        //    }
-        //    //if image previewer is active
-        //    else if (camManger.imagePreviewPanel.activeInHierarchy)
-        //    {
-        //        isImagePreviewOpenedForRestingTheSceneToClearGarbageValues = true;
-        //        Debug.Log(">>>>> Image Viewer is active and scene will be restrated on closing of viewer <<<<<");
-        //    }
-        //}
-    }
-    #endregion
+    // #region
+    //
+    // //This will reload the AR camera scene so that garbage values can be clean,
+    // //which was causing jitter in audio after reopening the app on minimising
+    // // private void OnApplicationFocus(bool focus)
+    // // {
+    //
+    //     ////Check if video was playing or not, if no then reload the camera scene
+    //     //Debug.Log(">>>>> Application Focus Status is " + focus + " <<<<<");
+    //     //if (focus && (!camManger.videoPreviewPanel.activeInHierarchy && !camManger.imagePreviewPanel.activeInHierarchy))
+    //     //{
+    //     //    Debug.Log("=========  Scene Reloaded on Focus Changed" + "  =========");
+    //     //    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    //     //}
+    //     ////if video player or image previewer was active last time then some flag
+    //     ////values will be set to reset the scenes on closing of previewers
+    //     //else if (focus && (camManger.videoPreviewPanel.activeInHierarchy || camManger.imagePreviewPanel.activeInHierarchy))
+    //     //{
+    //     //    //if video player is active
+    //     //    if (camManger.videoPreviewPanel.activeInHierarchy)
+    //     //    {
+    //     //        isVideoPlayerOpenedForRestingTheSceneToClearGarbageValues = true;
+    //     //        Debug.Log(">>>>> Video Player is active and scene will be restrated on closing of player <<<<<");
+    //     //        previewVideoPlayer.Play();
+    //     //    }
+    //     //    //if image previewer is active
+    //     //    else if (camManger.imagePreviewPanel.activeInHierarchy)
+    //     //    {
+    //     //        isImagePreviewOpenedForRestingTheSceneToClearGarbageValues = true;
+    //     //        Debug.Log(">>>>> Image Viewer is active and scene will be restrated on closing of viewer <<<<<");
+    //     //    }
+    //     //}
+    //
+    // #endregion
 }
