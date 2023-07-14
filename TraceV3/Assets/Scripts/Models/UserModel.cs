@@ -7,14 +7,24 @@ using Object = UnityEngine.Object;
 [Serializable]
 public class UserModel
 {
-    public string userId; 
+    public string objectID;
+    public string userId;
     public string Email;
     public int FriendCount;
-    public string DisplayName;
+    public string name;
+
+    public string DisplayName
+    {
+        get => name;
+        set => name = value;
+    }
+
     public string Username;
     public string PhoneNumber;
     public string PhotoURL;
     public string Password;
+
+    public string ID => string.IsNullOrEmpty(userId) ? objectID : userId;
 
     private Sprite profilePicture = null;
     public void ProfilePicture(Action<Sprite> callback)

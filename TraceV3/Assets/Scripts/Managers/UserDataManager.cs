@@ -26,14 +26,15 @@ public class UserDataManager
     {
         List<UserModel> selectedUsers = new List<UserModel>();
 
-        // Query Syntax
-        IEnumerable<UserModel> _userSearchQuery =
-            from user in FbManager.instance.AllUsers
-            where user.Username.Contains(name)
-            orderby user.Username
-            select user;
-        
-        selectedUsers.AddRange(_userSearchQuery);
+        selectedUsers = AlgoliaManager.instance.SearchUser(name);
+        // // Query Syntax
+        // IEnumerable<UserModel> _userSearchQuery =
+        //     from user in FbManager.instance.AllUsers
+        //     where user.Username.Contains(name)
+        //     orderby user.Username
+        //     select user;
+        //
+        // selectedUsers.AddRange(_userSearchQuery);
 
         return selectedUsers;
     }

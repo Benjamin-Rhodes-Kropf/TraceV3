@@ -246,7 +246,6 @@ public partial class FbManager : MonoBehaviour
                 }
             }));
         }
-        
         callback(callbackObject);
     }
 
@@ -1038,9 +1037,6 @@ public partial class FbManager : MonoBehaviour
 
     public void CreateDocumentInFireStore()
     {
-        // GetCurrentUserData("");
-        // yield return new WaitForEndOfFrame();
-        //
         // // var doc  = _firestoreCollectionReference.Document(_firebaseUser.UserId);
         // Dictionary<string, object> data = new Dictionary<string, object>
         // {
@@ -1055,9 +1051,9 @@ public partial class FbManager : MonoBehaviour
         //     {"userPhotoUrl",thisUserModel.PhotoURL},
         //     {"username",thisUserModel.Username}
         // };
-        // print("email : Firestore  "+ thisUserModel.Email);
-        // print("phoneNumber : Firestore  "+ thisUserModel.Username);
-
+        //
+        // Debug.Log(this.thisUserModel.DisplayName);
+        //
        _firebaseFirestore.Collection("users").Document(_firebaseUser.UserId).SetAsync(_firestoreData).ContinueWithOnMainThread(task =>
         {
             if (task.IsCompleted)

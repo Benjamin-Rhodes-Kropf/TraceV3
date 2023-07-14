@@ -48,7 +48,7 @@ public class FriendView : MonoBehaviour
         
         _userName.text = user.Username;
         _nickName.text = user.DisplayName;
-        _uid = user.userId;
+        _uid = user.ID;
         FriendButtonType buttonType = FriendButtonType.Add;
         buttonType = isFriendAdd ? FriendButtonType.Remove : FriendButtonType.Add;
         var buttonData = GetButtonData(buttonType);
