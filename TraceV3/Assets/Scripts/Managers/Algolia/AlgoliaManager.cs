@@ -8,10 +8,8 @@ public class AlgoliaManager : MonoBehaviour
 {
     private SearchClient client;
     private SearchIndex index;
-
     public static AlgoliaManager instance;
     
-   
     
     // Start is called before the first frame update
     void Start()

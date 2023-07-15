@@ -78,7 +78,6 @@ public class UIController : MonoBehaviour
             //cameraManager.device.torchMode = CameraDevice.TorchMode.Off;
         }
 #endif
-        }
     }
 
 

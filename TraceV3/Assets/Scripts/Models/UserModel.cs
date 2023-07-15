@@ -20,7 +20,7 @@ public class UserModel
     }
 
     public string Username;
-    public string PhoneNumber;
+    public string Phone;
     public string PhotoURL;
     public string Password;
 
@@ -71,14 +71,14 @@ public class UserModel
         
     }
     
-    public UserModel(string _userId, string email, int friendCount, string displayName, string username, string phoneNumber, string photoURL, string password = "")
+    public UserModel(string _userId, string email, int friendCount, string displayName, string username, string phone, string photoURL, string password = "")
     {
         this.userId = _userId;
         this.Email = email;
         this.FriendCount = friendCount;
         this.DisplayName = displayName;
         this.Username = username;
-        this.PhoneNumber = phoneNumber;
+        this.Phone = phone;
         this.PhotoURL = photoURL;
         this.Password = password;
     }

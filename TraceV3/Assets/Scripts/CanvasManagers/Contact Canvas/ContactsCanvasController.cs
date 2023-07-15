@@ -81,7 +81,6 @@ namespace CanvasManagers
                 var text = GameObject.Instantiate(_view._searchTabTextPrefab, _view._searchscrollParent);
                 text.text = "Friends";
                 searchList.Add(text.gameObject);
-                    
                 foreach (var friend in friends)
                 {
                     var view = GameObject.Instantiate(_view.friendViewPrefab, _view._searchscrollParent);
@@ -171,7 +170,6 @@ namespace CanvasManagers
             int allFrindsTileCount = _view._friendsList.Count;
             int allUsersCount = users.Count;
             bool isNeedToAddMoreTiles = allUsersCount > allFrindsTileCount;
-
             int totalUsers = isNeedToAddMoreTiles ? allUsersCount : allFrindsTileCount;
 
             for (int userIndex = 0; userIndex < totalUsers; userIndex++)

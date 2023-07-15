@@ -26,8 +26,9 @@ public class UserDataManager
     {
         List<UserModel> selectedUsers = new List<UserModel>();
 
+        //new methode for searching users
         selectedUsers = AlgoliaManager.instance.SearchUser(name);
-        // // Query Syntax
+        // Query Syntax
         // IEnumerable<UserModel> _userSearchQuery =
         //     from user in FbManager.instance.AllUsers
         //     where user.Username.Contains(name)
@@ -138,5 +139,15 @@ public class UserDataManager
         requests = GetRequestsByName(name);
         requestsSent = GetRequestsByName(name, false);
         others = GetUsersByLetters(name);
+        
+        Debug.Log("Search Contains:");
+        Debug.Log("friends:" + friends.Count);
+        Debug.Log("requests:" + requests.Count);
+        Debug.Log("requests sent:" + requestsSent.Count);
+        Debug.Log("others:" + others.Count);
+        foreach (var user in others)
+        {
+            Debug.Log("other:" + user.name);
+        }
     }
 }
