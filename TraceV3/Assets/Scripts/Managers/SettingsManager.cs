@@ -32,7 +32,7 @@ public class SettingsManager : MonoBehaviour
         callback += CallBackFunction;
         onSuccess += CallBackFunctionOnImageRetriveFromDatabase;
         onFailed += CallBackFunctionOnImageRetriveFailedFromDatabase;
-        profileName.text = FbManager.instance.thisUserModel.DisplayName;
+        profileName.text = FbManager.instance.thisUserModel.name;
         userName.text = FbManager.instance.thisUserModel.Username;
         FbManager.instance.GetProfilePhotoFromFirebaseStorage(FbManager.instance.thisUserModel.userId, onSuccess,onFailed);
     }

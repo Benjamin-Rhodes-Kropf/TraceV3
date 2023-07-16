@@ -328,7 +328,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
             //Update Map and Database
             FbManager.instance.MarkTraceAsOpened(traceID);
             TraceManager.instance.ClearTracesOnMap();
-            NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.DisplayName , "opened your trace!");
+            NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!");
         }
         
         if (hasBegunOpenTrace && changeInYVal < changeInYvalCloseLimit && !isDragging && canCloseTrace)

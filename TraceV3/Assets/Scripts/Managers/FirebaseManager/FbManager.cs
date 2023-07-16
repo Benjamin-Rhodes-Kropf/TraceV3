@@ -306,7 +306,7 @@ public partial class FbManager : MonoBehaviour
                     string username = snapshot.Child("username").Value.ToString();
                     string phoneNumber = snapshot.Child("phoneNumber").Value.ToString();
                     string photoURL = snapshot.Child("userPhotoUrl").Value.ToString();
-                    thisUserModel = new UserModel(_firebaseUser.UserId,email,0,displayName,username,phoneNumber,photoURL, password);
+                    thisUserModel = new UserModel(_firebaseUser.UserId,email,displayName,username,phoneNumber,photoURL, password);
                     IsFirebaseUserInitialised = true;
             }
             if (task.IsFaulted)
@@ -423,11 +423,6 @@ public partial class FbManager : MonoBehaviour
         _firestoreData = new Dictionary<string, object>
         {
             {"email",_email},
-            {"friendCount",0},
-            {"isLogedIn",true},
-            {"isOnline",true},
-            {"score",0},
-            {"phone",""}
         };
 
         
@@ -511,7 +506,7 @@ public partial class FbManager : MonoBehaviour
         }
         else
         {
-            _firestoreData.Add("name",_nickName);
+            _firestoreData.Add("displayName",_nickName);
             callback(true);
         }
     }
@@ -525,8 +520,6 @@ public partial class FbManager : MonoBehaviour
         while (DBTask.IsCompleted is false)
             yield return new WaitForEndOfFrame();
         
-        // yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
-
         if (DBTask.Exception != null)
         {
             Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
@@ -596,6 +589,7 @@ public partial class FbManager : MonoBehaviour
                         if (isUrlSet)
                         {
                             Debug.Log("SetUserProfilePhotoUrl");
+                            _firestoreData.Add("profileUrl",url);
                         }
                         else
                         {
@@ -695,7 +689,7 @@ public partial class FbManager : MonoBehaviour
                              Debug.Log("Caught and Error");
                              continue;
                          }
-                         userData.DisplayName =snap.Child("name").Value.ToString();
+                         userData.name =snap.Child("name").Value.ToString();
                          
                          if (snap.Child("username").Value.ToString() == "" || snap.Child("username").Value.ToString() == null)
                          {
@@ -751,8 +745,8 @@ public partial class FbManager : MonoBehaviour
             Debug.Log("HandleUserAdded UserID:" + userData.userId);
             userData.Email = args.Snapshot.Child("email").Value.ToString();
             Debug.Log("HandleUserAdded email:" + userData.Email);
-            userData.DisplayName =args.Snapshot.Child("name").Value.ToString();
-            Debug.Log("HandleUserAdded name:" + userData.DisplayName);
+            userData.name = args.Snapshot.Child("name").Value.ToString();
+            Debug.Log("HandleUserAdded name:" + userData.name);
             userData.Username = args.Snapshot.Child("username").Value.ToString();
             if (userData.Username == "null" || string.IsNullOrEmpty(userData.Username))
             {
@@ -794,8 +788,8 @@ public partial class FbManager : MonoBehaviour
                     userToChange.userId = userID;
                     userToChange.Email = args.Snapshot.Child("email").Value.ToString();
                     Debug.Log("HandleUserAdded email:" + userToChange.Email);
-                    userToChange.DisplayName = args.Snapshot.Child("name").Value.ToString();
-                    Debug.Log("HandleUserAdded name:" + userToChange.DisplayName);
+                    userToChange.name = args.Snapshot.Child("name").Value.ToString();
+                    Debug.Log("HandleUserAdded name:" + userToChange.name);
                     userToChange.Username = args.Snapshot.Child("username").Value.ToString();
                     if (userToChange.Username == "null" || string.IsNullOrEmpty(userToChange.Username))
                     {
@@ -819,8 +813,8 @@ public partial class FbManager : MonoBehaviour
             //add to existing user
             userToChange.Email = args.Snapshot.Child("email").Value.ToString();
             Debug.Log("HandleUserAdded email:" + userToChange.Email);
-            userToChange.DisplayName =args.Snapshot.Child("name").Value.ToString();
-            Debug.Log("HandleUserAdded name:" + userToChange.DisplayName);
+            userToChange.name =args.Snapshot.Child("name").Value.ToString();
+            Debug.Log("HandleUserAdded name:" + userToChange.name);
             userToChange.Username = args.Snapshot.Child("username").Value.ToString();
             if (userToChange.Username == "null" || string.IsNullOrEmpty(userToChange.Username))
             {
@@ -1037,24 +1031,7 @@ public partial class FbManager : MonoBehaviour
 
     public void CreateDocumentInFireStore()
     {
-        // // var doc  = _firestoreCollectionReference.Document(_firebaseUser.UserId);
-        // Dictionary<string, object> data = new Dictionary<string, object>
-        // {
-        //     {"email",thisUserModel.Email},
-        //     {"friendCount",thisUserModel.FriendCount},
-        //     {"isLogedIn",true},
-        //     {"isOnline",true},
-        //     {"name",thisUserModel.DisplayName},
-        //     {"phone",""},
-        //     {"phoneNumber",thisUserModel.PhoneNumber},
-        //     {"score",0},
-        //     {"userPhotoUrl",thisUserModel.PhotoURL},
-        //     {"username",thisUserModel.Username}
-        // };
-        //
-        // Debug.Log(this.thisUserModel.DisplayName);
-        //
-       _firebaseFirestore.Collection("users").Document(_firebaseUser.UserId).SetAsync(_firestoreData).ContinueWithOnMainThread(task =>
+        _firebaseFirestore.Collection("users").Document(_firebaseUser.UserId).SetAsync(_firestoreData).ContinueWithOnMainThread(task =>
         {
             if (task.IsCompleted)
             {
@@ -1083,12 +1060,12 @@ public partial class FbManager : MonoBehaviour
         
         //draw temp circle until it uploads and the map is cleared on update
         SendTraceManager.instance.isSendingTrace = true;
-        _drawTraceOnMap.sendingTraceTraceLoadingObject = new TraceObject(location.x, location.y, radius, usersToSendToList.Count, "null",thisUserModel.DisplayName,  DateTime.UtcNow.ToString(), 24, mediaType.ToString(), "temp");
+        _drawTraceOnMap.sendingTraceTraceLoadingObject = new TraceObject(location.x, location.y, radius, usersToSendToList.Count, "null",thisUserModel.name,  DateTime.UtcNow.ToString(), 24, mediaType.ToString(), "temp");
         _drawTraceOnMap.DrawCirlce(location.x, location.y, radius, DrawTraceOnMap.TraceType.SENDING, "null");
             
         //update global traces
         childUpdates["Traces/" + key + "/senderID"] = _firebaseUser.UserId;
-        childUpdates["Traces/" + key + "/senderName"] = thisUserModel.DisplayName;
+        childUpdates["Traces/" + key + "/senderName"] = thisUserModel.name;
         childUpdates["Traces/" + key + "/sendTime"] = DateTime.UtcNow.ToString();
         childUpdates["Traces/" + key + "/durationHrs"] = 24;
         childUpdates["Traces/" + key + "/mediaType"] = mediaType.ToString();

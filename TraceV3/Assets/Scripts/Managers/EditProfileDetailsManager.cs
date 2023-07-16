@@ -21,7 +21,7 @@ public class EditProfileDetailsManager : MonoBehaviour
     void Start()
     {
         profilePicture.texture = FbManager.instance.userImageTexture;
-        diplayName.text = FbManager.instance.thisUserModel.DisplayName;
+        diplayName.text = FbManager.instance.thisUserModel.name;
         userName.text = FbManager.instance.thisUserModel.Username;
     }
 

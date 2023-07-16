@@ -47,7 +47,7 @@ public class FriendView : MonoBehaviour
         
         
         _userName.text = user.Username;
-        _nickName.text = user.DisplayName;
+        _nickName.text = user.name;
         _uid = user.ID;
         FriendButtonType buttonType = FriendButtonType.Add;
         buttonType = isFriendAdd ? FriendButtonType.Remove : FriendButtonType.Add;
@@ -127,7 +127,7 @@ public class FriendView : MonoBehaviour
             UpdateRequestStatus(true);
             _addRemoveButton.interactable = true;
             Debug.Log("friend requested at:" + friendUID);
-            NotificationManager.Instance.SendNotificationUsingFirebaseUserId(friendUID, FbManager.instance.thisUserModel.DisplayName , "sent you friend request");
+            NotificationManager.Instance.SendNotificationUsingFirebaseUserId(friendUID, FbManager.instance.thisUserModel.name , "sent you friend request");
         }));
     }
 

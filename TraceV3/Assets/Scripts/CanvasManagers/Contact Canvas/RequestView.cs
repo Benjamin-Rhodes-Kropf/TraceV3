@@ -35,7 +35,7 @@ public class RequestView : MonoBehaviour
             }
         }));
         _userName.text = user.Username;
-        _displayName.text = user.DisplayName;
+        _displayName.text = user.name;
 
         _acceptButton.onClick.RemoveAllListeners();
         if (isReceivedRequest is false)
@@ -69,7 +69,7 @@ public class RequestView : MonoBehaviour
                 this.gameObject.SetActive(false);
             }
         })));
-        NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderId, FbManager.instance.thisUserModel.DisplayName , "accepted your friend request!");
+        NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderId, FbManager.instance.thisUserModel.name , "accepted your friend request!");
     }
 
     //  TODO: i.  Remove Request From Local List

@@ -34,7 +34,7 @@ public class SendToFriendView : MonoBehaviour
         Debug.Log("UpdateFriendData");
         if (user != null)
         {
-            _nickName.text = user.DisplayName;
+            _nickName.text = user.name;
             _uid = user.userId;
             
             user.ProfilePicture((sprite =>

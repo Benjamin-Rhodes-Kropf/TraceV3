@@ -10,15 +10,7 @@ public class UserModel
     public string objectID;
     public string userId;
     public string Email;
-    public int FriendCount;
     public string name;
-
-    public string DisplayName
-    {
-        get => name;
-        set => name = value;
-    }
-
     public string Username;
     public string Phone;
     public string PhotoURL;
@@ -71,12 +63,11 @@ public class UserModel
         
     }
     
-    public UserModel(string _userId, string email, int friendCount, string displayName, string username, string phone, string photoURL, string password = "")
+    public UserModel(string userId, string email, string name, string username, string phone, string photoURL, string password = "")
     {
-        this.userId = _userId;
+        this.userId = userId;
         this.Email = email;
-        this.FriendCount = friendCount;
-        this.DisplayName = displayName;
+        this.name = name;
         this.Username = username;
         this.Phone = phone;
         this.PhotoURL = photoURL;

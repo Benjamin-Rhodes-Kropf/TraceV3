@@ -46,7 +46,7 @@ public class SendTraceManager : MonoBehaviour
         FbManager.instance.UploadTrace(fileLocation, radius, location, mediaType,usersToSendTo);
         foreach (var user in usersToSendTo)
         {
-            NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user, FbManager.instance.thisUserModel.DisplayName, "sent you a trace!");
+            NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user, FbManager.instance.thisUserModel.name, "sent you a trace!");
         }
     }
 }
