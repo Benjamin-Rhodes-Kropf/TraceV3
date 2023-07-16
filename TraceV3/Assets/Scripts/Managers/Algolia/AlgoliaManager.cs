@@ -15,7 +15,6 @@ public class AlgoliaManager : MonoBehaviour
     void Start()
     {
         InitAlgolia();
-        SearchByUsername("Nadeem");
     }
 
     private void InitAlgolia()
@@ -29,7 +28,6 @@ public class AlgoliaManager : MonoBehaviour
     private void SearchByUsername(string userName)
     {
        var result  =  index.Search<UserModel>(new Query(userName));
-       Debug.LogError(result.Hits[0].Email);
     }
 
     public List<UserModel> SearchUser(string parameter)

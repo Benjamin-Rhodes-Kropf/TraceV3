@@ -1584,12 +1584,12 @@ MonoBehaviour:
   _drawTraceOnMap: {fileID: 6068666308761308086}
   userImageTexture: {fileID: 0}
   thisUserModel:
+    objectID: 
     userId: 
     Email: 
-    FriendCount: 0
-    DisplayName: 
+    name: 
     Username: 
-    PhoneNumber: 
+    Phone: 
     PhotoURL: 
     Password: 
   users: []
@@ -7494,7 +7494,7 @@ MonoBehaviour:
   useProxy: 1
   useSoftwareJPEGDecoder: 0
   width: 4096
-  _activeTypeSettings: 07User ID21018benrk10006Map ID228225cle5v79j8000201k1lr5tl86v12Access
+  _activeTypeSettings: 07User ID21018benrk10006Map ID228225cljkem6q300e201qp76zfaaya12Access
     Token293290pk.eyJ1IjoiYmVucmsxMDAiLCJhIjoiY2xid3VqdWJjMDdodDNubjdpaTU2OWZiYSJ9.3ytRbwK51mPCf73LWaJjmA
   _zoom: 18
   latitude: 0
@@ -7522,7 +7522,7 @@ MonoBehaviour:
   smoothZoom: 1
   zoomInOnDoubleClick: 0
   zoomMode: 0
-  zoomSensitivity: 1.475
+  zoomSensitivity: 1.5
   activeCamera: {fileID: 491272877}
   elevationManager: {fileID: 0}
   marker2DMode: 0
@@ -7563,7 +7563,7 @@ MonoBehaviour:
   emulatorCompass: 0
   emulatorPosition: {x: -71.2169, y: 42.3199}
   findLocationByIP: 0
-  lerpCompassValue: 1
+  lerpCompassValue: 0
   markerScale: 1
   markerTooltip: 
   markerType: 0
