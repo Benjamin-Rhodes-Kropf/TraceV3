@@ -21,8 +21,8 @@ public class RequestView : MonoBehaviour
 
     public void UpdateRequestView(UserModel user, bool isReceivedRequest  = true)
     {
-        requestId = FriendRequestManager.Instance.GetRequestID(user.userId, isReceivedRequest);
-        senderId = user.userId;
+        requestId = FriendRequestManager.Instance.GetRequestID(user.userID, isReceivedRequest);
+        senderId = user.userID;
         user.ProfilePicture((sprite =>
         {
             try
@@ -34,7 +34,7 @@ public class RequestView : MonoBehaviour
                 
             }
         }));
-        _userName.text = user.Username;
+        _userName.text = user.username;
         _displayName.text = user.name;
 
         _acceptButton.onClick.RemoveAllListeners();

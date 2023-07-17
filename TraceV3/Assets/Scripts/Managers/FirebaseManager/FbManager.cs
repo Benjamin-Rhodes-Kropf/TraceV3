@@ -39,9 +39,6 @@ public partial class FbManager : MonoBehaviour
 
     [Header("Login Settings")] 
     [SerializeField] private bool autoLogin;
-    [SerializeField] private bool useAdminForLogin;
-    [SerializeField] private string adminUser;
-    [SerializeField] private string adminPass;
     [SerializeField] private bool resetPlayerPrefs;
 
     [Header("Maps References")]
@@ -100,16 +97,9 @@ public partial class FbManager : MonoBehaviour
             if (dependencyStatus == DependencyStatus.Available)
             {
                 InitializeFirebase();
-                if (autoLogin)
+                if (!autoLogin)
                 {
-                    if (useAdminForLogin)
-                    {
-                        PlayerPrefs.SetString("Username", adminUser);
-                        PlayerPrefs.SetString("Password", adminPass);
-                    }
-                }
-                else
-                {
+                    //clear cache
                     PlayerPrefs.SetString("Username", null);
                     PlayerPrefs.SetString("Password", null);
                 }
@@ -304,9 +294,9 @@ public partial class FbManager : MonoBehaviour
                     string email = snapshot.Child("email").Value.ToString();
                     string displayName = snapshot.Child("name").Value.ToString();
                     string username = snapshot.Child("username").Value.ToString();
-                    string phoneNumber = snapshot.Child("phoneNumber").Value.ToString();
-                    string photoURL = snapshot.Child("userPhotoUrl").Value.ToString();
-                    thisUserModel = new UserModel(_firebaseUser.UserId,email,displayName,username,phoneNumber,photoURL, password);
+                    string phone = snapshot.Child("phone").Value.ToString();
+                    string photoURL = snapshot.Child("photo").Value.ToString();
+                    thisUserModel = new UserModel(_firebaseUser.UserId,email,displayName,username,phone,photoURL, password);
                     IsFirebaseUserInitialised = true;
             }
             if (task.IsFaulted)
@@ -472,7 +462,7 @@ public partial class FbManager : MonoBehaviour
     {
         Debug.Log("Db update photoUrl to :" + _photoUrl);
         //Set the currently logged in user nickName in the database
-        var DBTask = _databaseReference.Child("users").Child(_firebaseUser.UserId).Child("userPhotoUrl").SetValueAsync(_photoUrl);
+        var DBTask = _databaseReference.Child("users").Child(_firebaseUser.UserId).Child("photo").SetValueAsync(_photoUrl);
         
         while (DBTask.IsCompleted is false)
             yield return new WaitForEndOfFrame();
@@ -484,7 +474,6 @@ public partial class FbManager : MonoBehaviour
         }
         else
         {
-            _firestoreData.Add("userPhotoUrl",_photoUrl);
             GetCurrentUserData("**********");
             callback(true);
         }
@@ -513,7 +502,7 @@ public partial class FbManager : MonoBehaviour
     public IEnumerator SetUserPhoneNumber(string _phoneNumber, System.Action<bool> callback)
     {
         Debug.LogError("Is Database Reference is Null  ? "+ _databaseReference == null);
-        var DBTask = _databaseReference.Child("users").Child(_firebaseUser.UserId).Child("phoneNumber").SetValueAsync(_phoneNumber);
+        var DBTask = _databaseReference.Child("users").Child(_firebaseUser.UserId).Child("phone").SetValueAsync(_phoneNumber);
 
         Debug.LogError("Is Database Completion is Null  ? "+ DBTask == null);
 
@@ -589,7 +578,7 @@ public partial class FbManager : MonoBehaviour
                         if (isUrlSet)
                         {
                             Debug.Log("SetUserProfilePhotoUrl");
-                            _firestoreData.Add("profileUrl",url);
+                            _firestoreData.Add("photo",url);
                         }
                         else
                         {
@@ -676,13 +665,13 @@ public partial class FbManager : MonoBehaviour
                      try
                      {
                          UserModel userData = new UserModel();
-                         userData.userId =  snap.Key.ToString(); 
+                         userData.userID =  snap.Key.ToString(); 
                          if (snap.Child("email").Value.ToString() == "" || snap.Child("email").Value.ToString() == null)
                          {
                              Debug.Log("Caught and Error");
                              continue;
                          }
-                         userData.Email = snap.Child("email").Value.ToString();
+                         userData.email = snap.Child("email").Value.ToString();
                          
                          if (snap.Child("name").Value.ToString() == "" || snap.Child("name").Value.ToString() == null)
                          {
@@ -696,21 +685,21 @@ public partial class FbManager : MonoBehaviour
                              Debug.Log("Caught and Error");
                              continue;
                          }
-                         userData.Username = snap.Child("username").Value.ToString();
+                         userData.username = snap.Child("username").Value.ToString();
                          
-                         if (snap.Child("phoneNumber").Value.ToString() == "" || snap.Child("phoneNumber").Value.ToString() == null)
+                         if (snap.Child("phone").Value.ToString() == "" || snap.Child("phone").Value.ToString() == null)
                          {
                              Debug.Log("Caught and Error");
                              continue;
                          }
-                         userData.Phone =  snap.Child("phoneNumber").Value.ToString();
+                         userData.phone =  snap.Child("phone").Value.ToString();
                          
-                         if (snap.Child("userPhotoUrl").Value.ToString() == "" || snap.Child("userPhotoUrl").Value.ToString() == null)
+                         if (snap.Child("photo").Value.ToString() == "" || snap.Child("photo").Value.ToString() == null)
                          {
                              Debug.Log("Caught and Error");
                              continue;
                          }
-                         userData.PhotoURL = snap.Child("userPhotoUrl").Value.ToString();
+                         userData.photo = snap.Child("photo").Value.ToString();
                          
                          
                          users.Add(userData); 
@@ -741,27 +730,27 @@ public partial class FbManager : MonoBehaviour
             if (string.IsNullOrEmpty(userID)) return;
             
             UserModel userData = new UserModel();
-            userData.userId =  args.Snapshot.Key.ToString(); 
-            Debug.Log("HandleUserAdded UserID:" + userData.userId);
-            userData.Email = args.Snapshot.Child("email").Value.ToString();
-            Debug.Log("HandleUserAdded email:" + userData.Email);
+            userData.userID =  args.Snapshot.Key.ToString(); 
+            Debug.Log("HandleUserAdded UserID:" + userData.userID);
+            userData.email = args.Snapshot.Child("email").Value.ToString();
+            Debug.Log("HandleUserAdded email:" + userData.email);
             userData.name = args.Snapshot.Child("name").Value.ToString();
             Debug.Log("HandleUserAdded name:" + userData.name);
-            userData.Username = args.Snapshot.Child("username").Value.ToString();
-            if (userData.Username == "null" || string.IsNullOrEmpty(userData.Username))
+            userData.username = args.Snapshot.Child("username").Value.ToString();
+            if (userData.username == "null" || string.IsNullOrEmpty(userData.username))
             {
                 Debug.Log("User Is Not Setup Correctly");
                 return;
             }
-            Debug.Log("HandleUserAdded username:" + userData.Username);
-            userData.Phone =  args.Snapshot.Child("phoneNumber").Value.ToString();
-            if (userData.Phone == "") //todo add more
+            Debug.Log("HandleUserAdded username:" + userData.username);
+            userData.phone =  args.Snapshot.Child("phone").Value.ToString();
+            if (userData.phone == "") //todo add more
             {
                 return;
             }
-            Debug.Log("HandleUserAdded phone:" + userData.Phone);
-            userData.PhotoURL = args.Snapshot.Child("userPhotoUrl").Value.ToString();
-            Debug.Log("HandleUserAdded photo:" + userData.PhotoURL);
+            Debug.Log("HandleUserAdded phone:" + userData.phone);
+            userData.photo = args.Snapshot.Child("photo").Value.ToString();
+            Debug.Log("HandleUserAdded photo:" + userData.photo);
             users.Add(userData);
         }
         catch (Exception e)
@@ -785,22 +774,22 @@ public partial class FbManager : MonoBehaviour
                 try
                 {
                     userToChange = new UserModel();
-                    userToChange.userId = userID;
-                    userToChange.Email = args.Snapshot.Child("email").Value.ToString();
-                    Debug.Log("HandleUserAdded email:" + userToChange.Email);
+                    userToChange.userID = userID;
+                    userToChange.email = args.Snapshot.Child("email").Value.ToString();
+                    Debug.Log("HandleUserAdded email:" + userToChange.email);
                     userToChange.name = args.Snapshot.Child("name").Value.ToString();
                     Debug.Log("HandleUserAdded name:" + userToChange.name);
-                    userToChange.Username = args.Snapshot.Child("username").Value.ToString();
-                    if (userToChange.Username == "null" || string.IsNullOrEmpty(userToChange.Username))
+                    userToChange.username = args.Snapshot.Child("username").Value.ToString();
+                    if (userToChange.username == "null" || string.IsNullOrEmpty(userToChange.username))
                     {
                         Debug.Log("User Is Not Setup Correctly");
                         return;
                     }
-                    Debug.Log("HandleUserAdded username:" + userToChange.Username);
-                    userToChange.Phone = args.Snapshot.Child("phoneNumber").Value.ToString();
-                    Debug.Log("HandleUserAdded phone:" + userToChange.Phone);
-                    userToChange.PhotoURL = args.Snapshot.Child("userPhotoUrl").Value.ToString();
-                    Debug.Log("HandleUserAdded photo:" + userToChange.PhotoURL);
+                    Debug.Log("HandleUserAdded username:" + userToChange.username);
+                    userToChange.phone = args.Snapshot.Child("phone").Value.ToString();
+                    Debug.Log("HandleUserAdded phone:" + userToChange.phone);
+                    userToChange.photo = args.Snapshot.Child("photo").Value.ToString();
+                    Debug.Log("HandleUserAdded photo:" + userToChange.photo);
                     users.Add(userToChange);
                 }
                 catch
@@ -811,25 +800,25 @@ public partial class FbManager : MonoBehaviour
             }
             
             //add to existing user
-            userToChange.Email = args.Snapshot.Child("email").Value.ToString();
-            Debug.Log("HandleUserAdded email:" + userToChange.Email);
+            userToChange.email = args.Snapshot.Child("email").Value.ToString();
+            Debug.Log("HandleUserAdded email:" + userToChange.email);
             userToChange.name =args.Snapshot.Child("name").Value.ToString();
             Debug.Log("HandleUserAdded name:" + userToChange.name);
-            userToChange.Username = args.Snapshot.Child("username").Value.ToString();
-            if (userToChange.Username == "null" || string.IsNullOrEmpty(userToChange.Username))
+            userToChange.username = args.Snapshot.Child("username").Value.ToString();
+            if (userToChange.username == "null" || string.IsNullOrEmpty(userToChange.username))
             {
                 Debug.Log("User Is Not Setup Correctly");
                 return;
             }
-            Debug.Log("HandleUserAdded username:" + userToChange.Username);
-            userToChange.Phone =  args.Snapshot.Child("phoneNumber").Value.ToString();
-            if (userToChange.Phone == "") //todo add more
+            Debug.Log("HandleUserAdded username:" + userToChange.username);
+            userToChange.phone =  args.Snapshot.Child("phone").Value.ToString();
+            if (userToChange.phone == "") //todo add more
             {
                 return;
             }
-            Debug.Log("HandleUserAdded phone:" + userToChange.Phone);
-            userToChange.PhotoURL = args.Snapshot.Child("userPhotoUrl").Value.ToString();
-            Debug.Log("HandleUserAdded photo:" + userToChange.PhotoURL);
+            Debug.Log("HandleUserAdded phone:" + userToChange.phone);
+            userToChange.photo = args.Snapshot.Child("photo").Value.ToString();
+            Debug.Log("HandleUserAdded photo:" + userToChange.photo);
         }
         catch (Exception e)
         {
@@ -841,7 +830,7 @@ public partial class FbManager : MonoBehaviour
     {
         foreach (var userObject in users)
         {
-            if (userObject.userId == userToGetID)
+            if (userObject.userID == userToGetID)
             {
                 return userObject;
             }
@@ -1089,7 +1078,7 @@ public partial class FbManager : MonoBehaviour
             childUpdates["Traces/" + key + "/Reciver/" + user + "/HasViewed"] = false;
             childUpdates["Traces/" + key + "/Reciver/" + user + "/ProfilePhoto"] = "null";
             //update data for each user
-            childUpdates["TracesRecived/" + user +"/"+ key + "/Sender"] = thisUserModel.userId;
+            childUpdates["TracesRecived/" + user +"/"+ key + "/Sender"] = thisUserModel.userID;
             Debug.Log("Count" + count);
         }
         Debug.Log("Userse to Send to Count:" + usersToSendToList.Count);

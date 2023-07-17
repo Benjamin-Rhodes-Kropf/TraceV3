@@ -22,7 +22,7 @@ public class EditProfileDetailsManager : MonoBehaviour
     {
         profilePicture.texture = FbManager.instance.userImageTexture;
         diplayName.text = FbManager.instance.thisUserModel.name;
-        userName.text = FbManager.instance.thisUserModel.Username;
+        userName.text = FbManager.instance.thisUserModel.username;
     }
 
     public void ApplyAndSave()

@@ -54,9 +54,9 @@ public class UserDataManager
             Debug.Log("GetFriendRequested from:" + request.SenderID);
                 foreach (var user in FbManager.instance.AllUsers)
                 {
-                    if (string.Equals(user.userId, request.SenderID))
+                    if (string.Equals(user.userID, request.SenderID))
                     {
-                        Debug.Log("ADDED USER:" + user.userId);
+                        Debug.Log("ADDED USER:" + user.userID);
                         users.Add(user);
                     };
                 }
@@ -73,7 +73,7 @@ public class UserDataManager
             Debug.Log("GetSentFriendRequested from Key:" + request.ReceiverId);
             var _userSearchQuery =
                 from user in FbManager.instance.AllUsers
-                where string.Equals(user.userId, request.ReceiverId, StringComparison.Ordinal)
+                where string.Equals(user.userID, request.ReceiverId, StringComparison.Ordinal)
                 select user;
             users.AddRange(_userSearchQuery.ToArray());
         }
@@ -89,8 +89,8 @@ public class UserDataManager
             // Query Syntax
             IEnumerable<UserModel> _userSearchQuery =
                 from user in users
-                where user.Username.Contains(name)
-                orderby user.Username
+                where user.username.Contains(name)
+                orderby user.username
                 select user;
         
             selectedUsers.AddRange(_userSearchQuery);
@@ -104,7 +104,7 @@ public class UserDataManager
         {
             var _userSearchQuery =
                 from user in FbManager.instance.AllUsers
-                where string.Equals(user.userId, friendModel.friend, StringComparison.Ordinal)
+                where string.Equals(user.userID, friendModel.friend, StringComparison.Ordinal)
                 select user;
                 
             users.AddRange(_userSearchQuery.ToArray());
@@ -120,8 +120,8 @@ public class UserDataManager
             // Query Syntax
             IEnumerable<UserModel> _userSearchQuery =
                 from user in users
-                where user.Username.ToLower().Contains(name)
-                orderby user.Username
+                where user.username.ToLower().Contains(name)
+                orderby user.username
                 select user;
         
             selectedUsers.AddRange(_userSearchQuery);

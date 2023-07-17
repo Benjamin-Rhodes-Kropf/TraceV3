@@ -21,9 +21,9 @@ public class EditProfileCanvasViewController
 
     private void UpdateData()
     {
-        _view._email.text = FbManager.instance.thisUserModel.Email;
-        _view._username.text = FbManager.instance.thisUserModel.Username;
-        _view._usernameLarge.text = FbManager.instance.thisUserModel.Username;
+        _view._email.text = FbManager.instance.thisUserModel.email;
+        _view._username.text = FbManager.instance.thisUserModel.username;
+        _view._usernameLarge.text = FbManager.instance.thisUserModel.username;
         _view._profileName.text = FbManager.instance.thisUserModel.name;
         _view._profileNameLarge.text = FbManager.instance.thisUserModel.name;
         _view._password.text = "***********";

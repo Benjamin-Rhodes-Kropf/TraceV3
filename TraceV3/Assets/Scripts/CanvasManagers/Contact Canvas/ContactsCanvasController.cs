@@ -84,7 +84,7 @@ namespace CanvasManagers
                 foreach (var friend in friends)
                 {
                     var view = GameObject.Instantiate(_view.friendViewPrefab, _view._searchscrollParent);
-                    view.UpdateFriendData(friend,true, FriendsModelManager.Instance.IsBestFriend(friend.userId));
+                    view.UpdateFriendData(friend,true, FriendsModelManager.Instance.IsBestFriend(friend.userID));
                     searchList.Add(view.gameObject);
                 }
             }
@@ -138,7 +138,7 @@ namespace CanvasManagers
                     if (friends.Contains(other)) continue;
                     if (requestsSent.Contains(other)) continue;
                     if (requests.Contains(other)) continue;
-                    if (other.userId == FbManager.instance.thisUserModel.userId) continue;
+                    if (other.userID == FbManager.instance.thisUserModel.userID) continue;
                     var view = GameObject.Instantiate(_view.friendViewPrefab, _view._searchscrollParent);
                     view.UpdateFriendData(other);
                     searchList.Add(view.gameObject);
@@ -300,7 +300,7 @@ namespace CanvasManagers
         private void UpdateFriendViewInfo(UserModel user)
         {
             FriendView view = GameObject.Instantiate(_view.friendViewPrefab, _view._displayFrindsParent);
-            view.UpdateFriendData(user,true, FriendsModelManager.Instance.IsBestFriend(user.userId));
+            view.UpdateFriendData(user,true, FriendsModelManager.Instance.IsBestFriend(user.userID));
             _allFriendsView.Add(view);
         }
         private void ClearFriendsView()

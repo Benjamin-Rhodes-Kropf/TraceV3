@@ -41,7 +41,7 @@ public class SettingCanvasController
 
     private void UpdateDate()
     {
-        _view._usernameText.text = FbManager.instance.thisUserModel.Username;
+        _view._usernameText.text = FbManager.instance.thisUserModel.username;
         _view._profileNameText.text = FbManager.instance.thisUserModel.name;
         FbManager.instance.thisUserModel.ProfilePicture(sprite =>
         {

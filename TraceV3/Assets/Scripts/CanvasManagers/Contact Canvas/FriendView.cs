@@ -44,9 +44,7 @@ public class FriendView : MonoBehaviour
     {
         isFriend = isFriendAdd;
         isBestFriend = isBestOne;
-        
-        
-        _userName.text = user.Username;
+        _userName.text = user.username;
         _nickName.text = user.name;
         _uid = user.ID;
         FriendButtonType buttonType = FriendButtonType.Add;

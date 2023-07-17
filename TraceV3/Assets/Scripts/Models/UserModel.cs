@@ -8,15 +8,15 @@ using Object = UnityEngine.Object;
 public class UserModel
 {
     public string objectID;
-    public string userId;
-    public string Email;
+    public string userID;
+    public string email;
     public string name;
-    public string Username;
-    public string Phone;
-    public string PhotoURL;
-    public string Password;
+    public string username;
+    public string phone;
+    public string photo;
+    public string password;
 
-    public string ID => string.IsNullOrEmpty(userId) ? objectID : userId;
+    public string ID => string.IsNullOrEmpty(userID) ? objectID : userID; //todo: wtf does this do
 
     private Sprite profilePicture = null;
     public void ProfilePicture(Action<Sprite> callback)
@@ -37,7 +37,7 @@ public class UserModel
 
     public void DownloadProfilePicture(Action<Sprite> callback)
     {
-        FbManager.instance.GetProfilePhotoFromFirebaseStorage(userId, (tex) =>
+        FbManager.instance.GetProfilePhotoFromFirebaseStorage(userID, (tex) =>
         {
            profilePicture = Sprite.Create(ChangeTextureType(tex), new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 1.0f);;
            callback(profilePicture);
@@ -63,14 +63,14 @@ public class UserModel
         
     }
     
-    public UserModel(string userId, string email, string name, string username, string phone, string photoURL, string password = "")
+    public UserModel(string userId, string email, string name, string username, string phone, string photo, string password = "")
     {
-        this.userId = userId;
-        this.Email = email;
+        this.userID = userId;
+        this.email = email;
         this.name = name;
-        this.Username = username;
-        this.Phone = phone;
-        this.PhotoURL = photoURL;
-        this.Password = password;
+        this.username = username;
+        this.phone = phone;
+        this.photo = photo;
+        this.password = password;
     }
 }

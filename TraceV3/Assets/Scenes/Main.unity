@@ -1576,22 +1576,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dependencyStatus: 6
   firebaseStorageReferenceUrl: gs://geosnapv1.appspot.com
-  autoLogin: 0
-  useAdminForLogin: 0
-  adminUser: userthree@gmail.com
-  adminPass: 13123
+  autoLogin: 1
   resetPlayerPrefs: 0
   _drawTraceOnMap: {fileID: 6068666308761308086}
   userImageTexture: {fileID: 0}
   thisUserModel:
     objectID: 
-    userId: 
-    Email: 
+    userID: 
+    email: 
     name: 
-    Username: 
-    Phone: 
-    PhotoURL: 
-    Password: 
+    username: 
+    phone: 
+    photo: 
+    password: 
   users: []
   _allReceivedRequests: []
   _allSentRequests: []
@@ -5904,7 +5901,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1361899930089332814, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1361899930544575295, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
