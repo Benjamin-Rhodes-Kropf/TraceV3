@@ -185,7 +185,7 @@ public partial class FbManager
             
             var friend = new FriendModel
             {
-                friend = friendId,
+                friendID = friendId,
                 isBestFriend = bestFriend
             };
             _allFriends.Add(friend);

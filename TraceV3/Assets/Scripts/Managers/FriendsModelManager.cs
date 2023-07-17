@@ -28,7 +28,7 @@ public class FriendsModelManager
     {
         RemoveDuplicates();
         var friend = (from fri in FbManager.instance._allFriends
-            where (fri.friend == otherFriend)
+            where (fri.friendID == otherFriend)
             select fri).First();
         return friend;
     }
@@ -56,7 +56,7 @@ public class FriendsModelManager
         //Todo : Update Data in Local List
         for (var i = 0; i < FbManager.instance._allFriends.Count; i++)
         {
-            if (FbManager.instance._allFriends[i].friend.Equals(id))
+            if (FbManager.instance._allFriends[i].friendID.Equals(id))
             {
                 FbManager.instance._allFriends[i].isBestFriend = isBestFriend;
                 break;

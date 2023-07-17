@@ -104,7 +104,7 @@ public class UserDataManager
         {
             var _userSearchQuery =
                 from user in FbManager.instance.AllUsers
-                where string.Equals(user.userID, friendModel.friend, StringComparison.Ordinal)
+                where string.Equals(user.userID, friendModel.friendID, StringComparison.Ordinal)
                 select user;
                 
             users.AddRange(_userSearchQuery.ToArray());

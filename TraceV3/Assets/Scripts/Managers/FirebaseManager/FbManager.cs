@@ -495,7 +495,7 @@ public partial class FbManager : MonoBehaviour
         }
         else
         {
-            _firestoreData.Add("displayName",_nickName);
+            _firestoreData.Add("name",_nickName);
             callback(true);
         }
     }

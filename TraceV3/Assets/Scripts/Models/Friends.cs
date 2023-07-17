@@ -7,16 +7,16 @@ using System;
 public class FriendModel : IEquatable<FriendModel>
 {
     public bool isBestFriend = false;
-    public string friend;
+    public string friendID;
     public bool Equals(FriendModel other)
     {
         if (ReferenceEquals(null, other)) return false;
         if (ReferenceEquals(this, other)) return true;
-        return friend == other.friend;
+        return friendID == other.friendID;
     }
 
     public override int GetHashCode()
     {
-        return (friend != null ? friend.GetHashCode() : 0);
+        return (friendID != null ? friendID.GetHashCode() : 0);
     }
 }
