@@ -33,6 +33,16 @@ public class AlgoliaManager : MonoBehaviour
     public List<UserModel> SearchUser(string parameter)
     {
         var result  =  index.Search<UserModel>(new Query(parameter));
+        
+        //filter current user out of search request
+        foreach (var obj in result.Hits)
+        {
+            if (obj.username == FbManager.instance.thisUserModel.username)
+            {
+                result.Hits.Remove(obj);
+            }
+        }
+        
         return result.Hits;
     }
     
