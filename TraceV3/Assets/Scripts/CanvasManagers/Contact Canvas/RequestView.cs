@@ -18,6 +18,8 @@ public class RequestView : MonoBehaviour
 
     private string requestId = "";
     private string senderId = "";
+    
+    private Coroutine _userCoroutine;
 
     public void UpdateRequestView(UserModel user, bool isReceivedRequest  = true)
     {
@@ -36,7 +38,8 @@ public class RequestView : MonoBehaviour
         }));
         _userName.text = user.Username;
         _displayName.text = user.DisplayName;
-
+        _userCoroutine = user._downloadPCoroutine;
+        
         _acceptButton.onClick.RemoveAllListeners();
         if (isReceivedRequest is false)
         {
@@ -88,5 +91,10 @@ public class RequestView : MonoBehaviour
     {
         
     }
-    
+
+
+    private void OnDestroy()
+    {
+        StopCoroutine(_userCoroutine);
+    }
 }

@@ -37,7 +37,8 @@ public class FriendView : MonoBehaviour
             return _uid;
         }
     }
-    
+
+    private Coroutine _userCoroutine;
     
 
     public void UpdateFriendData(UserModel user, bool isFriendAdd = false, bool isBestOne = false)
@@ -48,6 +49,7 @@ public class FriendView : MonoBehaviour
         
         _userName.text = user.Username;
         _nickName.text = user.DisplayName;
+        _userCoroutine = user._downloadPCoroutine;
         _uid = user.userId;
         FriendButtonType buttonType = FriendButtonType.Add;
         buttonType = isFriendAdd ? FriendButtonType.Remove : FriendButtonType.Add;
@@ -102,7 +104,7 @@ public class FriendView : MonoBehaviour
             _buttonText.text = buttonData.buttonText;
         }
     }
-    
+
     
     private void SendFriendRequest()
     {
@@ -161,5 +163,12 @@ public class FriendView : MonoBehaviour
 
             _bestFriendButton.interactable = true;
         }));
+    }
+
+
+    private void OnDestroy()
+    {
+        if (_userCoroutine != null)
+            StopCoroutine(_userCoroutine);
     }
 }

@@ -17,6 +17,8 @@ public class UserModel
     public string Password;
 
     private Sprite profilePicture = null;
+    public Coroutine _downloadPCoroutine;
+    
     public void ProfilePicture(Action<Sprite> callback)
     {
         if (profilePicture == null)
@@ -42,7 +44,7 @@ public class UserModel
         }, (message) =>
         {
             Debug.Log(message);
-        });
+        }, ref _downloadPCoroutine);
     }
     
     private Texture2D ChangeTextureType(Texture texture)
@@ -54,7 +56,6 @@ public class UserModel
             false, false,
             texture.GetNativeTexturePtr());
     }
-    
 
     public UserModel()
     {

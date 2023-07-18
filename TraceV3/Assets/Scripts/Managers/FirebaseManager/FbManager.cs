@@ -589,8 +589,8 @@ public partial class FbManager : MonoBehaviour
     }
     #endregion
     #region -User Info
-    public void GetProfilePhotoFromFirebaseStorage(string userId, Action<Texture> onSuccess, Action<string> onFailed) {
-        StartCoroutine(GetProfilePhotoFromFirebaseStorageRoutine(userId, (myReturnValue) => {
+    public void GetProfilePhotoFromFirebaseStorage(string userId, Action<Texture> onSuccess, Action<string> onFailed, ref Coroutine _coroutine) {
+        _coroutine = StartCoroutine(GetProfilePhotoFromFirebaseStorageRoutine(userId, (myReturnValue) => {
             if (myReturnValue != null)
             {
                 onSuccess?.Invoke(myReturnValue);
