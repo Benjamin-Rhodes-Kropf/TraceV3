@@ -16,7 +16,7 @@ public class UserModel
     public string photo;
     public string password;
 
-    // public string ID => string.IsNullOrEmpty(userID) ? objectID : userID; //todo: wtf does this do
+    // public string ID => string.IsNullOrEmpty(userID) ? objectID : userID; //todo: we dont use this anymore but the workaround is bad see below
 
     private Sprite profilePicture = null;
     public void ProfilePicture(Action<Sprite> callback)
@@ -37,7 +37,7 @@ public class UserModel
 
     public void DownloadProfilePicture(Action<Sprite> callback)
     {
-        //Todo: This is super dumb because we should not have seperate object id and user id but this is how algolia wants to query
+        // //Todo: This is super dumb because we should not have seperate object id and user id but this is how algolia wants to query
         if (String.IsNullOrEmpty(userID))
         {
             FbManager.instance.GetProfilePhotoFromFirebaseStorage(objectID, (tex) =>
@@ -60,7 +60,6 @@ public class UserModel
                 Debug.Log(message);
             });
         }
-        
     }
     
     private Texture2D ChangeTextureType(Texture texture)
