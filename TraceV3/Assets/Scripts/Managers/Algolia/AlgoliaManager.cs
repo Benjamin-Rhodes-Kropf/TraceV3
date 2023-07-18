@@ -10,6 +10,7 @@ public class AlgoliaManager : MonoBehaviour
     private SearchIndex index;
     public static AlgoliaManager instance;
     
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -22,6 +23,7 @@ public class AlgoliaManager : MonoBehaviour
         client = new SearchClient("Q324B39BS7", "f5c161e91e27b4bd94cdf05a5bd53ef4");
         index = client.InitIndex("users");
     }
+    
 
     public List<UserModel> SearchUser(string parameter)
     {

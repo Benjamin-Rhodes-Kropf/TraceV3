@@ -221,18 +221,20 @@ namespace CanvasManagers
         public void UpdateRequestLayout()
         {
             if ( _view._requestsScroll.activeInHierarchy)
-                LoadAllRequests();
+                LoadAllRequestsNew();
+                //LoadAllRequestsOld();
         }
         
         private void OnRequestsSelection()
         {
-            LoadAllRequests();
+            //LoadAllRequestsOld();
+            LoadAllRequestsNew();
             SelectionPanelClick("Requests");
         }
 
-        private void LoadAllRequests()
+        private void LoadAllRequestsOld()
         {
-            var users = UserDataManager.Instance.GetReceivedFriendRequested();
+            var users = UserDataManager.Instance.GetReceivedFriendRequestedOld();
             ClearRequestView();
             _allRequests = new List<RequestView>();
             if (users.Count > 0)
@@ -241,7 +243,28 @@ namespace CanvasManagers
                     UpdateRequestInfo(user);
             }
             
-            var sentRequests = UserDataManager.Instance.GetSentFriendRequests();
+            var sentRequests = UserDataManager.Instance.GetSentFriendRequestsOld();
+            
+            if (sentRequests.Count > 0)
+            {                
+                foreach (var user in sentRequests)
+                    UpdateRequestInfo(user, false);
+            }
+            
+            _view._requestText.text = $"Requests ({users.Count + sentRequests.Count})";
+        }
+        private void LoadAllRequestsNew()
+        {
+            var users = UserDataManager.Instance.GetReceivedFriendRequestedOld();
+            ClearRequestView();
+            _allRequests = new List<RequestView>();
+            if (users.Count > 0)
+            {
+                foreach (var user in users)
+                    UpdateRequestInfo(user);
+            }
+            
+            var sentRequests = UserDataManager.Instance.GetSentFriendRequestsOld();
             
             if (sentRequests.Count > 0)
             {                

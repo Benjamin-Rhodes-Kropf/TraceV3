@@ -23,21 +23,7 @@ public partial class FbManager
             {
                 string senderId = args.Snapshot.Child("senderId").Value.ToString();
                 string receiverId = args.Snapshot.Child("receiverId").Value.ToString();
-
-                //I dont need these because of new Db structure?
-                //  if (receiverId != _firebaseUser.UserId)
-                //  {
-                //      _databaseReference.Child("FriendsReceive").Child(_firebaseUser.UserId).ChildAdded -= HandleReceivedFriendRequest;
-                //      return;
-                //  }
-                //
-                // if (FriendRequestManager.Instance.IsRequestAllReadyInList(senderId) || senderId == _firebaseUser.UserId)
-                // {
-                //     Debug.Log("RequestAllReadyInList: " + senderId);
-                //     _databaseReference.Child("FriendsReceive").Child(_firebaseUser.UserId).ChildAdded -= HandleReceivedFriendRequest; //Todo Why do this?
-                //     return;
-                // }
-
+                
                 print("Receiver ID : "+ receiverId);
                 print("Sender ID : "+ senderId);
                 
@@ -52,10 +38,10 @@ public partial class FbManager
                     ReceiverId = receiverId,
                     SenderID = senderId
                 };
-                
+                AddUserToLocalDbByID(requestId);
+
                 Debug.Log("HandleReceivedFriendRequest ADD");
                 _allReceivedRequests.Add(request); //Todo: this ain't workin it causes double requests
-                //SoundManager.instance.PlaySound(SoundManager.SoundType.Notification); //todo: this sound sucks
                 HelperMethods.PlayHeptics();
                 ContactsCanvas.UpdateRedMarks?.Invoke();
 
@@ -67,7 +53,6 @@ public partial class FbManager
         }
         catch (Exception e)
         {
-            //_databaseReference.Child("FriendsReceive").Child(_firebaseUser.UserId).ChildAdded -= HandleReceivedFriendRequest; //Todo Why do this?
             Debug.Log("Exception From HandleFriendRequest");
         }
     }
@@ -81,10 +66,6 @@ public partial class FbManager
             string requestId = args.Snapshot.Key;
             
             FriendRequestManager.Instance.RemoveRecievedRequest(requestId);
-          
-            //why unsubscribe?
-            //_databaseReference.Child("FriendsReceive").Child(_firebaseUser.UserId).ChildRemoved -= HandleReceivedRemovedRequests; //Todo Why do this?
-            //_databaseReference.Child("allFriendRequests").ChildRemoved -= HandleReceivedRemovedRequests;
         }
         catch (Exception e)
         {
@@ -101,23 +82,7 @@ public partial class FbManager
             {
                 string senderId = args.Snapshot.Child("senderId").Value.ToString();
                 string receiverId = args.Snapshot.Child("receiverId").Value.ToString();
-
-                //I dont need these because of new Db structure?
-                // if (receiverId != _firebaseUser.UserId)
-                // {
-                //     // _databaseReference.Child("allFriendRequests").ChildAdded -= HandleReceivedFriendRequest;
-                //     _databaseReference.Child("FriendsSent").Child(_firebaseUser.UserId).ChildAdded -= HandleSentFriendRequest;
-                //     return;
-                // }
-                //
-                // if (FriendRequestManager.Instance.IsRequestAllReadyInList(senderId) || senderId == _firebaseUser.UserId)
-                // {
-                //     Debug.Log("RequestAllReadyInList: " + senderId);
-                //     //_databaseReference.Child("allFriendRequests").ChildAdded -= HandleReceivedFriendRequest; //Todo Why do this?
-                //     _databaseReference.Child("FriendsSent").Child(_firebaseUser.UserId).ChildAdded -= HandleSentFriendRequest;
-                //     return;
-                // }
-
+                
                 print("Receiver ID : "+ receiverId);
                 print("Sender ID : "+ senderId);
                 
@@ -135,6 +100,7 @@ public partial class FbManager
                 
                 Debug.Log("_allSentRequests.Add");
                 _allSentRequests.Add(request); //Todo: this ain't workin it causes double requests
+                AddUserToLocalDbByID(requestId);
                 //SoundManager.instance.PlaySound(SoundManager.SoundType.Notification); //todo: this sound sucks
                 HelperMethods.PlayHeptics();
                 ContactsCanvas.UpdateRedMarks?.Invoke();
@@ -159,18 +125,14 @@ public partial class FbManager
             if (args.Snapshot is not { Value: { } }) return;
             
             string requestId = args.Snapshot.Key;
-            
+            AddUserToLocalDbByID(requestId);
             FriendRequestManager.Instance.RemoveSentRequest(requestId);
-          
-            //why unsubscribe?
-            //_databaseReference.Child("allFriendRequests").ChildRemoved -= HandleReceivedRemovedRequests;
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
         }
     }
-    
     
     private void HandleFriends(object sender, ChildChangedEventArgs args)
     {
@@ -189,6 +151,7 @@ public partial class FbManager
                 isBestFriend = bestFriend
             };
             _allFriends.Add(friend);
+            AddUserToLocalDbByID(friendId);
             if (ContactsCanvas.UpdateFriendsView != null)
                 ContactsCanvas.UpdateFriendsView?.Invoke();
             ContactsCanvas.UpdateRedMarks();
@@ -216,37 +179,6 @@ public partial class FbManager
     
     public IEnumerator SendFriendRequest(string friendId, Action<bool> callback)
     {
-        //old
-        // string requestId = _databaseReference.Child("allFriendRequests").Push().Key;
-        // Dictionary<string, object> requestData = new Dictionary<string, object>();
-        // requestData["senderId"] = _firebaseUser.UserId;
-        // requestData["receiverId"] = friendId;
-        // requestData["status"] = "pending";
-        //
-        // var request = new FriendRequests()
-        // {
-        //     ReceiverId = friendId,
-        //     RequestID = requestId,
-        //     SenderID = _firebaseUser.UserId
-        // };
-        //
-        // // Create a new friend request node
-        // var task = _databaseReference.Child("allFriendRequests").Child(requestId).SetValueAsync(requestData);
-        //
-        // while (task.IsCompleted is false)
-        //     yield return new WaitForEndOfFrame();
-        //
-        // if (task.IsCanceled || task.IsFaulted)
-        // {
-        //     print(task.Exception.Message);
-        //     callback(false);
-        // }
-        // else
-        // {
-        //     FriendRequestManager.Instance._allSentRequests.Add(requestId,request);
-        //     callback(true);
-        // }
-        
         //new
         string requestId = _databaseReference.Child("FriendsSent").Child(_firebaseUser.UserId).Child(friendId).ToString();
 
@@ -283,41 +215,9 @@ public partial class FbManager
     }
     public IEnumerator AcceptFriendRequest(string requestId, string senderId, Action<bool> callback)
     {
-        //old
-        // _databaseReference.Child("allFriendRequests").Child(requestId).RemoveValueAsync();
-        //
-        // // var friend = new FriendModel
-        // // {
-        // //     friend = senderId
-        // // };
-        //
-        // print("Friend Request Accept Called With  SenderID ::  "+ senderId);
-        //
-        // var task = _databaseReference.Child("Friends").Child(_firebaseUser.UserId).Child(senderId).SetValueAsync(false);
-        // _databaseReference.Child("Friends").Child(senderId).Child(_firebaseUser.UserId).SetValueAsync(false);
-        // while (task.IsCompleted is false)
-        //     yield return new WaitForEndOfFrame();
-        //
-        // if (task.IsCanceled || task.IsFaulted)
-        // {
-        //     print(task.Exception.Message);
-        //     callback(false);
-        // }
-        // else
-        // {
-        //     // _allFriends.Add(friend);
-        //     callback(true);
-        // }
-        
-        //new
         _databaseReference.Child("FriendsReceive").Child(_firebaseUser.UserId).Child(senderId).RemoveValueAsync();
         _databaseReference.Child("FriendsSent").Child(senderId).Child(_firebaseUser.UserId).RemoveValueAsync();
-        
-        // var friend = new FriendModel
-        // {
-        //     friend = senderId
-        // };
-        
+
         print("Friend Request Accept Called With  SenderID ::  "+ senderId);
         
         //create friends
@@ -355,15 +255,6 @@ public partial class FbManager
             callback(true);
         }
     }
-    public void CancelFriendRequest(string senderId)
-    {
-        // Delete the friend request node
-        _databaseReference.Child("FriendsReceive").Child(senderId).Child(_firebaseUser.UserId).RemoveValueAsync();
-        _databaseReference.Child("FriendsSent").Child(_firebaseUser.UserId).Child(senderId).RemoveValueAsync();
-
-    }
-
-    #region Query Functions
     private IEnumerator RetrieveReceivedFriendRequests()
     {
         Debug.Log("RetrieveReceivedFriendRequests");
@@ -465,62 +356,19 @@ public partial class FbManager
             Debug.LogError(task.Exception);
         }
     }
-    #endregion
-
-    #region Friendship
-    // public IEnumerator RetrieveFriends()
-    // {
-    //     // Get the current user's ID
-    //     string userId = _firebaseUser.UserId;
-    //     DatabaseReference friendRequestsRef = _databaseReference.Child("Friends");
-    //
-    //     var task = friendRequestsRef.Child(userId).GetValueAsync();
-    //
-    //     while (task.IsCompleted is false)
-    //         yield return new WaitForEndOfFrame();
-    //
-    //     if (task.IsCanceled || task.IsFaulted)
-    //     {
-    //         print(task.Exception.Message);
-    //     }
-    //     else
-    //     {
-    //         DataSnapshot snapshot = task.Result; 
-    //         foreach (var friend in snapshot.Children)
-    //         {
-    //             var friendID = friend.Key.ToString();
-    //             var isBestFriend = false;
-    //             
-    //             
-    //             if (friend.Value.ToString() != "*")
-    //             {
-    //                 isBestFriend = System.Convert.ToBoolean(friend.Value.ToString());
-    //                 
-    //                 if (FriendsModelManager.Instance.IsAlreadyFriend(friendID) is false && friendID != "*")
-    //                 {
-    //                     var fri = new FriendModel
-    //                     {
-    //                         friend = friendID,
-    //                         isBestFriend = isBestFriend
-    //                     };
-    //                     Debug.Log("friendID:" + friendID);
-    //                     Debug.Log("isBestFriend:" + isBestFriend);
-    //                     _allFriends.Add(fri);
-    //                 }
-    //             }
-    //         }
-    //     }
-    //
-    //     
-    // }
-    public void RemoveFriends(string friendshipId)
+    
+    public void RemoveFriends(string friendID)
     {
         // Delete the friend request node
-        _databaseReference.Child("Friends").Child(_firebaseUser.UserId).Child(friendshipId).RemoveValueAsync();
-        _databaseReference.Child("Friends").Child(friendshipId).Child(_firebaseUser.UserId).RemoveValueAsync();
+        _databaseReference.Child("Friends").Child(_firebaseUser.UserId).Child(friendID).RemoveValueAsync();
+        _databaseReference.Child("Friends").Child(friendID).Child(_firebaseUser.UserId).RemoveValueAsync();
     }
-    #endregion
-    
+    public void CancelFriendRequest(string senderId)
+    {
+        // Delete the friend request node
+        _databaseReference.Child("FriendsReceive").Child(senderId).Child(_firebaseUser.UserId).RemoveValueAsync();
+        _databaseReference.Child("FriendsSent").Child(_firebaseUser.UserId).Child(senderId).RemoveValueAsync();
+    }
     private void HandleFriendsManagerClearData()
     {
         _allReceivedRequests.Clear();

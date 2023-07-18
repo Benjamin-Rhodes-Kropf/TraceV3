@@ -16,7 +16,7 @@ public class UserModel
     public string photo;
     public string password;
 
-    public string ID => string.IsNullOrEmpty(userID) ? objectID : userID; //todo: wtf does this do
+    // public string ID => string.IsNullOrEmpty(userID) ? objectID : userID; //todo: wtf does this do
 
     private Sprite profilePicture = null;
     public void ProfilePicture(Action<Sprite> callback)
@@ -37,14 +37,30 @@ public class UserModel
 
     public void DownloadProfilePicture(Action<Sprite> callback)
     {
-        FbManager.instance.GetProfilePhotoFromFirebaseStorage(userID, (tex) =>
+        //Todo: This is super dumb because we should not have seperate object id and user id but this is how algolia wants to query
+        if (String.IsNullOrEmpty(userID))
         {
-           profilePicture = Sprite.Create(ChangeTextureType(tex), new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 1.0f);;
-           callback(profilePicture);
-        }, (message) =>
+            FbManager.instance.GetProfilePhotoFromFirebaseStorage(objectID, (tex) =>
+            {
+                profilePicture = Sprite.Create(ChangeTextureType(tex), new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 1.0f);;
+                callback(profilePicture);
+            }, (message) =>
+            {
+                Debug.Log(message);
+            });
+        }
+        else
         {
-            Debug.Log(message);
-        });
+            FbManager.instance.GetProfilePhotoFromFirebaseStorage(userID, (tex) =>
+            {
+                profilePicture = Sprite.Create(ChangeTextureType(tex), new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 1.0f);;
+                callback(profilePicture);
+            }, (message) =>
+            {
+                Debug.Log(message);
+            });
+        }
+        
     }
     
     private Texture2D ChangeTextureType(Texture texture)

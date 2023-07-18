@@ -31,14 +31,13 @@ public class FriendView : MonoBehaviour
     private string _uid = "";
     private bool isBestFriend = false;
     private bool isFriend = false;
+    
     public string friendUID {
         get
         {
             return _uid;
         }
     }
-    
-    
 
     public void UpdateFriendData(UserModel user, bool isFriendAdd = false, bool isBestOne = false)
     {
@@ -46,7 +45,7 @@ public class FriendView : MonoBehaviour
         isBestFriend = isBestOne;
         _userName.text = user.username;
         _nickName.text = user.name;
-        _uid = user.ID;
+        _uid = user.userID;
         FriendButtonType buttonType = FriendButtonType.Add;
         buttonType = isFriendAdd ? FriendButtonType.Remove : FriendButtonType.Add;
         var buttonData = GetButtonData(buttonType);

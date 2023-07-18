@@ -47,14 +47,10 @@ public partial class FbManager : MonoBehaviour
     [Header("User Data")] 
     public Texture userImageTexture;
     public UserModel thisUserModel;
-    [SerializeField] private List<UserModel> users;
+    public List<UserModel> users;
 
     private Dictionary<string, object> _firestoreData;
-
-    public List<UserModel> AllUsers
-    {
-        get { return users; }
-    }
+    
     public bool IsFirebaseUserInitialised
     {
         get;
@@ -215,7 +211,8 @@ public partial class FbManager : MonoBehaviour
         PlayerPrefs.Save();
 
         //once user logged in
-        GetAllUsers(); //Todo: we really should not be doing this
+        //GetAllUsers(); //Todo: we really should not be doing this
+        
         ContinuesListners();
         InitializeFCMService();
         GetCurrentUserData(_password);
@@ -271,8 +268,8 @@ public partial class FbManager : MonoBehaviour
         _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildRemoved -= HandleRemovedFriends;
         
         _databaseReference.Child("users").Child(_firebaseUser.UserId).ChildAdded -= HandleUserAdded;
-        _databaseReference.Child("users").ChildChanged += HandleUserChanged;
         _databaseReference.Child("users").Child(_firebaseUser.UserId).ChildRemoved -= HandleRemoveUser;
+        _databaseReference.Child("users").ChildChanged += HandleUserChanged;
         
         SubscribeOrUnSubscribeToReceivingTraces(false);
         SubscribeOrUnsubscribeToSentTraces(false);
@@ -604,7 +601,6 @@ public partial class FbManager : MonoBehaviour
     }
     public IEnumerator GetProfilePhotoFromFirebaseStorageRoutine(string userId, System.Action<Texture> callback)
     {
-        // var request = new UnityWebRequest();
         var url = "";
         StorageReference pathReference = _firebaseStorage.GetReference("ProfilePhoto/"+userId+".png");
         var task = pathReference.GetDownloadUrlAsync();
@@ -616,7 +612,8 @@ public partial class FbManager : MonoBehaviour
         }
         else
         {
-            //Debug.Log("task failed:" + task.Result);
+            Debug.Log("could not get image from:" + "ProfilePhoto/"+userId+".png");
+            Debug.Log("task failed:" + task.Result);
         }
 
         DownloadHandler.Instance.DownloadImage(url, callback, () =>
@@ -639,6 +636,10 @@ public partial class FbManager : MonoBehaviour
             callback(DBTask.Result.ToString());
         }
     }
+    
+    
+    
+    
     
     //Todo: Do this in the cloud... we cant store all users locally
     private void GetAllUsers()
@@ -719,7 +720,8 @@ public partial class FbManager : MonoBehaviour
              }
         });
     }
-    
+
+
     private void HandleUserAdded(object sender, ChildChangedEventArgs args)
     {
         Debug.Log("HandleUserAdded");
@@ -758,7 +760,6 @@ public partial class FbManager : MonoBehaviour
             Console.WriteLine(e);
         }
     }
-    
     private void HandleUserChanged(object sender, ChildChangedEventArgs args)
     {
         Debug.Log("HandleUserChanged");
@@ -767,7 +768,7 @@ public partial class FbManager : MonoBehaviour
             if (args.Snapshot == null || args.Snapshot.Value == null) return;
             var userID = args.Snapshot.Key.ToString();
             if (string.IsNullOrEmpty(userID)) return;
-            var userToChange = GetUserByID(userID);
+            var userToChange = GetLocalUserByID(userID); //may not always work because its local db
             if (userToChange == null)
             {
                 //create a new user
@@ -825,8 +826,7 @@ public partial class FbManager : MonoBehaviour
             Console.WriteLine(e);
         }
     }
-
-    private UserModel GetUserByID(string userToGetID)
+    private UserModel GetLocalUserByID(string userToGetID)
     {
         foreach (var userObject in users)
         {
@@ -837,7 +837,79 @@ public partial class FbManager : MonoBehaviour
         }
         return null;
     }
-    
+    public void AddUserToLocalDbByID(string userToGetID)
+    {
+        //check if user already in local DB
+        foreach (var obj in users)
+        {
+            if (obj.userID == userToGetID)
+            {
+                return;
+            }
+        }
+        
+        //if not retrive the user from the database
+        UserModel user = new UserModel();
+        user.userID = userToGetID;
+        
+        
+        Debug.LogError("GetUserByID:" + userToGetID);
+        // Reference to the specific document you want to read from
+        DocumentReference docRef = _firebaseFirestore.Collection("users").Document(userToGetID);
+
+        // Read the document
+        docRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
+        {
+            if (task.Exception != null)
+            {
+                Debug.LogError($"Failed to read data from Firestore: {task.Exception}");
+                return;
+            }
+
+            // Get the document snapshot
+            DocumentSnapshot snapshot = task.Result;
+
+            // Check if the document exists
+            if (snapshot.Exists)
+            {
+                // Access the data from the snapshot
+                Dictionary<string, object> data = snapshot.ToDictionary();
+
+                // Access specific fields from the data dictionary
+                if (data.ContainsKey("email"))
+                {
+                    object fieldValue = data["email"];
+                    user.email = fieldValue.ToString();
+                }
+                if (data.ContainsKey("name"))
+                {
+                    object fieldValue = data["name"];
+                    user.name = fieldValue.ToString();
+                }
+                if (data.ContainsKey("phone"))
+                {
+                    object fieldValue = data["phone"];
+                    user.phone = fieldValue.ToString();
+                }
+                if (data.ContainsKey("photo"))
+                {
+                    object fieldValue = data["photo"];
+                    user.photo = fieldValue.ToString();
+                }
+                if (data.ContainsKey("username"))
+                {
+                    object fieldValue = data["username"];
+                    user.username = fieldValue.ToString();
+                }
+                FbManager.instance.users.Add(user);
+            }
+            else
+            {
+                Debug.LogWarning("Document does not exist in firestore users:" + userToGetID);
+            }
+        });
+    }
+
     private void HandleRemoveUser(object sender, ChildChangedEventArgs args)
     {
         //todo: handle remove user
