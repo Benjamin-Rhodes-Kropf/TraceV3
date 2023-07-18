@@ -5,6 +5,7 @@ using CanvasManagers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 public class RequestView : MonoBehaviour
 {
@@ -19,6 +20,20 @@ public class RequestView : MonoBehaviour
     private string requestId = "";
     private string senderId = "";
 
+    public void OnDestroy()
+    {
+        // Release object references
+        _displayName = null;
+        _userName = null;
+        _profilePicture.sprite = null;
+        Destroy( _profilePicture.sprite); //destroy
+        Destroy( _profilePicture); //destroy
+        _acceptButton = null;
+        _removeButton = null;
+        _buttonText = null;
+        _buttonImage = null;
+    }
+    
     public void UpdateRequestView(UserModel user, bool isReceivedRequest  = true)
     {
         requestId = FriendRequestManager.Instance.GetRequestID(user.userID, isReceivedRequest);

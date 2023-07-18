@@ -16,6 +16,22 @@ public class ContactView : MonoBehaviour
    public Button _addButton;
    public Button _removeButton;
    
+   public void OnDestroy()
+   {
+      // Unsubscribe from event handlers
+      _addButton.onClick.RemoveAllListeners();
+      _removeButton.onClick.RemoveAllListeners();
+      
+      // Release object references
+      _givenName = null;
+      _phoneNumber = null;
+      _contactImage = null;
+      Destroy( _contactImage.sprite); //destroy
+      Destroy( _contactImage); //destroy
+      _addButton = null;
+      _removeButton = null;
+   }
+   
    public void UpdateContactInfo(IAddressBookContact contact)
    {
       _givenName.text = contact.FirstName + " "+ contact.LastName;

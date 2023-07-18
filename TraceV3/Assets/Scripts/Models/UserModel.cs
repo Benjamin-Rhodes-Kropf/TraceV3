@@ -17,7 +17,7 @@ public class UserModel
     public string password;
 
     // public string ID => string.IsNullOrEmpty(userID) ? objectID : userID; //todo: we dont use this anymore but the workaround is bad see below
-
+    
     private Sprite profilePicture = null;
     public void ProfilePicture(Action<Sprite> callback)
     {

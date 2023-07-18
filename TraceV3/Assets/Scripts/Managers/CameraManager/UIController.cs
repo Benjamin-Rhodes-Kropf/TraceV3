@@ -81,9 +81,8 @@ public class UIController : MonoBehaviour
             //cameraManager.device.torchMode = CameraDevice.TorchMode.Off;
         }
 #endif
-        }
-
     }
+    
 
     //It will close the image previewer
             public void CloseImagePreview()

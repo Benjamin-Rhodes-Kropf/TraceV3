@@ -216,11 +216,7 @@ public partial class FbManager : MonoBehaviour
         ContinuesListners();
         InitializeFCMService();
         GetCurrentUserData(_password);
-
-        // while (!IsFirebaseUserInitAttempt)
-        // {
-        //     yield return new WaitForEndOfFrame();
-        // }
+        
 
         //set login status
         if (callbackObject.IsSuccessful == true)
@@ -301,6 +297,7 @@ public partial class FbManager : MonoBehaviour
                 Debug.LogError(task.Exception);
             }
         });
+        
     }
     public void Logout(LoginStatus loginStatus)
     {
@@ -851,9 +848,7 @@ public partial class FbManager : MonoBehaviour
         //if not retrive the user from the database
         UserModel user = new UserModel();
         user.userID = userToGetID;
-        
-        
-        Debug.LogError("GetUserByID:" + userToGetID);
+
         // Reference to the specific document you want to read from
         DocumentReference docRef = _firebaseFirestore.Collection("users").Document(userToGetID);
 

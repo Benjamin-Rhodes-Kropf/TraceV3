@@ -5,6 +5,7 @@ using Networking;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 public class FriendView : MonoBehaviour
 {
@@ -38,6 +39,24 @@ public class FriendView : MonoBehaviour
             return _uid;
         }
     }
+
+    public void OnDestroy()
+    {
+        // Release object references
+        _profilePic.texture = null;
+        Destroy( _profilePic.texture);
+        Destroy( _profilePic);
+        _nickName = null;
+        _userName = null;
+        _buttonText = null;
+        _addRemoveButton = null;
+        _buttonBackground = null;
+        _bestFriend = null;
+        _bestFriendButton = null;
+        _colors = null;
+        _heartSprite = null;
+    }
+
 
     public void UpdateFriendData(UserModel user, bool isFriendAdd = false, bool isBestOne = false)
     {
@@ -153,7 +172,6 @@ public class FriendView : MonoBehaviour
                 _bestFriend.sprite = isBestFriend ? _heartSprite[0] : _heartSprite[1];
                 FriendsModelManager.Instance.SetBestFriend(friendUID, isBestFriend);
                 TraceManager.instance.UpdateMap(new Vector2(0,0));
-                
             }
 
             _bestFriendButton.interactable = true;
