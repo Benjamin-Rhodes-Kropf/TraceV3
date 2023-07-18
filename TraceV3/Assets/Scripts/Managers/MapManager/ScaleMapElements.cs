@@ -29,7 +29,7 @@ public class ScaleMapElements : MonoBehaviour
         UpdateTraceScale();
     }
     
-    private void UpdateTraceScale()
+    public void UpdateTraceScale()
     {
         try
         {

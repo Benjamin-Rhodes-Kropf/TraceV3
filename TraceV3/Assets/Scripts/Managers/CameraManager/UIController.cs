@@ -26,8 +26,11 @@ public class UIController : MonoBehaviour
     private string savePath;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        //To show microphone prompt to avoid a conflict which occurs once in start
+        
+        
         //assigning the ui controller in screenamanet script
         ScreenManager.instance.uiController = this;
         //assigning the camera maanager from screenamanet script and other vaiables
@@ -35,13 +38,13 @@ public class UIController : MonoBehaviour
         camManger.replayCamera.vidRecorder = vidRecorder;
         //To reduce the vide size we set the video bit rate to half,
         vidRecorder.videoBitRate = 10000000 / 2;
-        //To show microphone prompt to avoid a conflict which occurs once in start
-        microPhoneAudioKit.StartRunning();
-
+        
         //ios
         string subDirectory = "SaveImages/Traces";
         savePath = Path.Combine(Application.persistentDataPath, subDirectory);
         Directory.CreateDirectory(savePath);
+
+        //microPhoneAudioKit.StartRunning(); //todo: causes slower loading but now cuasing skip on video start
     }
 
     public void CloseVideoPreview()

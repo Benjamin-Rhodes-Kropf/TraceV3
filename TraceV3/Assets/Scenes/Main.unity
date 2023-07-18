@@ -7423,6 +7423,7 @@ GameObject:
   - component: {fileID: 6068666308761308082}
   - component: {fileID: 6068666308761308086}
   - component: {fileID: 6068666308761308084}
+  - component: {fileID: 6068666308761308087}
   m_Layer: 5
   m_Name: Map
   m_TagString: Untagged
@@ -7720,6 +7721,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   homeScreenManager: {fileID: 878571056}
   onlineMapsControlBase: {fileID: 6068666308761308067}
+  _scaleMapElements: {fileID: 6068666308761308085}
   onlineMaps: {fileID: 6068666308761308066}
   markerManager: {fileID: 6068666308761308078}
   onlineMapsLocationService: {fileID: 6068666308761308073}
@@ -8014,6 +8016,19 @@ MonoBehaviour:
   primarySentTexture: {fileID: 2800000, guid: 376c3c79a8a484acfa2c25b50680b2b6, type: 3}
   primarySendingTextureHollow: {fileID: 2800000, guid: eec53750067d14ff897dcb3a1bdbdb1a, type: 3}
   secondarySentTexture: {fileID: 2800000, guid: 1b1282ba964874ad29fe4a229cdffa16, type: 3}
+--- !u!114 &6068666308761308087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6068666308761308064}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3aee6e1c96795497393c8ddde99b549e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onlineMapsLocationService: {fileID: 6068666308761308073}
 --- !u!224 &6075507969438911221 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3394844666557505413, guid: 6196f72a1ea204df5b295d2bb9350f68, type: 3}
