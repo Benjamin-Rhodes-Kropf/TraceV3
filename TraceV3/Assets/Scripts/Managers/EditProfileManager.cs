@@ -29,13 +29,13 @@ public class EditProfileManager : MonoBehaviour
         }));
         foreach (var item in displayName)
         {
-            item.text = FbManager.instance.thisUserModel.DisplayName;
+            item.text = FbManager.instance.thisUserModel.name;
         }
         foreach (var item in userName)
         {
-            item.text = FbManager.instance.thisUserModel.Username;
+            item.text = FbManager.instance.thisUserModel.username;
         }
-        emailId.text = FbManager.instance.thisUserModel.Email;
+        emailId.text = FbManager.instance.thisUserModel.email;
 
     }
 

@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>Algolia.Search</id>
+    <version>6.14.0</version>
+    <authors>Algolia</authors>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <icon>icon.png</icon>
+    <projectUrl>https://www.algolia.com/doc/api-client/getting-started/install/csharp/</projectUrl>
+    <iconUrl>https://s.gravatar.com/avatar/ef38ca989ef6a4a6373435c257373b84?s=80</iconUrl>
+    <description>Algolia is a powerful search-as-a-service solution, made easy to use with API clients, UI libraries, and pre-built integrations. Algolia API Client for the .NET framework lets you easily use the Algolia Search REST API from your .NET code.</description>
+    <releaseNotes>https://github.com/algolia/algoliasearch-client-csharp/blob/master/CHANGELOG.md</releaseNotes>
+    <copyright>Copyright 2019 Algolia</copyright>
+    <tags>Algolia Search SearchEngine Service Instant Typo-Tolerance Realtime Analytics</tags>
+    <repository type="git" url="https://github.com/algolia/algoliasearch-client-csharp" commit="10576b736c2d0f83d0134413f2e6dfcb096d8763" />
+    <dependencies>
+      <group targetFramework=".NETStandard1.3">
+        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
+        <dependency id="Newtonsoft.Json" version="13.0.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="Newtonsoft.Json" version="13.0.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.1">
+        <dependency id="Newtonsoft.Json" version="13.0.1" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

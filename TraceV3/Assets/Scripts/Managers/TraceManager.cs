@@ -12,6 +12,7 @@ public class TraceManager : MonoBehaviour
     public static TraceManager instance;
     [SerializeField] private HomeScreenManager homeScreenManager;
     [SerializeField] private OnlineMapsControlBase onlineMapsControlBase;
+    [SerializeField] private ScaleMapElements _scaleMapElements;
     [SerializeField] private OnlineMaps onlineMaps;
     [SerializeField] private OnlineMapsMarkerManager markerManager;
     [SerializeField] private OnlineMapsLocationService onlineMapsLocationService;
@@ -28,6 +29,8 @@ public class TraceManager : MonoBehaviour
     [SerializeField] private float startingPointLatitude;
     [SerializeField] private float startingPointLongitude;
     [SerializeField] private AnimationCurve _clickRadiusAnimationCurve;
+    [SerializeField] private AnimationCurve _clickRadiusTraceScaleAnimationCurve;
+
     
     [Header("Maximum Distance in meters")]
     [SerializeField] private double maxDist;
@@ -71,8 +74,8 @@ public class TraceManager : MonoBehaviour
         {
             foreach (var trace in recivedTraceObjects)
             {
-                Debug.Log("Click Radius:"+trace.radius*_clickRadiusAnimationCurve.Evaluate(onlineMaps.floatZoom));
-                double distance = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.lat, (float)trace.lng, trace.radius*_clickRadiusAnimationCurve.Evaluate(onlineMaps.floatZoom));
+                Debug.Log("Click Radius:"+_clickRadiusTraceScaleAnimationCurve.Evaluate(trace.radius)*_clickRadiusAnimationCurve.Evaluate(onlineMaps.floatZoom));
+                double distance = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.lat, (float)trace.lng, _clickRadiusTraceScaleAnimationCurve.Evaluate(trace.radius)*_clickRadiusAnimationCurve.Evaluate(onlineMaps.floatZoom));
                 //double distance = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.lat, (float)trace.lng, trace.radius*1000f);
 
                 Debug.Log( "Trace:"+trace.id +" Dist: " + distance);
@@ -329,7 +332,6 @@ public class TraceManager : MonoBehaviour
                         else
                         {                               
                             drawTraceOnMap.DrawCirlce(traceobject.lat, traceobject.lng, (traceobject.radius), DrawTraceOnMap.TraceType.RECEIVED, traceobject.id);
-
                             traceobject.canBeOpened = false;
                         }
                     }
@@ -402,6 +404,7 @@ public class TraceManager : MonoBehaviour
         Debug.Log("Map Update");
         ClearTracesOnMap();
         UpdateTracesOnMap();
+        _scaleMapElements.UpdateAllTraceScale();
     }
     public void ClearTracesOnMap()
     {

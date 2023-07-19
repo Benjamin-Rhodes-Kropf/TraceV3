@@ -77,7 +77,14 @@ namespace CanvasManagers
         {
 #if UNITY_EDITOR
             Debug.Log("is in UnityEditor Force Next Screen");
-            ScreenManager.instance.ChangeScreenForwards("Username");
+            //set phonen number without Verification
+            _view.StartCoroutine(FbManager.instance.SetUserPhoneNumber(phoneNumber, (isSuccess) =>
+            {
+                if (isSuccess)
+                    ScreenManager.instance.ChangeScreenForwards("Username");
+                else
+                    Debug.LogError("Failed to update phone");
+            }));
             return;
 #endif
             Debug.LogError("Verify_OTP Called");

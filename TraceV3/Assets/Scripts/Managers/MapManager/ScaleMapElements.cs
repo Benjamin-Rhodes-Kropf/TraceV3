@@ -15,7 +15,39 @@ public class ScaleMapElements : MonoBehaviour
     [SerializeField] private AnimationCurve scalerFineTune;
 
     
-    private void Update()
+    public void Start()
+    {
+        map.OnChangeZoom += UpdateAllTraceScale;
+        StartCoroutine(WaitUntilUserMapPinHasBeenCreated());
+    }
+
+    public void ScaleTrace(OnlineMapsMarker _onlineMapsMarker)
+    {
+        var traceScale = new double();
+        var zoomfloat = map.floatZoom;
+        traceScale = scaler.Evaluate(zoomfloat)+scalerFineTune.Evaluate(zoomfloat);
+        if ( traceScale * radiusSize * _onlineMapsMarker.radius < scaleLimitForSwitchImage)
+        {
+            _onlineMapsMarker.SwitchDisplayedImage(false);
+            _onlineMapsMarker.scale = scaleOfPin;
+        }
+        else
+        {
+            _onlineMapsMarker.SwitchDisplayedImage(true);
+            _onlineMapsMarker.scale = (float)(traceScale * radiusSize * _onlineMapsMarker.radius);
+        }
+    } 
+
+    IEnumerator WaitUntilUserMapPinHasBeenCreated() //todo: not great implimentation
+    {
+        while (markerManager.items.Count == 0)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+        UpdateAllTraceScale();
+    }
+    
+    public void UpdateAllTraceScale()
     {
         try
         {
@@ -23,7 +55,7 @@ public class ScaleMapElements : MonoBehaviour
         }
         catch (Exception e)
         {
-            print("Scale Marker Error :: "+e.Message);
+            Debug.LogWarning("User Pin Has Not Been Created");
         }
         
         var traceScale = new double();
@@ -33,14 +65,7 @@ public class ScaleMapElements : MonoBehaviour
         //Sets the way a trace looks and changes with zoom depending on scale
         for (int i = 1; i < markerManager.items.Count; i++)
         {
-            var user = markerManager.items[0];
-            double evaluatedSize = traceScale * radiusSize * user.radius;
-
             var item = markerManager.items[i];
-           item.SwitchDisplayedImage(true);
-            item.scale = (float)(traceScale * radiusSize * markerManager.items[i].radius);
-            
-            //Debug.Log("radius:" + item.radius);
             if ( traceScale * radiusSize * item.radius < scaleLimitForSwitchImage)
             {
                 item.SwitchDisplayedImage(false);

@@ -32,6 +32,8 @@ public class TookPhotoCanvasController
     
     private void OnDoneButtonClick()
     {
+        //create item in firestore data
+        FbManager.instance.CreateDocumentInFireStore();
         ScreenManager.instance.ChangeScreenForwards("SettingUpAccount");
     }
     private void OnMoveBackClick()

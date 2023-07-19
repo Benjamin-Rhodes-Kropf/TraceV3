@@ -81,11 +81,10 @@ namespace CanvasManagers
                 var text = GameObject.Instantiate(_view._searchTabTextPrefab, _view._searchscrollParent);
                 text.text = "Friends";
                 searchList.Add(text.gameObject);
-                    
                 foreach (var friend in friends)
                 {
                     var view = GameObject.Instantiate(_view.friendViewPrefab, _view._searchscrollParent);
-                    view.UpdateFriendData(friend,true, FriendsModelManager.Instance.IsBestFriend(friend.userId));
+                    view.UpdateFriendData(friend,true, FriendsModelManager.Instance.IsBestFriend(friend.userID));
                     searchList.Add(view.gameObject);
                 }
             }
@@ -139,7 +138,7 @@ namespace CanvasManagers
                     if (friends.Contains(other)) continue;
                     if (requestsSent.Contains(other)) continue;
                     if (requests.Contains(other)) continue;
-                    if (other.userId == FbManager.instance.thisUserModel.userId) continue;
+                    if (other.userID == FbManager.instance.thisUserModel.userID) continue;
                     var view = GameObject.Instantiate(_view.friendViewPrefab, _view._searchscrollParent);
                     view.UpdateFriendData(other);
                     searchList.Add(view.gameObject);
@@ -171,7 +170,6 @@ namespace CanvasManagers
             int allFrindsTileCount = _view._friendsList.Count;
             int allUsersCount = users.Count;
             bool isNeedToAddMoreTiles = allUsersCount > allFrindsTileCount;
-
             int totalUsers = isNeedToAddMoreTiles ? allUsersCount : allFrindsTileCount;
 
             for (int userIndex = 0; userIndex < totalUsers; userIndex++)
@@ -223,18 +221,20 @@ namespace CanvasManagers
         public void UpdateRequestLayout()
         {
             if ( _view._requestsScroll.activeInHierarchy)
-                LoadAllRequests();
+                LoadAllRequestsNew();
+                //LoadAllRequestsOld();
         }
         
         private void OnRequestsSelection()
         {
-            LoadAllRequests();
+            //LoadAllRequestsOld();
+            LoadAllRequestsNew();
             SelectionPanelClick("Requests");
         }
 
-        private void LoadAllRequests()
+        private void LoadAllRequestsOld()
         {
-            var users = UserDataManager.Instance.GetReceivedFriendRequested();
+            var users = UserDataManager.Instance.GetReceivedFriendRequestedOld();
             ClearRequestView();
             _allRequests = new List<RequestView>();
             if (users.Count > 0)
@@ -243,7 +243,28 @@ namespace CanvasManagers
                     UpdateRequestInfo(user);
             }
             
-            var sentRequests = UserDataManager.Instance.GetSentFriendRequests();
+            var sentRequests = UserDataManager.Instance.GetSentFriendRequestsOld();
+            
+            if (sentRequests.Count > 0)
+            {                
+                foreach (var user in sentRequests)
+                    UpdateRequestInfo(user, false);
+            }
+            
+            _view._requestText.text = $"Requests ({users.Count + sentRequests.Count})";
+        }
+        private void LoadAllRequestsNew()
+        {
+            var users = UserDataManager.Instance.GetReceivedFriendRequestedOld();
+            ClearRequestView();
+            _allRequests = new List<RequestView>();
+            if (users.Count > 0)
+            {
+                foreach (var user in users)
+                    UpdateRequestInfo(user);
+            }
+            
+            var sentRequests = UserDataManager.Instance.GetSentFriendRequestsOld();
             
             if (sentRequests.Count > 0)
             {                
@@ -302,7 +323,7 @@ namespace CanvasManagers
         private void UpdateFriendViewInfo(UserModel user)
         {
             FriendView view = GameObject.Instantiate(_view.friendViewPrefab, _view._displayFrindsParent);
-            view.UpdateFriendData(user,true, FriendsModelManager.Instance.IsBestFriend(user.userId));
+            view.UpdateFriendData(user,true, FriendsModelManager.Instance.IsBestFriend(user.userID));
             _allFriendsView.Add(view);
         }
         private void ClearFriendsView()

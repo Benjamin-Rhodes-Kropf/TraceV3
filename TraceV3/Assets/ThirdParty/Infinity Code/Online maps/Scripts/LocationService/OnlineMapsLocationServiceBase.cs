@@ -503,6 +503,7 @@ public abstract class OnlineMapsLocationServiceBase : MonoBehaviour, IOnlineMaps
             }
 
             if (positionChanged/* || compassChanged*/) map.Redraw();
+            
         }
         catch /*(Exception exception)*/
         {
