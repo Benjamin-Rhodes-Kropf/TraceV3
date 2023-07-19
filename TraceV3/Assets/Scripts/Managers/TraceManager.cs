@@ -404,7 +404,7 @@ public class TraceManager : MonoBehaviour
         Debug.Log("Map Update");
         ClearTracesOnMap();
         UpdateTracesOnMap();
-        _scaleMapElements.UpdateTraceScale();
+        _scaleMapElements.UpdateAllTraceScale();
     }
     public void ClearTracesOnMap()
     {

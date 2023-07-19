@@ -15,7 +15,7 @@ public class GPSEmulatorRandomMovmentForSim : MonoBehaviour
 
     IEnumerator RandomlyUpdatePosition()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(10f);
         Debug.Log("randomly updating emulator position");
         _onlineMapsLocationService.emulatorPosition = _onlineMapsLocationService.emulatorPosition + new Vector2(Random.Range(-0.0001f,0.0001f), Random.Range(-0.0001f,0.0001f));
         StartCoroutine(RandomlyUpdatePosition());
