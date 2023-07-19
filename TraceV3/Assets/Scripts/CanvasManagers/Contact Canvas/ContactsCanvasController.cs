@@ -386,7 +386,9 @@ namespace CanvasManagers
             Debug.Log("Contact Status:" + status);
             AddressBook.RequestContactsAccess(callback: OnRequestContactsAccessFinish);
             LoadAllContacts();
+#if !UNITY_EDITOR
             SelectionPanelClick("Contacts");
+#endif
         }
         private void OnRequestContactsAccessFinish(AddressBookRequestContactsAccessResult result, Error error)
         {
@@ -409,6 +411,12 @@ namespace CanvasManagers
                 Debug.Log("Total contacts fetched: " + contacts.Length);
                 Debug.Log("Below are the contact details (capped to first 10 results only):");
                 isLoaded = true;
+
+                if (contacts.Length > 0)
+                {
+                    _view._enhanceScroller.LoadLargeData(contacts);
+                }
+                
                 foreach (var contact in contacts)
                 {
                     LogContactInfo(contact);
@@ -441,8 +449,8 @@ namespace CanvasManagers
         {
             try
             {
-                ContactView view = GameObject.Instantiate(_view._contactPrfab,_view._contactParent);
-                view.UpdateContactInfo(contact);
+                 // ContactView view = GameObject.Instantiate(_view._contactPrfab,_view._contactParent);
+                 // view.UpdateContactInfo(contact);
                 _allContacts.Add(contact);
             }
             catch (Exception e)

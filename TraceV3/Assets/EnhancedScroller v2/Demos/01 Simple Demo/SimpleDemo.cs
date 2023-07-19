@@ -2,6 +2,7 @@
 using System.Collections;
 using EnhancedUI;
 using EnhancedUI.EnhancedScroller;
+using VoxelBusters.EssentialKit;
 
 namespace EnhancedScrollerDemos.SuperSimpleDemo
 {
@@ -50,31 +51,42 @@ namespace EnhancedScrollerDemos.SuperSimpleDemo
             LoadLargeData();
         }
 
+        
+        
         /// <summary>
         /// Populates the data with a lot of records
         /// </summary>
-        private void LoadLargeData()
+        public void LoadLargeData(IAddressBookContact[] contacts= null)
         {
+            if (contacts == null)
+                return;
+            
             // set up some simple data
             _data = new SmallList<Data>();
-            for (var i = 0; i < 1000; i++)
-                _data.Add(new Data() { someText = "Cell Data Index " + i.ToString() });
+            foreach (var contact in contacts)
+            {
+                //Todo: Add Data 
+                _data.Add(new Data()
+                {
+                    _Contact = contact
+                });
+            }
 
             // tell the scroller to reload now that we have the data
             scroller.ReloadData();
         }
 
         /// <summary>
-        /// Populates the data with a small set of records
+        /// Populates the data with a small set of rsecords
         /// </summary>
         private void LoadSmallData()
         {
             // set up some simple data
             _data = new SmallList<Data>();
 
-            _data.Add(new Data() { someText = "A" });
-            _data.Add(new Data() { someText = "B" });
-            _data.Add(new Data() { someText = "C" });
+            // _data.Add(new Data() { someText = "A" });
+            // _data.Add(new Data() { someText = "B" });
+            // _data.Add(new Data() { someText = "C" });
 
             // tell the scroller to reload now that we have the data
             scroller.ReloadData();
@@ -124,7 +136,7 @@ namespace EnhancedScrollerDemos.SuperSimpleDemo
         public float GetCellViewSize(EnhancedScroller scroller, int dataIndex)
         {
             // in this example, even numbered cells are 30 pixels tall, odd numbered cells are 100 pixels tall
-            return (dataIndex % 2 == 0 ? 30f : 100f);
+            return 134.9138f;
         }
 
         /// <summary>

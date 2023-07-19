@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using EnhancedScrollerDemos.SuperSimpleDemo;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -20,6 +21,7 @@ namespace CanvasManagers
         [Header("Contacts Info")] 
         public ContactView _contactPrfab;
         public Transform _contactParent;
+        public SimpleDemo _enhanceScroller;
         
         [Header("Requests Info")] 
         public RequestView _requestPrefab;

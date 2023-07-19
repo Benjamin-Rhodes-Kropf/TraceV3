@@ -12,7 +12,8 @@ namespace EnhancedScrollerDemos.SuperSimpleDemo
         /// <summary>
         /// A reference to the UI Text element to display the cell data
         /// </summary>
-        public Text someTextText;
+        public ContactView _View;
+
 
         /// <summary>
         /// This function just takes the Demo data and displays it
@@ -20,8 +21,7 @@ namespace EnhancedScrollerDemos.SuperSimpleDemo
         /// <param name="data"></param>
         public void SetData(Data data)
         {
-            // update the UI text with the cell data
-            someTextText.text = data.someText;
+            _View.UpdateContactInfo(data._Contact);
         }
     }
 }

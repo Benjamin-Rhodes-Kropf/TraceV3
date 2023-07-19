@@ -64,6 +64,6 @@ public class ContactView : MonoBehaviour
    private void OnRemoveClick()
    {
       print("On Remove Clicked");
-      Destroy(gameObject);
+      // Destroy(gameObject);
    }
 }
