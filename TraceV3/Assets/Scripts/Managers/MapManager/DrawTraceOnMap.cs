@@ -103,6 +103,12 @@ public class DrawTraceOnMap : MonoBehaviour
         {
             OnlineMapsMarkerManager.RemoveItemAt(i);
         }
+
+        //draw loading trace
+        if (SendTraceManager.instance.isSendingTrace)
+        {
+            DrawCirlce(SendTraceManager.instance.location.x, SendTraceManager.instance.location.y, SendTraceManager.instance.radius, TraceType.SENDING, "loading");
+        }
     }
     
     public enum TraceType {RECEIVED, RECEIVEDBESTFRIEND, SENT, SENDING, OPENING};

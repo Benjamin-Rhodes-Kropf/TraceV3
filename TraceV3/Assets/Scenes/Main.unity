@@ -8474,7 +8474,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1361899930089332814, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1361899930544575295, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -8566,7 +8566,15 @@ PrefabInstance:
       objectReference: {fileID: 600464280}
     - target: {fileID: 9036104054326087776, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9036104055721393225, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_text
+      value: 'Add and
+
+        Manage
+
+        Friends'
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
@@ -11679,61 +11687,63 @@ MonoBehaviour:
   recivedTraceObjects: []
   sentTraceObjects: []
   recivedTraceObjectsByDistanceToUser: []
-  startingPointLatitude: 0
-  startingPointLongitude: 0
+  pinModeMultiplyer: 100
   _clickRadiusAnimationCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
-      value: 1000000
-      inSlope: -82161.31
-      outSlope: -82161.31
+      time: 4
+      value: 7000
+      inSlope: -32959.59
+      outSlope: -32959.59
       tangentMode: 0
-      weightedMode: 0
+      weightedMode: 2
       inWeight: 0
-      outWeight: 0.078828834
+      outWeight: 0.029187346
     - serializedVersion: 3
-      time: 16
+      time: 9
       value: 100
-      inSlope: -15601.27
-      outSlope: 0
-      tangentMode: 65
-      weightedMode: 0
-      inWeight: 0.22353601
-      outWeight: 0.33333334
+      inSlope: -28.624865
+      outSlope: -28.624865
+      tangentMode: 0
+      weightedMode: 3
+      inWeight: 0.8096159
+      outWeight: 0.288856
+    - serializedVersion: 3
+      time: 12.771258
+      value: 30
+      inSlope: -9.04693
+      outSlope: -9.04693
+      tangentMode: 0
+      weightedMode: 3
+      inWeight: 0.38566592
+      outWeight: 0.32254344
+    - serializedVersion: 3
+      time: 14
+      value: 15
+      inSlope: -5.9119263
+      outSlope: -5.9119263
+      tangentMode: 0
+      weightedMode: 3
+      inWeight: 0.3444098
+      outWeight: 0.3460401
+    - serializedVersion: 3
+      time: 17
+      value: 1
+      inSlope: -1.0835947
+      outSlope: -1.0835947
+      tangentMode: 0
+      weightedMode: 3
+      inWeight: 0.33305004
+      outWeight: 0.29941693
     - serializedVersion: 3
       time: 21
-      value: 100
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  _clickRadiusTraceScaleAnimationCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
       value: 0
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
+      inSlope: -3.1776607
+      outSlope: -3.1776607
+      tangentMode: 0
+      weightedMode: 1
+      inWeight: 0.38674602
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -11935,6 +11945,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   segments: 240
   sendingTraceTraceLoadingObject:
+    marker:
+      label: 
+      traceID: 
+      radius: 0
+      range:
+        max: 20.999
+        min: 1
+        maxLimit: 20.999
+        minLimit: 1
+      tags: []
+      _enabled: 1
+      latitude: 0
+      longitude: 0
+      _scale: 1
+      expand: 1
+      align: 7
+      locked: 0
+      markerColliderRect:
+        serializedVersion: 2
+        x: -0.5
+        y: -0.5
+        width: 1
+        height: 1
+      _rotation: 0
+      _displayedTexture: {fileID: 0}
+      _primaryZoomedInTexture: {fileID: 0}
+      _primaryHollowInTexture: {fileID: 0}
+      _secondaryZoomedOutTexture: {fileID: 0}
+      isShowingPrimaryTexture: 0
     id: 
     lat: 0
     lng: 0

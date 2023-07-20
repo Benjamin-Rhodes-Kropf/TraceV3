@@ -31,7 +31,14 @@ public class UserDataManager
     public bool IsUsernameAvailable(string userName)
     {
         var users = GetUsersByLetters(userName); //todo: this is why a lot of usernames are not available because the letters are similar
-        return users.Count < 1;
+        foreach (var user in users)
+        {
+            if (userName == user.username)
+            {
+                return false;
+            }
+        }
+        return true;
     }
     
     public List<UserModel> GetReceivedFriendRequestedOld()

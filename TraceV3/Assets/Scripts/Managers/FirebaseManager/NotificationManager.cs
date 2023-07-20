@@ -55,17 +55,38 @@ public class NotificationManager : UnitySingleton<NotificationManager>
         // Process the notification payload and perform desired actions in Unity
     }
 
-    public async void SendNotificationUsingFirebaseUserId(string firebaseUserId, string title = "", string message = "")
+    // public async void SendNotificationUsingFirebaseUserId(string firebaseUserId, string title = "", string message = "")
+    // {
+    //     Debug.Log("Getting Device token from:" + firebaseUserId);
+    //     var fcmToken = await FbManager.instance.GetDeviceTokenForUser(firebaseUserId);
+    //     Debug.Log("Device token:" + fcmToken);
+    //
+    //     if (String.IsNullOrEmpty(fcmToken))
+    //     {
+    //         Debug.Log("user FCM token null or does not exist");
+    //         return;
+    //     }
+    //     
+    //     Debug.Log("SendNotificationUsingFirebaseUserID FCM TOKEN:" + fcmToken);
+    //     StartCoroutine(SendNotification(fcmToken, title, message));
+    // }
+    public IEnumerator SendNotificationUsingFirebaseUserId(string firebaseUserId, string title = "", string message = "")
     {
-        var fcmToken = await FbManager.instance.GetDeviceTokenForUser(firebaseUserId);
+        Debug.Log("Getting Device token from:" + firebaseUserId);
+        var task = FbManager.instance.GetDeviceTokenForUser(firebaseUserId);
+        yield return new WaitUntil(() => task.IsCompleted);
+        var fcmToken = task.Result;
+        Debug.Log("Device token:" + fcmToken);
 
-        if (String.IsNullOrEmpty(fcmToken))
+        if (string.IsNullOrEmpty(fcmToken))
         {
-            Debug.Log("user FCM token null or does not exist");
-            return;
+            Debug.Log("User FCM token null or does not exist");
+            yield break;
         }
+
         Debug.Log("SendNotificationUsingFirebaseUserID FCM TOKEN:" + fcmToken);
-        StartCoroutine(SendNotification(fcmToken, title, message));
+        yield return StartCoroutine(SendNotification(fcmToken, title, message));
+
     }
     public IEnumerator SendNotification(string token, string title, string body)
     {

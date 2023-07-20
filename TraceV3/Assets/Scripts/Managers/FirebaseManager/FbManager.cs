@@ -706,9 +706,11 @@ public partial class FbManager : MonoBehaviour
                              continue;
                          }
                          userData.photo = snap.Child("photo").Value.ToString();
-                         
-                         
-                         users.Add(userData); 
+
+                         if (!CheckIfUserAlreadyInList(userData.userID))
+                         {
+                             users.Add(userData);
+                         }
                      }
                      catch (Exception e)
                      {
@@ -758,7 +760,11 @@ public partial class FbManager : MonoBehaviour
             Debug.Log("HandleUserAdded phone:" + userData.phone);
             userData.photo = args.Snapshot.Child("photo").Value.ToString();
             Debug.Log("HandleUserAdded photo:" + userData.photo);
-            users.Add(userData);
+            
+            if (!CheckIfUserAlreadyInList(userData.userID))
+            {
+                users.Add(userData);
+            }
         }
         catch (Exception e)
         {
@@ -796,7 +802,11 @@ public partial class FbManager : MonoBehaviour
                     Debug.Log("HandleUserAdded phone:" + userToChange.phone);
                     userToChange.photo = args.Snapshot.Child("photo").Value.ToString();
                     Debug.Log("HandleUserAdded photo:" + userToChange.photo);
-                    users.Add(userToChange);
+                    
+                    if (!CheckIfUserAlreadyInList(userToChange.userID))
+                    {
+                        users.Add(userToChange);
+                    }
                 }
                 catch
                 {
@@ -1135,7 +1145,7 @@ public partial class FbManager : MonoBehaviour
         //draw temp circle until it uploads and the map is cleared on update
         SendTraceManager.instance.isSendingTrace = true;
         _drawTraceOnMap.sendingTraceTraceLoadingObject = new TraceObject(location.x, location.y, radius, usersToSendToList.Count, "null",thisUserModel.name,  DateTime.UtcNow.ToString(), 24, mediaType.ToString(), "temp");
-        _drawTraceOnMap.DrawCirlce(location.x, location.y, radius, DrawTraceOnMap.TraceType.SENDING, "null");
+        _drawTraceOnMap.DrawCirlce(location.x, location.y, radius, DrawTraceOnMap.TraceType.SENDING, "loading");
             
         //update global traces
         childUpdates["Traces/" + key + "/senderID"] = _firebaseUser.UserId;
@@ -1166,6 +1176,7 @@ public partial class FbManager : MonoBehaviour
             childUpdates["TracesRecived/" + user +"/"+ key + "/Sender"] = thisUserModel.userID;
             Debug.Log("Count" + count);
         }
+        
         Debug.Log("Userse to Send to Count:" + usersToSendToList.Count);
         childUpdates["Traces/" + key + "/numPeopleSent"] = count;
 
@@ -1192,6 +1203,22 @@ public partial class FbManager : MonoBehaviour
                     SendTraceManager.instance.isSendingTrace = false;
                 }
             });
+        foreach (var user in usersToSendToList) //it is now in the upload trace call
+        {
+            Debug.Log("Sending Notification to:" + user);
+            Debug.Log("From:" + FbManager.instance.thisUserModel.name);
+            try
+            {
+                //todo: why does this throw an error the first time but not the second?!
+                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user, FbManager.instance.thisUserModel.name, "sent you a trace!"));
+            }
+            catch (Exception e)
+            {
+                Debug.Log("Weird Bug Catch for Notifications");
+                //todo:SEE! I call it twice?
+                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user, FbManager.instance.thisUserModel.name, "sent you a trace!"));
+            }
+        }
     }
     public void MarkTraceAsOpened(string traceID)
     {
@@ -1492,7 +1519,21 @@ public partial class FbManager : MonoBehaviour
     }
     #endregion
     
+    
     //possibly useful
+    public bool CheckIfUserAlreadyInList(string userID)
+    {
+        foreach (var user in users)
+        {
+            if (user.userID == userID)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    
     private void DeleteFile(String _location) 
     { 
         _firebaseStorageReference = _firebaseStorageReference.Child(_location);

@@ -81,8 +81,8 @@ public class TraceManager : MonoBehaviour
                 else
                 {
                     Debug.Log("TraceClickMode: pin");
-                    distance = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.lat, (float)trace.lng, _clickRadiusAnimationCurve.Evaluate(21-onlineMaps.floatZoom)*pinModeMultiplyer);
-                    Debug.Log("Click Radius:"+ _clickRadiusAnimationCurve.Evaluate(21-onlineMaps.floatZoom)*pinModeMultiplyer);
+                    distance = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.lat, (float)trace.lng, _clickRadiusAnimationCurve.Evaluate(onlineMaps.floatZoom)*pinModeMultiplyer);
+                    Debug.Log("Click Radius:"+ _clickRadiusAnimationCurve.Evaluate(onlineMaps.floatZoom)*pinModeMultiplyer);
                 }
 
                 Debug.Log( "Trace:"+trace.id +" Dist: " + distance);
