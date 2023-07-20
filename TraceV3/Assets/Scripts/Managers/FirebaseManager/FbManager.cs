@@ -924,7 +924,8 @@ public partial class FbManager : MonoBehaviour
                     object fieldValue = data["username"];
                     user.username = fieldValue.ToString();
                 }
-                FbManager.instance.users.Add(user);
+                if(!CheckIfUserAlreadyInList(user.userID))
+                    FbManager.instance.users.Add(user);
             }
             else
             {
