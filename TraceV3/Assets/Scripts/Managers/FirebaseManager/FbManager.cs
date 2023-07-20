@@ -288,7 +288,15 @@ public partial class FbManager : MonoBehaviour
                     string displayName = snapshot.Child("name").Value.ToString();
                     string username = snapshot.Child("username").Value.ToString();
                     string phone = snapshot.Child("phone").Value.ToString();
+                    if (String.IsNullOrEmpty(phone)) //because of old server
+                    {
+                        phone = snapshot.Child("phoneNumber").Value.ToString();
+                    }
                     string photoURL = snapshot.Child("photo").Value.ToString();
+                    if (String.IsNullOrEmpty(photoURL)) //because of old server
+                    {
+                        photoURL = snapshot.Child("profilePhotoUrl").Value.ToString();
+                    }
                     thisUserModel = new UserModel(_firebaseUser.UserId,email,displayName,username,phone,photoURL, password);
                     IsFirebaseUserInitialised = true;
             }
@@ -834,12 +842,12 @@ public partial class FbManager : MonoBehaviour
         }
         return null;
     }
-    public void AddUserToLocalDbByID(string userToGetID)
+    public void AddUserToLocalDbByID(string userToAdd)
     {
         //check if user already in local DB
         foreach (var obj in users)
         {
-            if (obj.userID == userToGetID)
+            if (obj.userID == userToAdd)
             {
                 return;
             }
@@ -847,10 +855,10 @@ public partial class FbManager : MonoBehaviour
         
         //if not retrive the user from the database
         UserModel user = new UserModel();
-        user.userID = userToGetID;
+        user.userID = userToAdd;
 
         // Reference to the specific document you want to read from
-        DocumentReference docRef = _firebaseFirestore.Collection("users").Document(userToGetID);
+        DocumentReference docRef = _firebaseFirestore.Collection("users").Document(userToAdd);
 
         // Read the document
         docRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
@@ -886,9 +894,19 @@ public partial class FbManager : MonoBehaviour
                     object fieldValue = data["phone"];
                     user.phone = fieldValue.ToString();
                 }
+                if (data.ContainsKey("phoneNumber"))
+                {
+                    object fieldValue = data["phoneNumber"];
+                    user.phone = fieldValue.ToString();
+                }
                 if (data.ContainsKey("photo"))
                 {
                     object fieldValue = data["photo"];
+                    user.photo = fieldValue.ToString();
+                }
+                if (data.ContainsKey("userPhotoUrl"))
+                {
+                    object fieldValue = data["userPhotoUrl"];
                     user.photo = fieldValue.ToString();
                 }
                 if (data.ContainsKey("username"))
@@ -900,7 +918,7 @@ public partial class FbManager : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("Document does not exist in firestore users:" + userToGetID);
+                Debug.LogWarning("Document does not exist in firestore users:" + userToAdd);
             }
         });
     }

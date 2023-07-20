@@ -26,7 +26,7 @@ public class DrawTraceOnMap : MonoBehaviour
     [SerializeField] private Texture2D secondarySentTexture;
     
 
-    public void DrawCirlce(double lat, double lng, float radius, TraceType traceType, string markerID)
+    public OnlineMapsMarker DrawCirlce(double lat, double lng, float radius, TraceType traceType, string markerID)
     {
         OnlineMapsMarker _onlineMapsMarker = PlaceTrace(lat, lng, radius, traceType, markerID);
         _onlineMapsMarker.displayedTexture = _onlineMapsMarker.secondaryZoomedOutTexture;
@@ -63,10 +63,10 @@ public class DrawTraceOnMap : MonoBehaviour
                 map.projection.TileToCoordinates(px, py, 20, out lng, out lat);
                 points[i] = new OnlineMapsVector2d(lng, lat);
             }
-            
             // Create a new polygon to draw a circle
             OnlineMapsDrawingElementManager.AddItem(new OnlineMapsDrawingPoly(points, Color.white, 2, new Color(10, 10, 10, 0.1f)));
         }
+        return _onlineMapsMarker;
     }
 
     public OnlineMapsMarker PlaceTrace(double lat, double lng, float radius, TraceType traceType, string markerID)

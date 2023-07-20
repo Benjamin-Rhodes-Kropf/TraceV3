@@ -57,14 +57,14 @@ public class NotificationManager : UnitySingleton<NotificationManager>
 
     public async void SendNotificationUsingFirebaseUserId(string firebaseUserId, string title = "", string message = "")
     {
-        Debug.Log("SendNotificationUsingFirebaseUserId firebaseUserId:" + firebaseUserId);
         var fcmToken = await FbManager.instance.GetDeviceTokenForUser(firebaseUserId);
-        if (fcmToken == null || fcmToken == "null")
+
+        if (String.IsNullOrEmpty(fcmToken))
         {
             Debug.Log("user FCM token null or does not exist");
             return;
         }
-        Debug.Log("SendNotificationUsingFirebaseUserId FCM TOKEN:" + fcmToken);
+        Debug.Log("SendNotificationUsingFirebaseUserID FCM TOKEN:" + fcmToken);
         StartCoroutine(SendNotification(fcmToken, title, message));
     }
     public IEnumerator SendNotification(string token, string title, string body)

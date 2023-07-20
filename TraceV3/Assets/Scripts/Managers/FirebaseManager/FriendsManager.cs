@@ -38,9 +38,9 @@ public partial class FbManager
                     ReceiverId = receiverId,
                     SenderID = senderId
                 };
-                AddUserToLocalDbByID(requestId);
-
                 Debug.Log("HandleReceivedFriendRequest ADD");
+                AddUserToLocalDbByID(requestId);
+                
                 _allReceivedRequests.Add(request); //Todo: this ain't workin it causes double requests
                 HelperMethods.PlayHeptics();
                 ContactsCanvas.UpdateRedMarks?.Invoke();
@@ -179,6 +179,7 @@ public partial class FbManager
     
     public IEnumerator SendFriendRequest(string friendId, Action<bool> callback)
     {
+        Debug.Log("Sending Friend Request to:" + friendId);
         //new
         string requestId = _databaseReference.Child("FriendsSent").Child(_firebaseUser.UserId).Child(friendId).ToString();
 

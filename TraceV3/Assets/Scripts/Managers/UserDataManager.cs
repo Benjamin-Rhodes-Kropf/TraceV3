@@ -151,14 +151,10 @@ public class UserDataManager
         requestsSent = GetRequestsByNameOld(name, false);
         others = GetUsersByLetters(name);
         
-        // Debug.Log("Search Contains:");
-        // Debug.Log("friends:" + friends.Count);
-        // Debug.Log("requests:" + requests.Count);
-        // Debug.Log("requests sent:" + requestsSent.Count);
-        // Debug.Log("others:" + others.Count);
         foreach (var user in others)
         {
             Debug.Log("other:" + user.name);
+            Debug.Log("other:" + user.ID);
         }
     }
 }

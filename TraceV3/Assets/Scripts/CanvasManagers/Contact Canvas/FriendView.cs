@@ -64,7 +64,7 @@ public class FriendView : MonoBehaviour
         isBestFriend = isBestOne;
         _userName.text = user.username;
         _nickName.text = user.name;
-        _uid = user.userID;
+        _uid = user.ID;
         FriendButtonType buttonType = FriendButtonType.Add;
         buttonType = isFriendAdd ? FriendButtonType.Remove : FriendButtonType.Add;
         var buttonData = GetButtonData(buttonType);
@@ -118,8 +118,7 @@ public class FriendView : MonoBehaviour
             _buttonText.text = buttonData.buttonText;
         }
     }
-    
-    
+
     private void SendFriendRequest()
     {
         _addRemoveButton.interactable = false;
@@ -127,12 +126,10 @@ public class FriendView : MonoBehaviour
         
         if (friendUID == "")
             return;
-
-        Debug.LogError("Here after Checking friend ID "+  friendUID);
+        
         if (FriendRequestManager.Instance.IsRequestAllReadyInList(friendUID,false))
             return;
-            
-        Debug.LogError("Here after Checking List");
+        
         StartCoroutine(FbManager.instance.SendFriendRequest(friendUID, async (IsSuccessful) => {
             if (!IsSuccessful)
             {
@@ -143,6 +140,7 @@ public class FriendView : MonoBehaviour
             UpdateRequestStatus(true);
             _addRemoveButton.interactable = true;
             Debug.Log("friend requested at:" + friendUID);
+            Debug.Log("from:" + FbManager.instance.thisUserModel.name);
             NotificationManager.Instance.SendNotificationUsingFirebaseUserId(friendUID, FbManager.instance.thisUserModel.name , "sent you friend request");
         }));
     }

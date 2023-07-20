@@ -5,7 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5fe41c51-35f7-4209-a441-efe0568605df" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Screens/FriendsScreen/Contact Cell View.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Screens/FriendsScreen/Contact Cell View.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Screens/FriendsScreen/Request Prefab.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Screens/FriendsScreen/Request Prefab.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Screens/FriendsScreen/Search Tab Text.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Screens/FriendsScreen/Search Tab Text.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/SaveImages/Traces/Image.png" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/SaveImages/Traces/Image.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Main.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Main.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/CanvasManagers/Contact Canvas/FriendView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/CanvasManagers/Contact Canvas/FriendView.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Managers/FirebaseManager/FbManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Managers/FirebaseManager/FbManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Managers/FirebaseManager/FriendsManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Managers/FirebaseManager/FriendsManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Managers/FirebaseManager/NotificationManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Managers/FirebaseManager/NotificationManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Managers/MapManager/DrawTraceOnMap.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Managers/MapManager/DrawTraceOnMap.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Managers/TraceManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Managers/TraceManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Managers/UserDataManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Managers/UserDataManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Models/UserModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Models/UserModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/StreamingAssets/build_info" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/StreamingAssets/build_info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ThirdParty/Infinity Code/Online maps/Scripts/Markers/Instances/OnlineMapsMarker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ThirdParty/Infinity Code/Online maps/Scripts/Markers/Instances/OnlineMapsMarker.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
