@@ -6,7 +6,10 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class SelectFriendsCanvas : MonoBehaviour{
+public class SelectFriendsCanvas : MonoBehaviour
+{
+
+    [Header("Search Bar")] public TMP_InputField _searchBar;
     
     [Header("Friend Info")]
     public SendToFriendView friendViewPrefab;

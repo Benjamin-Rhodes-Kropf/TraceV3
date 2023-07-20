@@ -18,7 +18,7 @@ public class SettingsManager : MonoBehaviour
     Action<Texture> onSuccess;
     private Action<string> onFailed;
     private Texture myPicture;
-
+    private Coroutine downloadPCoroutine;
 
     void Start()
     {
@@ -34,7 +34,7 @@ public class SettingsManager : MonoBehaviour
         onFailed += CallBackFunctionOnImageRetriveFailedFromDatabase;
         profileName.text = FbManager.instance.thisUserModel.name;
         userName.text = FbManager.instance.thisUserModel.username;
-        FbManager.instance.GetProfilePhotoFromFirebaseStorage(FbManager.instance.thisUserModel.userID, onSuccess,onFailed);
+        FbManager.instance.GetProfilePhotoFromFirebaseStorage(FbManager.instance.thisUserModel.userID, onSuccess,onFailed,ref downloadPCoroutine);
     }
 
     public void OpenGalleryForProfilePictureSelection() {

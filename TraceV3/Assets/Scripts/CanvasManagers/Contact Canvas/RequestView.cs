@@ -19,9 +19,12 @@ public class RequestView : MonoBehaviour
 
     private string requestId = "";
     private string senderId = "";
+    
+    private Coroutine _userCoroutine;
 
     public void OnDestroy()
     {
+        StopCoroutine(_userCoroutine);
         // Release object references
         _displayName = null;
         _userName = null;
@@ -51,7 +54,7 @@ public class RequestView : MonoBehaviour
         }));
         _userName.text = user.username;
         _displayName.text = user.name;
-
+        _userCoroutine = user._downloadPCoroutine;
         _acceptButton.onClick.RemoveAllListeners();
         if (isReceivedRequest is false)
         {

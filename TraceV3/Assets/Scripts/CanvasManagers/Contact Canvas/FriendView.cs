@@ -32,7 +32,6 @@ public class FriendView : MonoBehaviour
     private string _uid = "";
     private bool isBestFriend = false;
     private bool isFriend = false;
-    
     public string friendUID {
         get
         {
@@ -40,8 +39,13 @@ public class FriendView : MonoBehaviour
         }
     }
 
+    private Coroutine _userCoroutine;
+    
+
     public void OnDestroy()
     {
+        if (_userCoroutine != null)
+            StopCoroutine(_userCoroutine);
         // Release object references
         _profilePic.texture = null;
         Destroy( _profilePic.texture);
@@ -62,6 +66,9 @@ public class FriendView : MonoBehaviour
     {
         isFriend = isFriendAdd;
         isBestFriend = isBestOne;
+        
+        
+        _userCoroutine = user._downloadPCoroutine;
         _userName.text = user.username;
         _nickName.text = user.name;
         _uid = user.ID;
@@ -175,4 +182,5 @@ public class FriendView : MonoBehaviour
             _bestFriendButton.interactable = true;
         }));
     }
+   
 }

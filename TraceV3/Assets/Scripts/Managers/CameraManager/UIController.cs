@@ -74,9 +74,9 @@ public class UIController : MonoBehaviour
         Debug.Log("Is Flash Supported:" + cameraManager.device.flashSupported);
         isFlashOn = !isFlashOn;
         Debug.Log("CameraFlashMode:" + isFlashOn);
+#if UNITY_IPHONE
         if (isFlashOn)
         {
-#if UNITY_IPHONE
             //cameraManager.device.torchMode = CameraDevice.TorchMode.Maximum;
         }
         else

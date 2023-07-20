@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using SA.iOS.Contacts;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 using UnityEngine.UI;
@@ -384,9 +383,15 @@ namespace CanvasManagers
         {
             AddressBookContactsAccessStatus status = AddressBook.GetContactsAccessStatus();
             Debug.Log("Contact Status:" + status);
+
+#if !UNITY_EDITOR
             AddressBook.RequestContactsAccess(callback: OnRequestContactsAccessFinish);
             LoadAllContacts();
+#elif UNITY_EDITOR
+            _view._enhanceScroller.LoadLargeData(null,_view._testContactList);
+#endif          
             SelectionPanelClick("Contacts");
+
         }
         private void OnRequestContactsAccessFinish(AddressBookRequestContactsAccessResult result, Error error)
         {
@@ -409,6 +414,12 @@ namespace CanvasManagers
                 Debug.Log("Total contacts fetched: " + contacts.Length);
                 Debug.Log("Below are the contact details (capped to first 10 results only):");
                 isLoaded = true;
+
+                if (contacts.Length > 0)
+                {
+                    _view._enhanceScroller.LoadLargeData(contacts);
+                }
+                
                 foreach (var contact in contacts)
                 {
                     LogContactInfo(contact);
@@ -441,8 +452,8 @@ namespace CanvasManagers
         {
             try
             {
-                ContactView view = GameObject.Instantiate(_view._contactPrfab,_view._contactParent);
-                view.UpdateContactInfo(contact);
+                 // ContactView view = GameObject.Instantiate(_view._contactPrfab,_view._contactParent);
+                 // view.UpdateContactInfo(contact);
                 _allContacts.Add(contact);
             }
             catch (Exception e)
@@ -469,6 +480,7 @@ namespace CanvasManagers
         }
     }
 
+    [Serializable]
     public struct Contact
     {
         public string givenName;

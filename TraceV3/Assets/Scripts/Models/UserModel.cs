@@ -19,6 +19,8 @@ public class UserModel
     public string ID => string.IsNullOrEmpty(userID) ? objectID : userID; //todo: we dont use this anymore but the workaround is bad see below
     
     private Sprite profilePicture = null;
+    public Coroutine _downloadPCoroutine;
+    
     public void ProfilePicture(Action<Sprite> callback)
     {
         if (profilePicture == null)
@@ -47,7 +49,7 @@ public class UserModel
             }, (message) =>
             {
                 Debug.Log(message);
-            });
+            },ref _downloadPCoroutine);
         }
         else
         {
@@ -58,7 +60,7 @@ public class UserModel
             }, (message) =>
             {
                 Debug.Log(message);
-            });
+            }, ref _downloadPCoroutine);
         }
     }
     
@@ -71,7 +73,6 @@ public class UserModel
             false, false,
             texture.GetNativeTexturePtr());
     }
-    
 
     public UserModel()
     {

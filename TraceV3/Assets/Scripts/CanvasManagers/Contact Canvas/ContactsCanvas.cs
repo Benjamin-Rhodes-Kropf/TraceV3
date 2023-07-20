@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using EnhancedScrollerDemos.SuperSimpleDemo;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -20,6 +21,7 @@ namespace CanvasManagers
         [Header("Contacts Info")] 
         public ContactView _contactPrfab;
         public Transform _contactParent;
+        public SimpleDemo _enhanceScroller;
         
         [Header("Requests Info")] 
         public RequestView _requestPrefab;
@@ -41,7 +43,11 @@ namespace CanvasManagers
         [Header("Search Bar Content")] 
         public Transform _searchscrollParent;
         public TMP_Text _searchTabTextPrefab;
-        
+
+        [Header("Testing")] 
+        public List<Contact> _testContactList;
+
+
         private ContactsCanvasController _controller;
 
         public static Action UpdateRequestView;
