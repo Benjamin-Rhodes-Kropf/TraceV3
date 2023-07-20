@@ -1074,6 +1074,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isSendingTrace: 0
+  location: {x: 0, y: 0}
   fileLocation: 
   mediaType: 0
   _onlineMapsLocationService: {fileID: 6068666308761308073}
@@ -8566,7 +8567,7 @@ PrefabInstance:
       objectReference: {fileID: 600464280}
     - target: {fileID: 9036104054326087776, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9036104055721393225, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_text
@@ -11513,7 +11514,7 @@ MonoBehaviour:
   createMarkerInUserPosition: 1
   disableEmulatorInPublish: 1
   emulatorCompass: 0
-  emulatorPosition: {x: -71.2169, y: 42.3199}
+  emulatorPosition: {x: -71.2169, y: 42}
   findLocationByIP: 0
   lerpCompassValue: 0
   markerScale: 1

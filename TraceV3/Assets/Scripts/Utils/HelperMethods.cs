@@ -400,17 +400,21 @@ public static class HelperMethods
 
         if (currentDateTime.Year >= otherDateTime.Year)
         {
+            if (Math.Round(timeDifference.TotalMinutes) == 1)
+            {
+                return Math.Round(timeDifference.TotalMinutes) + " minute ago";
+            }
+            if (Math.Round(timeDifference.TotalMinutes) <= 60)
+            {
+                return Math.Round(timeDifference.TotalMinutes) + " minutes ago";
+            }
             if (Math.Round(timeDifference.TotalHours) == 1)
             {
                 return Math.Round(timeDifference.TotalHours) + " hour ago";
             }
-            if (timeDifference.TotalHours > 1 && timeDifference.TotalHours < 24)
+            if (timeDifference.TotalHours < 24)
             {
                 return Math.Round(timeDifference.TotalHours) + " hours ago";
-            }
-            if (Math.Round(timeDifference.TotalMinutes) == 1)
-            {
-                return Math.Round(timeDifference.TotalMinutes) + " minute ago";
             }
             if (timeDifference.Days == 1)
             {
@@ -420,7 +424,6 @@ public static class HelperMethods
             {
                 return Math.Round(timeDifference.TotalDays) + " days ago";
             }
-            return Math.Round(timeDifference.TotalMinutes) + " minutes ago";
         }
         return currentDateTime.ToShortDateString();
     }
