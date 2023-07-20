@@ -48,8 +48,6 @@ public class FriendView : MonoBehaviour
             StopCoroutine(_userCoroutine);
         // Release object references
         _profilePic.texture = null;
-        Destroy( _profilePic.texture);
-        Destroy( _profilePic);
         _nickName = null;
         _userName = null;
         _buttonText = null;
@@ -90,6 +88,7 @@ public class FriendView : MonoBehaviour
             try
             {
                 _profilePic.texture = sprite.texture;
+                // Invoke(nameof(DestroyImage),0.5f);
             }
             catch (Exception e)
             {
@@ -98,6 +97,11 @@ public class FriendView : MonoBehaviour
         }));
     }
 
+    private void DestroyImage()
+    {
+        DestroyImmediate(_profilePic.texture);
+        DestroyImmediate(_profilePic);
+    }
 
     private (string buttonText, int colorIndex) GetButtonData(FriendButtonType buttonType)
     {

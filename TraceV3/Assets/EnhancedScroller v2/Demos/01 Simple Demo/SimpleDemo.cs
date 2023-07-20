@@ -81,10 +81,11 @@ namespace EnhancedScrollerDemos.SuperSimpleDemo
                 });
             }     
  #elif UNITY_IPHONE
- foreach (var contact in contacts)
+ for (int i = 0; i < contacts.Length; i++)
             {
-                 if (contact.PhoneNumbers.Length <= 0);
-                    return;
+                var contact = contacts[i];
+                if (contact.PhoneNumbers.Length<=0)
+                    continue;
                 _data.Add(new Data()
                 {
                     _Contact = contact,
