@@ -21,7 +21,11 @@ namespace EnhancedScrollerDemos.SuperSimpleDemo
         /// <param name="data"></param>
         public void SetData(Data data)
         {
+#if UNITY_EDITOR
+            _View.ContactInfoUpdate(data._Name,data._ContactNumber,data._Sprite);
+#elif UNITY_IPHONE
             _View.UpdateContactInfo(data._Contact);
+#endif
         }
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using SA.iOS.Contacts;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 using UnityEngine.UI;
@@ -384,11 +383,15 @@ namespace CanvasManagers
         {
             AddressBookContactsAccessStatus status = AddressBook.GetContactsAccessStatus();
             Debug.Log("Contact Status:" + status);
+
+#if !UNITY_EDITOR
             AddressBook.RequestContactsAccess(callback: OnRequestContactsAccessFinish);
             LoadAllContacts();
-#if !UNITY_EDITOR
+#elif UNITY_EDITOR
+            _view._enhanceScroller.LoadLargeData(null,_view._testContactList);
+#endif          
             SelectionPanelClick("Contacts");
-#endif
+
         }
         private void OnRequestContactsAccessFinish(AddressBookRequestContactsAccessResult result, Error error)
         {
@@ -477,6 +480,7 @@ namespace CanvasManagers
         }
     }
 
+    [Serializable]
     public struct Contact
     {
         public string givenName;

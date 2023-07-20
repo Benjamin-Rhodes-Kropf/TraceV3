@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using CanvasManagers;
 using EnhancedUI;
 using EnhancedUI.EnhancedScroller;
 using VoxelBusters.EssentialKit;
@@ -56,22 +58,41 @@ namespace EnhancedScrollerDemos.SuperSimpleDemo
         /// <summary>
         /// Populates the data with a lot of records
         /// </summary>
-        public void LoadLargeData(IAddressBookContact[] contacts= null)
+        public void LoadLargeData(IAddressBookContact[] contacts= null, List<Contact> _testContacts = null)
         {
-            if (contacts == null)
+            if (contacts == null && _testContacts == null)
                 return;
             
             // set up some simple data
             _data = new SmallList<Data>();
-            foreach (var contact in contacts)
+
+
+#if UNITY_EDITOR
+            foreach (var contact in _testContacts)
             {
                 //Todo: Add Data 
                 _data.Add(new Data()
                 {
-                    _Contact = contact
+                    _Contact = null,
+                    _Sprite = contact.profile,
+                    _ContactNumber = contact.phoneNumber,
+                    _Name = contact.givenName
+                });
+            }     
+#elif UNITY_IPHONE
+ foreach (var contact in contacts)
+            {
+                if (string.IsNullOrEmpty(contact.PhoneNumbers[0]) || string.IsNullOrEmpty(contact.FirstName));
+                    return;
+                    
+                //Todo: Add Data 
+                _data.Add(new Data()
+                {
+                    _Contact = contact,
+                    
                 });
             }
-
+#endif
             // tell the scroller to reload now that we have the data
             scroller.ReloadData();
         }

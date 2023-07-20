@@ -43,7 +43,11 @@ namespace CanvasManagers
         [Header("Search Bar Content")] 
         public Transform _searchscrollParent;
         public TMP_Text _searchTabTextPrefab;
-        
+
+        [Header("Testing")] 
+        public List<Contact> _testContactList;
+
+
         private ContactsCanvasController _controller;
 
         public static Action UpdateRequestView;

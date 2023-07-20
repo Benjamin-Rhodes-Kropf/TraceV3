@@ -36,7 +36,7 @@ public class ContactView : MonoBehaviour
    {
       _givenName.text = contact.FirstName + " "+ contact.LastName;
       _phoneNumber.text = contact.PhoneNumbers[0];
-      
+      _contactImage.sprite = null;
       contact.LoadImage((result, error) =>
       {
          var texture = result.GetTexture();
@@ -44,7 +44,7 @@ public class ContactView : MonoBehaviour
          {
             var sprite = Sprite.Create(
                texture,
-               new Rect(0, 0, texture.width, texture.height),
+               new Rect(0, 0, texture.width/2, texture.height/2),
                new Vector2(0.5f, 0.5f));
             _contactImage.sprite = sprite;
             //_contactImage.sprite = CropTexture(texture);
@@ -56,6 +56,14 @@ public class ContactView : MonoBehaviour
       _removeButton.onClick.AddListener(OnRemoveClick);
    }
 
+//Todo: Just for Testing  Purpose
+   public void ContactInfoUpdate(string Name,string  ContactNumber, Sprite _sprite)
+   {
+      _givenName.text = Name;
+      _phoneNumber.text = ContactNumber;
+      _contactImage.sprite = _sprite;
+   }
+   
    private void OnContactButtonAddClicked()
    {
       HelperMethods.SendSMS(_phoneNumber.text, "What up! I've been using this app for the past week and its lowk rly fun you should join the beta! its exclusive 🎉 https://testflight.apple.com/join/B4j5DDbh");

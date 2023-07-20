@@ -1,4 +1,5 @@
-﻿using VoxelBusters.EssentialKit;
+﻿using UnityEngine;
+using VoxelBusters.EssentialKit;
 
 namespace EnhancedScrollerDemos.SuperSimpleDemo
 {
@@ -8,5 +9,8 @@ namespace EnhancedScrollerDemos.SuperSimpleDemo
     public class Data
     {
         public IAddressBookContact _Contact;
+        public string _Name;
+        public string _ContactNumber;
+        public Sprite _Sprite;
     }
 }
