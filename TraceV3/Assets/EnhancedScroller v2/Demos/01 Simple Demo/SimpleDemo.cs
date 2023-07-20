@@ -70,6 +70,7 @@ namespace EnhancedScrollerDemos.SuperSimpleDemo
 #if UNITY_EDITOR
             foreach (var contact in _testContacts)
             {
+                
                 //Todo: Add Data 
                 _data.Add(new Data()
                 {
@@ -79,13 +80,11 @@ namespace EnhancedScrollerDemos.SuperSimpleDemo
                     _Name = contact.givenName
                 });
             }     
-#elif UNITY_IPHONE
+ #elif UNITY_IPHONE
  foreach (var contact in contacts)
             {
-                if (string.IsNullOrEmpty(contact.PhoneNumbers[0]) || string.IsNullOrEmpty(contact.FirstName));
+                 if (contact.PhoneNumbers.Length <= 0);
                     return;
-                    
-                //Todo: Add Data 
                 _data.Add(new Data()
                 {
                     _Contact = contact,
