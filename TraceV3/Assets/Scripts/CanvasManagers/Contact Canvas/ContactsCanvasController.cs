@@ -166,55 +166,55 @@ namespace CanvasManagers
         }
         
         // TODO: Delete These Functions
-        private void PopulateFriendsList(List<UserModel> users, bool IsFriendsList = false)
-        {
-            int allFrindsTileCount = _view._friendsList.Count;
-            int allUsersCount = users.Count;
-            bool isNeedToAddMoreTiles = allUsersCount > allFrindsTileCount;
-            int totalUsers = isNeedToAddMoreTiles ? allUsersCount : allFrindsTileCount;
-
-            for (int userIndex = 0; userIndex < totalUsers; userIndex++)
-            {
-                if (isNeedToAddMoreTiles)
-                {
-                    if (userIndex < _view._friendsList.Count)
-                    {
-                        var friend = _view._friendsList[userIndex];
-                        friend.UpdateFriendData(users[userIndex], IsFriendsList);
-                        friend.gameObject.SetActive(true);
-                        
-                    }
-                    else
-                    {
-                        FriendView friend = GameObject.Instantiate(_view.friendViewPrefab, _view._displayFrindsParent);
-                        _view._friendsList.Add(friend);
-                        friend.UpdateFriendData(users[userIndex], IsFriendsList);
-                       
-                    }
-                }
-                else
-                {
-                    if (userIndex < users.Count)
-                    {
-                        var friend = _view._friendsList[userIndex];
-                        friend.UpdateFriendData(users[userIndex], IsFriendsList);
-                        friend.gameObject.SetActive(true);
-                        
-                    }
-                    else
-                    {
-                        var friend = _view._friendsList[userIndex];
-                        friend.gameObject.SetActive(false);
-                    }
-                }
-            }
-        }
-        private void PopulateFriendUIObject(FriendView friendView, UserModel data)
-        {
-            friendView.UpdateFriendData(data);
-            friendView.gameObject.SetActive(true);
-            friendView._addRemoveButton.onClick.RemoveAllListeners();
-        }
+        // private void PopulateFriendsList(List<UserModel> users, bool IsFriendsList = false)
+        // {
+        //     int allFrindsTileCount = _view._friendsList.Count;
+        //     int allUsersCount = users.Count;
+        //     bool isNeedToAddMoreTiles = allUsersCount > allFrindsTileCount;
+        //     int totalUsers = isNeedToAddMoreTiles ? allUsersCount : allFrindsTileCount;
+        //
+        //     for (int userIndex = 0; userIndex < totalUsers; userIndex++)
+        //     {
+        //         if (isNeedToAddMoreTiles)
+        //         {
+        //             if (userIndex < _view._friendsList.Count)
+        //             {
+        //                 var friend = _view._friendsList[userIndex];
+        //                 friend.UpdateFriendData(users[userIndex], IsFriendsList);
+        //                 friend.gameObject.SetActive(true);
+        //                 
+        //             }
+        //             else
+        //             {
+        //                 FriendView friend = GameObject.Instantiate(_view.friendViewPrefab, _view._displayFrindsParent);
+        //                 _view._friendsList.Add(friend);
+        //                 friend.UpdateFriendData(users[userIndex], IsFriendsList);
+        //                
+        //             }
+        //         }
+        //         else
+        //         {
+        //             if (userIndex < users.Count)
+        //             {
+        //                 var friend = _view._friendsList[userIndex];
+        //                 friend.UpdateFriendData(users[userIndex], IsFriendsList);
+        //                 friend.gameObject.SetActive(true);
+        //                 
+        //             }
+        //             else
+        //             {
+        //                 var friend = _view._friendsList[userIndex];
+        //                 friend.gameObject.SetActive(false);
+        //             }
+        //         }
+        //     }
+        // }
+        // private void PopulateFriendUIObject(FriendView friendView, UserModel data)
+        // {
+        //     friendView.UpdateFriendData(data);
+        //     friendView.gameObject.SetActive(true);
+        //     friendView._addRemoveButton.onClick.RemoveAllListeners();
+        // }
 
 
         private List<RequestView> _allRequests;

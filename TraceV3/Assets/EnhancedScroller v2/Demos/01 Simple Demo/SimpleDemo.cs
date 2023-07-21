@@ -80,7 +80,7 @@ namespace EnhancedScrollerDemos.SuperSimpleDemo
                     _Name = contact.givenName
                 });
             }     
- #elif UNITY_IPHONE
+  #elif UNITY_IPHONE
  for (int i = 0; i < contacts.Length; i++)
             {
                 var contact = contacts[i];
@@ -89,7 +89,6 @@ namespace EnhancedScrollerDemos.SuperSimpleDemo
                 _data.Add(new Data()
                 {
                     _Contact = contact,
-                    
                 });
             }
 #endif

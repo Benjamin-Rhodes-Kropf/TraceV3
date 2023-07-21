@@ -591,11 +591,11 @@ public partial class FbManager : MonoBehaviour
     }
     #endregion
     #region -User Info
-    public void GetProfilePhotoFromFirebaseStorage(string userId, Action<Texture> onSuccess, Action<string> onFailed, ref Coroutine _coroutine) {
+    public void GetProfilePhotoFromFirebaseStorage(string userId, Action<Texture> callback, Action<string> onFailed, ref Coroutine _coroutine) {
         _coroutine = StartCoroutine(GetProfilePhotoFromFirebaseStorageRoutine(userId, (myReturnValue) => {
             if (myReturnValue != null)
             {
-                onSuccess?.Invoke(myReturnValue);
+                callback?.Invoke(myReturnValue);
             }
 
             {
@@ -603,28 +603,86 @@ public partial class FbManager : MonoBehaviour
             }
         }));
     }
+    
     public IEnumerator GetProfilePhotoFromFirebaseStorageRoutine(string userId, System.Action<Texture> callback)
+{
+    var url = "";
+    StorageReference pathReference = _firebaseStorage.GetReference("ProfilePhoto/" + userId + ".png");
+    var task = pathReference.GetDownloadUrlAsync();
+
+    while (!task.IsCompleted)
     {
-        var url = "";
-        StorageReference pathReference = _firebaseStorage.GetReference("ProfilePhoto/"+userId+".png");
-        var task = pathReference.GetDownloadUrlAsync();
+        yield return new WaitForEndOfFrame();
+    }
 
-        while (task.IsCompleted is false) yield return new WaitForEndOfFrame();
+    if (!task.IsFaulted && !task.IsCanceled)
+    {
+        url = task.Result + "";
+    }
+    else
+    {
+        Debug.Log("Could not get image from: ProfilePhoto/" + userId + ".png");
+        Debug.Log("Task failed: " + task.Result);
+        callback?.Invoke(null);
+        yield break;
+    }
 
-        if (!task.IsFaulted && !task.IsCanceled) {
-            url = task.Result + "";
-        }
-        else
+    // Download the image as a Texture2D
+    DownloadHandler.Instance.DownloadImage(url, (downloadedTexture) =>
         {
-            Debug.Log("could not get image from:" + "ProfilePhoto/"+userId+".png");
-            Debug.Log("task failed:" + task.Result);
-        }
+            // Add this check to ensure that the downloadedTexture is of type Texture2D
+            if (downloadedTexture is Texture2D texture2D)
+            {
+                // Resize the image to your desired dimensions
+                int targetWidth = 256; // Set the desired width here
+                int targetHeight = 256; // Set the desired height here
+                Texture2D resizedTexture = ResizeTexture(texture2D, targetWidth, targetHeight);
 
-        DownloadHandler.Instance.DownloadImage(url, callback, () =>
+                // Encode the resized texture to JPG format (you can also use EncodeToPNG for PNG format)
+                byte[] compressedImageData = resizedTexture.EncodeToJPG(20); // 80 is the quality level (0-100)
+
+                // Create a new Texture2D from the compressed image data
+                Texture2D compressedTexture = new Texture2D(2, 2);
+                compressedTexture.LoadImage(compressedImageData);
+
+                // Invoke the callback with the compressed texture
+                callback?.Invoke(compressedTexture);
+
+                // Clean up the temporary textures
+                Destroy(resizedTexture);
+                Destroy(compressedTexture);
+                Destroy(downloadedTexture);
+            }
+            else
+            {
+                Debug.Log("if statment on download did not work");
+                // Handle the case when the downloadedTexture is not Texture2D (e.g., error occurred during download)
+                callback?.Invoke(null);
+            }
+        }, () =>
         {
-            callback(null);
+            // If download fails, invoke the callback with a null Texture
+            callback?.Invoke(null);
         });
     }
+
+    // Helper method to resize a Texture2D
+    private Texture2D ResizeTexture(Texture2D sourceTexture, int targetWidth, int targetHeight)
+    {
+        RenderTexture rt = new RenderTexture(targetWidth, targetHeight, 24);
+        RenderTexture.active = rt;
+        Graphics.Blit(sourceTexture, rt);
+        Texture2D resizedTexture = new Texture2D(targetWidth, targetHeight);
+        resizedTexture.ReadPixels(new Rect(0, 0, targetWidth, targetHeight), 0, 0);
+        resizedTexture.Apply();
+
+        // Clean up the temporary RenderTexture
+        rt.Release();
+        Destroy(rt);
+        
+        return resizedTexture;
+    }
+    
     public IEnumerator GetThisUserNickName(System.Action<String> callback, string firebaseUserId = "")
     {
         var DBTask = _databaseReference.Child("users").Child(firebaseUserId == ""? _firebaseUser.UserId: firebaseUserId).Child("Friends").Child("nickName").GetValueAsync();
