@@ -588,7 +588,18 @@ public partial class FbManager : MonoBehaviour
         _coroutine = StartCoroutine(GetProfilePhotoFromFirebaseStorageRoutine(userId, (myReturnValue) => {
             if (myReturnValue != null)
             {
-                onSuccess?.Invoke(myReturnValue);
+                Texture2D reducedTexture = new Texture2D(128, 128);
+
+                // Copy the content of the original texture to the new one with resizing
+                RenderTexture rt = new RenderTexture(128, 128, 24);
+                Graphics.Blit((Texture2D)myReturnValue, rt);
+                RenderTexture.active = rt;
+                reducedTexture.ReadPixels(new Rect(0, 0, 128, 128), 0, 0);
+                reducedTexture.Apply();
+                RenderTexture.active = null;
+                rt.Release();
+                onSuccess?.Invoke(reducedTexture);
+                DestroyImmediate(myReturnValue);
             }
 
             {

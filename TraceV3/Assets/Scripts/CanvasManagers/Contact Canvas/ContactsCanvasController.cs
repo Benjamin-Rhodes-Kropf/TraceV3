@@ -11,17 +11,20 @@ using VoxelBusters.EssentialKit;
 
 namespace CanvasManagers
 {
-    public class ContactsCanvasController
+    public enum UserTabs
+    {
+        Contacts, Friends, Requests
+    }
+    public partial class ContactsCanvasController
     {
         private ContactsCanvas _view;
         private Image _previousSelectedButton;
         private Color32 _selectedButtonColor = new Color32(128, 128, 128, 255);
         private Color32 _unSelectedButtonColor = new Color32(128, 128, 128, 0);
         private List<IAddressBookContact> _allContacts;
-        
+        private UserTabs _CurrentSelectedUserTab;
         
         private static Regex _compiledUnicodeRegex = new Regex(@"[^\u0000-\u007F]", RegexOptions.Compiled);
-        
         public void Init(ContactsCanvas view)
         {
             this._view = view;
@@ -61,7 +64,7 @@ namespace CanvasManagers
             if (inputText.Length <= 1)
             {
                 ClearSearchList();
-                OnFriendsSelection();
+                SelectPreviouslySelectedScreen();
             }
             
             var canUpdate = inputText.Length > 1;
@@ -72,84 +75,14 @@ namespace CanvasManagers
             ClearSearchList();
             SelectionPanelClick("SearchBar");
             searchList = new List<GameObject>();
-            
-            UserDataManager.Instance.GetAllUsersBySearch(inputText, out List<UserModel> friends, out List<UserModel> requests,out List<UserModel> requestsSent, out List<UserModel> others);
-            TryGetContactsByName(inputText, out List<IAddressBookContact> contacts);
-            if (friends.Count > 0)
-            {
-                var text = GameObject.Instantiate(_view._searchTabTextPrefab, _view._searchscrollParent);
-                text.text = "Friends";
-                searchList.Add(text.gameObject);
-                foreach (var friend in friends)
-                {
-                    var view = GameObject.Instantiate(_view.friendViewPrefab, _view._searchscrollParent);
-                    view.UpdateFriendData(friend,true, FriendsModelManager.Instance.IsBestFriend(friend.userID));
-                    searchList.Add(view.gameObject);
-                }
-            }
-            
-            if (requests.Count > 0)
-            {
-                var text = GameObject.Instantiate(_view._searchTabTextPrefab, _view._searchscrollParent);
-                text.text = "Requests Received";
-                searchList.Add(text.gameObject);
-                foreach (var request in requests)
-                {
-                    var view = GameObject.Instantiate(_view._requestPrefab, _view._searchscrollParent);
-                    view.UpdateRequestView(request);
-                    searchList.Add(view.gameObject);
-                }
-            }
-            
-            if (requestsSent.Count > 0)
-            {
-                var text = GameObject.Instantiate(_view._searchTabTextPrefab, _view._searchscrollParent);
-                text.text = "Requests Sent";
-                searchList.Add(text.gameObject);
-                foreach (var request in requestsSent)
-                {
-                    var view = GameObject.Instantiate(_view._requestPrefab, _view._searchscrollParent);
-                    view.UpdateRequestView(request,false);
-                    searchList.Add(view.gameObject);
-                }
-            }
-            
-            if (contacts.Count > 0)
-            {
-                var text = GameObject.Instantiate(_view._searchTabTextPrefab, _view._searchscrollParent);
-                text.text = "Contacts";
-                searchList.Add(text.gameObject);
-                foreach (var contact in contacts)
-                {
-                    ContactView view = GameObject.Instantiate(_view._contactPrfab,_view._searchscrollParent);
-                    view.UpdateContactInfo(contact);
-                    searchList.Add(view.gameObject);
-                }
-            }
+            SearchUsersInDB(inputText);
 
-            if (others.Count > 0)
-            {
-                var text = GameObject.Instantiate(_view._searchTabTextPrefab, _view._searchscrollParent);
-                text.text = "Others";
-                searchList.Add(text.gameObject);
-                foreach (var other in others)
-                {
-                    if (friends.Contains(other)) continue;
-                    if (requestsSent.Contains(other)) continue;
-                    if (requests.Contains(other)) continue;
-                    if (other.userID == FbManager.instance.thisUserModel.userID) continue;
-                    var view = GameObject.Instantiate(_view.friendViewPrefab, _view._searchscrollParent);
-                    view.UpdateFriendData(other);
-                    searchList.Add(view.gameObject);
-                }
-            }
         }
 
         private void ClearSearchList()
         {
             if (searchList is not { Count: > 0 })
                 return;
-
             foreach (var ob in searchList)
             {
               GameObject.Destroy(ob);
@@ -353,13 +286,16 @@ namespace CanvasManagers
                     _view._friendsScroll.SetActive(false);
                     _view._requestsScroll.SetActive(false);                    
                     _view._searchScroll.SetActive(false);
+                    _CurrentSelectedUserTab = UserTabs.Contacts;
                     break;
                 case "Friends":
                     _previousSelectedButton = _view._friendsButton.GetComponent<Image>();
                     _view._contactsScroll.SetActive(false);
                     _view._friendsScroll.SetActive(true);
                     _view._requestsScroll.SetActive(false);                    
-                    _view._searchScroll.SetActive(false);
+                    _view._searchScroll.SetActive(false);                    
+                    _CurrentSelectedUserTab = UserTabs.Friends;
+
                     break;
                 case "Requests":
                     _previousSelectedButton = _view._requestsButton.GetComponent<Image>();
@@ -367,6 +303,7 @@ namespace CanvasManagers
                     _view._friendsScroll.SetActive(false);
                     _view._requestsScroll.SetActive(true);                    
                     _view._searchScroll.SetActive(false);
+                    _CurrentSelectedUserTab = UserTabs.Requests;
                     break;
                 default:
                     _view._contactsScroll.SetActive(false);
