@@ -27,8 +27,8 @@ public class UserModel
         {
             DownloadProfilePicture((sprite =>
             {
-                profilePicture = sprite;
-                callback(profilePicture);
+                // profilePicture = sprite;
+                callback(sprite);
             }));
         }
         else

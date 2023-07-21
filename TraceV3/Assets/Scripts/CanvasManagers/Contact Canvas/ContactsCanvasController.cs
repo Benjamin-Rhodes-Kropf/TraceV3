@@ -153,7 +153,9 @@ namespace CanvasManagers
             foreach (var ob in searchList)
             {
               GameObject.Destroy(ob);
-            } 
+            }
+
+            Resources.UnloadUnusedAssets();
         }
         private void ClearFriendList()
         {
