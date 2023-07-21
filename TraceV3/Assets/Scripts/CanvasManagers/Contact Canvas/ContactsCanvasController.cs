@@ -413,7 +413,7 @@ namespace CanvasManagers
             
             if (string.IsNullOrEmpty(name) is false )
             {
-                var list = _allContacts.Where(contact => (contact.FirstName + " "+ contact.LastName).Contains(name, StringComparison.InvariantCultureIgnoreCase)).ToList();
+                var list = _allContacts.Where(contact => (contact.FirstName + " "+ contact.LastName).Contains(name, StringComparison.InvariantCultureIgnoreCase)  && contact.PhoneNumbers.Length>0).ToList();
                 selectedContacts.AddRange(list);
             }
         }
