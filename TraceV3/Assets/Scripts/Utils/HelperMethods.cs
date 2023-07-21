@@ -359,18 +359,31 @@ public static class HelperMethods
 
     //destroy new texture
     Object.Destroy(newTexture);
+
+    Texture2D reducedTexture = new Texture2D(128, 128, croppedTexture.format, false);
+
+    // Copy the content of the original texture to the new one with resizing
+    RenderTexture rt = new RenderTexture(128, 128, 24);
+    Graphics.Blit(croppedTexture, rt);
+    RenderTexture.active = rt;
+    reducedTexture.ReadPixels(new Rect(0, 0, 128, 128), 0, 0);
+    reducedTexture.Apply();
+    RenderTexture.active = null;
+    rt.Release();
+    
+    Object.Destroy(croppedTexture);
     
     Debug.Log("Image Cropped");
 
     if (isHeic)
     {
         Debug.Log("Returning Cropped and Rotated Texture");
-        return HelperMethods.RotateTextureClockwise(croppedTexture);
+        return HelperMethods.RotateTextureClockwise(reducedTexture);
     }
     else
     {
         Debug.Log("Returning Cropped Texture");
-        return croppedTexture;
+        return reducedTexture;
     }
 }
     
