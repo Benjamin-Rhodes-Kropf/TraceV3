@@ -15400,7 +15400,7 @@ MonoBehaviour:
   recivedTraceObjects: []
   sentTraceObjects: []
   recivedTraceObjectsByDistanceToUser: []
-  pinModeMultiplyer: 0
+  pinModeMultiplyer: 100
   _clickRadiusAnimationCurve:
     serializedVersion: 2
     m_Curve:
