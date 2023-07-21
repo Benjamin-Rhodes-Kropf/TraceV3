@@ -3855,7 +3855,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &9133073692678122614
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3907,6 +3907,7 @@ MonoBehaviour:
   _friendsList: []
   _contactPrfab: {fileID: 3211445499941907229, guid: 581b22704710c4107ae3f9e069a9251b, type: 3}
   _contactParent: {fileID: 2847818460527348641}
+  _enhanceScroller: {fileID: 0}
   _requestPrefab: {fileID: 3663077578313667797, guid: 7bf2de2a741644371acbe31535ac1bcf, type: 3}
   _requestParent: {fileID: 5872935894080195439}
   _requestText: {fileID: 5872935894639409126}
@@ -3920,6 +3921,7 @@ MonoBehaviour:
   _requestsButton: {fileID: 9133073692670474478}
   _searchscrollParent: {fileID: 5392363315368272086}
   _searchTabTextPrefab: {fileID: 6172923805759242714, guid: 5a392b5d8786b4256b85f7839d9ea646, type: 3}
+  _testContactList: []
 --- !u!114 &3900720790475639789
 MonoBehaviour:
   m_ObjectHideFlags: 0
