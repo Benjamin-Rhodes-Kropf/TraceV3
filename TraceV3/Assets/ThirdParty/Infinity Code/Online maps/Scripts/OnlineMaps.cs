@@ -30,6 +30,11 @@ public class OnlineMaps : MonoBehaviour, ISerializationCallbackReceiver, IOnline
     public const string version = "3.8.0.1";
 
     /// <summary>
+    /// Is the map awake
+    /// </summary>
+    public bool mapIsActive = false;
+    
+    /// <summary>
     /// The minimum zoom level
     /// </summary>
     public const int MINZOOM = 1;
@@ -667,6 +672,7 @@ public class OnlineMaps : MonoBehaviour, ISerializationCallbackReceiver, IOnline
         }
 
         SetPosition(longitude, latitude);
+        mapIsActive = true;
     }
 
     private void CheckBaseProps()

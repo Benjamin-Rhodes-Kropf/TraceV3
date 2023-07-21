@@ -55,7 +55,7 @@ public class NotificationManager : UnitySingleton<NotificationManager>
         }
     }
 
-    public IEnumerator SendNotificationUsingFirebaseUserId(string firebaseUserId, string title = "", string message = "")
+    public IEnumerator SendNotificationUsingFirebaseUserId(string firebaseUserId, string title = "", string message = "", float lat = 0, float lng = 0)
     {
         Debug.Log("Getting Device token from:" + firebaseUserId);
         var task = FbManager.instance.GetDeviceTokenForUser(firebaseUserId);
@@ -70,19 +70,28 @@ public class NotificationManager : UnitySingleton<NotificationManager>
         }
 
         Debug.Log("SendNotificationUsingFirebaseUserID FCM TOKEN:" + fcmToken);
-        yield return StartCoroutine(SendNotification(fcmToken, title, message));
-
+        yield return StartCoroutine(SendNotification(fcmToken, title, message, lat, lng));
     }
-    public IEnumerator SendNotification(string token, string title, string body)
+    
+    public IEnumerator SendNotification(string token, string title, string body, float lat = 0, float lng = 0)
     {
         var requestData = new RequestData();
         requestData.token = token;
         requestData.title = title;
         requestData.body = body;
+        if (lat != 0 && lng != 0) //only attach payload if is using location
+        {
+            requestData.payload = new RequestData.Payload
+            {
+                lat = lat.ToString(),
+                lng = lng.ToString(),
+            };
+        } 
+        
         
         var request = new UnityWebRequest(url, "POST");
         byte[] bodyData = Encoding.UTF8.GetBytes(JsonUtility.ToJson(requestData));
-        Debug.Log(JsonUtility.ToJson(requestData));
+        Debug.Log("Json Looks Like:" +JsonUtility.ToJson(requestData));
         request.uploadHandler = new UploadHandlerRaw(bodyData);
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
@@ -99,10 +108,18 @@ public class NotificationManager : UnitySingleton<NotificationManager>
     }
 }
 
-[Serializable]
+[System.Serializable]
 public class RequestData
 {
     public string token;
     public string title;
     public string body;
+    public Payload payload;
+
+    [System.Serializable]
+    public class Payload
+    {
+        public string lat;
+        public string lng;
+    }
 }

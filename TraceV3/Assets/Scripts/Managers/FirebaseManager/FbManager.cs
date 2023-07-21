@@ -1210,13 +1210,13 @@ public partial class FbManager : MonoBehaviour
             try
             {
                 //todo: why does this throw an error the first time but not the second?!
-                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user, FbManager.instance.thisUserModel.name, "sent you a trace!"));
+                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user, FbManager.instance.thisUserModel.name, "sent you a trace!", location.x, location.y));
             }
             catch (Exception e)
             {
                 Debug.Log("Weird Bug Catch for Notifications");
                 //todo:SEE! I call it twice?
-                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user, FbManager.instance.thisUserModel.name, "sent you a trace!"));
+                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user, FbManager.instance.thisUserModel.name, "sent you a trace!", location.x, location.y));
             }
         }
     }

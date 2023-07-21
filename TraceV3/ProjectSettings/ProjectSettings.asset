@@ -1546,12 +1546,35 @@ PlayerSettings:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 11400000, guid: a25e1f419adc44b639a3325c33fbce47, type: 2}
-  - {fileID: 8456736684650657537, guid: 4cc24b4e70c6f49dbae02f68da29824a, type: 2}
-  - {fileID: 11400000, guid: a3cc488a903f345a3b8a477b4f84890c, type: 2}
-  - {fileID: 11400000, guid: c06763e870d7a413aa78cdd9609f011f, type: 2}
-  - {fileID: 11400000, guid: 5672b8e5415f74a5994a2b8c8b1a0865, type: 2}
-  - {fileID: 11400000, guid: e24a91e9c1542423fa17d563bb0e94fa, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1

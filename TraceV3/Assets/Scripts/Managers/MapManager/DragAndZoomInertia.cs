@@ -196,10 +196,12 @@ public class DragAndZoomInertia : MonoBehaviour
             yield return new WaitForEndOfFrame();
             if (isInteract)
             {
+                isZooming = false;
                 break;
             }
             if (Math.Abs(map.floatZoom - zoomTarget) < 0.001)
             {
+                isZooming = false;
                 Debug.Log("Break Zoom To Because Of Zoom");
                 break;
             }

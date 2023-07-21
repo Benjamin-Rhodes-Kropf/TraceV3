@@ -49,14 +49,15 @@ public partial class FbManager
         StartCoroutine(SetFCMDeviceToken(token.Token));
         IsApplicationFirstTimeOpened = false;
     }
-    private void OnMessageReceived(object sender, Firebase.Messaging.MessageReceivedEventArgs e) {
+    private void OnMessageReceived(object sender, Firebase.Messaging.MessageReceivedEventArgs e)
+    {
         UnityEngine.Debug.Log("Received a new message from: " + e.Message.From);
         Debug.Log("Received a new message!");
-        Debug.Log("Mesage Raw Data:" + e.Message.RawData);
+        Debug.Log("Message Raw Data:" + e.Message.RawData);
+        Vector2 target = new Vector2();
         // Extract custom data from the message
         foreach (var entry in e.Message.Data)
         {
-            Vector2 target = new Vector2();
             string key = entry.Key;
             string value = entry.Value;
             Debug.LogFormat("Custom Data - Key: {0}, Value: {1}", key, value);
@@ -74,17 +75,23 @@ public partial class FbManager
                 target.x = (float)lngValue;
                 Debug.Log("SetTargetX");
             }
-            Debug.LogFormat("Moving to Point ({0}, {1})", target.x, target.y);
-            
-            if (!_dragAndZoomInertia.isZooming)
-            {
-                Debug.LogFormat("Zooming to Point ({0}, {1})", target.x, target.y);
-                Debug.Log("Zoom to User");
-                
-                StartCoroutine(_dragAndZoomInertia.ZoomToObject(target, 10, 1f)); //todo:Modify Values
-            }
+        }
+        Debug.LogFormat("Moving to Point ({0}, {1})", target.x, target.y);
+        StartCoroutine(MoveMap(target));
+    }
+    
+    private IEnumerator MoveMap(Vector2 target)
+    {
+        yield return new WaitForSeconds(1f);
+        if (!_dragAndZoomInertia.isZooming)
+        {
+            Debug.LogFormat("Zooming to Point ({0}, {1})", target.x, target.y);
+            Debug.Log("Zoom to User");
+            // Note: You might need to modify the values in the ZoomToObject method as needed
+            StartCoroutine(_dragAndZoomInertia.ZoomToObject(target, 4, 5f));
         }
     }
+    
     IEnumerator SetFCMDeviceToken(string token)
     {
         Debug.Log("Setting FCMDeviceToken()");
