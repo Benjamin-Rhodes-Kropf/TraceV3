@@ -43,6 +43,9 @@ public partial class FbManager : MonoBehaviour
 
     [Header("Maps References")]
     [SerializeField] private DrawTraceOnMap _drawTraceOnMap;
+    [SerializeField] private DragAndZoomInertia _dragAndZoomInertia;
+    [SerializeField] private OnlineMaps _map;
+
 
     [Header("User Data")] 
     public Texture userImageTexture;
