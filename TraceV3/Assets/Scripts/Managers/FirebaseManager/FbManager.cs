@@ -43,9 +43,7 @@ public partial class FbManager : MonoBehaviour
 
     [Header("Maps References")]
     [SerializeField] private DrawTraceOnMap _drawTraceOnMap;
-    [SerializeField] private DragAndZoomInertia _dragAndZoomInertia;
-    [SerializeField] private OnlineMaps _map;
-    
+
     [Header("User Data")] 
     public Texture userImageTexture;
     public UserModel thisUserModel;
@@ -196,7 +194,7 @@ public partial class FbManager : MonoBehaviour
                     callbackObject.message = message;
                     break;
             }
-            Debug.Log("FBManager: failed to log in because of error code:" + errorCode + " and:" +  callbackObject.message);
+            Debug.Log("FBManager: failed to log in");
             callbackObject.IsSuccessful = false;
             callbackObject.message = message;
             callback(callbackObject);
@@ -211,6 +209,9 @@ public partial class FbManager : MonoBehaviour
         PlayerPrefs.SetString("Username", _email);
         PlayerPrefs.SetString("Password", _password);
         PlayerPrefs.Save();
+
+        //once user logged in
+        //GetAllUsers(); //Todo: we really should not be doing this
         
         ContinuesListners();
         InitializeFCMService();
@@ -287,15 +288,7 @@ public partial class FbManager : MonoBehaviour
                     string displayName = snapshot.Child("name").Value.ToString();
                     string username = snapshot.Child("username").Value.ToString();
                     string phone = snapshot.Child("phone").Value.ToString();
-                    if (String.IsNullOrEmpty(phone)) //because of old server
-                    {
-                        phone = snapshot.Child("phoneNumber").Value.ToString();
-                    }
                     string photoURL = snapshot.Child("photo").Value.ToString();
-                    if (String.IsNullOrEmpty(photoURL)) //because of old server
-                    {
-                        photoURL = snapshot.Child("profilePhotoUrl").Value.ToString();
-                    }
                     thisUserModel = new UserModel(_firebaseUser.UserId,email,displayName,username,phone,photoURL, password);
                     IsFirebaseUserInitialised = true;
             }
@@ -591,11 +584,22 @@ public partial class FbManager : MonoBehaviour
     }
     #endregion
     #region -User Info
-    public void GetProfilePhotoFromFirebaseStorage(string userId, Action<Texture> callback, Action<string> onFailed, ref Coroutine _coroutine) {
+    public void GetProfilePhotoFromFirebaseStorage(string userId, Action<Texture> onSuccess, Action<string> onFailed, ref Coroutine _coroutine) {
         _coroutine = StartCoroutine(GetProfilePhotoFromFirebaseStorageRoutine(userId, (myReturnValue) => {
             if (myReturnValue != null)
             {
-                callback?.Invoke(myReturnValue);
+                Texture2D reducedTexture = new Texture2D(128, 128);
+
+                // Copy the content of the original texture to the new one with resizing
+                RenderTexture rt = new RenderTexture(128, 128, 24);
+                Graphics.Blit((Texture2D)myReturnValue, rt);
+                RenderTexture.active = rt;
+                reducedTexture.ReadPixels(new Rect(0, 0, 128, 128), 0, 0);
+                reducedTexture.Apply();
+                RenderTexture.active = null;
+                rt.Release();
+                onSuccess?.Invoke(reducedTexture);
+                DestroyImmediate(myReturnValue);
             }
 
             {
@@ -603,86 +607,28 @@ public partial class FbManager : MonoBehaviour
             }
         }));
     }
-    
     public IEnumerator GetProfilePhotoFromFirebaseStorageRoutine(string userId, System.Action<Texture> callback)
-{
-    var url = "";
-    StorageReference pathReference = _firebaseStorage.GetReference("ProfilePhoto/" + userId + ".png");
-    var task = pathReference.GetDownloadUrlAsync();
-
-    while (!task.IsCompleted)
     {
-        yield return new WaitForEndOfFrame();
-    }
+        var url = "";
+        StorageReference pathReference = _firebaseStorage.GetReference("ProfilePhoto/"+userId+".png");
+        var task = pathReference.GetDownloadUrlAsync();
 
-    if (!task.IsFaulted && !task.IsCanceled)
-    {
-        url = task.Result + "";
-    }
-    else
-    {
-        Debug.Log("Could not get image from: ProfilePhoto/" + userId + ".png");
-        Debug.Log("Task failed: " + task.Result);
-        callback?.Invoke(null);
-        yield break;
-    }
+        while (task.IsCompleted is false) yield return new WaitForEndOfFrame();
 
-    // Download the image as a Texture2D
-    DownloadHandler.Instance.DownloadImage(url, (downloadedTexture) =>
+        if (!task.IsFaulted && !task.IsCanceled) {
+            url = task.Result + "";
+        }
+        else
         {
-            // Add this check to ensure that the downloadedTexture is of type Texture2D
-            if (downloadedTexture is Texture2D texture2D)
-            {
-                // Resize the image to your desired dimensions
-                int targetWidth = 256; // Set the desired width here
-                int targetHeight = 256; // Set the desired height here
-                Texture2D resizedTexture = ResizeTexture(texture2D, targetWidth, targetHeight);
+            Debug.Log("could not get image from:" + "ProfilePhoto/"+userId+".png");
+            Debug.Log("task failed:" + task.Result);
+        }
 
-                // Encode the resized texture to JPG format (you can also use EncodeToPNG for PNG format)
-                byte[] compressedImageData = resizedTexture.EncodeToJPG(20); // 80 is the quality level (0-100)
-
-                // Create a new Texture2D from the compressed image data
-                Texture2D compressedTexture = new Texture2D(2, 2);
-                compressedTexture.LoadImage(compressedImageData);
-
-                // Invoke the callback with the compressed texture
-                callback?.Invoke(compressedTexture);
-
-                // Clean up the temporary textures
-                Destroy(resizedTexture);
-                Destroy(compressedTexture);
-                Destroy(downloadedTexture);
-            }
-            else
-            {
-                Debug.Log("if statment on download did not work");
-                // Handle the case when the downloadedTexture is not Texture2D (e.g., error occurred during download)
-                callback?.Invoke(null);
-            }
-        }, () =>
+        DownloadHandler.Instance.DownloadImage(url, callback, () =>
         {
-            // If download fails, invoke the callback with a null Texture
-            callback?.Invoke(null);
+            callback(null);
         });
     }
-
-    // Helper method to resize a Texture2D
-    private Texture2D ResizeTexture(Texture2D sourceTexture, int targetWidth, int targetHeight)
-    {
-        RenderTexture rt = new RenderTexture(targetWidth, targetHeight, 24);
-        RenderTexture.active = rt;
-        Graphics.Blit(sourceTexture, rt);
-        Texture2D resizedTexture = new Texture2D(targetWidth, targetHeight);
-        resizedTexture.ReadPixels(new Rect(0, 0, targetWidth, targetHeight), 0, 0);
-        resizedTexture.Apply();
-
-        // Clean up the temporary RenderTexture
-        rt.Release();
-        Destroy(rt);
-        
-        return resizedTexture;
-    }
-    
     public IEnumerator GetThisUserNickName(System.Action<String> callback, string firebaseUserId = "")
     {
         var DBTask = _databaseReference.Child("users").Child(firebaseUserId == ""? _firebaseUser.UserId: firebaseUserId).Child("Friends").Child("nickName").GetValueAsync();
@@ -763,11 +709,9 @@ public partial class FbManager : MonoBehaviour
                              continue;
                          }
                          userData.photo = snap.Child("photo").Value.ToString();
-
-                         if (!CheckIfUserAlreadyInList(userData.userID))
-                         {
-                             users.Add(userData);
-                         }
+                         
+                         
+                         users.Add(userData); 
                      }
                      catch (Exception e)
                      {
@@ -817,11 +761,7 @@ public partial class FbManager : MonoBehaviour
             Debug.Log("HandleUserAdded phone:" + userData.phone);
             userData.photo = args.Snapshot.Child("photo").Value.ToString();
             Debug.Log("HandleUserAdded photo:" + userData.photo);
-            
-            if (!CheckIfUserAlreadyInList(userData.userID))
-            {
-                users.Add(userData);
-            }
+            users.Add(userData);
         }
         catch (Exception e)
         {
@@ -859,11 +799,7 @@ public partial class FbManager : MonoBehaviour
                     Debug.Log("HandleUserAdded phone:" + userToChange.phone);
                     userToChange.photo = args.Snapshot.Child("photo").Value.ToString();
                     Debug.Log("HandleUserAdded photo:" + userToChange.photo);
-                    
-                    if (!CheckIfUserAlreadyInList(userToChange.userID))
-                    {
-                        users.Add(userToChange);
-                    }
+                    users.Add(userToChange);
                 }
                 catch
                 {
@@ -909,12 +845,12 @@ public partial class FbManager : MonoBehaviour
         }
         return null;
     }
-    public void AddUserToLocalDbByID(string userToAdd)
+    public void AddUserToLocalDbByID(string userToGetID)
     {
         //check if user already in local DB
         foreach (var obj in users)
         {
-            if (obj.userID == userToAdd)
+            if (obj.userID == userToGetID)
             {
                 return;
             }
@@ -922,10 +858,10 @@ public partial class FbManager : MonoBehaviour
         
         //if not retrive the user from the database
         UserModel user = new UserModel();
-        user.userID = userToAdd;
+        user.userID = userToGetID;
 
         // Reference to the specific document you want to read from
-        DocumentReference docRef = _firebaseFirestore.Collection("users").Document(userToAdd);
+        DocumentReference docRef = _firebaseFirestore.Collection("users").Document(userToGetID);
 
         // Read the document
         docRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
@@ -961,19 +897,9 @@ public partial class FbManager : MonoBehaviour
                     object fieldValue = data["phone"];
                     user.phone = fieldValue.ToString();
                 }
-                if (data.ContainsKey("phoneNumber"))
-                {
-                    object fieldValue = data["phoneNumber"];
-                    user.phone = fieldValue.ToString();
-                }
                 if (data.ContainsKey("photo"))
                 {
                     object fieldValue = data["photo"];
-                    user.photo = fieldValue.ToString();
-                }
-                if (data.ContainsKey("userPhotoUrl"))
-                {
-                    object fieldValue = data["userPhotoUrl"];
                     user.photo = fieldValue.ToString();
                 }
                 if (data.ContainsKey("username"))
@@ -981,12 +907,11 @@ public partial class FbManager : MonoBehaviour
                     object fieldValue = data["username"];
                     user.username = fieldValue.ToString();
                 }
-                if(!CheckIfUserAlreadyInList(user.userID))
-                    FbManager.instance.users.Add(user);
+                FbManager.instance.users.Add(user);
             }
             else
             {
-                Debug.LogWarning("Document does not exist in firestore users:" + userToAdd);
+                Debug.LogWarning("Document does not exist in firestore users:" + userToGetID);
             }
         });
     }
@@ -1203,7 +1128,7 @@ public partial class FbManager : MonoBehaviour
         //draw temp circle until it uploads and the map is cleared on update
         SendTraceManager.instance.isSendingTrace = true;
         _drawTraceOnMap.sendingTraceTraceLoadingObject = new TraceObject(location.x, location.y, radius, usersToSendToList.Count, "null",thisUserModel.name,  DateTime.UtcNow.ToString(), 24, mediaType.ToString(), "temp");
-        _drawTraceOnMap.DrawCirlce(location.x, location.y, radius, DrawTraceOnMap.TraceType.SENDING, "loading");
+        _drawTraceOnMap.DrawCirlce(location.x, location.y, radius, DrawTraceOnMap.TraceType.SENDING, "null");
             
         //update global traces
         childUpdates["Traces/" + key + "/senderID"] = _firebaseUser.UserId;
@@ -1234,7 +1159,6 @@ public partial class FbManager : MonoBehaviour
             childUpdates["TracesRecived/" + user +"/"+ key + "/Sender"] = thisUserModel.userID;
             Debug.Log("Count" + count);
         }
-        
         Debug.Log("Userse to Send to Count:" + usersToSendToList.Count);
         childUpdates["Traces/" + key + "/numPeopleSent"] = count;
 
@@ -1261,22 +1185,6 @@ public partial class FbManager : MonoBehaviour
                     SendTraceManager.instance.isSendingTrace = false;
                 }
             });
-        foreach (var user in usersToSendToList) //it is now in the upload trace call
-        {
-            Debug.Log("Sending Notification to:" + user);
-            Debug.Log("From:" + FbManager.instance.thisUserModel.name);
-            try
-            {
-                //todo: why does this throw an error the first time but not the second?!
-                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user, FbManager.instance.thisUserModel.name, "sent you a trace!", location.x, location.y));
-            }
-            catch (Exception e)
-            {
-                Debug.Log("Weird Bug Catch for Notifications");
-                //todo:SEE! I call it twice?
-                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user, FbManager.instance.thisUserModel.name, "sent you a trace!", location.x, location.y));
-            }
-        }
     }
     public void MarkTraceAsOpened(string traceID)
     {
@@ -1577,21 +1485,7 @@ public partial class FbManager : MonoBehaviour
     }
     #endregion
     
-    
     //possibly useful
-    public bool CheckIfUserAlreadyInList(string userID)
-    {
-        foreach (var user in users)
-        {
-            if (user.userID == userID)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    
     private void DeleteFile(String _location) 
     { 
         _firebaseStorageReference = _firebaseStorageReference.Child(_location);
