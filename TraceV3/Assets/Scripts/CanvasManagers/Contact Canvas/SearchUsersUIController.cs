@@ -117,7 +117,7 @@ namespace CanvasManagers
         private void SearchUsersInDB(string inputText)
         {
             UserDataManager.Instance.GetAllUsersBySearch(inputText, out List<UserModel> friends, out List<UserModel> requests,out List<UserModel> requestsSent, out List<UserModel> others);
-            TryGetContactsByName(inputText, out List<IAddressBookContact> contacts);
+            TryGetContactsByName(inputText.ToLower(), out List<IAddressBookContact> contacts);
             switch (_CurrentSelectedUserTab)
             {
                 case UserTabs.Contacts:
