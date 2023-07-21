@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Firebase;
 using Firebase.Messaging;
@@ -50,6 +51,39 @@ public partial class FbManager
     }
     private void OnMessageReceived(object sender, Firebase.Messaging.MessageReceivedEventArgs e) {
         UnityEngine.Debug.Log("Received a new message from: " + e.Message.From);
+        Debug.Log("Received a new message!");
+        Debug.Log("Mesage Raw Data:" + e.Message.RawData);
+        // Extract custom data from the message
+        foreach (var entry in e.Message.Data)
+        {
+            Vector2 target = new Vector2();
+            string key = entry.Key;
+            string value = entry.Value;
+            Debug.LogFormat("Custom Data - Key: {0}, Value: {1}", key, value);
+
+            // Handle custom data here
+            if (key == "lat" && double.TryParse(value, out double latValue))
+            {
+                Debug.Log("Notification Lat: " + value);
+                target.y = (float)latValue;
+                Debug.Log("SetTargetY");
+            }
+            else if (key == "lng" && double.TryParse(value, out double lngValue))
+            {
+                Debug.Log("Notification Lng: " + value);
+                target.x = (float)lngValue;
+                Debug.Log("SetTargetX");
+            }
+            Debug.LogFormat("Moving to Point ({0}, {1})", target.x, target.y);
+            
+            if (!_dragAndZoomInertia.isZooming)
+            {
+                Debug.LogFormat("Zooming to Point ({0}, {1})", target.x, target.y);
+                Debug.Log("Zoom to User");
+                
+                StartCoroutine(_dragAndZoomInertia.ZoomToObject(target, 10, 1f)); //todo:Modify Values
+            }
+        }
     }
     IEnumerator SetFCMDeviceToken(string token)
     {

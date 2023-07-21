@@ -43,7 +43,9 @@ public partial class FbManager : MonoBehaviour
 
     [Header("Maps References")]
     [SerializeField] private DrawTraceOnMap _drawTraceOnMap;
-
+    [SerializeField] private DragAndZoomInertia _dragAndZoomInertia;
+    [SerializeField] private OnlineMaps _map;
+    
     [Header("User Data")] 
     public Texture userImageTexture;
     public UserModel thisUserModel;
@@ -194,7 +196,7 @@ public partial class FbManager : MonoBehaviour
                     callbackObject.message = message;
                     break;
             }
-            Debug.Log("FBManager: failed to log in");
+            Debug.Log("FBManager: failed to log in because of error code:" + errorCode + " and:" +  callbackObject.message);
             callbackObject.IsSuccessful = false;
             callbackObject.message = message;
             callback(callbackObject);
@@ -209,9 +211,6 @@ public partial class FbManager : MonoBehaviour
         PlayerPrefs.SetString("Username", _email);
         PlayerPrefs.SetString("Password", _password);
         PlayerPrefs.Save();
-
-        //once user logged in
-        //GetAllUsers(); //Todo: we really should not be doing this
         
         ContinuesListners();
         InitializeFCMService();

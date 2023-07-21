@@ -6,6 +6,8 @@ using Firebase.Messaging;
 using Helper;
 using Unity.Notifications.iOS;
 using UnityEngine;
+using UnityEngine.iOS;
+
 using UnityEngine.Networking;
 
 public class NotificationManager : UnitySingleton<NotificationManager>
@@ -13,10 +15,12 @@ public class NotificationManager : UnitySingleton<NotificationManager>
     private static string url = "https://trace-notification-s5iopr6l5a-uc.a.run.app/sendNotification";
     private void Awake()
     {
+        Debug.Log("Setting Up Notifications");
         Application.runInBackground = true;
         FirebaseMessaging.TokenReceived += OnTokenReceived;
         FirebaseMessaging.MessageReceived += OnMessageReceived;
     }
+
     private void OnTokenReceived(object sender, TokenReceivedEventArgs token)
     {
         Debug.Log("Received a new Token!");
@@ -26,7 +30,7 @@ public class NotificationManager : UnitySingleton<NotificationManager>
     {
         // Handle incoming message
         Debug.Log("Received a new message!");
-
+        Debug.Log("Mesage Raw Data:" + e.Message.RawData);
         // Extract custom data from the message
         if (e.Message.Data != null)
         {
@@ -37,39 +41,20 @@ public class NotificationManager : UnitySingleton<NotificationManager>
                 Debug.LogFormat("Custom Data - Key: {0}, Value: {1}", key, value);
 
                 // Handle custom data here
-                if (key == "customKey1")
+                if (key == "Lat")
                 {
-                    // Handle customKey1 data
+                    Debug.Log("Notification Lat:" + value);
                 }
-                else if (key == "customKey2")
+                else if (key == "Lng")
                 {
-                    // Handle customKey2 data
+                    Debug.Log("Notification Lng:" + value);
+
                 }
                 // Add more conditions as needed for other custom keys
             }
         }
     }
-    private void OnNotificationReceived(string payload)
-    {
-        Debug.Log("Received notification: " + payload);
-        // Process the notification payload and perform desired actions in Unity
-    }
 
-    // public async void SendNotificationUsingFirebaseUserId(string firebaseUserId, string title = "", string message = "")
-    // {
-    //     Debug.Log("Getting Device token from:" + firebaseUserId);
-    //     var fcmToken = await FbManager.instance.GetDeviceTokenForUser(firebaseUserId);
-    //     Debug.Log("Device token:" + fcmToken);
-    //
-    //     if (String.IsNullOrEmpty(fcmToken))
-    //     {
-    //         Debug.Log("user FCM token null or does not exist");
-    //         return;
-    //     }
-    //     
-    //     Debug.Log("SendNotificationUsingFirebaseUserID FCM TOKEN:" + fcmToken);
-    //     StartCoroutine(SendNotification(fcmToken, title, message));
-    // }
     public IEnumerator SendNotificationUsingFirebaseUserId(string firebaseUserId, string title = "", string message = "")
     {
         Debug.Log("Getting Device token from:" + firebaseUserId);

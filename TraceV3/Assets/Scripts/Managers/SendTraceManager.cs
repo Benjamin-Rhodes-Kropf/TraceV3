@@ -10,6 +10,7 @@ public class SendTraceManager : MonoBehaviour
     
     [Header("Trace Values")]
     public bool isSendingTrace;
+    public bool isOpeningTrace;
     public Vector2 location;
     public string fileLocation;
     public MediaType mediaType;

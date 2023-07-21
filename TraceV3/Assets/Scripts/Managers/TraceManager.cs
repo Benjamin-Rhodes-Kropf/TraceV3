@@ -126,16 +126,22 @@ public class TraceManager : MonoBehaviour
         {
             accessibleTraces.Sort((i1, i2) => i1.Item2.CompareTo(i2.Item2));
             var traceToOpen = accessibleTraces[accessibleTraces.Count - 1];
+            
+            //keep track of which trace should be hollow for when we redraw the map
             currentlyClickingTraceID = traceToOpen.Item1.id;
             
-            //get marker currently being opened and change its texture to hollow
-            foreach (var marker in markerManager.items)
-            {
-                if (marker.traceID == traceToOpen.Item1.id)
-                {
-                    marker.displayedTexture = marker.primaryHollowInTexture;
-                }
-            }
+            //new way because they are linked
+            traceToOpen.Item1.marker.displayedTexture =  traceToOpen.Item1.marker.primaryHollowInTexture; //todo: this is the new more efficent way
+            
+            //get marker currently being opened and change its texture to hollow //todo: make sure that ^ that way works so we can delete this
+            // foreach (var marker in markerManager.items)
+            // {
+            //     if (marker.traceID == traceToOpen.Item1.id)
+            //     {
+            //         marker.displayedTexture = marker.primaryHollowInTexture;
+            //     }
+            // }
+            
             HapticManager.instance.SelectionHaptic();
             StartCoroutine(_dragAndZoomInertia.ZoomToObject(new Vector2((float)traceToOpen.Item1.lng, (float)traceToOpen.Item1.lat), -traceToOpen.Item1.radius, 0.1f));
             homeScreenManager.OpenTrace(traceToOpen.Item1.id,  traceToOpen.Item1.senderName,traceToOpen.Item1.senderID,traceToOpen.Item1.sendTime, traceToOpen.Item1.mediaType, traceToOpen.Item1.numPeopleSent);
@@ -501,7 +507,6 @@ public class TraceObject
     public int numPeopleSent;
     public double distanceToUser;
     public string mediaType;
-    public string text;
     public string senderID;
     public string senderName;
     public bool hasBeenAdded;

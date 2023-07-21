@@ -161,11 +161,7 @@ public class DragAndZoomInertia : MonoBehaviour
         rsY = 0;
         rsZ = 0;
     }
-
-    public void ZoomToObject()
-    {
-        
-    }
+    
     private void Start()
     {
         map = OnlineMaps.instance; ;
@@ -181,9 +177,11 @@ public class DragAndZoomInertia : MonoBehaviour
         speedZ = new List<float>(maxSamples);
     }
 
+
+    public bool isZooming = false;
     public IEnumerator ZoomToObject(Vector2 objectPosition, float targetZoomOffset, float time)
     {
-        //stops other ZoomToObjectCorutiens
+        isZooming = true;
         isInteract = true;
         yield return new WaitForEndOfFrame();
         isInteract = false;
@@ -206,5 +204,6 @@ public class DragAndZoomInertia : MonoBehaviour
                 break;
             }
         }
+        isZooming = false;
     }
 }
