@@ -63,7 +63,7 @@ public class NotificationManager : UnitySingleton<NotificationManager>
         var fcmToken = task.Result;
         Debug.Log("Device token:" + fcmToken);
 
-        if (string.IsNullOrEmpty(fcmToken))
+        if (string.IsNullOrEmpty(fcmToken) || fcmToken == "null")
         {
             Debug.Log("User FCM token null or does not exist");
             yield break;

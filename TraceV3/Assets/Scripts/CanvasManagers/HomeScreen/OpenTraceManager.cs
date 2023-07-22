@@ -162,7 +162,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
             case iPhoneModel.iPhone13_13Pro_14_14Pro: //working
                 openUp_targetYVal = 1200;
                 g_offset = -906;
-                imageHeightTarget = 3823;
+                imageHeightTarget = 3800;
                 videoScaleConstant = 0.84f;
                 return;
             case iPhoneModel.iPhone13Mini:
@@ -328,6 +328,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
             //Update Map and Database
             FbManager.instance.MarkTraceAsOpened(traceID);
             TraceManager.instance.ClearTracesOnMap();
+            NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!");
             NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!");
         }
         
