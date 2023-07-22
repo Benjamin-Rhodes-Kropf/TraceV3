@@ -214,11 +214,14 @@ public class TraceManager : MonoBehaviour
         for (var i = 0; i < recivedTraceObjects.Count && i < 50; i++)
         {
             var trace = recivedTraceObjects[i];
-            ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng,trace.radius, " ", trace.senderName);
+            if (!trace.hasBeenOpened)
+            {
+                ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng,trace.radius, " ", trace.senderName);
+            }
         }
         
         //Schedule prompt to tell user to send a trace
-        ScheduleNotificationOnExitInARadius(onlineMapsLocationService.position.x, onlineMapsLocationService.position.y, 1);
+        ScheduleNotificationOnExitInARadius(onlineMapsLocationService.position.x, onlineMapsLocationService.position.y, 100);
     }
     private static void ScheduleNotificationOnEnterInARadius(float latitude, float longitude, float radius, string message, string SenderName)
     {
@@ -269,18 +272,7 @@ public class TraceManager : MonoBehaviour
         // Schedule notification for entry base
         iOSNotificationCenter.ScheduleNotification(entryBasedNotification);
     }
-
-    private void UpdateNotificationForNextTrace()
-    {
-        if (recivedTraceObjects.Count < 1)
-        {
-            Debug.Log("UpdateNotificationForNextTrace: No Traces Available!");
-            return;
-        }
-
-        var trace = recivedTraceObjects[0];
-        ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng, trace.radius, trace.senderName + " Left You a Trace Here", trace.senderName);
-    }
+    
     public void StopLocationServices()
     {
         //If required then we can stop the location service by this

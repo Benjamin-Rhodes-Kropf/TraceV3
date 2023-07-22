@@ -330,7 +330,6 @@ namespace CanvasManagers
             _view._enhanceScroller.LoadLargeData(null,_view._testContactList);
 #endif          
             SelectionPanelClick("Contacts");
-
         }
         private void OnRequestContactsAccessFinish(AddressBookRequestContactsAccessResult result, Error error)
         {
@@ -379,9 +378,9 @@ namespace CanvasManagers
 #elif UNITY_IOS
             _allContacts = new List<IAddressBookContact>();
             AddressBook.ReadContactsWithUserPermission(OnReadContactsFinish);
-#endif            
-            
+#endif
         }
+        
         private String StripUnicodeCharactersFromString(string inputValue)
         {
             return _compiledUnicodeRegex.Replace(inputValue, String.Empty);
