@@ -10,6 +10,9 @@ using UnityEngine.Video;
 
 public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
 {
+    [Header("Trace Stuff")] 
+    [SerializeField] private HomeScreenManager _homeScreenManager;
+    
     [Header("Trace Stuff")]
     [SerializeField] private GameObject imageObject;
     [SerializeField] private GameObject videoObject;
@@ -192,6 +195,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         changeInYVal = 0;
         gTransformVelocity = 0;
         m_targetYVal = openUp_targetYVal;
+        _homeScreenManager.RefreshMap();
     }
 
     
@@ -319,7 +323,6 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         {
             //State
             canCloseTrace = true;
-            
             //Play Video
             if (!isPhoto)
             {

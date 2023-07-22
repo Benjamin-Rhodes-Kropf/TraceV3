@@ -56,8 +56,6 @@ public class TraceManager : MonoBehaviour
         //handle map updates
         onlineMapsControlBase.OnMapClick += HandleMapClick;
         onlineMapsLocationService.OnLocationChanged += UpdateMap;
-        
-        // UpdateMap(new Vector2(0,0)); //todo: get rid of vector 2
     }
     
     private void HandleMapClick()
@@ -426,6 +424,7 @@ public class TraceManager : MonoBehaviour
         UpdateTracesOnMap();
     }
 
+    
     public void UpdateMap(Vector2 vector2)
     {
         Debug.Log("Map Update");

@@ -13,6 +13,9 @@ public class HomeScreenManager : MonoBehaviour
     public static bool isInSendTraceView;
 
     [SerializeField] private OnlineMaps _maps;
+    [SerializeField] private DrawTraceOnMap _drawTraceOnMap;
+    [SerializeField] private TraceManager _traceManager;
+
     [SerializeField] private GameObject _tutorialCanvas;
     [SerializeField] private OpenTraceManager openTraceManager;
     [SerializeField] private ViewTraceManager viewTraceManager;
@@ -27,6 +30,12 @@ public class HomeScreenManager : MonoBehaviour
         openTraceManager.CloseView();
     }
 
+    public void RefreshMap()
+    {
+        Debug.Log("RefreshMap");
+        _traceManager.UpdateMap(new Vector2(0,0));
+    }
+    
     public void ViewTrace(string senderName, string sendDate, int numOfPeopleSent)
     {
         CloseOpenTrace();
