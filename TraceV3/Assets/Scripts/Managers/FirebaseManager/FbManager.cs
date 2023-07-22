@@ -141,13 +141,18 @@ public partial class FbManager : MonoBehaviour
         if (savedUsername != "null" && savedPassword != "null")
         {
             StartCoroutine(FbManager.instance.Login(savedUsername, savedPassword, (myReturnValue) => {
-                if (myReturnValue.IsSuccessful)
+                if (myReturnValue.callbackEnum == CallbackEnum.SUCCESS)
                 {
                     Debug.Log("FbManager: Logged in!");
                     ScreenManager.instance.ChangeScreenFade("HomeScreen");
                 }
                 else
                 {
+                    if (myReturnValue.callbackEnum == CallbackEnum.CONNECTIONERROR)
+                    {
+                        ScreenManager.instance.ChangeScreenForwards("ConnectionError");
+                        return;
+                    }
                     Debug.LogError("FbManager: failed to auto login");
                     Logout(LoginStatus.LoggedOut);
                 }
@@ -173,32 +178,43 @@ public partial class FbManager : MonoBehaviour
             FirebaseException firebaseEx = LoginTask.Exception.GetBaseException() as FirebaseException;
             AuthError errorCode = (AuthError)firebaseEx.ErrorCode;
             string message = "Login Failed!";
-            callbackObject.IsSuccessful = false;
+            callbackObject.callbackEnum = CallbackEnum.FAILED;
             switch (errorCode)
             {
                 case AuthError.MissingEmail:
                     message = "Missing Email";
                     callbackObject.message = message;
+                    callbackObject.callbackEnum = CallbackEnum.FAILED;                    
                     break;
                 case AuthError.MissingPassword:
                     message = "Missing Password";
                     callbackObject.message = message;
+                    callbackObject.callbackEnum = CallbackEnum.FAILED;
                     break;
                 case AuthError.WrongPassword:
                     message = "Wrong Password";
                     callbackObject.message = message;
+                    callbackObject.callbackEnum = CallbackEnum.FAILED;
                     break;
                 case AuthError.InvalidEmail:
                     message = "Invalid Email";
                     callbackObject.message = message;
+                    callbackObject.callbackEnum = CallbackEnum.FAILED;
                     break;
                 case AuthError.UserNotFound:
                     message = "Account does not exist";
                     callbackObject.message = message;
+                    callbackObject.callbackEnum = CallbackEnum.FAILED;
+                    break;
+                case AuthError.NetworkRequestFailed:
+                    message = "ConnectionError";
+                    callbackObject.message = message;
+                    Debug.Log("Trace Network Request Failed");
+                    callbackObject.callbackEnum = CallbackEnum.CONNECTIONERROR;
                     break;
             }
-            Debug.Log("FBManager: failed to log in");
-            callbackObject.IsSuccessful = false;
+            Debug.Log("FBManager: failed to log in because " + errorCode.ToString());
+            callbackObject.callbackEnum = CallbackEnum.SUCCESS;
             callbackObject.message = message;
             callback(callbackObject);
             yield break;
@@ -207,22 +223,18 @@ public partial class FbManager : MonoBehaviour
         _firebaseUser = LoginTask.Result;
         Debug.LogFormat("User signed in successfully: {0} ({1})", _firebaseUser.DisplayName, _firebaseUser.Email);
         Debug.Log("logged In: user profile photo is: " + _firebaseUser.PhotoUrl);
-        callbackObject.IsSuccessful = true;
+        callbackObject.callbackEnum = CallbackEnum.SUCCESS;
         //stay logged in
         PlayerPrefs.SetString("Username", _email);
         PlayerPrefs.SetString("Password", _password);
         PlayerPrefs.Save();
 
-        //once user logged in
-        //GetAllUsers(); //Todo: we really should not be doing this
-        
         ContinuesListners();
         InitializeFCMService();
         GetCurrentUserData(_password);
         
-
         //set login status
-        if (callbackObject.IsSuccessful == true)
+        if (callbackObject.callbackEnum == CallbackEnum.SUCCESS)
         {
             StartCoroutine(SetUserLoginStatus(true, isSusscess =>
             {

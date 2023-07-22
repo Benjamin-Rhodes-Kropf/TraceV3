@@ -3139,6 +3139,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6454114606808003543, guid: d5a6d7a0097cb41138963158aca9c972, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6454114606808003545, guid: d5a6d7a0097cb41138963158aca9c972, type: 3}
       propertyPath: m_Name
       value: Connection Error Screen
@@ -3195,7 +3199,8 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -530
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2475809947570160353, guid: d5a6d7a0097cb41138963158aca9c972, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: d5a6d7a0097cb41138963158aca9c972, type: 3}
 --- !u!1 &2121914847
 GameObject:
@@ -8710,7 +8715,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1361899930089332814, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1361899930544575295, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
