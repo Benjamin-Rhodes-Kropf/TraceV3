@@ -374,14 +374,12 @@ public class OnlineMapsMarker : OnlineMapsMarkerBase
         {
             displayedTexture = primaryZoomedInTexture;
             isShowingPrimaryTexture = true;
-            Debug.Log("isShowingPrimaryTexture:" + isShowingPrimaryTexture);
             return;
         }
         if (!switchToPrimary && isShowingPrimaryTexture)
         {
             displayedTexture = secondaryZoomedOutTexture;
             isShowingPrimaryTexture = false;
-            Debug.Log("isShowingPrimaryTexture:" + isShowingPrimaryTexture);
             return;
         }
     }

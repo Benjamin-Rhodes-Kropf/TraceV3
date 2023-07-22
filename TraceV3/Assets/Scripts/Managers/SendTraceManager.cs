@@ -44,8 +44,27 @@ public class SendTraceManager : MonoBehaviour
     
     public void SendTrace()
     {
+        Debug.Log("SEND TRACE!");
         location = _onlineMapsLocationService.GetUserLocation();
         FbManager.instance.UploadTrace(fileLocation, radius, location, mediaType,usersToSendTo);
+        foreach (var user in usersToSendTo)
+        {
+            Debug.Log("sending to:" + user);
+            try //no clue why this makes it work
+            {
+                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user, FbManager.instance.thisUserModel.name, "Sent You A Trace!", location.y,location.x));
+            }
+            catch (Exception e)
+            {
+                Debug.Log("Notification failed... trying again");
+                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user, FbManager.instance.thisUserModel.name, "Sent You A Trace!", location.y,location.x));
+            }
+        }
+    }
+
+    public void TraceSentSuccsefuly()
+    {
+        
     }
 }
 

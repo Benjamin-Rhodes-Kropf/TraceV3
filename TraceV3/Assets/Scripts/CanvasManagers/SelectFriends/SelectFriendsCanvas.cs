@@ -157,3 +157,4 @@ public class SelectFriendsCanvas : MonoBehaviour
         ScreenManager.instance.uiController.previewVideoPlayer.gameObject.SetActive(false);//disabling the camera panel
     }
 }
+

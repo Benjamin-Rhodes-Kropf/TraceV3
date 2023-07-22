@@ -214,7 +214,7 @@ public partial class FbManager : MonoBehaviour
                     break;
             }
             Debug.Log("FBManager: failed to log in because " + errorCode.ToString());
-            callbackObject.callbackEnum = CallbackEnum.SUCCESS;
+            callbackObject.callbackEnum = CallbackEnum.FAILED;
             callbackObject.message = message;
             callback(callbackObject);
             yield break;
@@ -1176,8 +1176,6 @@ public partial class FbManager : MonoBehaviour
         }
         Debug.Log("Userse to Send to Count:" + usersToSendToList.Count);
         childUpdates["Traces/" + key + "/numPeopleSent"] = count;
-
-        
         childUpdates["TracesSent/" + _firebaseUser.UserId.ToString() +"/" + key] = DateTime.UtcNow.ToString();
         //UPLOAD IMAGE
         StorageReference traceReference = _firebaseStorageReference.Child("/Traces/" + key);
@@ -1198,6 +1196,16 @@ public partial class FbManager : MonoBehaviour
                     //upload metadata to real time DB
                     _databaseReference.UpdateChildrenAsync(childUpdates);
                     SendTraceManager.instance.isSendingTrace = false;
+                    
+                    try //test
+                    {
+                        SendTraceManager.instance.TraceSentSuccsefuly();
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        throw;
+                    }
                 }
             });
     }

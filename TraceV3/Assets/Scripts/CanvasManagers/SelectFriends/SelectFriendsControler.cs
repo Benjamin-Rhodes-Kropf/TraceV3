@@ -8,6 +8,7 @@ public class SelectFriendsControler : MonoBehaviour
 {
     private SelectFriendsCanvas _view;
     private List<SendToFriendView> _allFriendsView;
+    public static Dictionary<string, bool> whoToSendTo;
     public Transform bestFriendText;
     public Transform allFriendsText;
     public void Init(SelectFriendsCanvas view)
@@ -15,6 +16,7 @@ public class SelectFriendsControler : MonoBehaviour
         this._view = view;
         _allFriendsView = new List<SendToFriendView>();
         this._view._searchBar.onValueChanged.AddListener(OnSearchBarValueChange);
+        whoToSendTo = new Dictionary<string, bool>();
         LoadAllFriends();
     }
     public void UnInitialize()
@@ -33,6 +35,14 @@ public class SelectFriendsControler : MonoBehaviour
         {
             bool isBestFriend = FriendsModelManager.Instance.IsBestFriend(user.userID);
             if (isBestFriend) numOfBestFriends++;
+            try
+            {
+                whoToSendTo.Add(user.userID, false);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("user already added in dictionary");
+            }
             UpdateFriendViewInfo(user, isBestFriend);
         }
         if (users.Count < 1)
@@ -52,10 +62,12 @@ public class SelectFriendsControler : MonoBehaviour
         if (isBestFriend)
         {
             view.GetComponent<Transform>().SetSiblingIndex(bestFriendsIndex+1);
+            view.GetComponent<SendToFriendView>().SetToggleState(whoToSendTo[user.userID]);
         }
         else
         {
             view.GetComponent<Transform>().SetSiblingIndex(allFriendsIndex+1);
+            view.GetComponent<SendToFriendView>().SetToggleState(whoToSendTo[user.userID]);
         }
         view.UpdateFrindData(isBestFriend, user,false);
         _allFriendsView.Add(view);
@@ -81,12 +93,11 @@ public class SelectFriendsControler : MonoBehaviour
     {
         SendTraceManager.instance.usersToSendTo.Clear();
         Debug.Log("UpdateFriendsSendTo()");
-        foreach (var view in _allFriendsView)
+        foreach (var user in whoToSendTo)
         {
-            if (view.sendToThisFriend)
+            if (user.Value) //is selected to send to
             {
-                Debug.Log("UpdateFriendsSendTo:" + view.friendUID);
-                SendTraceManager.instance.usersToSendTo.Add(view.friendUID);
+                SendTraceManager.instance.usersToSendTo.Add(user.Key);
             }
         }
     }

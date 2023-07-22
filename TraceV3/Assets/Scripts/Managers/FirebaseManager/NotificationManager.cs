@@ -55,7 +55,7 @@ public class NotificationManager : UnitySingleton<NotificationManager>
         }
     }
 
-    public IEnumerator SendNotificationUsingFirebaseUserId(string firebaseUserId, string title = "", string message = "", float lat = 0, float lng = 0)
+    public IEnumerator SendNotificationUsingFirebaseUserId(string firebaseUserId, string title = "", string message = "", float lng = 0, float lat = 0)
     {
         Debug.Log("Getting Device token from:" + firebaseUserId);
         var task = FbManager.instance.GetDeviceTokenForUser(firebaseUserId);
@@ -84,7 +84,7 @@ public class NotificationManager : UnitySingleton<NotificationManager>
             requestData.payload = new RequestData.Payload
             {
                 lat = lat.ToString(),
-                lng = lng.ToString(),
+                lng = lng.ToString()
             };
         } 
         
