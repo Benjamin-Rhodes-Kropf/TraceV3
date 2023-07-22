@@ -14,11 +14,29 @@ public class ScaleMapElements : MonoBehaviour
     [SerializeField] private AnimationCurve scaler;
     [SerializeField] private AnimationCurve scalerFineTune;
 
+    
     public void Start()
     {
-        map.OnChangeZoom += UpdateTraceScale;
+        map.OnChangeZoom += UpdateAllTraceScale;
         StartCoroutine(WaitUntilUserMapPinHasBeenCreated());
     }
+
+    public void ScaleTrace(OnlineMapsMarker _onlineMapsMarker)
+    {
+        var traceScale = new double();
+        var zoomfloat = map.floatZoom;
+        traceScale = scaler.Evaluate(zoomfloat)+scalerFineTune.Evaluate(zoomfloat);
+        if ( traceScale * radiusSize * _onlineMapsMarker.radius < scaleLimitForSwitchImage)
+        {
+            _onlineMapsMarker.SwitchDisplayedImage(false);
+            _onlineMapsMarker.scale = scaleOfPin;
+        }
+        else
+        {
+            _onlineMapsMarker.SwitchDisplayedImage(true);
+            _onlineMapsMarker.scale = (float)(traceScale * radiusSize * _onlineMapsMarker.radius);
+        }
+    } 
 
     IEnumerator WaitUntilUserMapPinHasBeenCreated() //todo: not great implimentation
     {
@@ -26,10 +44,10 @@ public class ScaleMapElements : MonoBehaviour
         {
             yield return new WaitForEndOfFrame();
         }
-        UpdateTraceScale();
+        UpdateAllTraceScale();
     }
     
-    private void UpdateTraceScale()
+    public void UpdateAllTraceScale()
     {
         try
         {
@@ -48,11 +66,6 @@ public class ScaleMapElements : MonoBehaviour
         for (int i = 1; i < markerManager.items.Count; i++)
         {
             var item = markerManager.items[i];
-           // item.SwitchDisplayedImage(true);
-           // item.displayingTexture = OnlineMapsMarker.DisplayingTexture.Circle;
-           // item.scale = (float)(traceScale * radiusSize * markerManager.items[i].radius);
-           //Debug.Log("radius:" + item.radius);
-           
             if ( traceScale * radiusSize * item.radius < scaleLimitForSwitchImage)
             {
                 item.SwitchDisplayedImage(false);

@@ -7,24 +7,28 @@ using Object = UnityEngine.Object;
 [Serializable]
 public class UserModel
 {
-    public string userId; 
-    public string Email;
-    public int FriendCount;
-    public string DisplayName;
-    public string Username;
-    public string PhoneNumber;
-    public string PhotoURL;
-    public string Password;
+    public string objectID;
+    public string userID;
+    public string email;
+    public string name;
+    public string username;
+    public string phone;
+    public string photo;
+    public string password;
 
+    public string ID => string.IsNullOrEmpty(userID) ? objectID : userID; //todo: we dont use this anymore but the workaround is bad see below
+    
     private Sprite profilePicture = null;
+    public Coroutine _downloadPCoroutine;
+    
     public void ProfilePicture(Action<Sprite> callback)
     {
         if (profilePicture == null)
         {
             DownloadProfilePicture((sprite =>
             {
-                profilePicture = sprite;
-                callback(profilePicture);
+                // profilePicture = sprite;
+                callback(sprite);
             }));
         }
         else
@@ -35,14 +39,29 @@ public class UserModel
 
     public void DownloadProfilePicture(Action<Sprite> callback)
     {
-        FbManager.instance.GetProfilePhotoFromFirebaseStorage(userId, (tex) =>
+        // //Todo: This is super dumb because we should not have seperate object id and user id but this is how algolia wants to query
+        if (String.IsNullOrEmpty(userID))
         {
-           profilePicture = Sprite.Create(ChangeTextureType(tex), new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 1.0f);;
-           callback(profilePicture);
-        }, (message) =>
+            FbManager.instance.GetProfilePhotoFromFirebaseStorage(objectID, (tex) =>
+            {
+                profilePicture = Sprite.Create(ChangeTextureType(tex), new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 1.0f);;
+                callback(profilePicture);
+            }, (message) =>
+            {
+                Debug.Log(message);
+            },ref _downloadPCoroutine);
+        }
+        else
         {
-            Debug.Log(message);
-        });
+            FbManager.instance.GetProfilePhotoFromFirebaseStorage(userID, (tex) =>
+            {
+                profilePicture = Sprite.Create(ChangeTextureType(tex), new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 1.0f);;
+                callback(profilePicture);
+            }, (message) =>
+            {
+                Debug.Log(message);
+            }, ref _downloadPCoroutine);
+        }
     }
     
     private Texture2D ChangeTextureType(Texture texture)
@@ -54,22 +73,20 @@ public class UserModel
             false, false,
             texture.GetNativeTexturePtr());
     }
-    
 
     public UserModel()
     {
         
     }
     
-    public UserModel(string _userId, string email, int friendCount, string displayName, string username, string phoneNumber, string photoURL, string password = "")
+    public UserModel(string userId, string email, string name, string username, string phone, string photo, string password = "")
     {
-        this.userId = _userId;
-        this.Email = email;
-        this.FriendCount = friendCount;
-        this.DisplayName = displayName;
-        this.Username = username;
-        this.PhoneNumber = phoneNumber;
-        this.PhotoURL = photoURL;
-        this.Password = password;
+        this.userID = userId;
+        this.email = email;
+        this.name = name;
+        this.username = username;
+        this.phone = phone;
+        this.photo = photo;
+        this.password = password;
     }
 }

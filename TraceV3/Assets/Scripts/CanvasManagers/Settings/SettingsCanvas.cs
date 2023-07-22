@@ -65,14 +65,14 @@ public class SettingsCanvas : MonoBehaviour
    {
       string email = "bsiegel@leaveatraceapp.com";
       string subject = MyEscapeURL("[Contact Us]");
-      string body = MyEscapeURL("Hello! My name is " + FbManager.instance.thisUserModel.Username + " and I would like to contact you because");
+      string body = MyEscapeURL("Hello! My name is " + FbManager.instance.thisUserModel.name + " and I would like to contact you because");
       Application.OpenURL("mailto:" + email + "?subject=" + subject + "&body=" + body);
    }
    public void GetHelp()
    {
       string email = "bsiegel@leaveatraceapp.com";
       string subject = MyEscapeURL("[Get Help]");
-      string body = MyEscapeURL("Hello! My name is " + FbManager.instance.thisUserModel.Username + " and I need some help with");
+      string body = MyEscapeURL("Hello! My name is " + FbManager.instance.thisUserModel.name + " and I need some help with");
       Application.OpenURL("mailto:" + email + "?subject=" + subject + "&body=" + body);
    }
    public void Logout()

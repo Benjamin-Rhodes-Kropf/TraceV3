@@ -226,8 +226,9 @@ public class OnlineMapsMarkerManager : OnlineMapsMarkerManagerBase<OnlineMapsMar
         if (map.control.GetCoords(out lng, out lat)) Create(lng, lat, 0);
     }
     
-    public void AddTraceToMap(double lat, double lng, float radius, Texture2D primaryTexture, Texture2D secondaryTexture, Texture2D primaryHollow, string traceID) {
-        Create(lng, lat, radius, primaryTexture, primaryHollow,  secondaryTexture,"", traceID);
+    public OnlineMapsMarker AddTraceToMap(double lat, double lng, float radius, Texture2D primaryTexture, Texture2D secondaryTexture, Texture2D primaryHollow, string traceID) {
+        OnlineMapsMarker onlineMapsMarker = Create(lng, lat, radius, primaryTexture, primaryHollow,  secondaryTexture,"", traceID);
+        return onlineMapsMarker;
     }
     
     public Vector2 GetMouseLatAndLong()

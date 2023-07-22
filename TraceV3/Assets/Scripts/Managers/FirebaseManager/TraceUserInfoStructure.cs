@@ -8,24 +8,20 @@ public class TraceUserInfoStructure {
     public string name;
     public string email;
     public string phone;
-    public string userPhotoUrl;
+    public string photo;
     public bool isOnline;
-    public int friendCount;
-    public int score;
     public bool isLogedIn;
     
     public TraceUserInfoStructure()
     {
         isOnline = false;
         isLogedIn = true;
-        friendCount = 0;
-        score = 0;
     }
 
-    public TraceUserInfoStructure(string username, string name, string userPhotoLink, string email, string phone) {
+    public TraceUserInfoStructure(string username, string name, string photo, string email, string phone) {
         this.username = username;
         this.name = name;
-        this.userPhotoUrl = userPhotoLink;
+        this.photo = photo;
         this.email = email;
         this.phone = phone;
         isLogedIn = true;

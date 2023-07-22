@@ -6,6 +6,8 @@ using Firebase.Messaging;
 using Helper;
 using Unity.Notifications.iOS;
 using UnityEngine;
+using UnityEngine.iOS;
+
 using UnityEngine.Networking;
 
 public class NotificationManager : UnitySingleton<NotificationManager>
@@ -13,10 +15,12 @@ public class NotificationManager : UnitySingleton<NotificationManager>
     private static string url = "https://trace-notification-s5iopr6l5a-uc.a.run.app/sendNotification";
     private void Awake()
     {
+        Debug.Log("Setting Up Notifications");
         Application.runInBackground = true;
         FirebaseMessaging.TokenReceived += OnTokenReceived;
         FirebaseMessaging.MessageReceived += OnMessageReceived;
     }
+
     private void OnTokenReceived(object sender, TokenReceivedEventArgs token)
     {
         Debug.Log("Received a new Token!");
@@ -26,7 +30,7 @@ public class NotificationManager : UnitySingleton<NotificationManager>
     {
         // Handle incoming message
         Debug.Log("Received a new message!");
-
+        Debug.Log("Mesage Raw Data:" + e.Message.RawData);
         // Extract custom data from the message
         if (e.Message.Data != null)
         {
@@ -37,46 +41,57 @@ public class NotificationManager : UnitySingleton<NotificationManager>
                 Debug.LogFormat("Custom Data - Key: {0}, Value: {1}", key, value);
 
                 // Handle custom data here
-                if (key == "customKey1")
+                if (key == "Lat")
                 {
-                    // Handle customKey1 data
+                    Debug.Log("Notification Lat:" + value);
                 }
-                else if (key == "customKey2")
+                else if (key == "Lng")
                 {
-                    // Handle customKey2 data
+                    Debug.Log("Notification Lng:" + value);
+
                 }
                 // Add more conditions as needed for other custom keys
             }
         }
     }
-    private void OnNotificationReceived(string payload)
-    {
-        Debug.Log("Received notification: " + payload);
-        // Process the notification payload and perform desired actions in Unity
-    }
 
-    public async void SendNotificationUsingFirebaseUserId(string firebaseUserId, string title = "", string message = "")
+    public IEnumerator SendNotificationUsingFirebaseUserId(string firebaseUserId, string title = "", string message = "", float lat = 0, float lng = 0)
     {
-        Debug.Log("SendNotificationUsingFirebaseUserId firebaseUserId:" + firebaseUserId);
-        var fcmToken = await FbManager.instance.GetDeviceTokenForUser(firebaseUserId);
-        if (fcmToken == null || fcmToken == "null")
+        Debug.Log("Getting Device token from:" + firebaseUserId);
+        var task = FbManager.instance.GetDeviceTokenForUser(firebaseUserId);
+        yield return new WaitUntil(() => task.IsCompleted);
+        var fcmToken = task.Result;
+        Debug.Log("Device token:" + fcmToken);
+
+        if (string.IsNullOrEmpty(fcmToken) || fcmToken == "null")
         {
-            Debug.Log("user FCM token null or does not exist");
-            return;
+            Debug.Log("User FCM token null or does not exist");
+            yield break;
         }
-        Debug.Log("SendNotificationUsingFirebaseUserId FCM TOKEN:" + fcmToken);
-        StartCoroutine(SendNotification(fcmToken, title, message));
+
+        Debug.Log("SendNotificationUsingFirebaseUserID FCM TOKEN:" + fcmToken);
+        yield return StartCoroutine(SendNotification(fcmToken, title, message, lat, lng));
     }
-    public IEnumerator SendNotification(string token, string title, string body)
+    
+    public IEnumerator SendNotification(string token, string title, string body, float lat = 0, float lng = 0)
     {
         var requestData = new RequestData();
         requestData.token = token;
         requestData.title = title;
         requestData.body = body;
+        if (lat != 0 && lng != 0) //only attach payload if is using location
+        {
+            requestData.payload = new RequestData.Payload
+            {
+                lat = lat.ToString(),
+                lng = lng.ToString(),
+            };
+        } 
+        
         
         var request = new UnityWebRequest(url, "POST");
         byte[] bodyData = Encoding.UTF8.GetBytes(JsonUtility.ToJson(requestData));
-        Debug.Log(JsonUtility.ToJson(requestData));
+        Debug.Log("Json Looks Like:" +JsonUtility.ToJson(requestData));
         request.uploadHandler = new UploadHandlerRaw(bodyData);
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
@@ -93,10 +108,18 @@ public class NotificationManager : UnitySingleton<NotificationManager>
     }
 }
 
-[Serializable]
+[System.Serializable]
 public class RequestData
 {
     public string token;
     public string title;
     public string body;
+    public Payload payload;
+
+    [System.Serializable]
+    public class Payload
+    {
+        public string lat;
+        public string lng;
+    }
 }

@@ -25,43 +25,54 @@ public class UserDataManager
     public List<UserModel> GetUsersByLetters(string name)
     {
         List<UserModel> selectedUsers = new List<UserModel>();
-
-        // Query Syntax
-        IEnumerable<UserModel> _userSearchQuery =
-            from user in FbManager.instance.AllUsers
-            where user.Username.Contains(name)
-            orderby user.Username
-            select user;
-        
-        selectedUsers.AddRange(_userSearchQuery);
-
+        selectedUsers = AlgoliaManager.instance.SearchUser(name);
         return selectedUsers;
     }
     public bool IsUsernameAvailable(string userName)
     {
-        var users = GetUsersByLetters(userName);
-        return users.Count < 1;
+        var users = GetUsersByLetters(userName); //todo: this is why a lot of usernames are not available because the letters are similar
+        foreach (var user in users)
+        {
+            if (userName == user.username)
+            {
+                return false;
+            }
+        }
+        return true;
     }
     
-    public List<UserModel> GetReceivedFriendRequested()
+    public List<UserModel> GetReceivedFriendRequestedOld()
     {
         Debug.Log("GetReceivedFriendRequested");
         List<UserModel> users = new List<UserModel>();
         foreach (var request in FbManager.instance._allReceivedRequests)
         {
             Debug.Log("GetFriendRequested from:" + request.SenderID);
-                foreach (var user in FbManager.instance.AllUsers)
+            
+                foreach (var user in FbManager.instance.users)
                 {
-                    if (string.Equals(user.userId, request.SenderID))
+                    if (string.Equals(user.userID, request.SenderID))
                     {
-                        Debug.Log("ADDED USER:" + user.userId);
+                        Debug.Log("ADDED USER:" + user.userID);
                         users.Add(user);
                     };
                 }
         }
         return users;
     }
-    public List<UserModel> GetSentFriendRequests()
+    // public List<UserModel> GetReceivedFriendRequestedNew()
+    // {
+    //     Debug.Log("GetReceivedFriendRequested");
+    //     List<UserModel> users = new List<UserModel>();
+    //     foreach (var request in FbManager.instance._allReceivedRequests)
+    //     {
+    //         users.Add(FbManager.instance.GetUserByID(request.RequestID));
+    //     }
+    //     return users;
+    // }
+    
+    
+    public List<UserModel> GetSentFriendRequestsOld()
     {
         Debug.Log("GetSentFriendRequests");
         
@@ -70,25 +81,34 @@ public class UserDataManager
         {
             Debug.Log("GetSentFriendRequested from Key:" + request.ReceiverId);
             var _userSearchQuery =
-                from user in FbManager.instance.AllUsers
-                where string.Equals(user.userId, request.ReceiverId, StringComparison.Ordinal)
-                select user;
+                from user in FbManager.instance.users where string.Equals(user.userID, request.ReceiverId, StringComparison.Ordinal) select user;
             users.AddRange(_userSearchQuery.ToArray());
         }
+        
         return users;
     }
+    // public List<UserModel> GetSentFriendRequestsNew()
+    // {
+    //     Debug.Log("GetReceivedFriendRequested");
+    //     List<UserModel> users = new List<UserModel>();
+    //     foreach (var request in FbManager.instance._allSentRequests)
+    //     {
+    //         users.Add(FbManager.instance.GetUserByID(request.RequestID));
+    //     }
+    //     return users;
+    // }
     
-    public List<UserModel> GetRequestsByName(string name, bool isReceived =  true)
+    public List<UserModel> GetRequestsByNameOld(string name, bool isReceived =  true)
     {
-        var users = isReceived ? GetReceivedFriendRequested() : GetSentFriendRequests();
+        var users = isReceived ? GetReceivedFriendRequestedOld() : GetSentFriendRequestsOld();
         List<UserModel> selectedUsers = new List<UserModel>();
         if (string.IsNullOrEmpty(name) is false && users.Count > 0)
         {
             // Query Syntax
             IEnumerable<UserModel> _userSearchQuery =
                 from user in users
-                where user.Username.Contains(name)
-                orderby user.Username
+                where user.username.Contains(name)
+                orderby user.username
                 select user;
         
             selectedUsers.AddRange(_userSearchQuery);
@@ -101,15 +121,15 @@ public class UserDataManager
         foreach (var friendModel in FbManager.instance._allFriends)
         {
             var _userSearchQuery =
-                from user in FbManager.instance.AllUsers
-                where string.Equals(user.userId, friendModel.friend, StringComparison.Ordinal)
+                from user in FbManager.instance.users
+                where string.Equals(user.userID, friendModel.friendID, StringComparison.Ordinal)
                 select user;
                 
             users.AddRange(_userSearchQuery.ToArray());
         }
         return users;
     }
-    public List<UserModel> GetFriendsByName(string name)
+    public List<UserModel> GetFriendsByNameOld(string name)
     {
         var users = GetAllFriends();
             List<UserModel> selectedUsers = new List<UserModel>();
@@ -118,8 +138,8 @@ public class UserDataManager
             // Query Syntax
             IEnumerable<UserModel> _userSearchQuery =
                 from user in users
-                where user.Username.ToLower().Contains(name)
-                orderby user.Username
+                where user.username.ToLower().Contains(name)
+                orderby user.username
                 select user;
         
             selectedUsers.AddRange(_userSearchQuery);
@@ -133,9 +153,15 @@ public class UserDataManager
         requestsSent = new List<UserModel>();
         others = new List<UserModel>();
 
-        friends = GetFriendsByName(name);
-        requests = GetRequestsByName(name);
-        requestsSent = GetRequestsByName(name, false);
+        friends = GetFriendsByNameOld(name);
+        requests = GetRequestsByNameOld(name);
+        requestsSent = GetRequestsByNameOld(name, false);
         others = GetUsersByLetters(name);
+        
+        foreach (var user in others)
+        {
+            Debug.Log("other:" + user.name);
+            Debug.Log("other:" + user.ID);
+        }
     }
 }

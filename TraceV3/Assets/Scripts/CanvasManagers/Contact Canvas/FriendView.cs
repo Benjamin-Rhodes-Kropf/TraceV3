@@ -5,6 +5,7 @@ using Networking;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 public class FriendView : MonoBehaviour
 {
@@ -37,8 +38,27 @@ public class FriendView : MonoBehaviour
             return _uid;
         }
     }
+
+    private Coroutine _userCoroutine;
     
-    
+
+    public void OnDestroy()
+    {
+        if (_userCoroutine != null)
+            StopCoroutine(_userCoroutine);
+        // Release object references
+        _profilePic.texture = null;
+        _nickName = null;
+        _userName = null;
+        _buttonText = null;
+        _addRemoveButton = null;
+        _buttonBackground = null;
+        _bestFriend = null;
+        _bestFriendButton = null;
+        _colors = null;
+        _heartSprite = null;
+    }
+
 
     public void UpdateFriendData(UserModel user, bool isFriendAdd = false, bool isBestOne = false)
     {
@@ -46,9 +66,10 @@ public class FriendView : MonoBehaviour
         isBestFriend = isBestOne;
         
         
-        _userName.text = user.Username;
-        _nickName.text = user.DisplayName;
-        _uid = user.userId;
+        _userCoroutine = user._downloadPCoroutine;
+        _userName.text = user.username;
+        _nickName.text = user.name;
+        _uid = user.ID;
         FriendButtonType buttonType = FriendButtonType.Add;
         buttonType = isFriendAdd ? FriendButtonType.Remove : FriendButtonType.Add;
         var buttonData = GetButtonData(buttonType);
@@ -67,6 +88,7 @@ public class FriendView : MonoBehaviour
             try
             {
                 _profilePic.texture = sprite.texture;
+                // Invoke(nameof(DestroyImage),0.5f);
             }
             catch (Exception e)
             {
@@ -75,6 +97,11 @@ public class FriendView : MonoBehaviour
         }));
     }
 
+    private void DestroyImage()
+    {
+        DestroyImmediate(_profilePic.texture);
+        DestroyImmediate(_profilePic);
+    }
 
     private (string buttonText, int colorIndex) GetButtonData(FriendButtonType buttonType)
     {
@@ -102,8 +129,7 @@ public class FriendView : MonoBehaviour
             _buttonText.text = buttonData.buttonText;
         }
     }
-    
-    
+
     private void SendFriendRequest()
     {
         _addRemoveButton.interactable = false;
@@ -111,12 +137,10 @@ public class FriendView : MonoBehaviour
         
         if (friendUID == "")
             return;
-
-        Debug.LogError("Here after Checking friend ID "+  friendUID);
+        
         if (FriendRequestManager.Instance.IsRequestAllReadyInList(friendUID,false))
             return;
-            
-        Debug.LogError("Here after Checking List");
+        
         StartCoroutine(FbManager.instance.SendFriendRequest(friendUID, async (IsSuccessful) => {
             if (!IsSuccessful)
             {
@@ -127,7 +151,8 @@ public class FriendView : MonoBehaviour
             UpdateRequestStatus(true);
             _addRemoveButton.interactable = true;
             Debug.Log("friend requested at:" + friendUID);
-            NotificationManager.Instance.SendNotificationUsingFirebaseUserId(friendUID, FbManager.instance.thisUserModel.DisplayName , "sent you friend request");
+            Debug.Log("from:" + FbManager.instance.thisUserModel.name);
+            NotificationManager.Instance.SendNotificationUsingFirebaseUserId(friendUID, FbManager.instance.thisUserModel.name , "sent you friend request");
         }));
     }
 
@@ -156,10 +181,10 @@ public class FriendView : MonoBehaviour
                 _bestFriend.sprite = isBestFriend ? _heartSprite[0] : _heartSprite[1];
                 FriendsModelManager.Instance.SetBestFriend(friendUID, isBestFriend);
                 TraceManager.instance.UpdateMap(new Vector2(0,0));
-                
             }
 
             _bestFriendButton.interactable = true;
         }));
     }
+   
 }

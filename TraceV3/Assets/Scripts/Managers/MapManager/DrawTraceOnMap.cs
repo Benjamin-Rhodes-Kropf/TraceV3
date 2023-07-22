@@ -8,6 +8,7 @@ public class DrawTraceOnMap : MonoBehaviour
     
     public int segments = 240;
     public TraceObject sendingTraceTraceLoadingObject;
+    [SerializeField] private ScaleMapElements _scaleMapElements;
     
     [SerializeField] private int scaleAmount;
     [SerializeField] private OnlineMapsMarkerManager markerManager;
@@ -25,9 +26,11 @@ public class DrawTraceOnMap : MonoBehaviour
     [SerializeField] private Texture2D secondarySentTexture;
     
 
-    public void DrawCirlce(double lat, double lng, float radius, TraceType traceType, string markerID)
+    public OnlineMapsMarker DrawCirlce(double lat, double lng, float radius, TraceType traceType, string markerID)
     {
-        PlaceTrace(lat, lng, radius, traceType, markerID);
+        OnlineMapsMarker _onlineMapsMarker = PlaceTrace(lat, lng, radius, traceType, markerID);
+        _onlineMapsMarker.displayedTexture = _onlineMapsMarker.secondaryZoomedOutTexture;
+        _scaleMapElements.ScaleTrace(_onlineMapsMarker);
         if (showDebugTextures)
         {
             OnlineMapsMarkerManager.CreateItem(lng, lat, "Marker " + OnlineMapsMarkerManager.CountItems);
@@ -60,32 +63,34 @@ public class DrawTraceOnMap : MonoBehaviour
                 map.projection.TileToCoordinates(px, py, 20, out lng, out lat);
                 points[i] = new OnlineMapsVector2d(lng, lat);
             }
-            
             // Create a new polygon to draw a circle
             OnlineMapsDrawingElementManager.AddItem(new OnlineMapsDrawingPoly(points, Color.white, 2, new Color(10, 10, 10, 0.1f)));
         }
+        return _onlineMapsMarker;
     }
 
-    public void PlaceTrace(double lat, double lng, float radius, TraceType traceType, string markerID)
+    public OnlineMapsMarker PlaceTrace(double lat, double lng, float radius, TraceType traceType, string markerID)
     {
+        OnlineMapsMarker _onlineMapsMarker;
         switch (traceType)
         {
             case TraceType.SENT:
-                markerManager.AddTraceToMap(lat, lng, radius, primarySentTexture, secondarySentTexture, primarySendingTextureHollow, markerID);
-                return;
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primarySentTexture, secondarySentTexture, primarySendingTextureHollow, markerID);
+                return _onlineMapsMarker;
             case TraceType.RECEIVED:
-                markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, markerID);
-                return;
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, markerID);
+                return _onlineMapsMarker;
             case TraceType.RECEIVEDBESTFRIEND:
-                markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverTextureBF, secondaryReceiverTextureBF, primaryReceivingHollowTextureBF, markerID);
-                return;
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverTextureBF, secondaryReceiverTextureBF, primaryReceivingHollowTextureBF, markerID);
+                return _onlineMapsMarker;
             case TraceType.SENDING:
-                markerManager.AddTraceToMap(lat, lng, radius, primarySendingTextureHollow, secondarySentTexture, primarySendingTextureHollow, markerID);
-                return;
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primarySendingTextureHollow, secondarySentTexture, primarySendingTextureHollow, markerID);
+                return _onlineMapsMarker;
             case TraceType.OPENING:
-                markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, markerID);
-                return;
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, markerID);
+                return _onlineMapsMarker;
         }
+        return null;
     }
     
     public void Clear()
@@ -97,6 +102,12 @@ public class DrawTraceOnMap : MonoBehaviour
         for (int i = OnlineMapsMarkerManager.CountItems; i >  0; i--)
         {
             OnlineMapsMarkerManager.RemoveItemAt(i);
+        }
+
+        //draw loading trace
+        if (SendTraceManager.instance.isSendingTrace)
+        {
+            DrawCirlce(SendTraceManager.instance.location.x, SendTraceManager.instance.location.y, SendTraceManager.instance.radius, TraceType.SENDING, "loading");
         }
     }
     

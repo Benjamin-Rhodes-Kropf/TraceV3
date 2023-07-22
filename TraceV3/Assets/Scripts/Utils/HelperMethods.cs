@@ -359,18 +359,31 @@ public static class HelperMethods
 
     //destroy new texture
     Object.Destroy(newTexture);
+
+    Texture2D reducedTexture = new Texture2D(256, 256, croppedTexture.format, false);
+
+    // Copy the content of the original texture to the new one with resizing
+    RenderTexture rt = new RenderTexture(256, 256, 24);
+    Graphics.Blit(croppedTexture, rt);
+    RenderTexture.active = rt;
+    reducedTexture.ReadPixels(new Rect(0, 0, 256, 256), 0, 0);
+    reducedTexture.Apply();
+    RenderTexture.active = null;
+    rt.Release();
+    Object.Destroy(croppedTexture);
+    Object.Destroy(rt);
     
     Debug.Log("Image Cropped");
 
     if (isHeic)
     {
         Debug.Log("Returning Cropped and Rotated Texture");
-        return HelperMethods.RotateTextureClockwise(croppedTexture);
+        return HelperMethods.RotateTextureClockwise(reducedTexture);
     }
     else
     {
         Debug.Log("Returning Cropped Texture");
-        return croppedTexture;
+        return reducedTexture;
     }
 }
     
@@ -400,17 +413,21 @@ public static class HelperMethods
 
         if (currentDateTime.Year >= otherDateTime.Year)
         {
+            if (Math.Round(timeDifference.TotalMinutes) == 1)
+            {
+                return Math.Round(timeDifference.TotalMinutes) + " minute ago";
+            }
+            if (Math.Round(timeDifference.TotalMinutes) <= 60)
+            {
+                return Math.Round(timeDifference.TotalMinutes) + " minutes ago";
+            }
             if (Math.Round(timeDifference.TotalHours) == 1)
             {
                 return Math.Round(timeDifference.TotalHours) + " hour ago";
             }
-            if (timeDifference.TotalHours > 1 && timeDifference.TotalHours < 24)
+            if (timeDifference.TotalHours < 24)
             {
                 return Math.Round(timeDifference.TotalHours) + " hours ago";
-            }
-            if (Math.Round(timeDifference.TotalMinutes) == 1)
-            {
-                return Math.Round(timeDifference.TotalMinutes) + " minute ago";
             }
             if (timeDifference.Days == 1)
             {
@@ -420,7 +437,6 @@ public static class HelperMethods
             {
                 return Math.Round(timeDifference.TotalDays) + " days ago";
             }
-            return Math.Round(timeDifference.TotalMinutes) + " minutes ago";
         }
         return currentDateTime.ToShortDateString();
     }

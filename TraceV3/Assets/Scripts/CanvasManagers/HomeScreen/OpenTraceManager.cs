@@ -10,6 +10,9 @@ using UnityEngine.Video;
 
 public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
 {
+    [Header("Trace Stuff")] 
+    [SerializeField] private HomeScreenManager _homeScreenManager;
+    
     [Header("Trace Stuff")]
     [SerializeField] private GameObject imageObject;
     [SerializeField] private GameObject videoObject;
@@ -162,7 +165,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
             case iPhoneModel.iPhone13_13Pro_14_14Pro: //working
                 openUp_targetYVal = 1200;
                 g_offset = -906;
-                imageHeightTarget = 3823;
+                imageHeightTarget = 3800;
                 videoScaleConstant = 0.84f;
                 return;
             case iPhoneModel.iPhone13Mini:
@@ -192,6 +195,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         changeInYVal = 0;
         gTransformVelocity = 0;
         m_targetYVal = openUp_targetYVal;
+        _homeScreenManager.RefreshMap();
     }
 
     
@@ -319,7 +323,6 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         {
             //State
             canCloseTrace = true;
-            
             //Play Video
             if (!isPhoto)
             {
@@ -328,7 +331,8 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
             //Update Map and Database
             FbManager.instance.MarkTraceAsOpened(traceID);
             TraceManager.instance.ClearTracesOnMap();
-            NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.DisplayName , "opened your trace!");
+            NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!");
+            NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!");
         }
         
         if (hasBegunOpenTrace && changeInYVal < changeInYvalCloseLimit && !isDragging && canCloseTrace)

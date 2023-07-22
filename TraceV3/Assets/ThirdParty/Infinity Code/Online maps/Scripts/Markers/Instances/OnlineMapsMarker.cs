@@ -46,15 +46,16 @@ public class OnlineMapsMarker : OnlineMapsMarkerBase
     private Texture2D _primaryHollowInTexture;
     [SerializeField]
     private Texture2D _secondaryZoomedOutTexture;
+
+    public bool isShowingPrimaryTexture; //todo: make private and use getter
+
     //privates
     private Color32[] _rotatedColors;
-    private bool _isShowingPrimaryTexture;
     private int _textureHeight;
     private int _textureWidth;
     private int _width;
     private float _lastRotation;
     private float _lastScale;
-    
     
     
     
@@ -369,15 +370,19 @@ public class OnlineMapsMarker : OnlineMapsMarkerBase
     /// </summary>
     public void SwitchDisplayedImage(bool switchToPrimary)
     {
-        if (switchToPrimary && !_isShowingPrimaryTexture)
+        if (switchToPrimary && !isShowingPrimaryTexture)
         {
             displayedTexture = primaryZoomedInTexture;
-            _isShowingPrimaryTexture = true;
+            isShowingPrimaryTexture = true;
+            Debug.Log("isShowingPrimaryTexture:" + isShowingPrimaryTexture);
+            return;
         }
-        if (!switchToPrimary && _isShowingPrimaryTexture)
+        if (!switchToPrimary && isShowingPrimaryTexture)
         {
             displayedTexture = secondaryZoomedOutTexture;
-            _isShowingPrimaryTexture = false;
+            isShowingPrimaryTexture = false;
+            Debug.Log("isShowingPrimaryTexture:" + isShowingPrimaryTexture);
+            return;
         }
     }
 

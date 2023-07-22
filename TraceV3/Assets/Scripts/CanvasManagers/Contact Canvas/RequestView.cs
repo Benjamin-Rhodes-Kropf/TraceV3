@@ -5,6 +5,7 @@ using CanvasManagers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 public class RequestView : MonoBehaviour
 {
@@ -18,11 +19,28 @@ public class RequestView : MonoBehaviour
 
     private string requestId = "";
     private string senderId = "";
+    
+    private Coroutine _userCoroutine;
 
+    public void OnDestroy()
+    {
+        StopCoroutine(_userCoroutine);
+        // Release object references
+        _displayName = null;
+        _userName = null;
+        _profilePicture.sprite = null;
+        Destroy( _profilePicture.sprite); //destroy
+        Destroy( _profilePicture); //destroy
+        _acceptButton = null;
+        _removeButton = null;
+        _buttonText = null;
+        _buttonImage = null;
+    }
+    
     public void UpdateRequestView(UserModel user, bool isReceivedRequest  = true)
     {
-        requestId = FriendRequestManager.Instance.GetRequestID(user.userId, isReceivedRequest);
-        senderId = user.userId;
+        requestId = FriendRequestManager.Instance.GetRequestID(user.userID, isReceivedRequest);
+        senderId = user.userID;
         user.ProfilePicture((sprite =>
         {
             try
@@ -34,9 +52,9 @@ public class RequestView : MonoBehaviour
                 
             }
         }));
-        _userName.text = user.Username;
-        _displayName.text = user.DisplayName;
-
+        _userName.text = user.username;
+        _displayName.text = user.name;
+        _userCoroutine = user._downloadPCoroutine;
         _acceptButton.onClick.RemoveAllListeners();
         if (isReceivedRequest is false)
         {
@@ -69,7 +87,7 @@ public class RequestView : MonoBehaviour
                 this.gameObject.SetActive(false);
             }
         })));
-        NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderId, FbManager.instance.thisUserModel.DisplayName , "accepted your friend request!");
+        NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderId, FbManager.instance.thisUserModel.name , "accepted your friend request!");
     }
 
     //  TODO: i.  Remove Request From Local List

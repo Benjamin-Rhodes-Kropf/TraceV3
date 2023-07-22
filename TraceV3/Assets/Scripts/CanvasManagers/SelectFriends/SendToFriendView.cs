@@ -22,6 +22,8 @@ public class SendToFriendView : MonoBehaviour
     public bool sendToThisFriend = false;
     private string _uid = "";
     public bool _isBestFriend = false;
+
+    private Coroutine _downloadRoutine;
     public string friendUID {
         get
         {
@@ -34,9 +36,9 @@ public class SendToFriendView : MonoBehaviour
         Debug.Log("UpdateFriendData");
         if (user != null)
         {
-            _nickName.text = user.DisplayName;
-            _uid = user.userId;
-            
+            _nickName.text = user.name;
+            _uid = user.userID;
+            _downloadRoutine = user._downloadPCoroutine;
             user.ProfilePicture((sprite =>
             {
                 try
@@ -66,6 +68,9 @@ public class SendToFriendView : MonoBehaviour
     }
     public void DestroySelf()
     {
+        if (_downloadRoutine != null)
+            StopCoroutine(_downloadRoutine);
+    
         Destroy(this.gameObject);
     }
 }

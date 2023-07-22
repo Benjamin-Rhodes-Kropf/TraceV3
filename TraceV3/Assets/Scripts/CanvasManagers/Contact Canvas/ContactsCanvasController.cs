@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using SA.iOS.Contacts;
 using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,17 +11,20 @@ using VoxelBusters.EssentialKit;
 
 namespace CanvasManagers
 {
-    public class ContactsCanvasController
+    public enum UserTabs
+    {
+        Contacts, Friends, Requests
+    }
+    public partial class ContactsCanvasController
     {
         private ContactsCanvas _view;
         private Image _previousSelectedButton;
         private Color32 _selectedButtonColor = new Color32(128, 128, 128, 255);
         private Color32 _unSelectedButtonColor = new Color32(128, 128, 128, 0);
         private List<IAddressBookContact> _allContacts;
-        
+        private UserTabs _CurrentSelectedUserTab;
         
         private static Regex _compiledUnicodeRegex = new Regex(@"[^\u0000-\u007F]", RegexOptions.Compiled);
-        
         public void Init(ContactsCanvas view)
         {
             this._view = view;
@@ -62,7 +64,7 @@ namespace CanvasManagers
             if (inputText.Length <= 1)
             {
                 ClearSearchList();
-                OnFriendsSelection();
+                SelectPreviouslySelectedScreen();
             }
             
             var canUpdate = inputText.Length > 1;
@@ -73,89 +75,20 @@ namespace CanvasManagers
             ClearSearchList();
             SelectionPanelClick("SearchBar");
             searchList = new List<GameObject>();
-            
-            UserDataManager.Instance.GetAllUsersBySearch(inputText, out List<UserModel> friends, out List<UserModel> requests,out List<UserModel> requestsSent, out List<UserModel> others);
-            TryGetContactsByName(inputText, out List<IAddressBookContact> contacts);
-            if (friends.Count > 0)
-            {
-                var text = GameObject.Instantiate(_view._searchTabTextPrefab, _view._searchscrollParent);
-                text.text = "Friends";
-                searchList.Add(text.gameObject);
-                    
-                foreach (var friend in friends)
-                {
-                    var view = GameObject.Instantiate(_view.friendViewPrefab, _view._searchscrollParent);
-                    view.UpdateFriendData(friend,true, FriendsModelManager.Instance.IsBestFriend(friend.userId));
-                    searchList.Add(view.gameObject);
-                }
-            }
-            
-            if (requests.Count > 0)
-            {
-                var text = GameObject.Instantiate(_view._searchTabTextPrefab, _view._searchscrollParent);
-                text.text = "Requests Received";
-                searchList.Add(text.gameObject);
-                foreach (var request in requests)
-                {
-                    var view = GameObject.Instantiate(_view._requestPrefab, _view._searchscrollParent);
-                    view.UpdateRequestView(request);
-                    searchList.Add(view.gameObject);
-                }
-            }
-            
-            if (requestsSent.Count > 0)
-            {
-                var text = GameObject.Instantiate(_view._searchTabTextPrefab, _view._searchscrollParent);
-                text.text = "Requests Sent";
-                searchList.Add(text.gameObject);
-                foreach (var request in requestsSent)
-                {
-                    var view = GameObject.Instantiate(_view._requestPrefab, _view._searchscrollParent);
-                    view.UpdateRequestView(request,false);
-                    searchList.Add(view.gameObject);
-                }
-            }
-            
-            if (contacts.Count > 0)
-            {
-                var text = GameObject.Instantiate(_view._searchTabTextPrefab, _view._searchscrollParent);
-                text.text = "Contacts";
-                searchList.Add(text.gameObject);
-                foreach (var contact in contacts)
-                {
-                    ContactView view = GameObject.Instantiate(_view._contactPrfab,_view._searchscrollParent);
-                    view.UpdateContactInfo(contact);
-                    searchList.Add(view.gameObject);
-                }
-            }
+            SearchUsersInDB(inputText);
 
-            if (others.Count > 0)
-            {
-                var text = GameObject.Instantiate(_view._searchTabTextPrefab, _view._searchscrollParent);
-                text.text = "Others";
-                searchList.Add(text.gameObject);
-                foreach (var other in others)
-                {
-                    if (friends.Contains(other)) continue;
-                    if (requestsSent.Contains(other)) continue;
-                    if (requests.Contains(other)) continue;
-                    if (other.userId == FbManager.instance.thisUserModel.userId) continue;
-                    var view = GameObject.Instantiate(_view.friendViewPrefab, _view._searchscrollParent);
-                    view.UpdateFriendData(other);
-                    searchList.Add(view.gameObject);
-                }
-            }
         }
 
         private void ClearSearchList()
         {
             if (searchList is not { Count: > 0 })
                 return;
-
             foreach (var ob in searchList)
             {
               GameObject.Destroy(ob);
-            } 
+            }
+
+            Resources.UnloadUnusedAssets();
         }
         private void ClearFriendList()
         {
@@ -166,56 +99,55 @@ namespace CanvasManagers
         }
         
         // TODO: Delete These Functions
-        private void PopulateFriendsList(List<UserModel> users, bool IsFriendsList = false)
-        {
-            int allFrindsTileCount = _view._friendsList.Count;
-            int allUsersCount = users.Count;
-            bool isNeedToAddMoreTiles = allUsersCount > allFrindsTileCount;
-
-            int totalUsers = isNeedToAddMoreTiles ? allUsersCount : allFrindsTileCount;
-
-            for (int userIndex = 0; userIndex < totalUsers; userIndex++)
-            {
-                if (isNeedToAddMoreTiles)
-                {
-                    if (userIndex < _view._friendsList.Count)
-                    {
-                        var friend = _view._friendsList[userIndex];
-                        friend.UpdateFriendData(users[userIndex], IsFriendsList);
-                        friend.gameObject.SetActive(true);
-                        
-                    }
-                    else
-                    {
-                        FriendView friend = GameObject.Instantiate(_view.friendViewPrefab, _view._displayFrindsParent);
-                        _view._friendsList.Add(friend);
-                        friend.UpdateFriendData(users[userIndex], IsFriendsList);
-                       
-                    }
-                }
-                else
-                {
-                    if (userIndex < users.Count)
-                    {
-                        var friend = _view._friendsList[userIndex];
-                        friend.UpdateFriendData(users[userIndex], IsFriendsList);
-                        friend.gameObject.SetActive(true);
-                        
-                    }
-                    else
-                    {
-                        var friend = _view._friendsList[userIndex];
-                        friend.gameObject.SetActive(false);
-                    }
-                }
-            }
-        }
-        private void PopulateFriendUIObject(FriendView friendView, UserModel data)
-        {
-            friendView.UpdateFriendData(data);
-            friendView.gameObject.SetActive(true);
-            friendView._addRemoveButton.onClick.RemoveAllListeners();
-        }
+        // private void PopulateFriendsList(List<UserModel> users, bool IsFriendsList = false)
+        // {
+        //     int allFrindsTileCount = _view._friendsList.Count;
+        //     int allUsersCount = users.Count;
+        //     bool isNeedToAddMoreTiles = allUsersCount > allFrindsTileCount;
+        //     int totalUsers = isNeedToAddMoreTiles ? allUsersCount : allFrindsTileCount;
+        //
+        //     for (int userIndex = 0; userIndex < totalUsers; userIndex++)
+        //     {
+        //         if (isNeedToAddMoreTiles)
+        //         {
+        //             if (userIndex < _view._friendsList.Count)
+        //             {
+        //                 var friend = _view._friendsList[userIndex];
+        //                 friend.UpdateFriendData(users[userIndex], IsFriendsList);
+        //                 friend.gameObject.SetActive(true);
+        //                 
+        //             }
+        //             else
+        //             {
+        //                 FriendView friend = GameObject.Instantiate(_view.friendViewPrefab, _view._displayFrindsParent);
+        //                 _view._friendsList.Add(friend);
+        //                 friend.UpdateFriendData(users[userIndex], IsFriendsList);
+        //                
+        //             }
+        //         }
+        //         else
+        //         {
+        //             if (userIndex < users.Count)
+        //             {
+        //                 var friend = _view._friendsList[userIndex];
+        //                 friend.UpdateFriendData(users[userIndex], IsFriendsList);
+        //                 friend.gameObject.SetActive(true);
+        //                 
+        //             }
+        //             else
+        //             {
+        //                 var friend = _view._friendsList[userIndex];
+        //                 friend.gameObject.SetActive(false);
+        //             }
+        //         }
+        //     }
+        // }
+        // private void PopulateFriendUIObject(FriendView friendView, UserModel data)
+        // {
+        //     friendView.UpdateFriendData(data);
+        //     friendView.gameObject.SetActive(true);
+        //     friendView._addRemoveButton.onClick.RemoveAllListeners();
+        // }
 
 
         private List<RequestView> _allRequests;
@@ -223,18 +155,20 @@ namespace CanvasManagers
         public void UpdateRequestLayout()
         {
             if ( _view._requestsScroll.activeInHierarchy)
-                LoadAllRequests();
+                LoadAllRequestsNew();
+                //LoadAllRequestsOld();
         }
         
         private void OnRequestsSelection()
         {
-            LoadAllRequests();
+            //LoadAllRequestsOld();
+            LoadAllRequestsNew();
             SelectionPanelClick("Requests");
         }
 
-        private void LoadAllRequests()
+        private void LoadAllRequestsOld()
         {
-            var users = UserDataManager.Instance.GetReceivedFriendRequested();
+            var users = UserDataManager.Instance.GetReceivedFriendRequestedOld();
             ClearRequestView();
             _allRequests = new List<RequestView>();
             if (users.Count > 0)
@@ -243,7 +177,28 @@ namespace CanvasManagers
                     UpdateRequestInfo(user);
             }
             
-            var sentRequests = UserDataManager.Instance.GetSentFriendRequests();
+            var sentRequests = UserDataManager.Instance.GetSentFriendRequestsOld();
+            
+            if (sentRequests.Count > 0)
+            {                
+                foreach (var user in sentRequests)
+                    UpdateRequestInfo(user, false);
+            }
+            
+            _view._requestText.text = $"Requests ({users.Count + sentRequests.Count})";
+        }
+        private void LoadAllRequestsNew()
+        {
+            var users = UserDataManager.Instance.GetReceivedFriendRequestedOld();
+            ClearRequestView();
+            _allRequests = new List<RequestView>();
+            if (users.Count > 0)
+            {
+                foreach (var user in users)
+                    UpdateRequestInfo(user);
+            }
+            
+            var sentRequests = UserDataManager.Instance.GetSentFriendRequestsOld();
             
             if (sentRequests.Count > 0)
             {                
@@ -302,7 +257,7 @@ namespace CanvasManagers
         private void UpdateFriendViewInfo(UserModel user)
         {
             FriendView view = GameObject.Instantiate(_view.friendViewPrefab, _view._displayFrindsParent);
-            view.UpdateFriendData(user,true, FriendsModelManager.Instance.IsBestFriend(user.userId));
+            view.UpdateFriendData(user,true, FriendsModelManager.Instance.IsBestFriend(user.userID));
             _allFriendsView.Add(view);
         }
         private void ClearFriendsView()
@@ -331,13 +286,16 @@ namespace CanvasManagers
                     _view._friendsScroll.SetActive(false);
                     _view._requestsScroll.SetActive(false);                    
                     _view._searchScroll.SetActive(false);
+                    _CurrentSelectedUserTab = UserTabs.Contacts;
                     break;
                 case "Friends":
                     _previousSelectedButton = _view._friendsButton.GetComponent<Image>();
                     _view._contactsScroll.SetActive(false);
                     _view._friendsScroll.SetActive(true);
                     _view._requestsScroll.SetActive(false);                    
-                    _view._searchScroll.SetActive(false);
+                    _view._searchScroll.SetActive(false);                    
+                    _CurrentSelectedUserTab = UserTabs.Friends;
+
                     break;
                 case "Requests":
                     _previousSelectedButton = _view._requestsButton.GetComponent<Image>();
@@ -345,6 +303,7 @@ namespace CanvasManagers
                     _view._friendsScroll.SetActive(false);
                     _view._requestsScroll.SetActive(true);                    
                     _view._searchScroll.SetActive(false);
+                    _CurrentSelectedUserTab = UserTabs.Requests;
                     break;
                 default:
                     _view._contactsScroll.SetActive(false);
@@ -363,8 +322,13 @@ namespace CanvasManagers
         {
             AddressBookContactsAccessStatus status = AddressBook.GetContactsAccessStatus();
             Debug.Log("Contact Status:" + status);
+
+#if !UNITY_EDITOR
             AddressBook.RequestContactsAccess(callback: OnRequestContactsAccessFinish);
             LoadAllContacts();
+#elif UNITY_EDITOR
+            _view._enhanceScroller.LoadLargeData(null,_view._testContactList);
+#endif          
             SelectionPanelClick("Contacts");
         }
         private void OnRequestContactsAccessFinish(AddressBookRequestContactsAccessResult result, Error error)
@@ -388,6 +352,12 @@ namespace CanvasManagers
                 Debug.Log("Total contacts fetched: " + contacts.Length);
                 Debug.Log("Below are the contact details (capped to first 10 results only):");
                 isLoaded = true;
+
+                if (contacts.Length > 0)
+                {
+                    _view._enhanceScroller.LoadLargeData(contacts);
+                }
+                
                 foreach (var contact in contacts)
                 {
                     LogContactInfo(contact);
@@ -408,9 +378,9 @@ namespace CanvasManagers
 #elif UNITY_IOS
             _allContacts = new List<IAddressBookContact>();
             AddressBook.ReadContactsWithUserPermission(OnReadContactsFinish);
-#endif            
-            
+#endif
         }
+        
         private String StripUnicodeCharactersFromString(string inputValue)
         {
             return _compiledUnicodeRegex.Replace(inputValue, String.Empty);
@@ -420,8 +390,8 @@ namespace CanvasManagers
         {
             try
             {
-                ContactView view = GameObject.Instantiate(_view._contactPrfab,_view._contactParent);
-                view.UpdateContactInfo(contact);
+                 // ContactView view = GameObject.Instantiate(_view._contactPrfab,_view._contactParent);
+                 // view.UpdateContactInfo(contact);
                 _allContacts.Add(contact);
             }
             catch (Exception e)
@@ -442,12 +412,13 @@ namespace CanvasManagers
             
             if (string.IsNullOrEmpty(name) is false )
             {
-                var list = _allContacts.Where(contact => (contact.FirstName + " "+ contact.LastName).Contains(name, StringComparison.InvariantCultureIgnoreCase)).ToList();
+                var list = _allContacts.Where(contact => (contact.FirstName + " "+ contact.LastName).Contains(name, StringComparison.InvariantCultureIgnoreCase)  && contact.PhoneNumbers.Length>0).ToList();
                 selectedContacts.AddRange(list);
             }
         }
     }
 
+    [Serializable]
     public struct Contact
     {
         public string givenName;
