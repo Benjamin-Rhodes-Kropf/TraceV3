@@ -221,7 +221,7 @@ public class TraceManager : MonoBehaviour
         }
         
         //Schedule prompt to tell user to send a trace
-        ScheduleNotificationOnExitInARadius(onlineMapsLocationService.position.x, onlineMapsLocationService.position.y, 100);
+        ScheduleNotificationOnExitInARadius(onlineMapsLocationService.position.x, onlineMapsLocationService.position.y, 1000);
     }
     private static void ScheduleNotificationOnEnterInARadius(float latitude, float longitude, float radius, string message, string SenderName)
     {
