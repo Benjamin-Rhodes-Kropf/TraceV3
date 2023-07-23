@@ -232,8 +232,8 @@ public class TraceManager : MonoBehaviour
             NotifyOnEntry = true,
             NotifyOnExit = false
         };
-        Debug.Log("Push Notification is set for a radius of " + enterLocationTrigger.Radius + "Meters"
-                  + " When user enters in " + "Latitude = " + latitude + "===" + "Longitude = " + longitude);
+        // Debug.Log("Push Notification is set for a radius of " + enterLocationTrigger.Radius + "Meters"
+        //           + " When user enters in " + "Latitude = " + latitude + "===" + "Longitude = " + longitude);
 
         var entryBasedNotification = new iOSNotification
         {
@@ -419,7 +419,7 @@ public class TraceManager : MonoBehaviour
     
     public void UpdateMap(Vector2 vector2)
     {
-        Debug.Log("Map Update");
+        // Debug.Log("Map Update");
         ClearTracesOnMap();
         UpdateTracesOnMap();
         _scaleMapElements.UpdateAllTraceScale();

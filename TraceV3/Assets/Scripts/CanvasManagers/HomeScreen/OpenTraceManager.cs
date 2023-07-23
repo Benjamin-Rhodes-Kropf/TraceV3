@@ -331,8 +331,16 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
             //Update Map and Database
             FbManager.instance.MarkTraceAsOpened(traceID);
             TraceManager.instance.ClearTracesOnMap();
-            NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!");
-            NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!");
+            try
+            {//todo: no clue why it works the second time
+                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!"));
+            }
+            catch (Exception e)
+            {
+                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!"));
+                Console.WriteLine(e);
+                throw;
+            }
         }
         
         if (hasBegunOpenTrace && changeInYVal < changeInYvalCloseLimit && !isDragging && canCloseTrace)

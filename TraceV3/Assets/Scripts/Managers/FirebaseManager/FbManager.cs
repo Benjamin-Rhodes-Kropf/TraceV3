@@ -635,8 +635,8 @@ public partial class FbManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("could not get image from:" + "ProfilePhoto/"+userId+".png");
-            Debug.Log("task failed:" + task.Result);
+            Debug.Log("could not get image from:" + "ProfilePhoto/"+userId+".png setting profile photo to blank");
+            url = "https://firebasestorage.googleapis.com/v0/b/geosnapv1.appspot.com/o/ProfilePhoto%2FNullProfile.jpeg?alt=media&token=ad5a55e4-351e-4df5-976f-cdfbf18c80d2";
         }
 
         DownloadHandler.Instance.DownloadImage(url, callback, () =>
@@ -862,11 +862,13 @@ public partial class FbManager : MonoBehaviour
     }
     public void AddUserToLocalDbByID(string userToGetID)
     {
+        Debug.Log("Adding:" + userToGetID);
         //check if user already in local DB
         foreach (var obj in users)
         {
             if (obj.userID == userToGetID)
             {
+                Debug.Log("users already added:" + obj.username);
                 return;
             }
         }
@@ -874,10 +876,13 @@ public partial class FbManager : MonoBehaviour
         //if not retrive the user from the database
         UserModel user = new UserModel();
         user.userID = userToGetID;
+        
+        Debug.Log("creating document refrence");
 
         // Reference to the specific document you want to read from
         DocumentReference docRef = _firebaseFirestore.Collection("users").Document(userToGetID);
-
+        
+        Debug.Log("GetSnapshotAsync");
         // Read the document
         docRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
@@ -887,6 +892,8 @@ public partial class FbManager : MonoBehaviour
                 return;
             }
 
+            Debug.Log("adding snapshot" + user.userID);
+            
             // Get the document snapshot
             DocumentSnapshot snapshot = task.Result;
 
@@ -900,26 +907,31 @@ public partial class FbManager : MonoBehaviour
                 if (data.ContainsKey("email"))
                 {
                     object fieldValue = data["email"];
+                    Debug.Log("adding email" + fieldValue);
                     user.email = fieldValue.ToString();
                 }
                 if (data.ContainsKey("name"))
                 {
                     object fieldValue = data["name"];
+                    Debug.Log("adding name" + fieldValue);
                     user.name = fieldValue.ToString();
                 }
                 if (data.ContainsKey("phone"))
                 {
                     object fieldValue = data["phone"];
+                    Debug.Log("adding phone" + fieldValue);
                     user.phone = fieldValue.ToString();
                 }
                 if (data.ContainsKey("photo"))
                 {
                     object fieldValue = data["photo"];
+                    Debug.Log("adding photo" + fieldValue);
                     user.photo = fieldValue.ToString();
                 }
                 if (data.ContainsKey("username"))
                 {
                     object fieldValue = data["username"];
+                    Debug.Log("adding username" + fieldValue);
                     user.username = fieldValue.ToString();
                 }
                 FbManager.instance.users.Add(user);
@@ -1025,7 +1037,6 @@ public partial class FbManager : MonoBehaviour
                 return;
             }
             StartCoroutine(GetSentTrace(args.Snapshot.Key));
-            Debug.Log("SentTraceAdded:" + args.Snapshot.Key);
             //Debug.Log("value:" +  args.Snapshot.GetRawJsonValue());
         }
 
@@ -1118,6 +1129,7 @@ public partial class FbManager : MonoBehaviour
             if (task.IsCompleted)
             {
                 Debug.Log("Data created successfully in Firestore.");
+                ScreenManager.instance.ChangeScreenForwards("SettingUpAccount");
             }
             else
             {
@@ -1135,7 +1147,6 @@ public partial class FbManager : MonoBehaviour
         Debug.Log(" UploadTrace()");
         Debug.Log(" UploadTrace(): File Location:" + fileLocation);
         
-
         //PUSH DATA TO REAL TIME DB
         string key = _databaseReference.Child("Traces").Push().Key;
         Dictionary<string, Object> childUpdates = new Dictionary<string, Object>();
@@ -1346,8 +1357,8 @@ public partial class FbManager : MonoBehaviour
                 {
                     case "lat":
                     {
-                        Debug.Log(traceID + "lat: " + thing.Value);
-                        Debug.Log(thing.Value);
+                        // Debug.Log(traceID + "lat: " + thing.Value);
+                        // Debug.Log(thing.Value);
                         try
                         {
                             lat = (double)thing.Value;
@@ -1373,7 +1384,6 @@ public partial class FbManager : MonoBehaviour
                     }
                     case "radius":
                     {
-                        Debug.Log(traceID + "radius: " + thing.Value);
                         try
                         {
                             radius = float.Parse(thing.Value.ToString());
