@@ -603,9 +603,8 @@ public partial class FbManager : MonoBehaviour
         _coroutine = StartCoroutine(GetProfilePhotoFromFirebaseStorageRoutine(userId, (myReturnValue) => {
             if (myReturnValue != null)
             {
+                //compress to reduce mem load
                 Texture2D reducedTexture = new Texture2D(128, 128);
-
-                // Copy the content of the original texture to the new one with resizing
                 RenderTexture rt = new RenderTexture(128, 128, 24);
                 Graphics.Blit((Texture2D)myReturnValue, rt);
                 RenderTexture.active = rt;
@@ -616,7 +615,6 @@ public partial class FbManager : MonoBehaviour
                 onSuccess?.Invoke(reducedTexture);
                 DestroyImmediate(myReturnValue);
             }
-
             {
                 onFailed?.Invoke("Image not Found");
             }
@@ -1210,7 +1208,7 @@ public partial class FbManager : MonoBehaviour
                     
                     try //test
                     {
-                        SendTraceManager.instance.TraceSentSuccsefuly();
+                        SendTraceManager.instance.SendNotificationToUsersWhoRecivedTheTrace();
                     }
                     catch (Exception e)
                     {

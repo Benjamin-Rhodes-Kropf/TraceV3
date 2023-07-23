@@ -91,13 +91,13 @@ public class SelectFriendsControler : MonoBehaviour
     
     public void UpdateFriendsSendTo()
     {
-        SendTraceManager.instance.usersToSendTo.Clear();
+        SendTraceManager.instance.usersToSendTrace.Clear();
         Debug.Log("UpdateFriendsSendTo()");
         foreach (var user in whoToSendTo)
         {
             if (user.Value) //is selected to send to
             {
-                SendTraceManager.instance.usersToSendTo.Add(user.Key);
+                SendTraceManager.instance.usersToSendTrace.Add(user.Key);
             }
         }
     }
