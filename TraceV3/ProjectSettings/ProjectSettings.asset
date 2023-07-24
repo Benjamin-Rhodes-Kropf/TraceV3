@@ -1506,12 +1506,21 @@ PlayerSettings:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 11400000, guid: a9fc780c261b746dc9b45f8bd5390252, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: 16125885b5d834741a30922d097c4826, type: 2}
   - {fileID: 8456736684650657537, guid: 4cc24b4e70c6f49dbae02f68da29824a, type: 2}
-  - {fileID: 11400000, guid: fea897ef862774cfe82d61004ffb9e4c, type: 2}
-  - {fileID: 11400000, guid: a4eaa63068fa14fc3be7df5fdca1ab21, type: 2}
-  - {fileID: 11400000, guid: 3fe6757ee41664e29b18c4405dec10ab, type: 2}
-  - {fileID: 11400000, guid: 9226b88ed94764cfea96e44ac6d4d1d5, type: 2}
+  - {fileID: 11400000, guid: 52f42aa4a03754f5a92171af1a8a473a, type: 2}
+  - {fileID: 11400000, guid: 08477807893a14e23b04362c706f8d6b, type: 2}
+  - {fileID: 11400000, guid: be25271523b804b309cc327faf852ac5, type: 2}
+  - {fileID: 11400000, guid: 739f37f2659d94d2996168383982939e, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
