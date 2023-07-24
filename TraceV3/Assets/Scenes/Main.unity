@@ -1073,16 +1073,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99d2eaf152fdf435085541abd42f8a5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _onlineMapsLocationService: {fileID: 6068666308761308073}
+  selectedRadius: 0
   isSendingTrace: 0
-  isOpeningTrace: 0
   location: {x: 0, y: 0}
   fileLocation: 
   mediaType: 0
-  _onlineMapsLocationService: {fileID: 6068666308761308073}
-  maxRadius: 0.8
-  minRadius: 0.02
-  radius: 0
-  usersToSendTo: []
+  usersToSendTrace: []
 --- !u!4 &722720123
 Transform:
   m_ObjectHideFlags: 0
@@ -1440,7 +1437,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &962400830
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3139,6 +3136,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6454114606808003543, guid: d5a6d7a0097cb41138963158aca9c972, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6454114606808003545, guid: d5a6d7a0097cb41138963158aca9c972, type: 3}
       propertyPath: m_Name
       value: Connection Error Screen
@@ -3195,7 +3196,8 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -530
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2475809947570160353, guid: d5a6d7a0097cb41138963158aca9c972, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: d5a6d7a0097cb41138963158aca9c972, type: 3}
 --- !u!1 &2121914847
 GameObject:
@@ -8710,7 +8712,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1361899930089332814, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1361899930544575295, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -15462,7 +15464,7 @@ MonoBehaviour:
   createMarkerInUserPosition: 1
   disableEmulatorInPublish: 1
   emulatorCompass: 0
-  emulatorPosition: {x: -71.2169, y: 42}
+  emulatorPosition: {x: -70.222946, y: 42.072376}
   findLocationByIP: 0
   lerpCompassValue: 0
   markerScale: 1
@@ -16131,11 +16133,31 @@ PrefabInstance:
     m_TransformParent: {fileID: 906833078}
     m_Modifications:
     - target: {fileID: 667102099699509219, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 667102099699509219, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 667102099699509219, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 3448891080964609665}
     - target: {fileID: 667102099699509219, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 3448891080964609665}
+    - target: {fileID: 667102099699509219, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 667102099699509219, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: BackToMainScene
+      objectReference: {fileID: 0}
+    - target: {fileID: 667102099699509219, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
       value: BackToMainScene
       objectReference: {fileID: 0}
     - target: {fileID: 667102099699509219, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
@@ -16143,7 +16165,15 @@ PrefabInstance:
       value: SelectFriendsCanvas, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 667102099699509219, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: SelectFriendsCanvas, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 667102099699509219, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 667102099699509219, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 952470977018861490, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
@@ -16510,6 +16540,14 @@ PrefabInstance:
       propertyPath: bestFriendSpace
       value: 
       objectReference: {fileID: 2128193809}
+    - target: {fileID: 7569371837670385456, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
+      propertyPath: selectAllFriends
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7569371837670385456, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
+      propertyPath: toggleBestFriends
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 952470977018861490, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}

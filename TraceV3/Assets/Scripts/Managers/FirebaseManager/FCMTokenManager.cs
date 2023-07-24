@@ -76,19 +76,26 @@ public partial class FbManager
                 Debug.Log("SetTargetX");
             }
         }
+        
         Debug.LogFormat("Moving to Point ({0}, {1})", target.x, target.y);
-        StartCoroutine(MoveMap(target));
+        //_map.position = target;
+        if (target != new Vector2(0, 0))
+        {
+            StartCoroutine(MoveMap(target));
+        }
     }
     
     private IEnumerator MoveMap(Vector2 target)
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
         if (!_dragAndZoomInertia.isZooming)
         {
             Debug.LogFormat("Zooming to Point ({0}, {1})", target.x, target.y);
             Debug.Log("Zoom to User");
+            _map.zoom = 17;
+            _map.position = target;
             // Note: You might need to modify the values in the ZoomToObject method as needed
-            StartCoroutine(_dragAndZoomInertia.ZoomToObject(target, 4, 5f));
+            //StartCoroutine(_dragAndZoomInertia.ZoomToObject(target, 10, 5f));
         }
     }
     

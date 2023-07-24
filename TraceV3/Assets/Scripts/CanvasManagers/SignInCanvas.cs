@@ -18,11 +18,20 @@ public class SignInCanvas : MonoBehaviour
 
     public void LoginButtonHit()
     {
+        Debug.Log("Login Button Hit!");
         StartCoroutine(FbManager.instance.Login(username.text, password.text, (myReturnValue) => {
-            if (myReturnValue.IsSuccessful)
+            if (myReturnValue.callbackEnum == CallbackEnum.SUCCESS)
                 ScreenManager.instance.ChangeScreenNoAnim("HomeScreen");
             else
-                ShowMessage("Your Email or Password is incorrect !");
+            {
+                // if (myReturnValue.callbackEnum == CallbackEnum.CONNECTIONERROR)
+                // {
+                //     ScreenManager.instance.ChangeScreenForwards("ConnectionError");
+                //     return;
+                // }
+                ShowMessage("Your Email or Password is incorrect!");
+            }
+            
         }));
     }
 

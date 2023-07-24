@@ -271,6 +271,15 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.unity.networking.backgrounddownload": {
+      "version": "https://github.com/Unity-Technologies/BackgroundDownload.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.modules.androidjni": "1.0.0"
+      },
+      "hash": "856f24b9b250b35c53687bdbda28521cb9ea0456"
+    },
     "com.unity.nuget.newtonsoft-json": {
       "version": "3.1.0",
       "depth": 1,

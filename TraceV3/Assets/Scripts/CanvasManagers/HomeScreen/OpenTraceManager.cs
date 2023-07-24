@@ -10,8 +10,9 @@ using UnityEngine.Video;
 
 public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
 {
-    [Header("Trace Stuff")] 
+    [Header("External")] 
     [SerializeField] private HomeScreenManager _homeScreenManager;
+    [SerializeField] private OnlineMapsLocationService _onlineMapsLocation;
     
     [Header("Trace Stuff")]
     [SerializeField] private GameObject imageObject;
@@ -331,8 +332,18 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
             //Update Map and Database
             FbManager.instance.MarkTraceAsOpened(traceID);
             TraceManager.instance.ClearTracesOnMap();
-            NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!");
-            NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!");
+
+            Vector2 _location = _onlineMapsLocation.GetUserLocation();
+            try
+            {//todo: no clue why it works the second time
+                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!", _location.y, _location.x));
+            }
+            catch (Exception e)
+            {
+                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!", _location.y, _location.x));
+                Console.WriteLine(e);
+                throw;
+            }
         }
         
         if (hasBegunOpenTrace && changeInYVal < changeInYvalCloseLimit && !isDragging && canCloseTrace)

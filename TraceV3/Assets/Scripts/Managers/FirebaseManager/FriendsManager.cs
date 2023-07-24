@@ -38,7 +38,7 @@ public partial class FbManager
                     ReceiverId = receiverId,
                     SenderID = senderId
                 };
-                Debug.Log("HandleReceivedFriendRequest ADD");
+                Debug.Log("HandleReceivedFriendRequest ADD:" + requestId);
                 AddUserToLocalDbByID(requestId);
                 
                 _allReceivedRequests.Add(request); //Todo: this ain't workin it causes double requests
@@ -83,8 +83,8 @@ public partial class FbManager
                 string senderId = args.Snapshot.Child("senderId").Value.ToString();
                 string receiverId = args.Snapshot.Child("receiverId").Value.ToString();
                 
-                print("Receiver ID : "+ receiverId);
-                print("Sender ID : "+ senderId);
+                // print("Receiver ID : "+ receiverId);
+                // print("Sender ID : "+ senderId);
                 
                 // Get the friend request data
                 string requestId = args.Snapshot.Key;
@@ -136,7 +136,7 @@ public partial class FbManager
     
     private void HandleFriends(object sender, ChildChangedEventArgs args)
     {
-        Debug.Log("HandleFriends");
+        //Debug.Log("HandleFriends");
         try
         {
             if (args.Snapshot == null || args.Snapshot.Value == null) return;

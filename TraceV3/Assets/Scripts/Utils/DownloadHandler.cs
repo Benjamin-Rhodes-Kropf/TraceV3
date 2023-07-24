@@ -32,15 +32,11 @@ namespace Networking
         }
         public void DownloadImage(string url, Action<Texture> onCompleted = null, Action onFailed = null)
         {
-            // Debug.Log("Calling download image coroutine");
-            // Debug.Log(string.Format("Params -- Url: {0} ... OnComplete: {1} ... OnFailed: {2}", url, onCompleted,
-                // onFailed));
                 if (string.IsNullOrEmpty(url))
                 {
                     onFailed?.Invoke();
                     return;
                 }
-
                 StartCoroutine(DownloadImageCoroutine(url,false,false,onCompleted, onFailed));
         }
 
@@ -51,14 +47,11 @@ namespace Networking
 
         IEnumerator DownloadImageCoroutine(string url, bool enqueueRequest, bool dequeueAll, Action<Texture> onCompleted = null, Action onFailed = null)
         {
-            // Debug.Log("Download Image Coroutine started");
-
             if (dequeueAll)
                 ClearDownloadingQueue();
             
             UnityWebRequest www = UnityWebRequestTexture.GetTexture(url);
-
-            // Debug.Log("Downloading image from url: " + url);
+            
             
             if (enqueueRequest)
                 _enquedRequestsList.Add(www);
@@ -85,8 +78,8 @@ namespace Networking
                         _enquedRequestsList.Remove(www);
 
                     www.Dispose();
+                    
                     // Texture2D reducedTexture = new Texture2D(128, 128);
-                    //
                     // // Copy the content of the original texture to the new one with resizing
                     // RenderTexture rt = new RenderTexture(128, 128, 24);
                     // Graphics.Blit((Texture2D)tempTexture, rt);
@@ -102,7 +95,6 @@ namespace Networking
                 }
             }
         }
-        
         
         public void ClearDownloadingQueue(Action onComplete = null)
         { 

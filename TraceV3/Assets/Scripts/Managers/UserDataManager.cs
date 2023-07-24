@@ -138,8 +138,8 @@ public class UserDataManager
             // Query Syntax
             IEnumerable<UserModel> _userSearchQuery =
                 from user in users
-                where user.username.ToLower().Contains(name)
-                orderby user.username
+                where user.name.ToLower().Contains(name)
+                orderby user.name
                 select user;
         
             selectedUsers.AddRange(_userSearchQuery);

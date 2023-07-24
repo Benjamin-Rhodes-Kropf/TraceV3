@@ -8,18 +8,18 @@ public class SendTraceManager : MonoBehaviour
     [Header("Dont Destroy")]
     public static SendTraceManager instance;
     
+    [Header("external values")]
+    [SerializeField]private OnlineMapsLocationService _onlineMapsLocationService;
+
     [Header("Trace Values")]
+    [SerializeField]private const float maxRadius = 0.8f;
+    [SerializeField]private const float minRadius = 0.02f;
+    public float selectedRadius;
     public bool isSendingTrace;
-    public bool isOpeningTrace;
     public Vector2 location;
     public string fileLocation;
     public MediaType mediaType;
-    public OnlineMapsLocationService _onlineMapsLocationService;
-    [SerializeField]private float maxRadius;
-    [SerializeField]private float minRadius;
-    public float radius;
-    public List<String> usersToSendTo;
-    
+    public List<String> usersToSendTrace;
     
     private void Awake()
     {
@@ -28,7 +28,12 @@ public class SendTraceManager : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(this.gameObject);
     }
-
+    
+    public void SetRadius(float radius)
+    {
+        this.selectedRadius = scale(0, 1, minRadius, maxRadius, radius);
+    }
+    
     public float scale(float OldMin, float OldMax, float NewMin, float NewMax, float OldValue){
  
         float OldRange = (OldMax - OldMin);
@@ -37,15 +42,28 @@ public class SendTraceManager : MonoBehaviour
  
         return(NewValue);
     }
-    public void SetRadius(float radius)
-    {
-        this.radius = scale(0, 1, minRadius, maxRadius, radius);
-    }
     
     public void SendTrace()
     {
+        Debug.Log("SEND TRACE!");
         location = _onlineMapsLocationService.GetUserLocation();
-        FbManager.instance.UploadTrace(fileLocation, radius, location, mediaType,usersToSendTo);
+        FbManager.instance.UploadTrace(fileLocation, selectedRadius, location, mediaType,usersToSendTrace);
+    }
+
+    public void SendNotificationToUsersWhoRecivedTheTrace()
+    {
+        foreach (var user in usersToSendTrace)
+        {
+            try //no clue why this makes it work
+            {
+                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user, FbManager.instance.thisUserModel.name, "Sent You A Trace!", location.y,location.x));
+            }
+            catch (Exception e)
+            {
+                Debug.Log("Notification failed... trying again");
+                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user, FbManager.instance.thisUserModel.name, "Sent You A Trace!", location.y,location.x));
+            }
+        }
     }
 }
 

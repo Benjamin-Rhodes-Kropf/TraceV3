@@ -1,12 +1,18 @@
 public class CallbackObject
 {
-    public bool IsSuccessful;
-    public string message;
+    public CallbackEnum callbackEnum;
     public object ReturnValue;
-
+    public string message;
     public CallbackObject()
     {
-        IsSuccessful = false;
+        callbackEnum = CallbackEnum.FAILED;
         message = "";
     }
+}
+
+public enum CallbackEnum
+{
+    SUCCESS,
+    CONNECTIONERROR,
+    FAILED
 }

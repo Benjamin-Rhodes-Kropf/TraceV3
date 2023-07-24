@@ -107,7 +107,7 @@ public class DrawTraceOnMap : MonoBehaviour
         //draw loading trace
         if (SendTraceManager.instance.isSendingTrace)
         {
-            DrawCirlce(SendTraceManager.instance.location.x, SendTraceManager.instance.location.y, SendTraceManager.instance.radius, TraceType.SENDING, "loading");
+            DrawCirlce(SendTraceManager.instance.location.x, SendTraceManager.instance.location.y, SendTraceManager.instance.selectedRadius, TraceType.SENDING, "loading");
         }
     }
     

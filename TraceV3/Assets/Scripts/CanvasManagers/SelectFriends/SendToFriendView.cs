@@ -19,7 +19,7 @@ public class SendToFriendView : MonoBehaviour
     [SerializeField] private RawImage _profilePic;
     [SerializeField] private TMP_Text _nickName;
     public Toggle friendViewToggle;
-    public bool sendToThisFriend = false;
+    private bool sendToThisFriend = false;
     private string _uid = "";
     public bool _isBestFriend = false;
 
@@ -53,11 +53,10 @@ public class SendToFriendView : MonoBehaviour
         }
     }
 
-    
-
     public void TogglePressed()
     {
         sendToThisFriend = friendViewToggle.isOn;
+        SelectFriendsControler.whoToSendTo[_uid] = sendToThisFriend;
     }
 
     public void SetToggleState(bool setToggleState)
@@ -65,6 +64,7 @@ public class SendToFriendView : MonoBehaviour
         Debug.Log("Set Toggle State to:" + setToggleState);
         friendViewToggle.SetIsOnWithoutNotify(setToggleState);
         sendToThisFriend = setToggleState;
+        SelectFriendsControler.whoToSendTo[_uid] = sendToThisFriend;
     }
     public void DestroySelf()
     {
