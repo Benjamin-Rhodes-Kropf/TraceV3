@@ -79,7 +79,10 @@ public partial class FbManager
         
         Debug.LogFormat("Moving to Point ({0}, {1})", target.x, target.y);
         //_map.position = target;
-        StartCoroutine(MoveMap(target));
+        if (target != new Vector2(0, 0))
+        {
+            StartCoroutine(MoveMap(target));
+        }
     }
     
     private IEnumerator MoveMap(Vector2 target)

@@ -16540,6 +16540,14 @@ PrefabInstance:
       propertyPath: bestFriendSpace
       value: 
       objectReference: {fileID: 2128193809}
+    - target: {fileID: 7569371837670385456, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
+      propertyPath: selectAllFriends
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7569371837670385456, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
+      propertyPath: toggleBestFriends
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 952470977018861490, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
