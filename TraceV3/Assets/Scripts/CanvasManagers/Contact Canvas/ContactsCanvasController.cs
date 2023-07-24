@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -24,11 +25,11 @@ namespace CanvasManagers
         private List<IAddressBookContact> _allContacts;
         private UserTabs _CurrentSelectedUserTab;
         
-        private static Regex _compiledUnicodeRegex = new Regex(@"[^\u0000-\u007F]", RegexOptions.Compiled);
+        private static readonly Regex _compiledUnicodeRegex = new Regex(@"[^\u0000-\u007F]", RegexOptions.Compiled);
         public void Init(ContactsCanvas view)
         {
             this._view = view;
-            _view._usernameInput.onValueChanged.AddListener(OnInputValueChange);
+            _view._usernameInput.onValueChanged.AddListener(OnChangeInput);
             _view._contactsButton.onClick.AddListener(OnContactsSelection);
             _view._friendsButton.onClick.AddListener(OnFriendsSelection);
             _view._requestsButton.onClick.AddListener(OnRequestsSelection);
@@ -59,26 +60,58 @@ namespace CanvasManagers
         }
 
         private List<GameObject> searchList;
-        private void OnInputValueChange(string inputText)
+        private string lastInputText = "";
+
+        private void OnChangeInput(string inputText)
         {
-            if (inputText.Length <= 1)
+            OnInputValueChange(inputText);
+        }
+        
+        private async Task OnInputValueChange(string inputText)
+        {
+            if (inputText.Length <= 1 && searchList.Count>0)
             {
                 ClearSearchList();
                 SelectPreviouslySelectedScreen();
             }
-            
-            var canUpdate = inputText.Length > 1;
-            
-            if (!canUpdate) return;
-            
-            inputText = inputText.ToLower();
-            ClearSearchList();
-            SelectionPanelClick("SearchBar");
-            searchList = new List<GameObject>();
-            SearchUsersInDB(inputText);
+            else
+            {
+                await CheckForChanges();
+            }
+
+            // var canUpdate = inputText.Length > 1;
+            //
+            // if (!canUpdate) return;
+            //
+            // inputText = inputText.ToLower();
+            // ClearSearchList();
+            // SelectionPanelClick("SearchBar");
+            // searchList = new List<GameObject>();
+            // SearchUsersInDB(inputText);
 
         }
 
+        private async Task CheckForChanges()
+        {
+            string currentValue = _view._usernameInput.text;
+
+            // Wait for the check interval to see if any more changes occur
+            await Task.Delay((int)(0.25f * 1000));
+
+            // After the wait, check if the value is still the same as before the wait
+            if (currentValue == _view._usernameInput.text && currentValue != lastInputText)
+            {
+                currentValue = currentValue.ToLower();
+                ClearSearchList();
+                SelectionPanelClick("SearchBar");
+                searchList = new List<GameObject>();
+                SearchUsersInDB(currentValue);
+                lastInputText = currentValue;
+            }
+        }
+        
+        
+        
         private void ClearSearchList()
         {
             if (searchList is not { Count: > 0 })
