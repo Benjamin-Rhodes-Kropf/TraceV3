@@ -24,7 +24,7 @@ public class SelectFriendsCanvas : MonoBehaviour
     [SerializeField] private Transform allFriendText;
     
     //visuals
-    public bool selectAllFriends;
+    public bool selectAllFriends = true;
     public bool toggleBestFriends;
     
     #region UnityEvents
@@ -44,13 +44,9 @@ public class SelectFriendsCanvas : MonoBehaviour
         }
         selectAllFriends = true;
         _controller.Init(this);
+        ToggleAllFriends();
     }
 
-    private void OnDisabled()
-    {
-        
-    }
-    
     public void CheckAndChangeVisualsForNoFriends(int numOfBestFriends)
     {
         if (numOfBestFriends != 0)
