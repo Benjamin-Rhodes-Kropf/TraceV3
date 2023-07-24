@@ -1073,16 +1073,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99d2eaf152fdf435085541abd42f8a5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _onlineMapsLocationService: {fileID: 6068666308761308073}
+  selectedRadius: 0
   isSendingTrace: 0
-  isOpeningTrace: 0
   location: {x: 0, y: 0}
   fileLocation: 
   mediaType: 0
-  _onlineMapsLocationService: {fileID: 6068666308761308073}
-  maxRadius: 0.8
-  minRadius: 0.02
-  radius: 0
-  usersToSendTo: []
+  usersToSendTrace: []
 --- !u!4 &722720123
 Transform:
   m_ObjectHideFlags: 0
@@ -16136,11 +16133,31 @@ PrefabInstance:
     m_TransformParent: {fileID: 906833078}
     m_Modifications:
     - target: {fileID: 667102099699509219, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 667102099699509219, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 667102099699509219, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 3448891080964609665}
     - target: {fileID: 667102099699509219, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 3448891080964609665}
+    - target: {fileID: 667102099699509219, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 667102099699509219, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: BackToMainScene
+      objectReference: {fileID: 0}
+    - target: {fileID: 667102099699509219, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
       value: BackToMainScene
       objectReference: {fileID: 0}
     - target: {fileID: 667102099699509219, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
@@ -16148,7 +16165,15 @@ PrefabInstance:
       value: SelectFriendsCanvas, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 667102099699509219, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: SelectFriendsCanvas, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 667102099699509219, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 667102099699509219, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 952470977018861490, guid: ef77325f0b1a04e3898600f78fd99652, type: 3}

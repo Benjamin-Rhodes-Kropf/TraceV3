@@ -35,8 +35,7 @@ public class SelectFriendsCanvas : MonoBehaviour
         //objects
         _youDontHaveAnyFriendsYetText.SetActive(false);
         //controller
-        if (_friendsList == null)
-            _friendsList = new List<SendToFriendView>();
+        _friendsList = new List<SendToFriendView>();
         if (_controller == null)
         {
             _controller = gameObject.AddComponent<SelectFriendsControler>();
@@ -47,6 +46,11 @@ public class SelectFriendsCanvas : MonoBehaviour
         _controller.Init(this);
     }
 
+    private void OnDisabled()
+    {
+        
+    }
+    
     public void CheckAndChangeVisualsForNoFriends(int numOfBestFriends)
     {
         if (numOfBestFriends != 0)
@@ -69,6 +73,7 @@ public class SelectFriendsCanvas : MonoBehaviour
     }
     
     public void BackToMainScene() {
+       _controller.UnInitialize();
         ScreenManager.instance.isComingFromCameraScene = true;
         SceneManager.UnloadSceneAsync(1);
         ScreenManager.instance.camManager.cameraPanel.SetActive(false);//disabling the camera panel
