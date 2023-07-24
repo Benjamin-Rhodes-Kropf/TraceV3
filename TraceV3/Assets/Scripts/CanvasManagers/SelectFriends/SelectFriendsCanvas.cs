@@ -73,6 +73,7 @@ public class SelectFriendsCanvas : MonoBehaviour
     }
     
     public void BackToMainScene() {
+        ClearFriendsList();
        _controller.UnInitialize();
         ScreenManager.instance.isComingFromCameraScene = true;
         SceneManager.UnloadSceneAsync(1);
