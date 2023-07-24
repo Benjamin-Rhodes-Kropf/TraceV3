@@ -17,7 +17,6 @@ public class SelectFriendsControler : MonoBehaviour
         _allFriendsView = new List<SendToFriendView>();
         this._view._searchBar.onValueChanged.AddListener(OnSearchBarValueChange);
         whoToSendTo = new Dictionary<string, bool>();
-        ClearFriendsView();
         LoadAllFriends();
     }
     public void UnInitialize()
