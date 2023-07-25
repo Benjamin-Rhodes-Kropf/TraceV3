@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using NatML.Devices;
 using UnityEngine;
 using UnityEngine.Video;
@@ -29,9 +30,14 @@ public class UIController : MonoBehaviour
     void Awake()
     {
         //To show microphone prompt to avoid a conflict which occurs once in start
-        
-        
+        StartCoroutine(CameraAwake());
+
         //assigning the ui controller in screenamanet script
+
+    }
+
+    IEnumerator CameraAwake()
+    {
         ScreenManager.instance.uiController = this;
         //assigning the camera maanager from screenamanet script and other vaiables
         camManger = ScreenManager.instance.camManager;
@@ -43,8 +49,34 @@ public class UIController : MonoBehaviour
         string subDirectory = "SaveImages/Traces";
         savePath = Path.Combine(Application.persistentDataPath, subDirectory);
         Directory.CreateDirectory(savePath);
+        yield return new WaitForSeconds(0.35f);
+        
+        //get permissions
+        if (Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            if (!Application.HasUserAuthorization(UserAuthorization.Microphone))
+            {
+                Application.RequestUserAuthorization(UserAuthorization.Microphone);
+            }
+        }
+        if (Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            if (!Application.HasUserAuthorization(UserAuthorization.WebCam))
+            {
+                Application.RequestUserAuthorization(UserAuthorization.WebCam);
+                while (!Application.HasUserAuthorization(UserAuthorization.WebCam))
+                {
+                    yield return null;
+                }
+            }
+        }
+        
+        StartAudio();
+    }
 
-        //microPhoneAudioKit.StartRunning(); //todo: causes slower loading but now cuasing skip on video start
+    async void StartAudio()
+    {
+        await Task.Run(() => microPhoneAudioKit.StartRunning());
     }
 
     public void CloseVideoPreview()

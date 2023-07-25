@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using NatML.Examples.UI;
 using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,13 +14,21 @@ public class CameraManager : MonoBehaviour//PressInputBase
     public GameObject imagePreviewPanel;
     public Image previewImagePlayer;
     public RawImage imagePreview;
-
+    public RecordButton _RecordButton;
+    
     //public UIController uiManager;
     private void OnEnable()
     {
         cameraPanel.SetActive(true);
         imagePreviewPanel.SetActive(false);
         videoPreviewPanel.SetActive(false);
+        StartCoroutine(BeginCamera());
+    }
+
+    IEnumerator BeginCamera()
+    {
+        yield return new WaitForSeconds(2.5f);
+        _RecordButton.ForceRec();
     }
 
     //for switching between the device cameras
