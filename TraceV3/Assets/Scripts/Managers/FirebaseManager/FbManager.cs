@@ -1173,7 +1173,7 @@ public partial class FbManager : MonoBehaviour
         }
 
         int count = 0;
-        foreach (var user in usersToSendToList)
+        foreach (var user in usersToSendToList) //each of the users in usersToSendToList is a UID
         {
             count++;
             //update data for within trace

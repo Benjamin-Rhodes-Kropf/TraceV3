@@ -54,6 +54,7 @@ public class NotificationManager : UnitySingleton<NotificationManager>
             }
         }
     }
+    
 
     public IEnumerator SendNotificationUsingFirebaseUserId(string firebaseUserId, string title = "", string message = "", float lng = 0, float lat = 0)
     {

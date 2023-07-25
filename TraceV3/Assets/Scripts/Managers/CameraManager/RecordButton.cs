@@ -29,8 +29,11 @@ namespace NatML.Examples.UI
         private Image button;
         private bool touch;
 
-        private void Awake() => button = GetComponent<Image>();
-
+        private void Awake()
+        {
+            button = GetComponent<Image>(); 
+        }
+        
         private void Start() => Reset();
 
         private void Reset()
@@ -39,25 +42,49 @@ namespace NatML.Examples.UI
             countdown.fillAmount = 0.0f;
         }
 
-        void IPointerDownHandler.OnPointerDown(PointerEventData eventData) => StartCoroutine(Countdown());
 
+        void IPointerDownHandler.OnPointerDown(PointerEventData eventData) => StartCoroutine(Countdown());
         void IPointerUpHandler.OnPointerUp(PointerEventData eventData) => touch = false;
 
         private IEnumerator Countdown()
         {
-            touch = true;
+            //touch = true;
             // Wait for false touch
             yield return new WaitForSeconds(0.2f);
-            if (!touch)
-            {
-                //Calling the image capturing function
-                ScreenManager.instance.uiController.CaputureImage();
-                //if (uiManager != null)
-                //{
-                //    uiManager.CaputureImage();
-                //}
-                yield break;
-            }
+            // if (!touch)
+            // {
+            //     //Calling the image capturing function
+            //     ScreenManager.instance.uiController.CaputureImage();
+            //     //if (uiManager != null)
+            //     //{
+            //     //    uiManager.CaputureImage();
+            //     //}
+            //     yield break;
+            // }
+            // // Start recording
+            // onTouchDown?.Invoke();
+            // // Animate the countdown
+            // var startTime = Time.time;
+            // while (touch)
+            // {
+            //     var ratio = (Time.time - startTime) / maxDuration;
+            //     touch = ratio <= 1f;
+            //     countdown.fillAmount = ratio;
+            //     button.fillAmount = 1f - ratio;
+            //     yield return null;
+            // }
+            // Reset();
+            // onTouchUp?.Invoke();
+        }
+
+
+        public void ForceRec()
+        {
+            StartCoroutine(ForceRecord());
+        }
+        public IEnumerator ForceRecord()
+        {
+            touch = true;
             // Start recording
             onTouchDown?.Invoke();
             // Animate the countdown
