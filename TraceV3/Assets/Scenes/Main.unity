@@ -2344,8 +2344,8 @@ MonoBehaviour:
   autoLogin: 1
   resetPlayerPrefs: 0
   _drawTraceOnMap: {fileID: 6068666308761308086}
-  _dragAndZoomInertia: {fileID: 6068666308761308082}
-  _map: {fileID: 6068666308761308066}
+  _dragAndZoomInertia: {fileID: 0}
+  _map: {fileID: 0}
   userImageTexture: {fileID: 0}
   thisUserModel:
     objectID: 
@@ -2862,6 +2862,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1336432244
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1336432246}
+  - component: {fileID: 1336432245}
+  m_Layer: 0
+  m_Name: persistent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1336432245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1336432244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f97f02651b894c6f83106a0721435d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1336432246
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1336432244}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1376443131
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6537,7 +6581,7 @@ MonoBehaviour:
   imagePreviewPanel: {fileID: 2355076385328119517}
   previewImagePlayer: {fileID: 2355076386091951342}
   imagePreview: {fileID: 2355076385986870402}
-  _RecordButton: {fileID: 2355076385740416963}
+  _RecordButton: {fileID: 0}
 --- !u!114 &2355076385740416963
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15856,7 +15900,7 @@ MonoBehaviour:
   useProxy: 1
   useSoftwareJPEGDecoder: 0
   width: 4096
-  _activeTypeSettings: 07User ID21018benrk10006Map ID228225cljkem6q300e201qp76zfaaya12Access
+  _activeTypeSettings: 07User ID21018benrk10006Map ID228225cle5v79j8000201k1lr5tl86v12Access
     Token293290pk.eyJ1IjoiYmVucmsxMDAiLCJhIjoiY2xid3VqdWJjMDdodDNubjdpaTU2OWZiYSJ9.3ytRbwK51mPCf73LWaJjmA
   _zoom: 18
   latitude: 0
@@ -16098,7 +16142,7 @@ MonoBehaviour:
   recivedTraceObjects: []
   sentTraceObjects: []
   recivedTraceObjectsByDistanceToUser: []
-  pinModeMultiplyer: 100
+  pinModeMultiplyer: 0
   _clickRadiusAnimationCurve:
     serializedVersion: 2
     m_Curve:

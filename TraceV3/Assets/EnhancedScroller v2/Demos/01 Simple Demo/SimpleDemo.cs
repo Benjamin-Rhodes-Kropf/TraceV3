@@ -75,7 +75,7 @@ namespace EnhancedScrollerDemos.SuperSimpleDemo
                 _data.Add(new Data()
                 {
                     _Contact = null,
-                    _Sprite = contact.profile,
+                    _Texture = contact.profile,
                     _ContactNumber = contact.phoneNumber,
                     _Name = contact.givenName
                 });

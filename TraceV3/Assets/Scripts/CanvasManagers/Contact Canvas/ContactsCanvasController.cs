@@ -456,7 +456,7 @@ namespace CanvasManagers
     {
         public string givenName;
         public string phoneNumber;
-        public Sprite profile;
+        public Texture2D profile;
     }
 }
 

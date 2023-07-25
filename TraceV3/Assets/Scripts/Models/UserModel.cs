@@ -37,10 +37,27 @@ public class UserModel
         }
     }
 
+    public void PPTexture(Action<Texture> callback)
+    {
+        DownloadTexture((callback));
+    }
+    public void DownloadTexture(Action<Texture> callback)
+    {
+        // //Todo: This is super dumb because we should not have seperate object id and user id but this is how algolia wants to query
+        if (string.IsNullOrEmpty(userID))
+        {
+            FbManager.instance.GetProfilePhotoFromFirebaseStorage(objectID, callback, Debug.Log,ref _downloadPCoroutine);
+        }
+        else
+        {
+            FbManager.instance.GetProfilePhotoFromFirebaseStorage(userID, callback, Debug.Log, ref _downloadPCoroutine);
+        }
+    }
+
     public void DownloadProfilePicture(Action<Sprite> callback)
     {
         // //Todo: This is super dumb because we should not have seperate object id and user id but this is how algolia wants to query
-        if (String.IsNullOrEmpty(userID))
+        if (string.IsNullOrEmpty(userID))
         {
             FbManager.instance.GetProfilePhotoFromFirebaseStorage(objectID, (tex) =>
             {
