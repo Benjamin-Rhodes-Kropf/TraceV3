@@ -8,14 +8,14 @@ using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Firestore;
-using TMPro;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Firebase.Extensions;
 using Firebase.Storage;
 using Unity.VisualScripting;
 using UnityEngine.Networking;
+using TMPro;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using UnityEngine.UI;
 using DownloadHandler = Networking.DownloadHandler;
 using Object = System.Object;
@@ -220,7 +220,7 @@ public partial class FbManager : MonoBehaviour
             yield break;
         }
 
-        _firebaseUser = LoginTask.Result;
+        _firebaseUser = LoginTask.Result.User;
         Debug.LogFormat("User signed in successfully: {0} ({1})", _firebaseUser.DisplayName, _firebaseUser.Email);
         Debug.Log("logged In: user profile photo is: " + _firebaseUser.PhotoUrl);
         callbackObject.callbackEnum = CallbackEnum.SUCCESS;
@@ -358,12 +358,13 @@ public partial class FbManager : MonoBehaviour
             callback("Missing Username", AuthError.None); //having a blank nickname is not really a DB error so I return a error here
             yield break;
         }
-        Task<FirebaseUser> RegisterTask  = null;
+        Task<AuthResult> RegisterTask  = null;
         string message = "";
         AuthError errorCode =  AuthError.None;
-        var creationTask =  _firebaseAuth.CreateUserWithEmailAndPasswordAsync(_email, _password).ContinueWith(task =>
-        {
-            RegisterTask = task;
+        
+        var creationTask = _firebaseAuth.CreateUserWithEmailAndPasswordAsync(_email, _password).ContinueWith((Task<Firebase.Auth.AuthResult> task) =>
+            {
+                RegisterTask = task;
             
             if (RegisterTask.Exception != null)
             {
@@ -392,7 +393,7 @@ public partial class FbManager : MonoBehaviour
             }
            
             // Firebase user has been created.
-            _firebaseUser = task.Result;
+            _firebaseUser = task.Result.User;
             Debug.LogFormat("Firebase user created successfully: {0} ({1})",
                 _firebaseUser.DisplayName, _firebaseUser.UserId);
         });
