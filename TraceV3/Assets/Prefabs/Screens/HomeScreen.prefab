@@ -963,7 +963,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &1361899930089332813
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -994,6 +994,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maps: {fileID: 0}
+  _drawTraceOnMap: {fileID: 0}
+  _traceManager: {fileID: 0}
   _tutorialCanvas: {fileID: 9036104054326087776}
   openTraceManager: {fileID: 7717927383040781268}
   viewTraceManager: {fileID: 6746920801771574508}
@@ -3860,6 +3862,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0100bf89909e746e8b4160ae6954ce2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _homeScreenManager: {fileID: 0}
+  _onlineMapsLocation: {fileID: 0}
   imageObject: {fileID: 3367896875548574672}
   videoObject: {fileID: 5902764150914196364}
   _videoRectTransform: {fileID: 3901137257164337083}
