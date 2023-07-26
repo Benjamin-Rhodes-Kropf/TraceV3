@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using CanvasManagers;
-using Firebase.Analytics;
 using UnityEngine;
 using Firebase.Database;
 

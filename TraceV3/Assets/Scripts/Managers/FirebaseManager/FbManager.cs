@@ -16,7 +16,6 @@ using TMPro;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Firebase.Analytics;
 using UnityEngine.UI;
 using DownloadHandler = Networking.DownloadHandler;
 using Object = System.Object;
@@ -219,7 +218,7 @@ public partial class FbManager : MonoBehaviour
             callbackObject.message = message;
             callback(callbackObject);
             
-            FirebaseAnalytics.LogEvent(FirebaseAnalytics.EventLogin);
+            //FirebaseAnalytics.LogEvent(FirebaseAnalytics.EventLogin);
             yield break;
         }
 
