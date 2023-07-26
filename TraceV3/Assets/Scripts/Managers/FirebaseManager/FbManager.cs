@@ -16,6 +16,7 @@ using TMPro;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Firebase.Analytics;
 using UnityEngine.UI;
 using DownloadHandler = Networking.DownloadHandler;
 using Object = System.Object;
@@ -217,6 +218,8 @@ public partial class FbManager : MonoBehaviour
             callbackObject.callbackEnum = CallbackEnum.FAILED;
             callbackObject.message = message;
             callback(callbackObject);
+            
+            FirebaseAnalytics.LogEvent(FirebaseAnalytics.EventLogin);
             yield break;
         }
 
@@ -742,8 +745,6 @@ public partial class FbManager : MonoBehaviour
              }
         });
     }
-
-
     private void HandleUserAdded(object sender, ChildChangedEventArgs args)
     {
         Debug.Log("HandleUserAdded");
@@ -947,8 +948,35 @@ public partial class FbManager : MonoBehaviour
         //todo: handle remove user
     }
     #endregion
-    #region -User Actions
-    
+    #region -Is User Invited
+
+    public IEnumerator SendInvite(string phoneNumber)
+    {
+        var DBTaskAddInvite = _databaseReference.Child("invites").Child(phoneNumber).SetValueAsync(DateTime.UtcNow.ToString());
+        while (DBTaskAddInvite.IsCompleted is false)
+            yield return new WaitForEndOfFrame();
+    }
+    public IEnumerator IsUserInvited(string _phoneNumber, System.Action<bool> callback)
+    {
+        var DBTask = _databaseReference.Child("invites").Child(_phoneNumber).GetValueAsync();
+        while (DBTask.IsCompleted is false)
+            yield return new WaitForEndOfFrame();
+        
+        if (DBTask.Exception != null)
+        {
+            //user is invited
+            Debug.Log("userInvted");
+            callback(true);
+        }
+        else
+        {
+            //user is not invited
+            Debug.Log("userNOTInvted");
+            callback(false);
+        }
+    }
+
+
     #endregion
     #region -User Tracking
     //Todo Write tracking functions to manage in app use
@@ -1432,7 +1460,6 @@ public partial class FbManager : MonoBehaviour
             }
         }
     }
-    
     public IEnumerator GetTracePhotoByUrl(string _url, System.Action<Texture> callback)
     {
         var request = new UnityWebRequest();
@@ -1529,6 +1556,12 @@ public partial class FbManager : MonoBehaviour
                 // Uh-oh, an error occurred!
             }
         });
+    }
+    public void CollectAnalytics()
+    {
+        //friend count
+        //FirebaseAnalytics.LogEvent(FirebaseAnalytics.EventSelectItem, new Parameter(FirebaseAnalytics.ParameterValue, _allFriends.Count));
+        
     }
 
     public enum LoginStatus

@@ -22,6 +22,7 @@ namespace CanvasManagers
             _view._numberInputField.onValueChanged.AddListener(EditPhoneNumber);
             _view._numberValidationView._submitButton.onClick.AddListener(Varify_OTP);
             _view._numberValidationView.gameObject.SetActive(false);
+            PlayerPrefs.SetInt("IsInQue", 1);
         }
 
         public void Uninitilise()
@@ -81,10 +82,25 @@ namespace CanvasManagers
             _view.StartCoroutine(FbManager.instance.SetUserPhoneNumber(phoneNumber, (isSuccess) =>
             {
                 if (isSuccess)
+                {
                     ScreenManager.instance.ChangeScreenForwards("Username");
+                    _view.StartCoroutine(FbManager.instance.IsUserInvited(phoneNumber, (callbackIsSuccess) =>
+                    {
+                        if (callbackIsSuccess)
+                        {
+                            PlayerPrefs.SetInt("IsInQue", 0);
+                            Debug.Log("SetInQue false");
+                        }
+                        else
+                            Debug.LogError("Failed to update phone");
+                    }));
+                }
                 else
+                {
                     Debug.LogError("Failed to update phone");
+                }
             }));
+            
             return;
 #endif
             Debug.LogError("Verify_OTP Called");
