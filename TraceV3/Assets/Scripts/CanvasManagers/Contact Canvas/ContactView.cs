@@ -26,8 +26,8 @@ public class ContactView : MonoBehaviour
       _givenName = null;
       _phoneNumber = null;
       _contactImage = null;
-      Destroy( _contactImage.sprite); //destroy
-      Destroy( _contactImage); //destroy
+      // Destroy( _contactImage.sprite); //destroy
+      // Destroy( _contactImage); //destroy
       _addButton = null;
       _removeButton = null;
    }
