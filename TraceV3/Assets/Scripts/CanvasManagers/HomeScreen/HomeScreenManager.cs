@@ -11,15 +11,11 @@ public class HomeScreenManager : MonoBehaviour
 
     [Header("External")]
     public static bool isInSendTraceView;
-
-    [SerializeField] private OnlineMaps _maps;
-    [SerializeField] private DrawTraceOnMap _drawTraceOnMap;
     [SerializeField] private TraceManager _traceManager;
 
     [SerializeField] private GameObject _tutorialCanvas;
     [SerializeField] private OpenTraceManager openTraceManager;
     [SerializeField] private ViewTraceManager viewTraceManager;
-    [SerializeField] private Animator homeScreenAnimator; //Todo: add animation
 
     public void CloseViewTrace()
     {
