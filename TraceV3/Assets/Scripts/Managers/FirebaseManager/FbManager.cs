@@ -167,8 +167,9 @@ public partial class FbManager : MonoBehaviour
     public IEnumerator Login(string _email, string _password,  System.Action<CallbackObject> callback)
     {
         //Fb Login
+        Debug.Log("logging in");
         CallbackObject callbackObject = new CallbackObject();
-        var LoginTask = _firebaseAuth.SignInWithEmailAndPasswordAsync(_email, _password);
+        Task<AuthResult> LoginTask = _firebaseAuth.SignInWithEmailAndPasswordAsync(_email, _password);
         yield return new WaitUntil(predicate: () => LoginTask.IsCompleted);
         
         if (LoginTask.Exception != null)
@@ -217,8 +218,6 @@ public partial class FbManager : MonoBehaviour
             callbackObject.callbackEnum = CallbackEnum.FAILED;
             callbackObject.message = message;
             callback(callbackObject);
-            
-            //FirebaseAnalytics.LogEvent(FirebaseAnalytics.EventLogin);
             yield break;
         }
 
@@ -862,6 +861,9 @@ public partial class FbManager : MonoBehaviour
     public void AddUserToLocalDbByID(string userToGetID)
     {
         Debug.Log("Adding:" + userToGetID);
+
+        if (userToGetID == "Don't Delete This Child")
+            return;
         //check if user already in local DB
         foreach (var obj in users)
         {

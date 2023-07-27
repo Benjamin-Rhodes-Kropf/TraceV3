@@ -136,31 +136,38 @@ public partial class FbManager
     
     private void HandleFriends(object sender, ChildChangedEventArgs args)
     {
-        //Debug.Log("HandleFriends");
+        Debug.Log("HandleFriends");
+        if (args.Snapshot == null || args.Snapshot.Value == null) return;
+
         try
         {
-            if (args.Snapshot == null || args.Snapshot.Value == null) return;
-            var friendId = args.Snapshot.Key.ToString();
-            var bestFriend = System.Convert.ToBoolean(args.Snapshot.Value.ToString());
-            
-            if (string.IsNullOrEmpty(friendId)) return;
-            
-            var friend = new FriendModel
+            if (args.Snapshot.Exists)
             {
-                friendID = friendId,
-                isBestFriend = bestFriend
-            };
-            _allFriends.Add(friend);
-            AddUserToLocalDbByID(friendId);
-            if (ContactsCanvas.UpdateFriendsView != null)
-                ContactsCanvas.UpdateFriendsView?.Invoke();
-            ContactsCanvas.UpdateRedMarks();
+                var friendId = args.Snapshot.Key.ToString();
+                if (string.IsNullOrEmpty(friendId)) return;
+                bool bestFriend = false;
+                
+                //bestFriend = Convert.ToBoolean(args.Snapshot.Value);
+                var friend = new FriendModel
+                {
+                    friendID = friendId,
+                    isBestFriend = bestFriend
+                };
+                
+                _allFriends.Add(friend);
+                AddUserToLocalDbByID(friendId);
+                if (ContactsCanvas.UpdateFriendsView != null)
+                    ContactsCanvas.UpdateFriendsView?.Invoke();
+            }
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            Debug.Log("SOMTHING WENT WRONG");
         }
+        
+        //ContactsCanvas.UpdateRedMarks();
     }
+
     private void HandleRemovedFriends(object sender, ChildChangedEventArgs args)
     {
         try
