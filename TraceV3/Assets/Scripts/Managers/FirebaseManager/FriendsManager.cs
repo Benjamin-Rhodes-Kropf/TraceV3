@@ -147,7 +147,7 @@ public partial class FbManager
                 if (string.IsNullOrEmpty(friendId)) return;
                 bool bestFriend = false;
                 
-                //bestFriend = Convert.ToBoolean(args.Snapshot.Value);
+                bestFriend = Convert.ToBoolean(args.Snapshot.Value);
                 var friend = new FriendModel
                 {
                     friendID = friendId,
