@@ -354,6 +354,7 @@ public partial class FbManager : MonoBehaviour
     }
     public IEnumerator RegisterNewUser(string _email, string _password, string _username, string _phoneNumber,  System.Action<String,AuthError> callback)
     {
+        RestTutorial();
         if (_username == "")
         {
             callback("Missing Username", AuthError.None); //having a blank nickname is not really a DB error so I return a error here
@@ -659,10 +660,6 @@ public partial class FbManager : MonoBehaviour
             callback(DBTask.Result.ToString());
         }
     }
-    
-    
-    
-    
     
     //Todo: Do this in the cloud... we cant store all users locally
     private void GetAllUsers()
@@ -1546,6 +1543,14 @@ public partial class FbManager : MonoBehaviour
     #endregion
     
     //possibly useful
+    private void RestTutorial()
+    {
+        PlayerPrefs.SetInt("TutorialOnHomeScreen", 1);
+        PlayerPrefs.SetInt("TutorialOnCamera", 1);
+        PlayerPrefs.SetInt("TutorialOnSelectScreen", 1);
+        PlayerPrefs.SetInt("TutorialOnSelectRadius", 1);
+    }
+    
     private void DeleteFile(String _location) 
     { 
         _firebaseStorageReference = _firebaseStorageReference.Child(_location);
