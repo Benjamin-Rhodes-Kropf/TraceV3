@@ -317,7 +317,7 @@ public partial class FbManager : MonoBehaviour
                     string username = snapshot.Child("username").Value.ToString();
                     string phone = snapshot.Child("phone").Value.ToString();
                     string photoURL = snapshot.Child("photo").Value.ToString();
-                    thisUserModel = new UserModel(_firebaseUser.UserId,email,displayName,username,phone,photoURL, password);
+                    thisUserModel = new UserModel(_firebaseUser.UserId,email,displayName,username,phone,photoURL,password);
                     IsFirebaseUserInitialised = true;
             }
             if (task.IsFaulted)
