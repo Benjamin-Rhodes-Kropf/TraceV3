@@ -15,6 +15,7 @@ using UnityEngine.Networking;
 using TMPro;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UnityEngine.UI;
 using DownloadHandler = Networking.DownloadHandler;
@@ -143,8 +144,11 @@ public partial class FbManager : MonoBehaviour
             StartCoroutine(FbManager.instance.Login(savedUsername, savedPassword, (myReturnValue) => {
                 if (myReturnValue.callbackEnum == CallbackEnum.SUCCESS)
                 {
-                    Debug.Log("FbManager: Logged in!");
-                    ScreenManager.instance.ChangeScreenFade("HomeScreen");
+                    if(PlayerPrefs.GetInt("IsInQueue") == 0)
+                        ScreenManager.instance.ChangeScreenFade("HomeScreen");
+                    else {
+                        ScreenManager.instance.ChangeScreenFade("UserInQue");
+                    }
                 }
                 else
                 {
@@ -225,6 +229,7 @@ public partial class FbManager : MonoBehaviour
         Debug.LogFormat("User signed in successfully: {0} ({1})", _firebaseUser.DisplayName, _firebaseUser.Email);
         Debug.Log("logged In: user profile photo is: " + _firebaseUser.PhotoUrl);
         callbackObject.callbackEnum = CallbackEnum.SUCCESS;
+
         //stay logged in
         PlayerPrefs.SetString("Username", _email);
         PlayerPrefs.SetString("Password", _password);
@@ -242,6 +247,13 @@ public partial class FbManager : MonoBehaviour
                 if (isSusscess)
                 {
                     Debug.Log("FbManager: SetUserLoginStatus: Done!");
+                }
+            }));
+            StartCoroutine(SetUserQueueStatus(Convert.ToBoolean(PlayerPrefs.GetInt("IsInQueue")), isSusscess =>
+            {
+                if (isSusscess)
+                {
+                    Debug.Log("FbManager: SetUserQueueStatus:" + Convert.ToBoolean(PlayerPrefs.GetInt("IsInQueue")));
                 }
             }));
         }
@@ -347,8 +359,8 @@ public partial class FbManager : MonoBehaviour
     #endregion
     
     #region -User Registration
-    private string GenerateUserProfileJson(string username, string name, string userPhotoLink, string email, string phone) {
-        TraceUserInfoStructure traceUserInfoStructure = new TraceUserInfoStructure(username, name, userPhotoLink, email, phone);
+    private string GenerateUserProfileJson(string username, string name, string userPhotoLink, string email, string phone, string createdDate) {
+        TraceUserInfoStructure traceUserInfoStructure = new TraceUserInfoStructure(username, name, userPhotoLink, email, phone, createdDate);
         string json = JsonUtility.ToJson(traceUserInfoStructure);
         return json;
     }
@@ -419,7 +431,7 @@ public partial class FbManager : MonoBehaviour
             print("User Email :: "+_firebaseUser.Email);
         }
         
-        var json = GenerateUserProfileJson( _username, "null", "null",_email, _phoneNumber);
+        var json = GenerateUserProfileJson( _username, "null", "null",_email, _phoneNumber, DateTime.UtcNow.ToString());
         _databaseReference.Child("users").Child(_firebaseUser.UserId.ToString()).SetRawJsonValueAsync(json);
         _firestoreData = new Dictionary<string, object>
         {
@@ -527,10 +539,19 @@ public partial class FbManager : MonoBehaviour
         }
         else
         {
-            _firestoreData.Add("phone",_phoneNumber);
+            //prevent dict bug
+            if (_firestoreData.ContainsKey("phone"))
+            {
+                _firestoreData["phone"] = _phoneNumber;
+            }
+            else
+            {
+                _firestoreData.Add("phone",_phoneNumber);
+            }
             callback(true);
         }
     }
+    
     public IEnumerator SetUserLoginStatus(bool _isOnline, System.Action<bool> callback)
     {
         if (_firebaseUser != null)
@@ -551,6 +572,27 @@ public partial class FbManager : MonoBehaviour
         else
             callback(false);
     }
+    public IEnumerator SetUserQueueStatus(bool _isInQueue, System.Action<bool> callback)
+    {
+        if (_firebaseUser != null)
+        {
+            var DBTask = _databaseReference.Child("users").Child(_firebaseUser.UserId).Child("isInQueue").SetValueAsync(_isInQueue);
+            yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
+
+            if (DBTask.Exception != null)
+            {
+                Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+                callback(false);
+            }
+            else
+            {
+                callback(true);
+            }
+        }
+        else
+            callback(false);
+    }
+
     public IEnumerator UploadProfilePhoto(byte[] _picBytes, System.Action<bool,string> callback)
     {
         StorageReference imageRef = _firebaseStorage.GetReference("ProfilePhoto/"+_firebaseUser.UserId+".png");
@@ -949,26 +991,34 @@ public partial class FbManager : MonoBehaviour
 
     public IEnumerator SendInvite(string phoneNumber)
     {
-        var DBTaskAddInvite = _databaseReference.Child("invites").Child(phoneNumber).SetValueAsync(DateTime.UtcNow.ToString());
+        var DBTaskAddInvite = _databaseReference.Child("invited").Child(phoneNumber).Child(FbManager.instance.thisUserModel.userID).SetValueAsync(DateTime.UtcNow.ToString());
         while (DBTaskAddInvite.IsCompleted is false)
             yield return new WaitForEndOfFrame();
     }
+    
     public IEnumerator IsUserInvited(string _phoneNumber, System.Action<bool> callback)
     {
-        var DBTask = _databaseReference.Child("invites").Child(_phoneNumber).GetValueAsync();
-        while (DBTask.IsCompleted is false)
-            yield return new WaitForEndOfFrame();
+        string cleanedPhoneNumber = Regex.Replace(_phoneNumber, @"[^0-9]", "");
+        Debug.Log("Checking If User Invited:" + cleanedPhoneNumber);
+        var DBTask = _databaseReference.Child("invited").Child(cleanedPhoneNumber).GetValueAsync();
+        yield return new WaitUntil(() => DBTask.IsCompleted);
         
         if (DBTask.Exception != null)
         {
-            //user is invited
-            Debug.Log("userInvted");
+            // Error occurred while retrieving data (user is not invited)
+            Debug.Log("user NOT Invited");
+            callback(false);
+        }
+        else if (DBTask.Result.Exists)
+        {
+            // User is invited (data exists in the database)
+            Debug.Log("user Invited");
             callback(true);
         }
         else
         {
-            //user is not invited
-            Debug.Log("userNOTInvted");
+            // User is not invited (data doesn't exist in the database)
+            Debug.Log("user NOT Invited");
             callback(false);
         }
     }
