@@ -21,10 +21,33 @@ public class SignInCanvas : MonoBehaviour
         Debug.Log("Login Button Hit!");
         StartCoroutine(FbManager.instance.Login(username.text, password.text, (myReturnValue) => {
             if (myReturnValue.callbackEnum == CallbackEnum.SUCCESS)
-                ScreenManager.instance.ChangeScreenNoAnim("HomeScreen");
+            {
+                FbManager.instance.SetUserLoginSatus(true);
+                if (PlayerPrefs.GetInt("IsInQueue") == 1)
+                {
+                    StartCoroutine(FbManager.instance.CheckIfUserAllowed(callbackObject =>
+                    {
+                        if (callbackObject == true)
+                        {
+                            Debug.Log("user is allowed");
+                            ScreenManager.instance.ChangeScreenNoAnim("HomeScreen");
+
+                        }
+                        else
+                        {
+                            Debug.Log("user is not allowed yet");
+                            ScreenManager.instance.ChangeScreenNoAnim("Queue");
+                        }
+                    }));
+                }
+                else
+                {
+                    ScreenManager.instance.ChangeScreenNoAnim("HomeScreen");
+                }
+            }
             else
             {
-                // if (myReturnValue.callbackEnum == CallbackEnum.CONNECTIONERROR)
+                // if (myReturnValue.callbackEnum == CallbackEnum.CONNECTIONERROR) //todo: make this work
                 // {
                 //     ScreenManager.instance.ChangeScreenForwards("ConnectionError");
                 //     return;

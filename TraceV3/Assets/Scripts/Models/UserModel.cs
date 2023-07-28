@@ -81,6 +81,7 @@ public class UserModel
     
     public UserModel(string userId, string email, string name, string username, string phone, string photo, string password = "")
     {
+        Debug.Log("Creating New User Model:" + userId + ", " + email + ", " + name + ", " + username + ", " + phone + ", " + photo);
         this.userID = userId;
         this.email = email;
         this.name = name;

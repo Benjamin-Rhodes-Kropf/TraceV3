@@ -18,6 +18,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UnityEngine.UI;
+using VoxelBusters.CoreLibrary;
 using DownloadHandler = Networking.DownloadHandler;
 using Object = System.Object;
 
@@ -131,6 +132,7 @@ public partial class FbManager : MonoBehaviour
     #region -User Login/Logout
     public IEnumerator AutoLogin()
     {
+        Debug.Log("AutoLogin initalized");
         while (dependencyStatus != DependencyStatus.Available)
         {
             yield return null;
@@ -144,10 +146,28 @@ public partial class FbManager : MonoBehaviour
             StartCoroutine(FbManager.instance.Login(savedUsername, savedPassword, (myReturnValue) => {
                 if (myReturnValue.callbackEnum == CallbackEnum.SUCCESS)
                 {
-                    if(PlayerPrefs.GetInt("IsInQueue") == 0)
+                    Debug.Log("AutoLogin SUCCESS");
+                    SetUserLoginSatus(true);
+                    if (PlayerPrefs.GetInt("IsInQueue") == 0)
+                    {
+                        Debug.Log("is in queue is false");
                         ScreenManager.instance.ChangeScreenFade("HomeScreen");
-                    else {
-                        ScreenManager.instance.ChangeScreenFade("UserInQue");
+                    }
+                    else 
+                    {
+                        StartCoroutine(FbManager.instance.CheckIfUserAllowed(callbackObject =>
+                        {
+                            if (callbackObject == true)
+                            {
+                                Debug.Log("user is allowed");
+                                ScreenManager.instance.ChangeScreenFade("HomeScreen");
+                            }
+                            else
+                            {
+                                Debug.Log("user is not allowed yet");
+                                ScreenManager.instance.ChangeScreenFade("UserInQue");
+                            }
+                        }));
                     }
                 }
                 else
@@ -228,7 +248,6 @@ public partial class FbManager : MonoBehaviour
         _firebaseUser = LoginTask.Result;
         Debug.LogFormat("User signed in successfully: {0} ({1})", _firebaseUser.DisplayName, _firebaseUser.Email);
         Debug.Log("logged In: user profile photo is: " + _firebaseUser.PhotoUrl);
-        callbackObject.callbackEnum = CallbackEnum.SUCCESS;
 
         //stay logged in
         PlayerPrefs.SetString("Username", _email);
@@ -239,16 +258,39 @@ public partial class FbManager : MonoBehaviour
         InitializeFCMService();
         GetCurrentUserData(_password);
         
-        //set login status
-        if (callbackObject.callbackEnum == CallbackEnum.SUCCESS)
+        callbackObject.callbackEnum = CallbackEnum.SUCCESS;
+        callback(callbackObject); //end of login
+    }
+    
+    public IEnumerator CheckIfUserAllowed(System.Action<bool> callback)
+    {
+        //check if user is un queue
+        while (IsFirebaseUserInitialised == false)
         {
-            StartCoroutine(SetUserLoginStatus(true, isSusscess =>
+            yield return new WaitForEndOfFrame();
+        }
+        
+        Debug.Log("Checking if user allowed:" + thisUserModel.phone);
+        StartCoroutine(IsUserInvited(thisUserModel.phone, isSusscess =>
+        {
+            if (isSusscess)
             {
-                if (isSusscess)
+                StartCoroutine(SetUserQueueStatus(Convert.ToBoolean(PlayerPrefs.GetInt("IsInQueue")), isSusscess =>
                 {
-                    Debug.Log("FbManager: SetUserLoginStatus: Done!");
-                }
-            }));
+                    if (isSusscess)
+                    {
+                        PlayerPrefs.SetInt("IsInQueue", 0);
+                        callback(false);
+                    }
+                }));
+            }
+            else
+            {
+                PlayerPrefs.SetInt("IsInQueue", 1);
+                callback(true);
+            }
+            
+            //set status on DB
             StartCoroutine(SetUserQueueStatus(Convert.ToBoolean(PlayerPrefs.GetInt("IsInQueue")), isSusscess =>
             {
                 if (isSusscess)
@@ -256,10 +298,18 @@ public partial class FbManager : MonoBehaviour
                     Debug.Log("FbManager: SetUserQueueStatus:" + Convert.ToBoolean(PlayerPrefs.GetInt("IsInQueue")));
                 }
             }));
-        }
-        callback(callbackObject);
+        }));
     }
-
+    public void SetUserLoginSatus(bool status)
+    {
+        StartCoroutine(FbManager.instance.SetUserLoginStatus(status, isSusscess =>
+        {
+            if (isSusscess)
+            {
+                Debug.Log("FbManager: SetUserLoginStatus: Done!");
+            }
+        }));
+    }
     
     
     private void ContinuesListners()
@@ -317,8 +367,10 @@ public partial class FbManager : MonoBehaviour
                     string username = snapshot.Child("username").Value.ToString();
                     string phone = snapshot.Child("phone").Value.ToString();
                     string photoURL = snapshot.Child("photo").Value.ToString();
+                    Debug.Log("Getting Curent User Data");
                     thisUserModel = new UserModel(_firebaseUser.UserId,email,displayName,username,phone,photoURL,password);
                     IsFirebaseUserInitialised = true;
+                    Debug.Log("User Initialized");
             }
             if (task.IsFaulted)
             {
@@ -342,18 +394,20 @@ public partial class FbManager : MonoBehaviour
             HandleFriendsManagerClearData();
             StartCoroutine(RemoveFCMDeviceToken());
             _drawTraceOnMap.Clear();
-            StartCoroutine(SetUserLoginStatus(false, isSusscess =>
-            {
-                if (isSusscess) print("Updated Login Status");
-            }));
+            SetUserLoginSatus(false);
         }
+        
         TraceManager.instance.recivedTraceObjects.Clear();
         TraceManager.instance.sentTraceObjects.Clear();
         HomeScreenManager.isInSendTraceView = false;
         thisUserModel = new UserModel();
+        IsFirebaseUserInitialised = false;
         _firebaseAuth.SignOut();
+        
+        //reset player prefs
         PlayerPrefs.SetString("Username", "null");
         PlayerPrefs.SetString("Password", "null");
+        PlayerPrefs.SetInt("IsInQueue", 1);
         ScreenManager.instance.ChangeScreenForwards("Welcome");
     }
     #endregion
@@ -452,6 +506,7 @@ public partial class FbManager : MonoBehaviour
             else
             {
                 Debug.Log("Logged In!");
+                SetUserLoginSatus(true);
             }
         }));
         callback(null, errorCode);
@@ -998,7 +1053,15 @@ public partial class FbManager : MonoBehaviour
     
     public IEnumerator IsUserInvited(string _phoneNumber, System.Action<bool> callback)
     {
-        string cleanedPhoneNumber = Regex.Replace(_phoneNumber, @"[^0-9]", "");
+        string cleanedPhoneNumber = Regex.Replace(_phoneNumber, @"[^0-9+]", "");
+
+        // Remove everything before the '+' sign (including the '+')
+        int indexOfPlus = cleanedPhoneNumber.IndexOf('+');
+        if (indexOfPlus >= 0)
+        {
+            cleanedPhoneNumber = cleanedPhoneNumber.Substring(indexOfPlus);
+        }
+        
         Debug.Log("Checking If User Invited:" + cleanedPhoneNumber);
         var DBTask = _databaseReference.Child("invited").Child(cleanedPhoneNumber).GetValueAsync();
         yield return new WaitUntil(() => DBTask.IsCompleted);
@@ -1014,12 +1077,6 @@ public partial class FbManager : MonoBehaviour
             // User is invited (data exists in the database)
             Debug.Log("user Invited");
             callback(true);
-        }
-        else
-        {
-            // User is not invited (data doesn't exist in the database)
-            Debug.Log("user NOT Invited");
-            callback(false);
         }
     }
 

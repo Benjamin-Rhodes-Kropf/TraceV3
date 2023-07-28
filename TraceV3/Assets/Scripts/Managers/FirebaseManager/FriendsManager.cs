@@ -354,8 +354,7 @@ public partial class FbManager
             string username = snapshot.Child("username").Value.ToString();
             string phoneNumber = snapshot.Child("phone").Value.ToString();
             string photoURL = snapshot.Child("photo").Value.ToString();
-            UserModel user = new UserModel(_firebaseUser.UserId, email, displayName, username,
-                phoneNumber, photoURL);
+            UserModel user = new UserModel(_firebaseUser.UserId, email, displayName, username, phoneNumber, photoURL);
             callBack(user);
         }
 
