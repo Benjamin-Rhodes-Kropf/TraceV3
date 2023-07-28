@@ -36,7 +36,7 @@ public class SignInCanvas : MonoBehaviour
                         else
                         {
                             Debug.Log("user is not allowed yet");
-                            ScreenManager.instance.ChangeScreenNoAnim("Queue");
+                            ScreenManager.instance.ChangeScreenNoAnim("UserInQue");
                         }
                     }));
                 }

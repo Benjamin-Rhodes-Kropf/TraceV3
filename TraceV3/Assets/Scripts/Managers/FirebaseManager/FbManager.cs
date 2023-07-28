@@ -148,6 +148,7 @@ public partial class FbManager : MonoBehaviour
                 {
                     Debug.Log("AutoLogin SUCCESS");
                     SetUserLoginSatus(true);
+                    Debug.Log("is in queue: " + PlayerPrefs.GetInt("IsInQueue"));
                     if (PlayerPrefs.GetInt("IsInQueue") == 0)
                     {
                         Debug.Log("is in queue is false");
@@ -159,12 +160,10 @@ public partial class FbManager : MonoBehaviour
                         {
                             if (callbackObject == true)
                             {
-                                Debug.Log("user is allowed");
                                 ScreenManager.instance.ChangeScreenFade("HomeScreen");
                             }
                             else
                             {
-                                Debug.Log("user is not allowed yet");
                                 ScreenManager.instance.ChangeScreenFade("UserInQue");
                             }
                         }));
@@ -270,34 +269,30 @@ public partial class FbManager : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         
-        Debug.Log("Checking if user allowed:" + thisUserModel.phone);
         StartCoroutine(IsUserInvited(thisUserModel.phone, isSusscess =>
         {
             if (isSusscess)
             {
-                StartCoroutine(SetUserQueueStatus(Convert.ToBoolean(PlayerPrefs.GetInt("IsInQueue")), isSusscess =>
+                StartCoroutine(SetUserQueueStatus(true, isSusscess =>
                 {
                     if (isSusscess)
                     {
-                        PlayerPrefs.SetInt("IsInQueue", 0);
-                        callback(false);
+                        callback(true);
+                        Debug.Log("FbManager: SetUserQueueStatus:" + true);
                     }
                 }));
             }
             else
             {
-                PlayerPrefs.SetInt("IsInQueue", 1);
-                callback(true);
-            }
-            
-            //set status on DB
-            StartCoroutine(SetUserQueueStatus(Convert.ToBoolean(PlayerPrefs.GetInt("IsInQueue")), isSusscess =>
-            {
-                if (isSusscess)
+                callback(false);
+                StartCoroutine(SetUserQueueStatus(false, isSusscess =>
                 {
-                    Debug.Log("FbManager: SetUserQueueStatus:" + Convert.ToBoolean(PlayerPrefs.GetInt("IsInQueue")));
-                }
-            }));
+                    if (isSusscess)
+                    {
+                        Debug.Log("FbManager: SetUserQueueStatus:" + false);
+                    }
+                }));
+            }
         }));
     }
     public void SetUserLoginSatus(bool status)
@@ -631,17 +626,33 @@ public partial class FbManager : MonoBehaviour
     {
         if (_firebaseUser != null)
         {
-            var DBTask = _databaseReference.Child("users").Child(_firebaseUser.UserId).Child("isInQueue").SetValueAsync(_isInQueue);
-            yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
-
-            if (DBTask.Exception != null)
+            //check if user already in queue
+            var GetTask = _databaseReference.Child("queue").Child(_firebaseUser.UserId).GetValueAsync();
+            yield return new WaitUntil(() => GetTask.IsCompleted);
+            
+            if (GetTask.Result.Exists)
             {
-                Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
-                callback(false);
+                //figure out my spot in line
             }
             else
             {
-                callback(true);
+                //get in line
+                var DBTask = _databaseReference.Child("queue").Child(_firebaseUser.UserId).SetValueAsync(DateTime.UtcNow.ToString());
+                yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
+                
+                //figure out spot in line
+                //var GetTask = _databaseReference.Child("queue").Child(_firebaseUser.UserId).GetValueAsync();
+
+                
+                if (DBTask.Exception != null)
+                {
+                    Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+                    callback(false);
+                }
+                else
+                {
+                    callback(true);
+                }
             }
         }
         else
@@ -953,7 +964,7 @@ public partial class FbManager : MonoBehaviour
     }
     public void AddUserToLocalDbByID(string userToGetID)
     {
-        Debug.Log("Adding:" + userToGetID);
+        //Debug.Log("Adding:" + userToGetID);
 
         if (userToGetID == "Don't Delete This Child")
             return;
@@ -971,12 +982,12 @@ public partial class FbManager : MonoBehaviour
         UserModel user = new UserModel();
         user.userID = userToGetID;
         
-        Debug.Log("creating document refrence");
+        //Debug.Log("creating document refrence");
 
         // Reference to the specific document you want to read from
         DocumentReference docRef = _firebaseFirestore.Collection("users").Document(userToGetID);
         
-        Debug.Log("GetSnapshotAsync");
+        //Debug.Log("GetSnapshotAsync");
         // Read the document
         docRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
@@ -986,7 +997,7 @@ public partial class FbManager : MonoBehaviour
                 return;
             }
 
-            Debug.Log("adding snapshot" + user.userID);
+            //Debug.Log("adding snapshot" + user.userID);
             
             // Get the document snapshot
             DocumentSnapshot snapshot = task.Result;
@@ -1001,31 +1012,31 @@ public partial class FbManager : MonoBehaviour
                 if (data.ContainsKey("email"))
                 {
                     object fieldValue = data["email"];
-                    Debug.Log("adding email" + fieldValue);
+                    //Debug.Log("adding email" + fieldValue);
                     user.email = fieldValue.ToString();
                 }
                 if (data.ContainsKey("name"))
                 {
                     object fieldValue = data["name"];
-                    Debug.Log("adding name" + fieldValue);
+                    //Debug.Log("adding name" + fieldValue);
                     user.name = fieldValue.ToString();
                 }
                 if (data.ContainsKey("phone"))
                 {
                     object fieldValue = data["phone"];
-                    Debug.Log("adding phone" + fieldValue);
+                    //Debug.Log("adding phone" + fieldValue);
                     user.phone = fieldValue.ToString();
                 }
                 if (data.ContainsKey("photo"))
                 {
                     object fieldValue = data["photo"];
-                    Debug.Log("adding photo" + fieldValue);
+                    //Debug.Log("adding photo" + fieldValue);
                     user.photo = fieldValue.ToString();
                 }
                 if (data.ContainsKey("username"))
                 {
                     object fieldValue = data["username"];
-                    Debug.Log("adding username" + fieldValue);
+                    //Debug.Log("adding username" + fieldValue);
                     user.username = fieldValue.ToString();
                 }
                 FbManager.instance.users.Add(user);
@@ -1044,25 +1055,20 @@ public partial class FbManager : MonoBehaviour
     #endregion
     #region -Is User Invited
 
-    public IEnumerator SendInvite(string phoneNumber)
+    public IEnumerator SendInvite(string _phoneNumber)
     {
-        var DBTaskAddInvite = _databaseReference.Child("invited").Child(phoneNumber).Child(FbManager.instance.thisUserModel.userID).SetValueAsync(DateTime.UtcNow.ToString());
+        string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 6);
+        var DBTaskAddInvite = _databaseReference.Child("invited").Child(cleanedPhoneNumber).Child(FbManager.instance.thisUserModel.userID).SetValueAsync(DateTime.UtcNow.ToString());
         while (DBTaskAddInvite.IsCompleted is false)
             yield return new WaitForEndOfFrame();
     }
     
     public IEnumerator IsUserInvited(string _phoneNumber, System.Action<bool> callback)
     {
-        string cleanedPhoneNumber = Regex.Replace(_phoneNumber, @"[^0-9+]", "");
-
-        // Remove everything before the '+' sign (including the '+')
-        int indexOfPlus = cleanedPhoneNumber.IndexOf('+');
-        if (indexOfPlus >= 0)
-        {
-            cleanedPhoneNumber = cleanedPhoneNumber.Substring(indexOfPlus);
-        }
-        
+        Debug.Log("Cleaning Phone number:" + _phoneNumber);
+        string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 6);
         Debug.Log("Checking If User Invited:" + cleanedPhoneNumber);
+        
         var DBTask = _databaseReference.Child("invited").Child(cleanedPhoneNumber).GetValueAsync();
         yield return new WaitUntil(() => DBTask.IsCompleted);
         
@@ -1075,8 +1081,14 @@ public partial class FbManager : MonoBehaviour
         else if (DBTask.Result.Exists)
         {
             // User is invited (data exists in the database)
-            Debug.Log("user Invited");
+            Debug.Log("user Invited Setting IsInQueue 0");
+            PlayerPrefs.SetInt("IsInQueue", 0);
             callback(true);
+        }
+        else if(!DBTask.Result.Exists)
+        {
+            Debug.Log("user Not Invited");
+            callback(false);
         }
     }
 

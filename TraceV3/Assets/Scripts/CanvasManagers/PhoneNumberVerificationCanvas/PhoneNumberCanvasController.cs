@@ -90,7 +90,6 @@ namespace CanvasManagers
                     {
                         if (callbackIsSuccess)
                         {
-                            PlayerPrefs.SetInt("IsInQueue", 0);
                             Debug.Log("SetInQue false");
                         }
                         else
@@ -122,7 +121,6 @@ namespace CanvasManagers
                         {
                             if (callbackIsSuccess)
                             {
-                                PlayerPrefs.SetInt("IsInQueue", 0);
                                 Debug.Log("SetInQue false");
                             }
                             else
