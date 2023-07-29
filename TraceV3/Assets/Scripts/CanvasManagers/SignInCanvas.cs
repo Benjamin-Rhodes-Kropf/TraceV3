@@ -23,11 +23,11 @@ public class SignInCanvas : MonoBehaviour
             if (myReturnValue.callbackEnum == CallbackEnum.SUCCESS)
             {
                 FbManager.instance.SetUserLoginSatus(true);
-                if (PlayerPrefs.GetInt("IsInQueue") == 1)
+                if (PlayerPrefs.GetInt("IsInvited") == 0)
                 {
-                    StartCoroutine(FbManager.instance.CheckIfUserAllowed(callbackObject =>
+                    StartCoroutine(FbManager.instance.ManagerUserPermissions(isUserAllowedInApp =>
                     {
-                        if (callbackObject == true)
+                        if (isUserAllowedInApp == true)
                         {
                             Debug.Log("user is allowed");
                             ScreenManager.instance.ChangeScreenNoAnim("HomeScreen");

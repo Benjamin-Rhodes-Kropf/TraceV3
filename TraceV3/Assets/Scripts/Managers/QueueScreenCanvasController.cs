@@ -21,9 +21,14 @@ public class QueueScreenCanvasController
             _view._profileImage.texture = sprite.texture;
         });
     }
-    
+
+    private void GetSpotInLine()
+    {
+        
+    }
+
     public void UnInitialize()
     {
-        //garbage prfile image
+        //garbage profile image
     }
 }

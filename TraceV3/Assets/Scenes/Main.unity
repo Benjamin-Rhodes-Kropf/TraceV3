@@ -2720,6 +2720,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -1780.009
       objectReference: {fileID: 0}
+    - target: {fileID: 1268371053319881866, guid: 3b7cfae4cc09e466a93581611ba24af8, type: 3}
+      propertyPath: m_text
+      value: Loading
+      objectReference: {fileID: 0}
     - target: {fileID: 1532728857240447299, guid: 3b7cfae4cc09e466a93581611ba24af8, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -3012,6 +3016,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -1555.0045
       objectReference: {fileID: 0}
+    - target: {fileID: 4189570576018942947, guid: 3b7cfae4cc09e466a93581611ba24af8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4189570576018942947, guid: 3b7cfae4cc09e466a93581611ba24af8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1324248858}
+    - target: {fileID: 4189570576018942947, guid: 3b7cfae4cc09e466a93581611ba24af8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: MoreInfo
+      objectReference: {fileID: 0}
+    - target: {fileID: 4189570576018942947, guid: 3b7cfae4cc09e466a93581611ba24af8, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: QueueScreenCanvas, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 4719322429784472706, guid: 3b7cfae4cc09e466a93581611ba24af8, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -3123,6 +3143,10 @@ PrefabInstance:
     - target: {fileID: 6023510636813722741, guid: 3b7cfae4cc09e466a93581611ba24af8, type: 3}
       propertyPath: m_AnchorMin.y
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6023510636813722741, guid: 3b7cfae4cc09e466a93581611ba24af8, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 600
       objectReference: {fileID: 0}
     - target: {fileID: 6023510636813722741, guid: 3b7cfae4cc09e466a93581611ba24af8, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -3319,6 +3343,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ca2ea9e1f6d14796a371fc34b524aec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _queueSpot: {fileID: 1943879746}
   _usernameText: {fileID: 1581931547}
   _profileNameText: {fileID: 1229015622}
   _profileImage: {fileID: 255226621}
@@ -4226,6 +4251,17 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 1
   m_TargetDisplay: 0
+--- !u!114 &1943879746 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1268371053319881866, guid: 3b7cfae4cc09e466a93581611ba24af8, type: 3}
+  m_PrefabInstance: {fileID: 1324248854}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2063406116
 PrefabInstance:
   m_ObjectHideFlags: 0

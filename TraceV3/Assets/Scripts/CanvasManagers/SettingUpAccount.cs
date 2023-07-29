@@ -7,9 +7,9 @@ public class SettingUpAccount : MonoBehaviour
 {
     private void OnEnable()
     {
-        if(PlayerPrefs.GetInt("IsInQueue") == 1)
+        if(PlayerPrefs.GetInt("IsInvited") == 0)
             StartCoroutine(WaitThenGoToQueScreen());
-        if(PlayerPrefs.GetInt("IsInQueue") == 0)
+        if(PlayerPrefs.GetInt("IsInvited") == 1)
             StartCoroutine(WaitThenGoToHomeScreen());
     }
     IEnumerator WaitThenGoToHomeScreen()

@@ -148,15 +148,15 @@ public partial class FbManager : MonoBehaviour
                 {
                     Debug.Log("AutoLogin SUCCESS");
                     SetUserLoginSatus(true);
-                    Debug.Log("is in queue: " + PlayerPrefs.GetInt("IsInQueue"));
-                    if (PlayerPrefs.GetInt("IsInQueue") == 0)
+                    Debug.Log("is in queue: " + PlayerPrefs.GetInt("IsInvited"));
+                    if (PlayerPrefs.GetInt("IsInvited") == 1)
                     {
-                        Debug.Log("is in queue is false");
+                        Debug.Log("user has been invited");
                         ScreenManager.instance.ChangeScreenFade("HomeScreen");
                     }
                     else 
                     {
-                        StartCoroutine(FbManager.instance.CheckIfUserAllowed(callbackObject =>
+                        StartCoroutine(FbManager.instance.ManagerUserPermissions(callbackObject =>
                         {
                             if (callbackObject == true)
                             {
@@ -261,40 +261,6 @@ public partial class FbManager : MonoBehaviour
         callback(callbackObject); //end of login
     }
     
-    public IEnumerator CheckIfUserAllowed(System.Action<bool> callback)
-    {
-        //check if user is un queue
-        while (IsFirebaseUserInitialised == false)
-        {
-            yield return new WaitForEndOfFrame();
-        }
-        
-        StartCoroutine(IsUserInvited(thisUserModel.phone, isSusscess =>
-        {
-            if (isSusscess)
-            {
-                StartCoroutine(SetUserQueueStatus(true, isSusscess =>
-                {
-                    if (isSusscess)
-                    {
-                        callback(true);
-                        Debug.Log("FbManager: SetUserQueueStatus:" + true);
-                    }
-                }));
-            }
-            else
-            {
-                callback(false);
-                StartCoroutine(SetUserQueueStatus(false, isSusscess =>
-                {
-                    if (isSusscess)
-                    {
-                        Debug.Log("FbManager: SetUserQueueStatus:" + false);
-                    }
-                }));
-            }
-        }));
-    }
     public void SetUserLoginSatus(bool status)
     {
         StartCoroutine(FbManager.instance.SetUserLoginStatus(status, isSusscess =>
@@ -402,7 +368,7 @@ public partial class FbManager : MonoBehaviour
         //reset player prefs
         PlayerPrefs.SetString("Username", "null");
         PlayerPrefs.SetString("Password", "null");
-        PlayerPrefs.SetInt("IsInQueue", 1);
+        PlayerPrefs.SetInt("IsInvited", 0);
         ScreenManager.instance.ChangeScreenForwards("Welcome");
     }
     #endregion
@@ -622,43 +588,7 @@ public partial class FbManager : MonoBehaviour
         else
             callback(false);
     }
-    public IEnumerator SetUserQueueStatus(bool _isInQueue, System.Action<bool> callback)
-    {
-        if (_firebaseUser != null)
-        {
-            //check if user already in queue
-            var GetTask = _databaseReference.Child("queue").Child(_firebaseUser.UserId).GetValueAsync();
-            yield return new WaitUntil(() => GetTask.IsCompleted);
-            
-            if (GetTask.Result.Exists)
-            {
-                //figure out my spot in line
-            }
-            else
-            {
-                //get in line
-                var DBTask = _databaseReference.Child("queue").Child(_firebaseUser.UserId).SetValueAsync(DateTime.UtcNow.ToString());
-                yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
-                
-                //figure out spot in line
-                //var GetTask = _databaseReference.Child("queue").Child(_firebaseUser.UserId).GetValueAsync();
-
-                
-                if (DBTask.Exception != null)
-                {
-                    Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
-                    callback(false);
-                }
-                else
-                {
-                    callback(true);
-                }
-            }
-        }
-        else
-            callback(false);
-    }
-
+ 
     public IEnumerator UploadProfilePhoto(byte[] _picBytes, System.Action<bool,string> callback)
     {
         StorageReference imageRef = _firebaseStorage.GetReference("ProfilePhoto/"+_firebaseUser.UserId+".png");
@@ -1053,8 +983,7 @@ public partial class FbManager : MonoBehaviour
         //todo: handle remove user
     }
     #endregion
-    #region -Is User Invited
-
+    #region -User Allowed In App
     public IEnumerator SendInvite(string _phoneNumber)
     {
         string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 6);
@@ -1062,10 +991,37 @@ public partial class FbManager : MonoBehaviour
         while (DBTaskAddInvite.IsCompleted is false)
             yield return new WaitForEndOfFrame();
     }
-    
-    public IEnumerator IsUserInvited(string _phoneNumber, System.Action<bool> callback)
+    public IEnumerator ManagerUserPermissions(System.Action<bool> canEnterApp)
     {
-        Debug.Log("Cleaning Phone number:" + _phoneNumber);
+        //check if user is un queue
+        while (IsFirebaseUserInitialised == false)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+        
+        StartCoroutine(IsUserListedInInvited(thisUserModel.phone, isUserInInvteList =>
+        {
+            if (!isUserInInvteList) //if invited welcome
+            {
+                canEnterApp(false);
+                // StartCoroutine(GetOrSetSpotInQueue(thisUserModel.userID, spotInLine =>
+                // {
+                //     if (spotInLine != -1)
+                //     {
+                //         Debug.Log("Error");
+                //     }
+                //     canEnterApp(false);
+                //     Debug.Log("FbManager: SetUserQueueStatus:" + true);
+                // }));
+            }
+            else //user is invited return true
+            {
+                canEnterApp(true);
+            }
+        }));
+    }
+    public IEnumerator IsUserListedInInvited(string _phoneNumber, System.Action<bool> callback)
+    {
         string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 6);
         Debug.Log("Checking If User Invited:" + cleanedPhoneNumber);
         
@@ -1077,23 +1033,107 @@ public partial class FbManager : MonoBehaviour
             // Error occurred while retrieving data (user is not invited)
             Debug.Log("user NOT Invited");
             callback(false);
+            
         }
         else if (DBTask.Result.Exists)
         {
             // User is invited (data exists in the database)
-            Debug.Log("user Invited Setting IsInQueue 0");
-            PlayerPrefs.SetInt("IsInQueue", 0);
+            Debug.Log("user Invited Setting 1");
+            PlayerPrefs.SetInt("IsInvited", 1);
             callback(true);
         }
         else if(!DBTask.Result.Exists)
         {
             Debug.Log("user Not Invited");
+            PlayerPrefs.SetInt("IsInvited", 0);
             callback(false);
         }
     }
+    public IEnumerator GetOrSetSpotInQueue(string userID, System.Action<int> callback)
+    {
+        //check if user is in queue
+        Debug.Log("Getting Spot in queue");
+        var DBTask = _databaseReference.Child("queue").Child(userID).GetValueAsync();
+        yield return new WaitUntil(() => DBTask.IsCompleted);
+        Debug.Log("Spot in queue");
 
+        if (DBTask.Exception != null) //if problem
+        {
+            //problem
+            Debug.LogWarning("Database Exeption Checking If User In Queue");
+            callback(-1000000);
+        }
+        else if(!DBTask.Result.Exists) //if user not in queue
+        {
+            Debug.Log("!DBTask.Result.Exists");
 
+            //get the length of the queue now
+            Debug.Log("Getting accepted number");
+            var GetAllowedNumberTask = _databaseReference.Child("queue").Child("accepted").GetValueAsync();
+            yield return new WaitUntil(() => GetAllowedNumberTask.IsCompleted);
+            int allowedNumber = 0;
+            
+            if (!GetAllowedNumberTask.IsFaulted)
+                allowedNumber = Convert.ToInt32(GetAllowedNumberTask.Result.Value);
+
+            //get length of current queue
+            Debug.Log("Getting Length of Queue");
+            var GetQueueLengthTask = _databaseReference.Child("queue").Child("length").GetValueAsync();
+            yield return new WaitUntil(() => GetQueueLengthTask.IsCompleted);
+            int queuelength = 0;
+            
+            if (!GetQueueLengthTask.IsFaulted)
+                queuelength = Convert.ToInt32(GetQueueLengthTask.Result.Value);
+            
+            callback(queuelength-allowedNumber); //return spot in line
+            
+            // put user in queue
+            Debug.Log("Adding User to Queue");
+            var AddUserToQueue = _databaseReference.Child("queue").Child(userID).SetValueAsync(queuelength);
+            yield return new WaitUntil(() => AddUserToQueue.IsCompleted);
+            
+            // //add one to queue length
+            Debug.Log("increasing to queue length");
+            var IncreaseQueueLength = _databaseReference.Child("queue").Child("length").SetValueAsync(queuelength + 1);
+            yield return new WaitUntil(() => IncreaseQueueLength.IsCompleted);
+        }
+        //
+        else if (DBTask.Result.Exists) //if user is in queue
+        {
+            int allowedNumber = 0;
+            int queueNumber = 0;
+            
+            //user is in queue
+            var GetAllowedNumberTask = _databaseReference.Child("queue").Child("accepted").GetValueAsync();
+            yield return new WaitUntil(() => GetAllowedNumberTask.IsCompleted);
+        
+            if (!GetAllowedNumberTask.IsFaulted)
+                allowedNumber = Convert.ToInt32(GetAllowedNumberTask.Result.Value);
+            
+            var GetUserQueueNumber = _databaseReference.Child("queue").Child(userID).GetValueAsync();
+            yield return new WaitUntil(() => GetUserQueueNumber.IsCompleted);
+            
+            if (!GetUserQueueNumber.IsFaulted)
+                queueNumber = Convert.ToInt32(GetUserQueueNumber.Result.Value);
+            
+            //get spot in line
+            callback(queueNumber-allowedNumber); //spot in line
+        }
+    }
+    public IEnumerator AddUserToInvitedListAndGoToHomeScreen(string _phoneNumber)
+    {
+        string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 6);
+        var DBTaskAddInvite = _databaseReference.Child("invited").Child(cleanedPhoneNumber).Child(FbManager.instance.thisUserModel.userID).SetValueAsync(DateTime.UtcNow.ToString());
+        while (DBTaskAddInvite.IsCompleted is false)
+            yield return new WaitForEndOfFrame();
+        yield return new WaitForSeconds(2f);
+        ScreenManager.instance.ChangeScreenForwards("HomeScreen");
+
+    }
+    
     #endregion
+    
+    
     #region -User Tracking
     //Todo Write tracking functions to manage in app use
     
@@ -1106,16 +1146,10 @@ public partial class FbManager : MonoBehaviour
         if (subscribe)
         {
             refrence.ChildAdded += HandleChildAdded;
-            //refrence.ChildChanged += HandleChildChanged;
-            //refrence.ChildRemoved += HandleChildRemoved;
-            //refrence.ChildMoved += HandleChildMoved;
         }
         else
         {
             refrence.ChildAdded -= HandleChildAdded;
-            //refrence.ChildChanged -= HandleChildChanged;
-            //refrence.ChildRemoved -= HandleChildRemoved;
-            //refrence.ChildMoved -= HandleChildMoved;
         }
         
         void HandleChildAdded(object sender, ChildChangedEventArgs args) {

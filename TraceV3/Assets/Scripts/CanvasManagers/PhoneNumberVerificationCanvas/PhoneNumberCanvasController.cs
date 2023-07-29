@@ -23,7 +23,7 @@ namespace CanvasManagers
             _view._numberInputField.onValueChanged.AddListener(EditPhoneNumber);
             _view._numberValidationView._submitButton.onClick.AddListener(Varify_OTP);
             _view._numberValidationView.gameObject.SetActive(false);
-            PlayerPrefs.SetInt("IsInQueue", 1);
+            PlayerPrefs.SetInt("IsInvited", 0);
         }
 
         public void Uninitilise()
@@ -86,7 +86,7 @@ namespace CanvasManagers
                 if (isSuccess)
                 {
                     ScreenManager.instance.ChangeScreenForwards("Username");
-                    _view.StartCoroutine(FbManager.instance.IsUserInvited(phoneNumberwithoutareacode, (callbackIsSuccess) =>
+                    _view.StartCoroutine(FbManager.instance.IsUserListedInInvited(phoneNumberwithoutareacode, (callbackIsSuccess) =>
                     {
                         if (callbackIsSuccess)
                         {
@@ -117,7 +117,7 @@ namespace CanvasManagers
                     if (isSuccess)
                     {
                         ScreenManager.instance.ChangeScreenForwards("Username");
-                        _view.StartCoroutine(FbManager.instance.IsUserInvited(phoneNumberwithoutareacode, (callbackIsSuccess) =>
+                        _view.StartCoroutine(FbManager.instance.IsUserListedInInvited(phoneNumberwithoutareacode, (callbackIsSuccess) =>
                         {
                             if (callbackIsSuccess)
                             {
