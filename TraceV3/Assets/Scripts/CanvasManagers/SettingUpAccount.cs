@@ -7,13 +7,21 @@ public class SettingUpAccount : MonoBehaviour
 {
     private void OnEnable()
     {
-        StartCoroutine(WaitThenChangeScreen());
+        if(PlayerPrefs.GetInt("IsInvited") == 0)
+            StartCoroutine(WaitThenGoToQueScreen());
+        if(PlayerPrefs.GetInt("IsInvited") == 1)
+            StartCoroutine(WaitThenGoToHomeScreen());
     }
-
-    IEnumerator WaitThenChangeScreen()
+    IEnumerator WaitThenGoToHomeScreen()
     {
         yield return new WaitForSeconds(2f);
         ScreenManager.instance.ChangeScreenFade("HomeScreen");
+
+    }
+    IEnumerator WaitThenGoToQueScreen()
+    {
+        yield return new WaitForSeconds(2f);
+        ScreenManager.instance.ChangeScreenFade("UserInQue");
 
     }
 }

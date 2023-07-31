@@ -81,6 +81,7 @@ public class ContactView : MonoBehaviour
    
    private void OnContactButtonAddClicked()
    {
+      StartCoroutine(FbManager.instance.SendInvite(_phoneNumber.text));
       HelperMethods.SendSMS(_phoneNumber.text, "What up! I've been using this app for the past week and its lowk rly fun you should join the beta! its exclusive 🎉 https://testflight.apple.com/join/B4j5DDbh");
    }
 

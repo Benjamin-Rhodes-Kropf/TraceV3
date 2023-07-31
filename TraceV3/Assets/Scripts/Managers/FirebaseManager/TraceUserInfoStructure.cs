@@ -9,21 +9,17 @@ public class TraceUserInfoStructure {
     public string email;
     public string phone;
     public string photo;
-    public bool isOnline;
-    public bool isLogedIn;
-    
-    public TraceUserInfoStructure()
-    {
-        isOnline = false;
-        isLogedIn = true;
-    }
+    public string createdDate;
+    public bool isInQue;
+        
 
-    public TraceUserInfoStructure(string username, string name, string photo, string email, string phone) {
+    public TraceUserInfoStructure(string username, string name, string photo, string email, string phone, string createdDate) {
         this.username = username;
         this.name = name;
         this.photo = photo;
         this.email = email;
         this.phone = phone;
-        isLogedIn = true;
+        this.createdDate = createdDate;
+        isInQue = true;
     }
 }

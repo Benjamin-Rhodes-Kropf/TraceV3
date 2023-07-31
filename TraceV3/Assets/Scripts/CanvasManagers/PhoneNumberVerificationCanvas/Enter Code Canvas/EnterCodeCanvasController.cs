@@ -22,7 +22,6 @@ namespace CanvasManagers
             this._view._requestNewCodeButton.onClick.AddListener(OnRequestNewCodeClick);
             this._view._verificationCode.onValueChanged.AddListener(OnEditVerificationCode);
             this._view._backButton.onClick.AddListener(OnBackButtonClick);
-
         }
 
 

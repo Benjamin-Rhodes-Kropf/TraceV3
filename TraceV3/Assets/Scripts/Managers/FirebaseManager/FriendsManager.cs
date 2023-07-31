@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using CanvasManagers;
 using UnityEngine;
 using Firebase.Database;
-
+using System.Threading.Tasks;
 
 public partial class FbManager
 {
@@ -137,30 +137,37 @@ public partial class FbManager
     private void HandleFriends(object sender, ChildChangedEventArgs args)
     {
         //Debug.Log("HandleFriends");
+        if (args.Snapshot == null || args.Snapshot.Value == null) return;
+
         try
         {
-            if (args.Snapshot == null || args.Snapshot.Value == null) return;
-            var friendId = args.Snapshot.Key.ToString();
-            var bestFriend = System.Convert.ToBoolean(args.Snapshot.Value.ToString());
-            
-            if (string.IsNullOrEmpty(friendId)) return;
-            
-            var friend = new FriendModel
+            if (args.Snapshot.Exists)
             {
-                friendID = friendId,
-                isBestFriend = bestFriend
-            };
-            _allFriends.Add(friend);
-            AddUserToLocalDbByID(friendId);
-            if (ContactsCanvas.UpdateFriendsView != null)
-                ContactsCanvas.UpdateFriendsView?.Invoke();
-            ContactsCanvas.UpdateRedMarks();
+                var friendId = args.Snapshot.Key.ToString();
+                if (string.IsNullOrEmpty(friendId)) return;
+                bool bestFriend = false;
+                
+                bestFriend = Convert.ToBoolean(args.Snapshot.Value);
+                var friend = new FriendModel
+                {
+                    friendID = friendId,
+                    isBestFriend = bestFriend
+                };
+                
+                _allFriends.Add(friend);
+                AddUserToLocalDbByID(friendId);
+                if (ContactsCanvas.UpdateFriendsView != null)
+                    ContactsCanvas.UpdateFriendsView?.Invoke();
+            }
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            Debug.Log("SOMTHING WENT WRONG");
         }
+        
+        //ContactsCanvas.UpdateRedMarks();
     }
+
     private void HandleRemovedFriends(object sender, ChildChangedEventArgs args)
     {
         try
@@ -347,8 +354,7 @@ public partial class FbManager
             string username = snapshot.Child("username").Value.ToString();
             string phoneNumber = snapshot.Child("phone").Value.ToString();
             string photoURL = snapshot.Child("photo").Value.ToString();
-            UserModel user = new UserModel(_firebaseUser.UserId, email, displayName, username,
-                phoneNumber, photoURL);
+            UserModel user = new UserModel(_firebaseUser.UserId, email, displayName, username, phoneNumber, photoURL);
             callBack(user);
         }
 

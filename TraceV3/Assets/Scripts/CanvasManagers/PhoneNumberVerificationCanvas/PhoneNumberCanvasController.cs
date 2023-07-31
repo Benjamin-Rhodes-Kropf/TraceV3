@@ -9,6 +9,7 @@ namespace CanvasManagers
         private PhoneAuthProvider provider;
         private string _verficationId;
         private uint _autoVerifyTimeOut = 60 * 1000;
+        private string phoneNumberwithoutareacode = "";
         private string phoneNumber = "";
         public PhoneNumberCanvasController(PhoneNumberTextCanavs canvas)
         {
@@ -22,6 +23,7 @@ namespace CanvasManagers
             _view._numberInputField.onValueChanged.AddListener(EditPhoneNumber);
             _view._numberValidationView._submitButton.onClick.AddListener(Varify_OTP);
             _view._numberValidationView.gameObject.SetActive(false);
+            PlayerPrefs.SetInt("IsInvited", 0);
         }
 
         public void Uninitilise()
@@ -36,7 +38,8 @@ namespace CanvasManagers
         private void OnVerifyNumberClicked()
         {
             phoneNumber = _view._countryCodeDropdown.captionText.text.Trim()+_view._numberInputField.text.Trim();
-            
+            phoneNumberwithoutareacode = _view._numberInputField.text.Trim();
+
             provider = PhoneAuthProvider.GetInstance(FirebaseAuth.DefaultInstance);
             
             provider.VerifyPhoneNumber(phoneNumber, _autoVerifyTimeOut, null,
@@ -81,10 +84,24 @@ namespace CanvasManagers
             _view.StartCoroutine(FbManager.instance.SetUserPhoneNumber(phoneNumber, (isSuccess) =>
             {
                 if (isSuccess)
+                {
                     ScreenManager.instance.ChangeScreenForwards("Username");
+                    _view.StartCoroutine(FbManager.instance.IsUserListedInInvited(phoneNumberwithoutareacode, (callbackIsSuccess) =>
+                    {
+                        if (callbackIsSuccess)
+                        {
+                            Debug.Log("SetInQue false");
+                        }
+                        else
+                            Debug.LogError("Failed to update phone");
+                    }));
+                }
                 else
+                {
                     Debug.LogError("Failed to update phone");
+                }
             }));
+            
             return;
 #endif
             Debug.LogError("Verify_OTP Called");
@@ -98,7 +115,18 @@ namespace CanvasManagers
                 _view.StartCoroutine(FbManager.instance.SetUserPhoneNumber(phoneNumber, (isSuccess) =>
                 {
                     if (isSuccess)
+                    {
                         ScreenManager.instance.ChangeScreenForwards("Username");
+                        _view.StartCoroutine(FbManager.instance.IsUserListedInInvited(phoneNumberwithoutareacode, (callbackIsSuccess) =>
+                        {
+                            if (callbackIsSuccess)
+                            {
+                                Debug.Log("SetInQue false");
+                            }
+                            else
+                                Debug.LogError("Failed to update phone");
+                        }));
+                    }
                     else
                         Debug.LogError("Failed to update phone");
                 }));

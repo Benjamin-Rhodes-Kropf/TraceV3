@@ -83,7 +83,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &6897988030570445067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -173,10 +173,10 @@ RectTransform:
   m_Father: {fileID: 6897988030680617450}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -547}
-  m_SizeDelta: {x: 197.2141, y: 91.8074}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -502.0109}
+  m_SizeDelta: {x: 305.2029, y: 241.6462}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6897988030753525895
 CanvasRenderer:
@@ -328,7 +328,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -294}
+  m_AnchoredPosition: {x: 0, y: -242}
   m_SizeDelta: {x: 436.1927, y: 95.2345}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6897988030917695241
@@ -540,8 +540,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: -76}
-  m_SizeDelta: {x: 32, y: 52}
+  m_AnchoredPosition: {x: 0, y: -125.688156}
+  m_SizeDelta: {x: 32, y: 54.7155}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6897988031277823042
 CanvasRenderer:
@@ -617,7 +617,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 54}
+  m_AnchoredPosition: {x: 0, y: 69}
   m_SizeDelta: {x: 240.7476, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6897988031606717122
@@ -648,7 +648,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Click the camera button
+  m_text: Click the camera button to take a video
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 648c45e0c9fdb42d38c00245ae7eeb0c, type: 2}
   m_sharedMaterial: {fileID: -6418485882645887487, guid: 648c45e0c9fdb42d38c00245ae7eeb0c, type: 2}

@@ -8,15 +8,17 @@ using Firebase;
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Firestore;
-using TMPro;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Firebase.Extensions;
 using Firebase.Storage;
 using Unity.VisualScripting;
 using UnityEngine.Networking;
+using TMPro;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using UnityEngine.UI;
+using VoxelBusters.CoreLibrary;
 using DownloadHandler = Networking.DownloadHandler;
 using Object = System.Object;
 
@@ -70,11 +72,12 @@ public partial class FbManager : MonoBehaviour
 
         IsFirebaseUserInitialised = false;
         
-        PlayerPrefs.SetInt("NumberOfTimesLoggedIn", PlayerPrefs.GetInt("NumberOfTimesLoggedIn")+1);
-        if (PlayerPrefs.GetInt("NumberOfTimesLoggedIn") == 1)
-        {
-            Debug.Log("FbManager: First Time Logging In!");
-        }
+        // PlayerPrefs.SetInt("NumberOfTimesOnApp", PlayerPrefs.GetInt("NumberOfTimesOnApp")+1);
+        // Debug.Log("FbManager: NumberOfTimesOnApp:" + PlayerPrefs.GetInt("NumberOfTimesOnApp"));
+        // if (PlayerPrefs.GetInt("NumberOfTimesOnApp") == 1)
+        // {
+        //     Debug.Log("FbManager: First Time On App!");
+        // }
         
         //makes sure nothing can use the db until its enabled
         dependencyStatus = DependencyStatus.UnavailableUpdating;
@@ -130,6 +133,7 @@ public partial class FbManager : MonoBehaviour
     #region -User Login/Logout
     public IEnumerator AutoLogin()
     {
+        Debug.Log("AutoLogin initalized");
         while (dependencyStatus != DependencyStatus.Available)
         {
             yield return null;
@@ -143,8 +147,28 @@ public partial class FbManager : MonoBehaviour
             StartCoroutine(FbManager.instance.Login(savedUsername, savedPassword, (myReturnValue) => {
                 if (myReturnValue.callbackEnum == CallbackEnum.SUCCESS)
                 {
-                    Debug.Log("FbManager: Logged in!");
-                    ScreenManager.instance.ChangeScreenFade("HomeScreen");
+                    Debug.Log("AutoLogin SUCCESS");
+                    SetUserLoginSatus(true);
+                    Debug.Log("is in queue: " + PlayerPrefs.GetInt("IsInvited"));
+                    if (PlayerPrefs.GetInt("IsInvited") == 1)
+                    {
+                        Debug.Log("user has been invited");
+                        ScreenManager.instance.ChangeScreenFade("HomeScreen");
+                    }
+                    else 
+                    {
+                        StartCoroutine(FbManager.instance.ManagerUserPermissions(callbackObject =>
+                        {
+                            if (callbackObject == true)
+                            {
+                                ScreenManager.instance.ChangeScreenFade("HomeScreen");
+                            }
+                            else
+                            {
+                                ScreenManager.instance.ChangeScreenFade("UserInQue");
+                            }
+                        }));
+                    }
                 }
                 else
                 {
@@ -167,6 +191,7 @@ public partial class FbManager : MonoBehaviour
     public IEnumerator Login(string _email, string _password,  System.Action<CallbackObject> callback)
     {
         //Fb Login
+        Debug.Log("logging in");
         CallbackObject callbackObject = new CallbackObject();
         var LoginTask = _firebaseAuth.SignInWithEmailAndPasswordAsync(_email, _password);
         yield return new WaitUntil(predicate: () => LoginTask.IsCompleted);
@@ -223,7 +248,7 @@ public partial class FbManager : MonoBehaviour
         _firebaseUser = LoginTask.Result;
         Debug.LogFormat("User signed in successfully: {0} ({1})", _firebaseUser.DisplayName, _firebaseUser.Email);
         Debug.Log("logged In: user profile photo is: " + _firebaseUser.PhotoUrl);
-        callbackObject.callbackEnum = CallbackEnum.SUCCESS;
+
         //stay logged in
         PlayerPrefs.SetString("Username", _email);
         PlayerPrefs.SetString("Password", _password);
@@ -233,20 +258,20 @@ public partial class FbManager : MonoBehaviour
         InitializeFCMService();
         GetCurrentUserData(_password);
         
-        //set login status
-        if (callbackObject.callbackEnum == CallbackEnum.SUCCESS)
-        {
-            StartCoroutine(SetUserLoginStatus(true, isSusscess =>
-            {
-                if (isSusscess)
-                {
-                    Debug.Log("FbManager: SetUserLoginStatus: Done!");
-                }
-            }));
-        }
-        callback(callbackObject);
+        callbackObject.callbackEnum = CallbackEnum.SUCCESS;
+        callback(callbackObject); //end of login
     }
-
+    
+    public void SetUserLoginSatus(bool status)
+    {
+        StartCoroutine(FbManager.instance.SetUserLoginStatus(status, isSusscess =>
+        {
+            if (isSusscess)
+            {
+                Debug.Log("FbManager: SetUserLoginStatus: Done!");
+            }
+        }));
+    }
     
     
     private void ContinuesListners()
@@ -304,8 +329,10 @@ public partial class FbManager : MonoBehaviour
                     string username = snapshot.Child("username").Value.ToString();
                     string phone = snapshot.Child("phone").Value.ToString();
                     string photoURL = snapshot.Child("photo").Value.ToString();
-                    thisUserModel = new UserModel(_firebaseUser.UserId,email,displayName,username,phone,photoURL, password);
+                    Debug.Log("Getting Curent User Data");
+                    thisUserModel = new UserModel(_firebaseUser.UserId,email,displayName,username,phone,photoURL,password);
                     IsFirebaseUserInitialised = true;
+                    Debug.Log("User Initialized");
             }
             if (task.IsFaulted)
             {
@@ -329,30 +356,33 @@ public partial class FbManager : MonoBehaviour
             HandleFriendsManagerClearData();
             StartCoroutine(RemoveFCMDeviceToken());
             _drawTraceOnMap.Clear();
-            StartCoroutine(SetUserLoginStatus(false, isSusscess =>
-            {
-                if (isSusscess) print("Updated Login Status");
-            }));
+            SetUserLoginSatus(false);
         }
+        
         TraceManager.instance.recivedTraceObjects.Clear();
         TraceManager.instance.sentTraceObjects.Clear();
         HomeScreenManager.isInSendTraceView = false;
         thisUserModel = new UserModel();
+        IsFirebaseUserInitialised = false;
         _firebaseAuth.SignOut();
+        
+        //reset player prefs
         PlayerPrefs.SetString("Username", "null");
         PlayerPrefs.SetString("Password", "null");
+        PlayerPrefs.SetInt("IsInvited", 0);
         ScreenManager.instance.ChangeScreenForwards("Welcome");
     }
     #endregion
     
     #region -User Registration
-    private string GenerateUserProfileJson(string username, string name, string userPhotoLink, string email, string phone) {
-        TraceUserInfoStructure traceUserInfoStructure = new TraceUserInfoStructure(username, name, userPhotoLink, email, phone);
+    private string GenerateUserProfileJson(string username, string name, string userPhotoLink, string email, string phone, string createdDate) {
+        TraceUserInfoStructure traceUserInfoStructure = new TraceUserInfoStructure(username, name, userPhotoLink, email, phone, createdDate);
         string json = JsonUtility.ToJson(traceUserInfoStructure);
         return json;
     }
     public IEnumerator RegisterNewUser(string _email, string _password, string _username, string _phoneNumber,  System.Action<String,AuthError> callback)
     {
+        RestTutorial();
         if (_username == "")
         {
             callback("Missing Username", AuthError.None); //having a blank nickname is not really a DB error so I return a error here
@@ -363,7 +393,7 @@ public partial class FbManager : MonoBehaviour
         AuthError errorCode =  AuthError.None;
         var creationTask =  _firebaseAuth.CreateUserWithEmailAndPasswordAsync(_email, _password).ContinueWith(task =>
         {
-            RegisterTask = task;
+                RegisterTask = task;
             
             if (RegisterTask.Exception != null)
             {
@@ -417,7 +447,7 @@ public partial class FbManager : MonoBehaviour
             print("User Email :: "+_firebaseUser.Email);
         }
         
-        var json = GenerateUserProfileJson( _username, "null", "null",_email, _phoneNumber);
+        var json = GenerateUserProfileJson( _username, "null", "null",_email, _phoneNumber, DateTime.UtcNow.ToString());
         _databaseReference.Child("users").Child(_firebaseUser.UserId.ToString()).SetRawJsonValueAsync(json);
         _firestoreData = new Dictionary<string, object>
         {
@@ -438,6 +468,7 @@ public partial class FbManager : MonoBehaviour
             else
             {
                 Debug.Log("Logged In!");
+                SetUserLoginSatus(true);
             }
         }));
         callback(null, errorCode);
@@ -525,10 +556,19 @@ public partial class FbManager : MonoBehaviour
         }
         else
         {
-            _firestoreData.Add("phone",_phoneNumber);
+            //prevent dict bug
+            if (_firestoreData.ContainsKey("phone"))
+            {
+                _firestoreData["phone"] = _phoneNumber;
+            }
+            else
+            {
+                _firestoreData.Add("phone",_phoneNumber);
+            }
             callback(true);
         }
     }
+    
     public IEnumerator SetUserLoginStatus(bool _isOnline, System.Action<bool> callback)
     {
         if (_firebaseUser != null)
@@ -549,6 +589,7 @@ public partial class FbManager : MonoBehaviour
         else
             callback(false);
     }
+ 
     public IEnumerator UploadProfilePhoto(byte[] _picBytes, System.Action<bool,string> callback)
     {
         StorageReference imageRef = _firebaseStorage.GetReference("ProfilePhoto/"+_firebaseUser.UserId+".png");
@@ -658,10 +699,6 @@ public partial class FbManager : MonoBehaviour
         }
     }
     
-    
-    
-    
-    
     //Todo: Do this in the cloud... we cant store all users locally
     private void GetAllUsers()
     {
@@ -741,8 +778,6 @@ public partial class FbManager : MonoBehaviour
              }
         });
     }
-
-
     private void HandleUserAdded(object sender, ChildChangedEventArgs args)
     {
         Debug.Log("HandleUserAdded");
@@ -860,7 +895,10 @@ public partial class FbManager : MonoBehaviour
     }
     public void AddUserToLocalDbByID(string userToGetID)
     {
-        Debug.Log("Adding:" + userToGetID);
+        //Debug.Log("Adding:" + userToGetID);
+
+        if (userToGetID == "Don't Delete This Child")
+            return;
         //check if user already in local DB
         foreach (var obj in users)
         {
@@ -875,12 +913,12 @@ public partial class FbManager : MonoBehaviour
         UserModel user = new UserModel();
         user.userID = userToGetID;
         
-        Debug.Log("creating document refrence");
+        //Debug.Log("creating document refrence");
 
         // Reference to the specific document you want to read from
         DocumentReference docRef = _firebaseFirestore.Collection("users").Document(userToGetID);
         
-        Debug.Log("GetSnapshotAsync");
+        //Debug.Log("GetSnapshotAsync");
         // Read the document
         docRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
@@ -890,7 +928,7 @@ public partial class FbManager : MonoBehaviour
                 return;
             }
 
-            Debug.Log("adding snapshot" + user.userID);
+            //Debug.Log("adding snapshot" + user.userID);
             
             // Get the document snapshot
             DocumentSnapshot snapshot = task.Result;
@@ -905,31 +943,31 @@ public partial class FbManager : MonoBehaviour
                 if (data.ContainsKey("email"))
                 {
                     object fieldValue = data["email"];
-                    Debug.Log("adding email" + fieldValue);
+                    //Debug.Log("adding email" + fieldValue);
                     user.email = fieldValue.ToString();
                 }
                 if (data.ContainsKey("name"))
                 {
                     object fieldValue = data["name"];
-                    Debug.Log("adding name" + fieldValue);
+                    //Debug.Log("adding name" + fieldValue);
                     user.name = fieldValue.ToString();
                 }
                 if (data.ContainsKey("phone"))
                 {
                     object fieldValue = data["phone"];
-                    Debug.Log("adding phone" + fieldValue);
+                    //Debug.Log("adding phone" + fieldValue);
                     user.phone = fieldValue.ToString();
                 }
                 if (data.ContainsKey("photo"))
                 {
                     object fieldValue = data["photo"];
-                    Debug.Log("adding photo" + fieldValue);
+                    //Debug.Log("adding photo" + fieldValue);
                     user.photo = fieldValue.ToString();
                 }
                 if (data.ContainsKey("username"))
                 {
                     object fieldValue = data["username"];
-                    Debug.Log("adding username" + fieldValue);
+                    //Debug.Log("adding username" + fieldValue);
                     user.username = fieldValue.ToString();
                 }
                 FbManager.instance.users.Add(user);
@@ -946,9 +984,163 @@ public partial class FbManager : MonoBehaviour
         //todo: handle remove user
     }
     #endregion
-    #region -User Actions
-    
+    #region -User Allowed In App
+    public IEnumerator SendInvite(string _phoneNumber)
+    {
+        string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 6);
+        var DBTaskAddInvite = _databaseReference.Child("invited").Child(cleanedPhoneNumber).Child(FbManager.instance.thisUserModel.userID).SetValueAsync(DateTime.UtcNow.ToString());
+        while (DBTaskAddInvite.IsCompleted is false)
+            yield return new WaitForEndOfFrame();
+    }
+    public IEnumerator ManagerUserPermissions(System.Action<bool> canEnterApp)
+    {
+        //check if user is un queue
+        while (IsFirebaseUserInitialised == false)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+        
+        //Todo:: Need To Discuss 
+        if (string.IsNullOrEmpty( thisUserModel.phone))
+        {
+            canEnterApp(true);
+            yield break;
+        }
+       
+        StartCoroutine(IsUserListedInInvited(thisUserModel.phone, isUserInInvteList =>
+        {
+            if (!isUserInInvteList) //if invited welcome
+            {
+                canEnterApp(false);
+                // StartCoroutine(GetOrSetSpotInQueue(thisUserModel.userID, spotInLine =>
+                // {
+                //     if (spotInLine != -1)
+                //     {
+                //         Debug.Log("Error");
+                //     }
+                //     canEnterApp(false);
+                //     Debug.Log("FbManager: SetUserQueueStatus:" + true);
+                // }));
+            }
+            else //user is invited return true
+            {
+                canEnterApp(true);
+            }
+        }));
+    }
+    public IEnumerator IsUserListedInInvited(string _phoneNumber, System.Action<bool> callback)
+    {
+        string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 6);
+        Debug.Log("Checking If User Invited:" + cleanedPhoneNumber);
+        
+        var DBTask = _databaseReference.Child("invited").Child(cleanedPhoneNumber).GetValueAsync();
+        yield return new WaitUntil(() => DBTask.IsCompleted);
+        
+        if (DBTask.Exception != null)
+        {
+            // Error occurred while retrieving data (user is not invited)
+            Debug.Log("user NOT Invited");
+            callback(false);
+            
+        }
+        else if (DBTask.Result.Exists)
+        {
+            // User is invited (data exists in the database)
+            Debug.Log("user Invited Setting 1");
+            PlayerPrefs.SetInt("IsInvited", 1);
+            callback(true);
+        }
+        else if(!DBTask.Result.Exists)
+        {
+            Debug.Log("user Not Invited");
+            PlayerPrefs.SetInt("IsInvited", 0);
+            callback(false);
+        }
+    }
+    public IEnumerator GetOrSetSpotInQueue(string userID, System.Action<int> callback)
+    {
+        //check if user is in queue
+        Debug.Log("Getting Spot in queue");
+        var DBTask = _databaseReference.Child("queue").Child(userID).GetValueAsync();
+        yield return new WaitUntil(() => DBTask.IsCompleted);
+        Debug.Log("Spot in queue");
+
+        if (DBTask.Exception != null) //if problem
+        {
+            //problem
+            Debug.LogWarning("Database Exeption Checking If User In Queue");
+            callback(-1000000);
+        }
+        else if(!DBTask.Result.Exists) //if user not in queue
+        {
+            Debug.Log("!DBTask.Result.Exists");
+
+            //get the length of the queue now
+            Debug.Log("Getting accepted number");
+            var GetAllowedNumberTask = _databaseReference.Child("queue").Child("accepted").GetValueAsync();
+            yield return new WaitUntil(() => GetAllowedNumberTask.IsCompleted);
+            int allowedNumber = 0;
+            
+            if (!GetAllowedNumberTask.IsFaulted)
+                allowedNumber = Convert.ToInt32(GetAllowedNumberTask.Result.Value);
+
+            //get length of current queue
+            Debug.Log("Getting Length of Queue");
+            var GetQueueLengthTask = _databaseReference.Child("queue").Child("length").GetValueAsync();
+            yield return new WaitUntil(() => GetQueueLengthTask.IsCompleted);
+            int queuelength = 0;
+            
+            if (!GetQueueLengthTask.IsFaulted)
+                queuelength = Convert.ToInt32(GetQueueLengthTask.Result.Value);
+            
+            callback(queuelength-allowedNumber); //return spot in line
+            
+            // put user in queue
+            Debug.Log("Adding User to Queue");
+            var AddUserToQueue = _databaseReference.Child("queue").Child(userID).SetValueAsync(queuelength);
+            yield return new WaitUntil(() => AddUserToQueue.IsCompleted);
+            
+            // //add one to queue length
+            Debug.Log("increasing to queue length");
+            var IncreaseQueueLength = _databaseReference.Child("queue").Child("length").SetValueAsync(queuelength + 1);
+            yield return new WaitUntil(() => IncreaseQueueLength.IsCompleted);
+        }
+        //
+        else if (DBTask.Result.Exists) //if user is in queue
+        {
+            int allowedNumber = 0;
+            int queueNumber = 0;
+            
+            //user is in queue
+            var GetAllowedNumberTask = _databaseReference.Child("queue").Child("accepted").GetValueAsync();
+            yield return new WaitUntil(() => GetAllowedNumberTask.IsCompleted);
+        
+            if (!GetAllowedNumberTask.IsFaulted)
+                allowedNumber = Convert.ToInt32(GetAllowedNumberTask.Result.Value);
+            
+            var GetUserQueueNumber = _databaseReference.Child("queue").Child(userID).GetValueAsync();
+            yield return new WaitUntil(() => GetUserQueueNumber.IsCompleted);
+            
+            if (!GetUserQueueNumber.IsFaulted)
+                queueNumber = Convert.ToInt32(GetUserQueueNumber.Result.Value);
+            
+            //get spot in line
+            callback(queueNumber-allowedNumber); //spot in line
+        }
+    }
+    public IEnumerator AddUserToInvitedListAndGoToHomeScreen(string _phoneNumber)
+    {
+        string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 6);
+        var DBTaskAddInvite = _databaseReference.Child("invited").Child(cleanedPhoneNumber).Child(FbManager.instance.thisUserModel.userID).SetValueAsync(DateTime.UtcNow.ToString());
+        while (DBTaskAddInvite.IsCompleted is false)
+            yield return new WaitForEndOfFrame();
+        yield return new WaitForSeconds(2f);
+        ScreenManager.instance.ChangeScreenForwards("HomeScreen");
+
+    }
     #endregion
+    
+    
     #region -User Tracking
     //Todo Write tracking functions to manage in app use
     
@@ -961,16 +1153,10 @@ public partial class FbManager : MonoBehaviour
         if (subscribe)
         {
             refrence.ChildAdded += HandleChildAdded;
-            //refrence.ChildChanged += HandleChildChanged;
-            //refrence.ChildRemoved += HandleChildRemoved;
-            //refrence.ChildMoved += HandleChildMoved;
         }
         else
         {
             refrence.ChildAdded -= HandleChildAdded;
-            //refrence.ChildChanged -= HandleChildChanged;
-            //refrence.ChildRemoved -= HandleChildRemoved;
-            //refrence.ChildMoved -= HandleChildMoved;
         }
         
         void HandleChildAdded(object sender, ChildChangedEventArgs args) {
@@ -1431,7 +1617,6 @@ public partial class FbManager : MonoBehaviour
             }
         }
     }
-    
     public IEnumerator GetTracePhotoByUrl(string _url, System.Action<Texture> callback)
     {
         var request = new UnityWebRequest();
@@ -1517,6 +1702,14 @@ public partial class FbManager : MonoBehaviour
     #endregion
     
     //possibly useful
+    private void RestTutorial()
+    {
+        PlayerPrefs.SetInt("TutorialOnHomeScreen", 1);
+        PlayerPrefs.SetInt("TutorialOnCamera", 1);
+        PlayerPrefs.SetInt("TutorialOnSelectScreen", 1);
+        PlayerPrefs.SetInt("TutorialOnSelectRadius", 1);
+    }
+    
     private void DeleteFile(String _location) 
     { 
         _firebaseStorageReference = _firebaseStorageReference.Child(_location);
@@ -1528,6 +1721,12 @@ public partial class FbManager : MonoBehaviour
                 // Uh-oh, an error occurred!
             }
         });
+    }
+    public void CollectAnalytics()
+    {
+        //friend count
+        //FirebaseAnalytics.LogEvent(FirebaseAnalytics.EventSelectItem, new Parameter(FirebaseAnalytics.ParameterValue, _allFriends.Count));
+        
     }
 
     public enum LoginStatus

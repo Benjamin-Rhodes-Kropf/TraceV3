@@ -14,8 +14,6 @@ namespace CanvasManagers
         public Button _submitButton;
         public Button _requestNewCodeButton;
         public Button _backButton;
-
-
         private EnterCodeCanvasController _controller;
         private string phoneNumber = "";
 
