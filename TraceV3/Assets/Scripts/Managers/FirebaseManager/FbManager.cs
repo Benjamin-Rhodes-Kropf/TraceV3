@@ -72,11 +72,12 @@ public partial class FbManager : MonoBehaviour
 
         IsFirebaseUserInitialised = false;
         
-        PlayerPrefs.SetInt("NumberOfTimesLoggedIn", PlayerPrefs.GetInt("NumberOfTimesLoggedIn")+1);
-        if (PlayerPrefs.GetInt("NumberOfTimesLoggedIn") == 1)
-        {
-            Debug.Log("FbManager: First Time Logging In!");
-        }
+        // PlayerPrefs.SetInt("NumberOfTimesOnApp", PlayerPrefs.GetInt("NumberOfTimesOnApp")+1);
+        // Debug.Log("FbManager: NumberOfTimesOnApp:" + PlayerPrefs.GetInt("NumberOfTimesOnApp"));
+        // if (PlayerPrefs.GetInt("NumberOfTimesOnApp") == 1)
+        // {
+        //     Debug.Log("FbManager: First Time On App!");
+        // }
         
         //makes sure nothing can use the db until its enabled
         dependencyStatus = DependencyStatus.UnavailableUpdating;
@@ -1130,7 +1131,6 @@ public partial class FbManager : MonoBehaviour
         ScreenManager.instance.ChangeScreenForwards("HomeScreen");
 
     }
-    
     #endregion
     
     

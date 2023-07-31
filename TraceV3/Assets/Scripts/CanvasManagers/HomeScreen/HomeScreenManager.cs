@@ -13,10 +13,12 @@ public class HomeScreenManager : MonoBehaviour
     public static bool isInSendTraceView;
     [SerializeField] private TraceManager _traceManager;
 
+    [Header("Internal")]
     [SerializeField] private GameObject _tutorialCanvas;
     [SerializeField] private OpenTraceManager openTraceManager;
     [SerializeField] private ViewTraceManager viewTraceManager;
-
+    
+    
     public void CloseViewTrace()
     {
         viewTraceManager.ClosePreview();

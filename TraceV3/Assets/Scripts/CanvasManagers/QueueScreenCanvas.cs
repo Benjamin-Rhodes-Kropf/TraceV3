@@ -32,6 +32,7 @@ public class QueueScreenCanvas : MonoBehaviour
                     _queueSpot.text = "0";
                     //add user to invited list
                     Debug.Log("user invited");
+                    PlayerPrefs.SetInt("ShowTutorial", 1);
                     StartCoroutine(FbManager.instance.AddUserToInvitedListAndGoToHomeScreen(FbManager.instance.thisUserModel.phone));
                 }
                 else
