@@ -32,6 +32,7 @@ public class SelectRadiusTutorial : MonoBehaviour
                 break;
             case 5:
                 _HitSend.SetActive(true);
+                PlayerPrefs.SetInt("ShowTutorial", 6);
                 Debug.Log("Show Send");
                 break;
         }
@@ -48,7 +49,8 @@ public class SelectRadiusTutorial : MonoBehaviour
         {
             Debug.Log("Tutorial Number: Update");
             PlayerPrefs.SetInt("ShowTutorial", 5);
-            UpdateTutorial();
+            HideTutorial();
+            StartCoroutine(UpdateTutorialDisplay());
         }
     }
     #endregion

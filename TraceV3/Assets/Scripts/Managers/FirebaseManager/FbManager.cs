@@ -1050,6 +1050,44 @@ public partial class FbManager : MonoBehaviour
             callback(false);
         }
     }
+
+    public void AddInvitesToFriends(string phone)
+    {
+        StartCoroutine(AddInvitesToFriendsCoroutine(phone));
+    }
+    public IEnumerator AddInvitesToFriendsCoroutine(string _phoneNumber)
+    {
+        string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 6);
+        Debug.Log("Checking If User Invited:" + cleanedPhoneNumber);
+        
+        var DBTask = _databaseReference.Child("invited").Child(cleanedPhoneNumber).GetValueAsync();
+        yield return new WaitUntil(() => DBTask.IsCompleted);
+        
+        if (DBTask.Exception != null)
+        {
+            Debug.Log("user not invited or error");
+        }
+        else if (DBTask.Result.Exists)
+        {
+            // Get User Friends from invites
+            foreach (var frienduserID in DBTask.Result.Children)
+            {
+                StartCoroutine(AcceptFriendRequest(thisUserModel.userID, frienduserID.Key.ToString(), (callbackIsSuccess) =>
+                {
+                    if (callbackIsSuccess)
+                    {
+                        Debug.Log("Added Friend");
+                    }
+                    else
+                        Debug.LogError("Failed To Add Friend");
+                }));
+            }
+        }
+        else if(!DBTask.Result.Exists)
+        {
+            Debug.Log("User Does Not Have Friends");
+        }
+    }
     public IEnumerator GetOrSetSpotInQueue(string userID, System.Action<int> callback)
     {
         //check if user is in queue

@@ -15,13 +15,12 @@ public class SettingUpAccount : MonoBehaviour
     IEnumerator WaitThenGoToHomeScreen()
     {
         yield return new WaitForSeconds(2f);
+        PlayerPrefs.SetInt("ShowTutorial", 1); //reset tutorial for new user
         ScreenManager.instance.ChangeScreenFade("HomeScreen");
-
     }
     IEnumerator WaitThenGoToQueScreen()
     {
         yield return new WaitForSeconds(2f);
         ScreenManager.instance.ChangeScreenFade("UserInQue");
-
     }
 }

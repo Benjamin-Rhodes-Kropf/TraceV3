@@ -8,9 +8,10 @@ public class HomeScreenTutorial : MonoBehaviour
     [SerializeField] private GameObject _tutorialWelomeScreen;
     [SerializeField] private GameObject _tutorialLetsLeaveScreen;
     [SerializeField] private GameObject _tutorialCongratsFinishScreen;
+    [SerializeField] private GameObject _tutorialClickForMoreInfo;
+
     public void OnEnable()
     {
-        PlayerPrefs.SetInt("ShowTutorial", 1); //todo: remove this
         HideTutorial();
         StartCoroutine(UpdateTutorialDisplay());
     }
@@ -32,8 +33,14 @@ public class HomeScreenTutorial : MonoBehaviour
             case 2:
                 _tutorialLetsLeaveScreen.SetActive(true);
                 break;
-            case 9:
+            case 6:
                 _tutorialCongratsFinishScreen.SetActive(true);
+                break;
+            case 7:
+                _tutorialClickForMoreInfo.SetActive(true);
+                break;
+            case 8:
+                HideTutorial();
                 break;
         }
     }
@@ -42,6 +49,7 @@ public class HomeScreenTutorial : MonoBehaviour
         _tutorialWelomeScreen.SetActive(false);
         _tutorialLetsLeaveScreen.SetActive(false);
         _tutorialCongratsFinishScreen.SetActive(false);
+        _tutorialClickForMoreInfo.SetActive(false);
     }
     public void WelcomeScreenTutorialPressed()
     {
@@ -56,5 +64,20 @@ public class HomeScreenTutorial : MonoBehaviour
             UpdateTutorial();
         }
     }
+
+    public void CongratsScreenPressed()
+    {
+        Debug.Log("Congrats Screen Pressed");
+        PlayerPrefs.SetInt("ShowTutorial", 7);
+        UpdateTutorial();
+    }
+
+    public void ClickForMoreInfoPressed()
+    {
+        Debug.Log("ClickForMoreInfoPressed Screen Pressed");
+        PlayerPrefs.SetInt("ShowTutorial", 8);
+        UpdateTutorial();
+    }
+    
     #endregion
 }
