@@ -11,6 +11,7 @@ public class CameraScreenTutorial : MonoBehaviour
     {
         HideTutorial();
         StartCoroutine(UpdateTutorialDisplay());
+        Debug.Log("Tutorial Number:" + PlayerPrefs.GetInt("ShowTutorial"));
     }
 
     #region Tutorial //todo: move to a new Script
@@ -36,9 +37,10 @@ public class CameraScreenTutorial : MonoBehaviour
     
     public void TutorialCameraButtonPressed() //called when cam button pressed
     {
-        if (PlayerPrefs.GetInt("ShowTutorial") == 2)
+        Debug.Log("Camera Screen Tutorial Pressed");
+        if (PlayerPrefs.GetInt("ShowTutorial") == 3)
         {
-            PlayerPrefs.SetInt("ShowTutorial", 3);
+            PlayerPrefs.SetInt("ShowTutorial", 4);
             UpdateTutorial();
         }
     }
