@@ -139,13 +139,14 @@ public class TraceManager : MonoBehaviour
             //         marker.displayedTexture = marker.primaryHollowInTexture;
             //     }
             // }
-            
+            Debug.LogError("Accessible Traces");
             HapticManager.instance.SelectionHaptic();
             StartCoroutine(_dragAndZoomInertia.ZoomToObject(new Vector2((float)traceToOpen.Item1.lng, (float)traceToOpen.Item1.lat), -traceToOpen.Item1.radius, 0.1f));
             homeScreenManager.OpenTrace(traceToOpen.Item1.id,  traceToOpen.Item1.senderName,traceToOpen.Item1.senderID,traceToOpen.Item1.sendTime, traceToOpen.Item1.mediaType, traceToOpen.Item1.numPeopleSent);
         }
         else if(viewableAbleTraces.Count > 0)
         {
+            Debug.LogError("Viewable Traces");
             viewableAbleTraces.Sort((i1, i2) => i1.Item2.CompareTo(i2.Item2));
             var traceToView = viewableAbleTraces[viewableAbleTraces.Count - 1];
             HapticManager.instance.SelectionHaptic();

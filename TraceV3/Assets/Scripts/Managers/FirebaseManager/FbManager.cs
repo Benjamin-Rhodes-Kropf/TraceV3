@@ -1000,13 +1000,17 @@ public partial class FbManager : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         
-        //Todo:: Need To Discuss 
-        if (string.IsNullOrEmpty( thisUserModel.phone))
-        {
-            canEnterApp(true);
-            yield break;
-        }
-       
+        // //Todo:: Need To Discuss 
+        // if (thisUserModel.phone == null)
+        // {
+        //     canEnterApp(true);
+        //     Debug.LogError("Phone Number Is  ::  "+  thisUserModel.phone);
+        //     yield break;
+        // }
+#if  UNITY_EDITOR
+        canEnterApp(true); 
+        Debug.Log("Unity Editor"); 
+#elif UNITY_IPHONE
         StartCoroutine(IsUserListedInInvited(thisUserModel.phone, isUserInInvteList =>
         {
             if (!isUserInInvteList) //if invited welcome
@@ -1027,6 +1031,7 @@ public partial class FbManager : MonoBehaviour
                 canEnterApp(true);
             }
         }));
+#endif
     }
     public IEnumerator IsUserListedInInvited(string _phoneNumber, System.Action<bool> callback)
     {
@@ -1651,6 +1656,7 @@ public partial class FbManager : MonoBehaviour
             {
                 var trace = new TraceObject(lng, lat, radius, numPeopleSent, senderID,senderName, sendTime, 20, mediaType,traceID);
                 TraceManager.instance.sentTraceObjects.Add(trace);
+                BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
                 TraceManager.instance.UpdateMap(new Vector2());
             }
         }
@@ -1770,5 +1776,30 @@ public partial class FbManager : MonoBehaviour
     public enum LoginStatus
     {
         LoggedIn, LoggedOut
+    }
+
+
+    public IEnumerator GetTraceMediaDownloadURL(string _url, System.Action<string> onSuccess, System.Action onFailed)
+    {
+        var url = "";
+        StorageReference pathReference = _firebaseStorage.GetReference("Traces/" + _url);
+
+        var task = pathReference.GetDownloadUrlAsync();
+
+        while (task.IsCompleted is false)
+            yield return new WaitForEndOfFrame();
+
+        if (!task.IsFaulted && !task.IsCanceled)
+        {
+            Debug.Log("Download URL: " + task.Result);
+            Debug.Log("Actual  URL: " + url);
+            url = task.Result + "";
+            onSuccess(url);
+        }
+        else
+        {
+            Debug.Log("task failed:" + task.Result);
+            onFailed();
+        }
     }
 }
