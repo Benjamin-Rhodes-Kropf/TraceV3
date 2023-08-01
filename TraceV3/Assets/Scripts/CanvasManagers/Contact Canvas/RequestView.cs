@@ -88,6 +88,7 @@ public class RequestView : MonoBehaviour
             }
         })));
         NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderId, FbManager.instance.thisUserModel.name , "accepted your friend request!");
+        FbManager.instance.AnalyticsOnAcceptFriend(senderId);
     }
 
     //  TODO: i.  Remove Request From Local List

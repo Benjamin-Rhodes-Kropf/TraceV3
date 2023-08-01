@@ -1168,6 +1168,8 @@ MonoBehaviour:
   fileLocation: 
   mediaType: 0
   usersToSendTrace: []
+  videoLength: 0
+  camFlippedCount: 0
 --- !u!4 &722720123
 Transform:
   m_ObjectHideFlags: 0
@@ -13786,7 +13788,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5392363315368272086, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5872935894080195439, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
       propertyPath: m_SizeDelta.y
@@ -14194,7 +14196,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9133073692678122615, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9133073692790371070, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
       propertyPath: m_RaycastPadding.w
@@ -14258,7 +14260,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9133073692790371071, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_StringArgument
-      value: friends
+      value: Friends
       objectReference: {fileID: 0}
     - target: {fileID: 9133073692790371071, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName

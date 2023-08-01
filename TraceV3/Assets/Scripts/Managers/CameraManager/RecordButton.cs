@@ -98,6 +98,7 @@ namespace NatML.Examples.UI
                 yield return null;
             }
             Reset();
+            SendTraceManager.instance.videoLength = Time.time - startTime; //keep track of vid length for analytics
             onTouchUp?.Invoke();
         }
     }

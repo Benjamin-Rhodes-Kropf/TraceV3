@@ -164,8 +164,7 @@ public partial class FbManager
         {
             Debug.Log("SOMTHING WENT WRONG");
         }
-        
-        //ContactsCanvas.UpdateRedMarks();
+        AnalyticsSetUserFriendCount(_allFriends.Count);
     }
 
     private void HandleRemovedFriends(object sender, ChildChangedEventArgs args)

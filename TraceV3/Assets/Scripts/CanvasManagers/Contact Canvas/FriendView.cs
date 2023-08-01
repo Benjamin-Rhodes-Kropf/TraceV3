@@ -154,16 +154,17 @@ public class FriendView : MonoBehaviour
             Debug.Log("from:" + FbManager.instance.thisUserModel.name);
             NotificationManager.Instance.SendNotificationUsingFirebaseUserId(friendUID, FbManager.instance.thisUserModel.name , "sent you friend request");
         }));
+        
+        FbManager.instance.AnalyticsOnSendFriendRequest(friendUID);
     }
 
     private void RemoveFriends()
     {
         Debug.Log("RemoveFriends");
         FriendRequestManager.Instance.RemoveRequestFromList(_uid, false); //new
-        
-        
         FbManager.instance.RemoveFriends(_uid);
         gameObject.SetActive(false);
+        FbManager.instance.AnalyticsOnRemoveFriend(friendUID);
     }
 
 
@@ -172,7 +173,6 @@ public class FriendView : MonoBehaviour
         if (isFriend is false)
             return;
         _bestFriendButton.interactable = false;
-        // Todo : Call FbManager Function To Update Database
         StartCoroutine(FbManager.instance.SetBestFriend(friendUID, !isBestFriend, (isSuccess) =>
         {
             if (isSuccess)
@@ -181,6 +181,7 @@ public class FriendView : MonoBehaviour
                 _bestFriend.sprite = isBestFriend ? _heartSprite[0] : _heartSprite[1];
                 FriendsModelManager.Instance.SetBestFriend(friendUID, isBestFriend);
                 TraceManager.instance.UpdateMap(new Vector2(0,0));
+                FbManager.instance.AnalyticsOnHeartFriend(friendUID);
             }
 
             _bestFriendButton.interactable = true;

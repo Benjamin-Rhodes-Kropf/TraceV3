@@ -57,6 +57,7 @@ public class OnlineMapsLocationService : OnlineMapsLocationServiceGenericBase<On
         longitude = emulatorPosition.x;
         latitude = emulatorPosition.y;
 #endif
+        FbManager.instance.AnalyticsOnLocationChanged(latitude,longitude);
         return new Vector2(latitude, longitude);
     }
     protected override void GetLocationFromSensor(out float longitude, out float latitude)

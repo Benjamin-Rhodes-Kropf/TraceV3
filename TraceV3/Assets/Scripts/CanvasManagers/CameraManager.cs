@@ -15,6 +15,9 @@ public class CameraManager : MonoBehaviour//PressInputBase
     public Image previewImagePlayer;
     public RawImage imagePreview;
     public RecordButton _RecordButton;
+
+    [Header("Analytics")] 
+    private int _camFlipCount;
     
     //public UIController uiManager;
     private void OnEnable()
@@ -27,6 +30,7 @@ public class CameraManager : MonoBehaviour//PressInputBase
 
     IEnumerator BeginCamera()
     {
+        _camFlipCount = 0;
         yield return new WaitForSeconds(2.5f);
         _RecordButton.ForceRec();
     }
@@ -34,6 +38,7 @@ public class CameraManager : MonoBehaviour//PressInputBase
     //for switching between the device cameras
     public void SwitchCamera() {
         ScreenManager.instance.uiController.SwitchCamera();
+        _camFlipCount++;
     }
 
     public void ToggleFlash()
@@ -68,6 +73,7 @@ public class CameraManager : MonoBehaviour//PressInputBase
     {
         Debug.Log("Pass Video To Firebase Manager Here");
         videoPreviewPanel.gameObject.SetActive(false);
+        SendTraceManager.instance.camFlippedCount = _camFlipCount;
         ScreenManager.instance.uiController.SaveVideoLocation();
     }
     public void ShareImage()

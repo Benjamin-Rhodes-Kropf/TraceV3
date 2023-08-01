@@ -72,14 +72,7 @@ public partial class FbManager : MonoBehaviour
         }
 
         IsFirebaseUserInitialised = false;
-        
-        // PlayerPrefs.SetInt("NumberOfTimesOnApp", PlayerPrefs.GetInt("NumberOfTimesOnApp")+1);
-        // Debug.Log("FbManager: NumberOfTimesOnApp:" + PlayerPrefs.GetInt("NumberOfTimesOnApp"));
-        // if (PlayerPrefs.GetInt("NumberOfTimesOnApp") == 1)
-        // {
-        //     Debug.Log("FbManager: First Time On App!");
-        // }
-        
+
         //makes sure nothing can use the db until its enabled
         dependencyStatus = DependencyStatus.UnavailableUpdating;
         
@@ -320,20 +313,31 @@ public partial class FbManager : MonoBehaviour
         // Attach a listener to the "users" node
         usersRef.Child(_firebaseUser.UserId).GetValueAsync().ContinueWith(task =>
         {
+            
             DataSnapshot snapshot = null;
             if (task.IsCompleted)
             {
                 // Iterate through the children of the "users" node and add each username to the list
                 snapshot = task.Result;
-                    string email = snapshot.Child("email").Value.ToString();
-                    string displayName = snapshot.Child("name").Value.ToString();
-                    string username = snapshot.Child("username").Value.ToString();
-                    string phone = snapshot.Child("phone").Value.ToString();
-                    string photoURL = snapshot.Child("photo").Value.ToString();
-                    Debug.Log("Getting Curent User Data");
-                    thisUserModel = new UserModel(_firebaseUser.UserId,email,displayName,username,phone,photoURL,password);
-                    IsFirebaseUserInitialised = true;
-                    Debug.Log("User Initialized");
+                try
+                {
+                    string batch = snapshot.Child("batch").Value.ToString();
+                    AnalyticsSetBatchNumber(batch);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+                string email = snapshot.Child("email").Value.ToString();
+                string displayName = snapshot.Child("name").Value.ToString();
+                string username = snapshot.Child("username").Value.ToString();
+                string phone = snapshot.Child("phone").Value.ToString();
+                string photoURL = snapshot.Child("photo").Value.ToString();
+                Debug.Log("Getting Curent User Data");
+                thisUserModel = new UserModel(_firebaseUser.UserId,email,displayName,username,phone,photoURL,password);
+                IsFirebaseUserInitialised = true;
+                Debug.Log("User Initialized");
             }
             if (task.IsFaulted)
             {
@@ -700,85 +704,7 @@ public partial class FbManager : MonoBehaviour
         }
     }
     
-    //Todo: Do this in the cloud... we cant store all users locally
-    private void GetAllUsers()
-    {
-        // Create a list to store the usernames
-        users = new List<UserModel>();
-        //return;
-        Debug.Log("Getting users");
-        // Get a reference to the "users" node in the database
-        DatabaseReference usersRef = _databaseReference.Child("users");
-        
-        // Attach a listener to the "users" node
-        usersRef.GetValueAsync().ContinueWith(task =>
-        {
-            if (task.IsCompleted)
-             {
-                 // Iterate through the children of the "users" node and add each username to the list
-                 DataSnapshot snapshot = task.Result;
-                 var  allUsersSnapshots = snapshot.Children.ToArrayPooled();
-
-                 foreach (var snap in allUsersSnapshots)
-                 {
-                     //Debug.Log("SNAP :" + snap.Key);
-                     try
-                     {
-                         UserModel userData = new UserModel();
-                         userData.userID =  snap.Key.ToString(); 
-                         if (snap.Child("email").Value.ToString() == "" || snap.Child("email").Value.ToString() == null)
-                         {
-                             Debug.Log("Caught and Error");
-                             continue;
-                         }
-                         userData.email = snap.Child("email").Value.ToString();
-                         
-                         if (snap.Child("name").Value.ToString() == "" || snap.Child("name").Value.ToString() == null)
-                         {
-                             Debug.Log("Caught and Error");
-                             continue;
-                         }
-                         userData.name =snap.Child("name").Value.ToString();
-                         
-                         if (snap.Child("username").Value.ToString() == "" || snap.Child("username").Value.ToString() == null)
-                         {
-                             Debug.Log("Caught and Error");
-                             continue;
-                         }
-                         userData.username = snap.Child("username").Value.ToString();
-                         
-                         if (snap.Child("phone").Value.ToString() == "" || snap.Child("phone").Value.ToString() == null)
-                         {
-                             Debug.Log("Caught and Error");
-                             continue;
-                         }
-                         userData.phone =  snap.Child("phone").Value.ToString();
-                         
-                         if (snap.Child("photo").Value.ToString() == "" || snap.Child("photo").Value.ToString() == null)
-                         {
-                             Debug.Log("Caught and Error");
-                             continue;
-                         }
-                         userData.photo = snap.Child("photo").Value.ToString();
-                         
-                         
-                         users.Add(userData); 
-                     }
-                     catch (Exception e)
-                     {
-                         Debug.Log("failed to get user");
-                     }
-                 }
-                 return;
-             }
-            if (task.IsFaulted)
-             {
-                 Debug.LogError(task.Exception);
-                 // Handle the error
-                 return;
-             }
-        });
-    }
+    
     private void HandleUserAdded(object sender, ChildChangedEventArgs args)
     {
         Debug.Log("HandleUserAdded");
@@ -1131,13 +1057,17 @@ public partial class FbManager : MonoBehaviour
             Debug.Log("Adding User to Queue");
             var AddUserToQueue = _databaseReference.Child("queue").Child(userID).SetValueAsync(queuelength);
             yield return new WaitUntil(() => AddUserToQueue.IsCompleted);
+
+            int batchNumber = (queuelength - 1) / 100 + 1;
+            var SetUserBatchNumber = _databaseReference.Child("users").Child(userID).Child("batch").SetValueAsync(batchNumber);
+            yield return new WaitUntil(() => SetUserBatchNumber.IsCompleted);
             
             // //add one to queue length
             Debug.Log("increasing to queue length");
             var IncreaseQueueLength = _databaseReference.Child("queue").Child("length").SetValueAsync(queuelength + 1);
             yield return new WaitUntil(() => IncreaseQueueLength.IsCompleted);
         }
-        //
+  
         else if (DBTask.Result.Exists) //if user is in queue
         {
             int allowedNumber = 0;
@@ -1173,11 +1103,6 @@ public partial class FbManager : MonoBehaviour
     #endregion
     
     
-    #region -User Tracking
-    //Todo Write tracking functions to manage in app use
-    
-
-    #endregion
     #region -User Subscriptions
     public void SubscribeOrUnSubscribeToReceivingTraces(bool subscribe)
     {

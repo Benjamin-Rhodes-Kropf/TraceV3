@@ -22,6 +22,10 @@ public class SendTraceManager : MonoBehaviour
     public string fileLocation;
     public MediaType mediaType;
     public List<String> usersToSendTrace;
+
+    [Header("Analytics Values")] 
+    public float videoLength;
+    public int camFlippedCount;
     
     private void Awake()
     {
@@ -50,6 +54,7 @@ public class SendTraceManager : MonoBehaviour
         Debug.Log("SEND TRACE!");
         location = _onlineMapsLocationService.GetUserLocation();
         FbManager.instance.UploadTrace(fileLocation, selectedRadius, location, mediaType,usersToSendTrace);
+        FbManager.instance.AnalyticsOnSendTrace(usersToSendTrace.Count, videoLength, camFlippedCount);
         SendLocalNotification("Sending Trace", "give us a moment to upload...", 1f);
     }
 

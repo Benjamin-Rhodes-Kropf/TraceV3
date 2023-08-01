@@ -7,7 +7,7 @@ using Object = UnityEngine.Object;
 [Serializable]
 public class UserModel
 {
-    public string objectID;
+    public string objectID; //todo: get rid of difference between object id and userID
     public string userID;
     public string email;
     public string name;
