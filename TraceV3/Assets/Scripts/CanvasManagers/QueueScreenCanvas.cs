@@ -19,10 +19,14 @@ public class QueueScreenCanvas : MonoBehaviour
     {
         if (_controller == null)
             _controller = new QueueScreenCanvasController();
-            
         if (FbManager.instance.IsFirebaseUserInitialised)
             _controller.Init(this);
-        
+        CheckSpotInQueue();
+    }
+    
+    
+    private void CheckSpotInQueue()
+    {
         //get spot in line
         StartCoroutine(FbManager.instance.GetOrSetSpotInQueue(FbManager.instance.thisUserModel.userID, (myReturnValue) => {
             if (myReturnValue != -1000000)
@@ -44,8 +48,18 @@ public class QueueScreenCanvas : MonoBehaviour
             {
                 _queueSpot.text = "Error";
             }
+
+            StartCoroutine(ReloadEveryMinute());
         }));
     }
+    
+    //reload every minute
+    IEnumerator ReloadEveryMinute()
+    {
+        yield return new WaitForSeconds(60);
+        CheckSpotInQueue();
+    }
+    
     private void OnDisable()
     {
         _controller.UnInitialize();

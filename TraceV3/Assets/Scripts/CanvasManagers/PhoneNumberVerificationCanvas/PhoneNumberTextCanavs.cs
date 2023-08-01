@@ -25,7 +25,6 @@ namespace CanvasManagers
         private void OnEnable()
         {
             Debug.Log("Register Canvas Enabled");
-
             if (_controller == null)
                 _controller = new PhoneNumberCanvasController(this);
             

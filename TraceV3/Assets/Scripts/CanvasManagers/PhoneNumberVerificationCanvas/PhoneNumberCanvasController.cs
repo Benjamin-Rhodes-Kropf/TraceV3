@@ -90,7 +90,8 @@ namespace CanvasManagers
                     {
                         if (callbackIsSuccess)
                         {
-                            Debug.Log("SetInQue false");
+                            Debug.Log("User Invited: true");
+                            FbManager.instance.AddInvitesToFriends(phoneNumberwithoutareacode);
                         }
                         else
                             Debug.LogError("Failed to update phone");
@@ -121,7 +122,9 @@ namespace CanvasManagers
                         {
                             if (callbackIsSuccess)
                             {
-                                Debug.Log("SetInQue false");
+                                Debug.Log("User Invited: true");
+                                FbManager.instance.AddInvitesToFriends(phoneNumberwithoutareacode);
+
                             }
                             else
                                 Debug.LogError("Failed to update phone");
