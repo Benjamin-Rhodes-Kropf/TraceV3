@@ -7,19 +7,29 @@ public class HomeScreenTutorial : MonoBehaviour
     [Header("Tutorial Screens")] 
     [SerializeField] private GameObject _tutorialWelomeScreen;
     [SerializeField] private GameObject _tutorialLetsLeaveScreen;
+    [SerializeField] private GameObject _tutorialInviteOrAddFriendsScreen;
+    [SerializeField] private GameObject _tutorialEditProfileInfo;
     [SerializeField] private GameObject _tutorialCongratsFinishScreen;
     [SerializeField] private GameObject _tutorialClickForMoreInfo;
 
     public void OnEnable()
     {
+        //PlayerPrefs.SetInt("ShowTutorial", 6);
         HideTutorial();
-        StartCoroutine(UpdateTutorialDisplay());
+        if (PlayerPrefs.GetInt("ShowTutorial") == 1)
+        {
+            StartCoroutine(UpdateTutorialDisplay(2));
+        }
+        else
+        {
+            StartCoroutine(UpdateTutorialDisplay(0.5f));
+        }
     }
 
     #region Tutorial //todo: move to a new Script
-    IEnumerator UpdateTutorialDisplay()
+    IEnumerator UpdateTutorialDisplay(float waitTime)
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(waitTime);
         UpdateTutorial();
     }
     private void UpdateTutorial()
@@ -34,12 +44,18 @@ public class HomeScreenTutorial : MonoBehaviour
                 _tutorialLetsLeaveScreen.SetActive(true);
                 break;
             case 6:
-                _tutorialCongratsFinishScreen.SetActive(true);
+                _tutorialInviteOrAddFriendsScreen.SetActive(true);
                 break;
             case 7:
-                _tutorialClickForMoreInfo.SetActive(true);
+                _tutorialEditProfileInfo.SetActive(true);
                 break;
             case 8:
+                _tutorialCongratsFinishScreen.SetActive(true);
+                break;
+            case 9:
+                _tutorialClickForMoreInfo.SetActive(true);
+                break;
+            case 10:
                 HideTutorial();
                 break;
         }
@@ -48,6 +64,8 @@ public class HomeScreenTutorial : MonoBehaviour
     {
         _tutorialWelomeScreen.SetActive(false);
         _tutorialLetsLeaveScreen.SetActive(false);
+        _tutorialInviteOrAddFriendsScreen.SetActive(false);
+        _tutorialEditProfileInfo.SetActive(false);
         _tutorialCongratsFinishScreen.SetActive(false);
         _tutorialClickForMoreInfo.SetActive(false);
     }
@@ -61,21 +79,42 @@ public class HomeScreenTutorial : MonoBehaviour
         if (PlayerPrefs.GetInt("ShowTutorial") == 2)
         {
             PlayerPrefs.SetInt("ShowTutorial", 3);
+            HideTutorial();
+        }
+        UpdateTutorialDisplay(0.5f);
+    }
+
+    public void InviteOrAddFriendsPressed()
+    {
+        Debug.Log("InviteOrAddFriendsPressed Screen Pressed");
+        if (PlayerPrefs.GetInt("ShowTutorial") == 6)
+        {
+            PlayerPrefs.SetInt("ShowTutorial", 7); 
+            HideTutorial();
+        }
+        UpdateTutorialDisplay(0.5f);
+    }
+    public void EditProfilePressed()
+    {
+        Debug.Log("EditProfilePressed Screen Pressed");
+        if (PlayerPrefs.GetInt("ShowTutorial") == 7)
+        {
+            PlayerPrefs.SetInt("ShowTutorial", 8); 
             UpdateTutorial();
         }
     }
-
+    
     public void CongratsScreenPressed()
     {
         Debug.Log("Congrats Screen Pressed");
-        PlayerPrefs.SetInt("ShowTutorial", 7);
+        PlayerPrefs.SetInt("ShowTutorial", 9);
         UpdateTutorial();
     }
 
     public void ClickForMoreInfoPressed()
     {
         Debug.Log("ClickForMoreInfoPressed Screen Pressed");
-        PlayerPrefs.SetInt("ShowTutorial", 8);
+        PlayerPrefs.SetInt("ShowTutorial", 10);
         UpdateTutorial();
     }
     
