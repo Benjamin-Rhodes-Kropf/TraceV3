@@ -23,6 +23,9 @@ namespace CanvasManagers
                     OnRequestsSelection();
                     break;
             }
+            
+            //fb Analytics Log Search Bar Pressed And Type
+            FbManager.instance.AnalyticsOnSearchBarPressed(_CurrentSelectedUserTab.ToString());
         }
 
 

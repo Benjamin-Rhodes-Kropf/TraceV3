@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using UnityEngine;
 using Firebase;
+using Firebase.Analytics;
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Firestore;
@@ -1752,12 +1753,6 @@ public partial class FbManager : MonoBehaviour
                 // Uh-oh, an error occurred!
             }
         });
-    }
-    public void CollectAnalytics()
-    {
-        //friend count
-        //FirebaseAnalytics.LogEvent(FirebaseAnalytics.EventSelectItem, new Parameter(FirebaseAnalytics.ParameterValue, _allFriends.Count));
-        
     }
 
     public enum LoginStatus

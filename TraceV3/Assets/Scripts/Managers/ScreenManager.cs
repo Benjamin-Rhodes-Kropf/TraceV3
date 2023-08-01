@@ -115,11 +115,12 @@ public class ScreenManager : MonoBehaviour
     public void LoadingScreen()
     {
         // clear history
-       history = new List<UIScreen>();
+        history = new List<UIScreen>();
         UIScreen screen = ScreenFromID("Loading");
         current = screen;
         current.ScreenObject.SetParent(activeParent, false); // set current screen parent for animation
         screen.ScreenObject.GetComponent<GraphicRaycaster>().enabled = false;
+        FbManager.instance.AnalyticsStartTimer("loading_screen");
     }
 
     public void HideLoadingScreen()
@@ -165,6 +166,8 @@ public class ScreenManager : MonoBehaviour
             newScreen.ScreenObject.SetParent(activeParent, false); // set new screen parent for animation
             currentScreenName = ScreenID;
         }
+        FbManager.instance.AnalyticsStopTimer();
+        FbManager.instance.AnalyticsStartTimer(ScreenID);
     }
     public void ChangeScreenForwards(string ScreenID)
     {
@@ -179,8 +182,9 @@ public class ScreenManager : MonoBehaviour
             newScreen.ScreenObject.SetParent(endParent, false); // set new screen parent for animation
             _screenSwitchAnimationManager.slideScreensFoward();
             currentScreenName = ScreenID;
-
         }
+        FbManager.instance.AnalyticsStopTimer();
+        FbManager.instance.AnalyticsStartTimer(ScreenID);
     }
     public void ChangeScreenForwardsSlideOver(string ScreenID)
     {
@@ -195,8 +199,9 @@ public class ScreenManager : MonoBehaviour
             newScreen.ScreenObject.SetParent(endParent, false); // set new screen parent for animation
             _screenSwitchAnimationManager.slideScreenForwardSlideOver();
             currentScreenName = ScreenID;
-
         }
+        FbManager.instance.AnalyticsStopTimer();
+        FbManager.instance.AnalyticsStartTimer(ScreenID);
     }
     public void ChangeScreenBackwardsSlideOver(string ScreenID)
     {
@@ -211,8 +216,9 @@ public class ScreenManager : MonoBehaviour
             newScreen.ScreenObject.SetParent(endParent, false); // set new screen parent for animation
             _screenSwitchAnimationManager.slideScreenBackwardSlideOver();
             currentScreenName = ScreenID;
-
         }
+        FbManager.instance.AnalyticsStopTimer();
+        FbManager.instance.AnalyticsStartTimer(ScreenID);
     }
     public void ChangeScreenUpSlideOver(string ScreenID)
     {
@@ -228,6 +234,8 @@ public class ScreenManager : MonoBehaviour
             _screenSwitchAnimationManager.slideScreenUpSlideOver();
             currentScreenName = ScreenID;
         }
+        FbManager.instance.AnalyticsStopTimer();
+        FbManager.instance.AnalyticsStartTimer(ScreenID);
     }
     public void ChangeScreenForwardsSlideOff(string ScreenID)
     {
@@ -242,8 +250,9 @@ public class ScreenManager : MonoBehaviour
             newScreen.ScreenObject.SetParent(endParent, false); // set new screen parent for animation
             _screenSwitchAnimationManager.slideScreenForwardSlideOff();
             currentScreenName = ScreenID;
-
         }
+        FbManager.instance.AnalyticsStopTimer();
+        FbManager.instance.AnalyticsStartTimer(ScreenID);
     }
     public void ChangeScreenBackwardsSlideOff(string ScreenID)
     {
@@ -258,8 +267,9 @@ public class ScreenManager : MonoBehaviour
             newScreen.ScreenObject.SetParent(endParent, false); // set new screen parent for animation
             _screenSwitchAnimationManager.slideScreenBackwardSlideOff();
             currentScreenName = ScreenID;
-
         }
+        FbManager.instance.AnalyticsStopTimer();
+        FbManager.instance.AnalyticsStartTimer(ScreenID);
     }
     public void ChangeScreenBackwards(string ScreenID)
     {
@@ -274,8 +284,9 @@ public class ScreenManager : MonoBehaviour
             newScreen.ScreenObject.SetParent(endParent, false); // set new screen parent for animation
             _screenSwitchAnimationManager.slideScreensBackward();
             currentScreenName = ScreenID;
-
         }
+        FbManager.instance.AnalyticsStopTimer();
+        FbManager.instance.AnalyticsStartTimer(ScreenID);
     }
     public void ChangeScreenDown(string ScreenID)
     {
@@ -290,8 +301,9 @@ public class ScreenManager : MonoBehaviour
             newScreen.ScreenObject.SetParent(endParent, false); // set new screen parent for animation
             _screenSwitchAnimationManager.slideScreenDown();
             currentScreenName = ScreenID;
-
         }
+        FbManager.instance.AnalyticsStopTimer();
+        FbManager.instance.AnalyticsStartTimer(ScreenID);
     }
     public void ChangeScreenFade(string ScreenID)
     {
@@ -309,6 +321,8 @@ public class ScreenManager : MonoBehaviour
             newScreen.ScreenObject.SetParent(endParent, false); // set new screen parent for animation
             currentScreenName = ScreenID;
         }
+        FbManager.instance.AnalyticsStopTimer();
+        FbManager.instance.AnalyticsStartTimer(ScreenID);
     }
     public void GoBackScreen()
     {
@@ -333,7 +347,6 @@ public class ScreenManager : MonoBehaviour
         {
             if (screen.Name == ScreenID) return screen;
         }
-
         return null;
     }
     UIScreen PopupFromID(string ScreenID)
@@ -342,7 +355,6 @@ public class ScreenManager : MonoBehaviour
         {
             if (screen.Name == ScreenID) return screen;
         }
-
         return null;
     }
     
@@ -354,7 +366,6 @@ public class ScreenManager : MonoBehaviour
         {
             if (s != current) s.ScreenObject.SetParent(inactiveParent, false);
         }
-
         // show active screen
         current.ScreenObject.SetParent(activeParent, false);
     }
