@@ -26,7 +26,7 @@ public class FriendsModelManager
 
     public static FriendModel GetFriendModelByOtherFriendID(string otherFriend)
     {
-        RemoveDuplicates();
+        // RemoveDuplicates();
         var friend = (from fri in FbManager.instance._allFriends
             where (fri.friendID == otherFriend)
             select fri).First();
@@ -37,6 +37,7 @@ public class FriendsModelManager
     {
         try
         {
+            Debug.Log("IsAlreadyFriend");
             GetFriendModelByOtherFriendID(otherFriend);
             return true;
         }
@@ -48,7 +49,8 @@ public class FriendsModelManager
 
     public bool IsBestFriend(string id)
     {
-       return GetFriendModelByOtherFriendID(id).isBestFriend;
+        Debug.Log("IsBestFriend");
+        return GetFriendModelByOtherFriendID(id).isBestFriend;
     }
 
     public void SetBestFriend(string id, bool isBestFriend)
@@ -66,6 +68,7 @@ public class FriendsModelManager
 
     public void RemoveFriendFromList(string otherFriend)
     {
+        Debug.Log("RemoveFriendFromList");
         var friend = GetFriendModelByOtherFriendID(otherFriend);
         FbManager.instance._allFriends.Remove(friend);
         if (ContactsCanvas.UpdateFriendsView != null)

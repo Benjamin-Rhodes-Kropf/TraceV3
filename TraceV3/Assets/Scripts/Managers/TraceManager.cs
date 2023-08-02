@@ -129,18 +129,10 @@ public class TraceManager : MonoBehaviour
             currentlyClickingTraceID = traceToOpen.Item1.id;
             
             //new way because they are linked
-            traceToOpen.Item1.marker.displayedTexture =  traceToOpen.Item1.marker.primaryHollowInTexture; //todo: this is the new more efficent way
-            
-            //get marker currently being opened and change its texture to hollow //todo: make sure that ^ that way works so we can delete this
-            // foreach (var marker in markerManager.items)
-            // {
-            //     if (marker.traceID == traceToOpen.Item1.id)
-            //     {
-            //         marker.displayedTexture = marker.primaryHollowInTexture;
-            //     }
-            // }
-            
+            traceToOpen.Item1.marker.displayedTexture =  traceToOpen.Item1.marker.primaryHollowInTexture;
+
             HapticManager.instance.SelectionHaptic();
+            FbManager.instance.AnalyticsOnTracePressed(traceToOpen.Item1.senderName, traceToOpen.Item1.sendTime, "open");
             StartCoroutine(_dragAndZoomInertia.ZoomToObject(new Vector2((float)traceToOpen.Item1.lng, (float)traceToOpen.Item1.lat), -traceToOpen.Item1.radius, 0.1f));
             homeScreenManager.OpenTrace(traceToOpen.Item1.id,  traceToOpen.Item1.senderName,traceToOpen.Item1.senderID,traceToOpen.Item1.sendTime, traceToOpen.Item1.mediaType, traceToOpen.Item1.numPeopleSent);
         }
@@ -149,6 +141,7 @@ public class TraceManager : MonoBehaviour
             viewableAbleTraces.Sort((i1, i2) => i1.Item2.CompareTo(i2.Item2));
             var traceToView = viewableAbleTraces[viewableAbleTraces.Count - 1];
             HapticManager.instance.SelectionHaptic();
+            FbManager.instance.AnalyticsOnTracePressed(traceToView.Item1.senderName, traceToView.Item1.sendTime, "view");
             StartCoroutine(_dragAndZoomInertia.ZoomToObject(new Vector2((float)traceToView.Item1.lng, (float)traceToView.Item1.lat), -traceToView.Item1.radius, 0.1f));
             homeScreenManager.ViewTrace( traceToView.Item1.senderName,traceToView.Item1.sendTime, traceToView.Item1.numPeopleSent);
         }
@@ -361,14 +354,23 @@ public class TraceManager : MonoBehaviour
                         }
                         else
                         {
-                            if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).isBestFriend && FbManager.instance._allFriends.Count > 1)
+                            try
                             {
-                                traceObject.marker = drawTraceOnMap.DrawCirlce(traceObject.lat, traceObject.lng, (traceObject.radius), DrawTraceOnMap.TraceType.RECEIVEDBESTFRIEND, traceObject.id);
+                                if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).isBestFriend)
+                                {
+                                    traceObject.marker = drawTraceOnMap.DrawCirlce(traceObject.lat, traceObject.lng, (traceObject.radius), DrawTraceOnMap.TraceType.RECEIVEDBESTFRIEND, traceObject.id);
+                                }
+                                else
+                                {
+                                    traceObject.marker = drawTraceOnMap.DrawCirlce(traceObject.lat, traceObject.lng, (traceObject.radius), DrawTraceOnMap.TraceType.RECEIVED, traceObject.id);
+                                }
                             }
-                            else
+                            catch (Exception e)
                             {
+                                Debug.LogWarning("Friend Not Loaded Yet For Gold On Trace Map");
                                 traceObject.marker = drawTraceOnMap.DrawCirlce(traceObject.lat, traceObject.lng, (traceObject.radius), DrawTraceOnMap.TraceType.RECEIVED, traceObject.id);
                             }
+                            
                             traceObject.canBeOpened = false;
                         }
                     }

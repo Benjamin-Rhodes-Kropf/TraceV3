@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class TraceUserInfoStructure {
     //they must be public for json utility conversion
+    public string batch;
     public string username;
     public string name;
     public string email;
@@ -13,7 +14,9 @@ public class TraceUserInfoStructure {
     public bool isInQue;
         
 
-    public TraceUserInfoStructure(string username, string name, string photo, string email, string phone, string createdDate) {
+    public TraceUserInfoStructure(string batch, string username, string name, string photo, string email, string phone, string createdDate)
+    {
+        this.batch = batch;
         this.username = username;
         this.name = name;
         this.photo = photo;

@@ -323,11 +323,11 @@ public partial class FbManager : MonoBehaviour
                 if (snapshot.HasChild("batch"))
                 {
                     batch = snapshot.Child("batch").Value.ToString();
+                    AnalyticsSetBatchNumber(batch);
                 }
                 else
                 {
-                    Debug.LogError("The 'batch' child does not exist in the snapshot.");
-                    return; // Abort further processing or handle the situation accordingly
+                    Debug.LogWarning("The 'batch' child does not exist in the snapshot.");
                 }
                 
                 string email = snapshot.Child("email").Value.ToString();
@@ -381,8 +381,8 @@ public partial class FbManager : MonoBehaviour
     #endregion
     
     #region -User Registration
-    private string GenerateUserProfileJson(string username, string name, string userPhotoLink, string email, string phone, string createdDate) {
-        TraceUserInfoStructure traceUserInfoStructure = new TraceUserInfoStructure(username, name, userPhotoLink, email, phone, createdDate);
+    private string GenerateUserProfileJson(string batch, string username, string name, string userPhotoLink, string email, string phone, string createdDate) {
+        TraceUserInfoStructure traceUserInfoStructure = new TraceUserInfoStructure(batch,username, name, userPhotoLink, email, phone, createdDate);
         string json = JsonUtility.ToJson(traceUserInfoStructure);
         return json;
     }
@@ -453,7 +453,7 @@ public partial class FbManager : MonoBehaviour
             print("User Email :: "+_firebaseUser.Email);
         }
         
-        var json = GenerateUserProfileJson( _username, "null", "null",_email, _phoneNumber, DateTime.UtcNow.ToString());
+        var json = GenerateUserProfileJson("null", _username, "null", "null",_email, _phoneNumber, DateTime.UtcNow.ToString());
         _databaseReference.Child("users").Child(_firebaseUser.UserId.ToString()).SetRawJsonValueAsync(json);
         _firestoreData = new Dictionary<string, object>
         {
@@ -1059,6 +1059,7 @@ public partial class FbManager : MonoBehaviour
             var AddUserToQueue = _databaseReference.Child("queue").Child(userID).SetValueAsync(queuelength);
             yield return new WaitUntil(() => AddUserToQueue.IsCompleted);
 
+            // set user in batch number
             int batchNumber = (queuelength - 1) / 100 + 1;
             var SetUserBatchNumber = _databaseReference.Child("users").Child(userID).Child("batch").SetValueAsync(batchNumber);
             yield return new WaitUntil(() => SetUserBatchNumber.IsCompleted);
@@ -1468,6 +1469,7 @@ public partial class FbManager : MonoBehaviour
                 var trace = new TraceObject(lng, lat, radius, numPeopleSent, senderID, senderName, sendTime, 20, mediaType,traceID);
                 TraceManager.instance.recivedTraceObjects.Add(trace);
                 TraceManager.instance.UpdateMap(new Vector2());
+                FbManager.instance.AnalyticsSetTracesReceived(TraceManager.instance.recivedTraceObjects.Count.ToString());
             }
         }
     }
@@ -1572,6 +1574,7 @@ public partial class FbManager : MonoBehaviour
                 var trace = new TraceObject(lng, lat, radius, numPeopleSent, senderID,senderName, sendTime, 20, mediaType,traceID);
                 TraceManager.instance.sentTraceObjects.Add(trace);
                 TraceManager.instance.UpdateMap(new Vector2());
+                FbManager.instance.AnalyticsSetTracesSent(TraceManager.instance.sentTraceObjects.Count.ToString());
             }
         }
     }

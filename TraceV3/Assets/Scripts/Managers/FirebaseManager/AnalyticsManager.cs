@@ -61,6 +61,18 @@ public partial class FbManager
         Debug.Log("batchNumber:" + batchNumber);
         FirebaseAnalytics.SetUserProperty("batch_number",batchNumber.ToString());
     }
+    public void AnalyticsSetTracesReceived(string tracesReceived)
+    {
+        Debug.Log("Analytics: AnalyticsSetTracesReceived");
+        Debug.Log("tracesReceived:" + tracesReceived);
+        FirebaseAnalytics.SetUserProperty("traces_received",tracesReceived.ToString());
+    }
+    public void AnalyticsSetTracesSent(string tracesSent)
+    {
+        Debug.Log("Analytics: AnalyticsSetTracesReceived");
+        Debug.Log("tracesReceived:" + tracesSent);
+        FirebaseAnalytics.SetUserProperty("traces_sent",tracesSent.ToString());
+    }
     
     #region Home Screen
     public void AnalyticsOnCameraPressed()
@@ -112,7 +124,7 @@ public partial class FbManager
             new Parameter("number_of_people_sent_to", numberOfPeopleSelected),
         });
     }
-    public void AnalyticsOnTracePressed(string usernameOfTraceSender, string timeSinceTraceLeft)
+    public void AnalyticsOnTracePressed(string usernameOfTraceSender, string timeSinceTraceLeft, string traceType) //todo: add functionality here
     {
         if(!IsFirebaseUserInitialised) return; //make sure fb user exists
         Debug.Log("Analytics: OnTracePressed");
@@ -120,6 +132,7 @@ public partial class FbManager
         Debug.Log("time_since_trace_left:" + timeSinceTraceLeft);
         FirebaseAnalytics.LogEvent("trace_pressed", new Parameter[] {
             new Parameter("this_user_username", thisUserModel.username),
+            new Parameter("trace_type", traceType),
             new Parameter("username_of_trace_sender", usernameOfTraceSender),
             new Parameter("time_since_trace_left", timeSinceTraceLeft),
         });
