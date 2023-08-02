@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.IO;
 using UnityEngine;
 using Firebase;
-using Firebase.Analytics;
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Firestore;
@@ -48,7 +47,6 @@ public partial class FbManager : MonoBehaviour
     [SerializeField] private DrawTraceOnMap _drawTraceOnMap;
     [SerializeField] private DragAndZoomInertia _dragAndZoomInertia;
     [SerializeField] private OnlineMaps _map;
-
 
     [Header("User Data")] 
     public Texture userImageTexture;
@@ -319,16 +317,19 @@ public partial class FbManager : MonoBehaviour
             {
                 // Iterate through the children of the "users" node and add each username to the list
                 snapshot = task.Result;
-                try
+
+
+                string batch = "";
+                if (snapshot.HasChild("batch"))
                 {
-                    string batch = snapshot.Child("batch").Value.ToString();
-                    AnalyticsSetBatchNumber(batch);
+                    batch = snapshot.Child("batch").Value.ToString();
                 }
-                catch (Exception e)
+                else
                 {
-                    Console.WriteLine(e);
-                    throw;
+                    Debug.LogError("The 'batch' child does not exist in the snapshot.");
+                    return; // Abort further processing or handle the situation accordingly
                 }
+                
                 string email = snapshot.Child("email").Value.ToString();
                 string displayName = snapshot.Child("name").Value.ToString();
                 string username = snapshot.Child("username").Value.ToString();
