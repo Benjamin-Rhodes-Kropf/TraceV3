@@ -20,7 +20,8 @@ public class CameraScreenTutorial : MonoBehaviour
         yield return new WaitForSeconds(3f);
         UpdateTutorial();
         yield return new WaitForSeconds(5f);
-        PlayerPrefs.SetInt("ShowTutorial", 4);
+        if(PlayerPrefs.GetInt("ShowTutorial") == 3)
+            PlayerPrefs.SetInt("ShowTutorial", 4);
         UpdateTutorial();
     }
     private void UpdateTutorial()
