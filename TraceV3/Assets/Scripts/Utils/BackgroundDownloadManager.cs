@@ -30,13 +30,19 @@ public class BackgroundDownloadManager: MonoBehaviour
 
         
         var filePath = Path.Combine(Application.persistentDataPath, downloadPath);
+        
+        Debug.LogError("TraceID (V1) :: "+ filePath);
 
         if (File.Exists(filePath))
+        {
+            Debug.LogError("File  Already Downloaded  !");
             return;
+        }
 
         StartCoroutine(FbManager.instance.GetTraceMediaDownloadURL(traceId, 
             (downloadUrl) =>
             {
+                Debug.LogError("Download Path (V1) :: "+ downloadUrl);
                 StartCoroutine(StartDownload(downloadUrl, downloadPath));
             }, 
             () =>

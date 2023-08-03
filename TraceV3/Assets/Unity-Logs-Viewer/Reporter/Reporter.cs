@@ -1601,6 +1601,7 @@ public class Reporter : MonoBehaviour
 
 	public void OnGUIDraw()
 	{
+
 		if (!show) {
 			return;
 		}
@@ -1632,14 +1633,12 @@ public class Reporter : MonoBehaviour
 		detailRect.width = Screen.width;
 		detailRect.height = size.y * 3;
 
-		
-		//Enable to show debugger
-		// if (currentView == ReportView.Info)
-		// 	//DrawInfo();
-		// else if (currentView == ReportView.Logs) {
-		// 	// drawToolBar();
-		// 	// DrawLogs();
-		// }
+		if (currentView == ReportView.Info)
+			DrawInfo();
+		else if (currentView == ReportView.Logs) {
+			drawToolBar();
+			DrawLogs();
+		}
 
 
 	}

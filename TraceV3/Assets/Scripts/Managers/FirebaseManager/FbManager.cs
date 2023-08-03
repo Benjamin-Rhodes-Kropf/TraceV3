@@ -1552,6 +1552,7 @@ public partial class FbManager : MonoBehaviour
             {
                 var trace = new TraceObject(lng, lat, radius, numPeopleSent, senderID, senderName, sendTime, 20, mediaType,traceID);
                 TraceManager.instance.recivedTraceObjects.Add(trace);
+                BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
                 TraceManager.instance.UpdateMap(new Vector2());
             }
         }
@@ -1656,7 +1657,6 @@ public partial class FbManager : MonoBehaviour
             {
                 var trace = new TraceObject(lng, lat, radius, numPeopleSent, senderID,senderName, sendTime, 20, mediaType,traceID);
                 TraceManager.instance.sentTraceObjects.Add(trace);
-                BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
                 TraceManager.instance.UpdateMap(new Vector2());
             }
         }
