@@ -157,6 +157,7 @@ public partial class FbManager
                 Debug.Log("Add Friend:" + friend.friendID);
                 _allFriends.Add(friend);
                 AddUserToLocalDbByID(friendId);
+                AnalyticsSetUserFriendCount(_allFriends.Count);
                 if (ContactsCanvas.UpdateFriendsView != null)
                     ContactsCanvas.UpdateFriendsView?.Invoke();
             }
@@ -165,7 +166,6 @@ public partial class FbManager
         {
             Debug.Log("SOMTHING WENT WRONG");
         }
-        AnalyticsSetUserFriendCount(_allFriends.Count);
     }
 
     private void HandleRemovedFriends(object sender, ChildChangedEventArgs args)

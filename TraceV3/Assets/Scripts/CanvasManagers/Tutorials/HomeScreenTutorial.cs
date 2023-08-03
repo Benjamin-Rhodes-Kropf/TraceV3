@@ -22,7 +22,7 @@ public class HomeScreenTutorial : MonoBehaviour
         }
         else
         {
-            StartCoroutine(UpdateTutorialDisplay(0.5f));
+            StartCoroutine(UpdateTutorialDisplay(0.25f));
         }
     }
 
@@ -92,7 +92,7 @@ public class HomeScreenTutorial : MonoBehaviour
             PlayerPrefs.SetInt("ShowTutorial", 7); 
             HideTutorial();
         }
-        UpdateTutorialDisplay(0.5f);
+        UpdateTutorialDisplay(0.4f);
     }
     public void EditProfilePressed()
     {
@@ -114,7 +114,8 @@ public class HomeScreenTutorial : MonoBehaviour
     public void ClickForMoreInfoPressed()
     {
         Debug.Log("ClickForMoreInfoPressed Screen Pressed");
-        PlayerPrefs.SetInt("ShowTutorial", 10);
+        if(PlayerPrefs.GetInt("ShowTutorial") == 9)
+            PlayerPrefs.SetInt("ShowTutorial", 10);
         UpdateTutorial();
     }
     

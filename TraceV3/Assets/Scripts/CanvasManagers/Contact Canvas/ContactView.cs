@@ -68,12 +68,11 @@ public class ContactView : MonoBehaviour
    {
       StartCoroutine(FbManager.instance.SendInvite(_phoneNumber.text));
       FbManager.instance.AnalyticsOnAddContact(_phoneNumber.text);
-      HelperMethods.SendSMS(_phoneNumber.text, "What up! I've been using this app for the past week and its lowk rly fun you should join the beta! its exclusive 🎉 https://testflight.apple.com/join/B4j5DDbh");
+      HelperMethods.SendSMS(_phoneNumber.text, "What up! add me on trace! It’s exclusive 🎉 https://linktr.ee/leaveatrace");
    }
 
    private void OnRemoveClick()
    {
       print("On Remove Clicked");
-      // Destroy(gameObject);
    }
 }

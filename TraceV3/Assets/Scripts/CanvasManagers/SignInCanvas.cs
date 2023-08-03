@@ -10,7 +10,7 @@ public class SignInCanvas : MonoBehaviour
     [SerializeField] private TMP_InputField username;
     [SerializeField] private TMP_InputField password;
     [SerializeField] private TMP_Text errorText;
-    
+    [SerializeField] private bool signInFromQueue;
     private void OnEnable()
     {
         Debug.Log("Sign In Canvas Enabled");
@@ -18,6 +18,11 @@ public class SignInCanvas : MonoBehaviour
 
     public void LoginButtonHit()
     {
+        if (signInFromQueue)
+        {
+            FbManager.instance.Logout(FbManager.LoginStatus.LoggedOut);
+        }
+        
         Debug.Log("Login Button Hit!");
         StartCoroutine(FbManager.instance.Login(username.text, password.text, (myReturnValue) => {
             if (myReturnValue.callbackEnum == CallbackEnum.SUCCESS)

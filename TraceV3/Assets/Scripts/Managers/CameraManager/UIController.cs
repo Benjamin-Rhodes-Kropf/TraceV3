@@ -49,7 +49,7 @@ public class UIController : MonoBehaviour
         string subDirectory = "SaveImages/Traces";
         savePath = Path.Combine(Application.persistentDataPath, subDirectory);
         Directory.CreateDirectory(savePath);
-        yield return new WaitForSeconds(0.35f);
+        yield return new WaitForSeconds(0.5f);
         
         //get permissions
         if (Application.platform == RuntimePlatform.IPhonePlayer)

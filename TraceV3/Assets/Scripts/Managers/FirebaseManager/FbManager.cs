@@ -372,6 +372,7 @@ public partial class FbManager : MonoBehaviour
         IsFirebaseUserInitialised = false;
         _firebaseAuth.SignOut();
         
+        //todo: clear player-prefs cache when we logout
         //reset player prefs
         PlayerPrefs.SetString("Username", "null");
         PlayerPrefs.SetString("Password", "null");

@@ -21,7 +21,7 @@ MonoBehaviour:
   AdSupport: 0
   AppTrackingTransparency: 0
   AVKit: 0
-  CoreLocation: 0
+  CoreLocation: 1
   AssetsLibrary: 0
   AppDelegate: 1
   UserNotifications: 1
@@ -40,10 +40,10 @@ MonoBehaviour:
   MicrophoneUsageDescriptionEnabled: 1
   ContactsUsageDescription: Please change 'Contacts Usage Description' with IOS Native
     Contacts Editor Settings
-  LocationAlwaysAndWhenInUseUsageDescription: Please change 'Location Always And
-    When In Use Usage Description' with IOS Native Core Location Editor Settings
-  LocationWhenInUseUsageDescription: Please change 'Location When In Use Usage Description'
-    with IOS Native Core Location Editor Settings
+  LocationAlwaysAndWhenInUseUsageDescription: Trace uses your location to help you
+    receive and send traces
+  LocationWhenInUseUsageDescription: Trace uses your location to help you receive
+    and send traces
   NsCalendarsUsageDescription: This app is require access your Calendar
   NsRemindersUsageDescription: This app is require access to your Reminder
   UserTrackingUsageDescription: Please change 'UserTrackingUsageDescription' with

@@ -26,10 +26,17 @@ public class FriendsModelManager
 
     public static FriendModel GetFriendModelByOtherFriendID(string otherFriend)
     {
-        // RemoveDuplicates();
+        // var friend = (from fri in FbManager.instance._allFriends
+        //     where (fri.friendID == otherFriend)
+        //     select fri).First();
         var friend = (from fri in FbManager.instance._allFriends
-            where (fri.friendID == otherFriend)
-            select fri).First();
+            where fri.friendID == otherFriend
+            select fri).FirstOrDefault();
+
+        if (friend == null)
+        {
+            return new FriendModel();
+        }
         return friend;
     }
 

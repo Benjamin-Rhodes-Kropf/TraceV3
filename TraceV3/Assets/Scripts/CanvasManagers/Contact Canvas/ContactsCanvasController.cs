@@ -34,7 +34,8 @@ namespace CanvasManagers
             _view._friendsButton.onClick.AddListener(OnFriendsSelection);
             _view._requestsButton.onClick.AddListener(OnRequestsSelection);
 
-            OnFriendsSelection();
+            if(!CheckIfFirstTimeOnScreen())
+                OnFriendsSelection();
             UpdateSelectionPanelView();
         }
         
@@ -44,6 +45,17 @@ namespace CanvasManagers
             _view._contactsButton.onClick.RemoveAllListeners();
             _view._friendsButton.onClick.RemoveAllListeners();
             _view._requestsButton.onClick.RemoveAllListeners();
+        }
+
+        private bool CheckIfFirstTimeOnScreen()
+        {
+            if (PlayerPrefs.GetInt("FirstTimeOnContacts") == 1)
+            {
+                PlayerPrefs.SetInt("FirstTimeOnContacts", 0);
+                SelectionPanelClick("Contacts");
+                return true;
+            }
+            return false;
         }
 
 

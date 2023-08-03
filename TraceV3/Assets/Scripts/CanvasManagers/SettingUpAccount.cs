@@ -16,6 +16,7 @@ public class SettingUpAccount : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
         PlayerPrefs.SetInt("ShowTutorial", 1); //reset tutorial for new user
+        PlayerPrefs.SetInt("FirstTimeOnContacts", 1); //reset tutorial for new user
         ScreenManager.instance.ChangeScreenFade("HomeScreen");
     }
     IEnumerator WaitThenGoToQueScreen()

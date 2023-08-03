@@ -354,23 +354,14 @@ public class TraceManager : MonoBehaviour
                         }
                         else
                         {
-                            try
+                            if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).isBestFriend)
                             {
-                                if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).isBestFriend)
-                                {
-                                    traceObject.marker = drawTraceOnMap.DrawCirlce(traceObject.lat, traceObject.lng, (traceObject.radius), DrawTraceOnMap.TraceType.RECEIVEDBESTFRIEND, traceObject.id);
-                                }
-                                else
-                                {
-                                    traceObject.marker = drawTraceOnMap.DrawCirlce(traceObject.lat, traceObject.lng, (traceObject.radius), DrawTraceOnMap.TraceType.RECEIVED, traceObject.id);
-                                }
+                                traceObject.marker = drawTraceOnMap.DrawCirlce(traceObject.lat, traceObject.lng, (traceObject.radius), DrawTraceOnMap.TraceType.RECEIVEDBESTFRIEND, traceObject.id);
                             }
-                            catch (Exception e)
+                            else
                             {
-                                Debug.LogWarning("Friend Not Loaded Yet For Gold On Trace Map");
                                 traceObject.marker = drawTraceOnMap.DrawCirlce(traceObject.lat, traceObject.lng, (traceObject.radius), DrawTraceOnMap.TraceType.RECEIVED, traceObject.id);
                             }
-                            
                             traceObject.canBeOpened = false;
                         }
                     }
