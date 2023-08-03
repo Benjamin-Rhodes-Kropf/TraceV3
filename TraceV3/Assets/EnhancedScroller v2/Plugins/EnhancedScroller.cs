@@ -1417,7 +1417,6 @@ namespace EnhancedUI.EnhancedScroller
 				_singleLoopGroupSize += _cellViewSizeArray[_cellViewSizeArray.Count - 1];
                 offset += _cellViewSizeArray[_cellViewSizeArray.Count - 1];
             }
-
             return offset;
         }
 

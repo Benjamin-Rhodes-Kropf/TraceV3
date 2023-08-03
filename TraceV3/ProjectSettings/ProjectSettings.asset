@@ -1986,12 +1986,10 @@ PlayerSettings:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 11400000, guid: a1cb927c0cd474f26bc1d45b8f7ca65f, type: 2}
-  - {fileID: 8456736684650657537, guid: 4cc24b4e70c6f49dbae02f68da29824a, type: 2}
-  - {fileID: 11400000, guid: 49372d51a78b64134ae06ab8fbe6d3c6, type: 2}
-  - {fileID: 11400000, guid: 8662e2df5fc154b968c6a462b87cdc49, type: 2}
-  - {fileID: 11400000, guid: cec08cab752af418b85e345b184f2ac8, type: 2}
-  - {fileID: 11400000, guid: 434c9405edd524e5794a9a4bf3dd8a41, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1

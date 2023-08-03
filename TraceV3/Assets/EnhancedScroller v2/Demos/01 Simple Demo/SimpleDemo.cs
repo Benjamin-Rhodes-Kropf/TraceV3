@@ -22,7 +22,7 @@ namespace EnhancedScrollerDemos.SuperSimpleDemo
         /// Internal representation of our data. Note that the scroller will never see
         /// this, so it separates the data from the layout using MVC principles.
         /// </summary>
-        private SmallList<Data> _data;
+        public SmallList<Data> _data;
 
         /// <summary>
         /// This is our scroller we will be a delegate for
@@ -70,7 +70,6 @@ namespace EnhancedScrollerDemos.SuperSimpleDemo
 #if UNITY_EDITOR
             foreach (var contact in _testContacts)
             {
-                
                 //Todo: Add Data 
                 _data.Add(new Data()
                 {

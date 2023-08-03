@@ -1539,7 +1539,7 @@ GameObject:
   - component: {fileID: 962400831}
   - component: {fileID: 962400830}
   m_Layer: 0
-  m_Name: Simple Enhance Sccroller
+  m_Name: Contacts Enhance Sccroller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10716,7 +10716,7 @@ PrefabInstance:
       objectReference: {fileID: 962400830}
     - target: {fileID: 4383088747128809608, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
       propertyPath: _testContactList.Array.size
-      value: 300
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 4383088747128809608, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
       propertyPath: _testContactList.Array.data[0].profile
