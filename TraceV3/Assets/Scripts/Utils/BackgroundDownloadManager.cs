@@ -34,7 +34,7 @@ public class BackgroundDownloadManager: MonoBehaviour
         if (File.Exists(filePath))
             return;
 
-        FbManager.instance.GetTraceMediaDownloadURL(traceId, 
+        StartCoroutine(FbManager.instance.GetTraceMediaDownloadURL(traceId, 
             (downloadUrl) =>
             {
                 StartCoroutine(StartDownload(downloadUrl, downloadPath));
@@ -42,11 +42,12 @@ public class BackgroundDownloadManager: MonoBehaviour
             () =>
             {
                 Debug.LogError("Unable to Get Trace Media Path");
-            });
+            }));
     }
 
     private IEnumerator StartDownload(string url, string filePath)
     {
+        Debug.Log("Background Download Started For URL :: "+url);
         using var download = BackgroundDownload.Start(new Uri(url), filePath);
         yield return download;
         Debug.Log(download.status == BackgroundDownloadStatus.Failed ? download.error : "Done Downloading ::"+filePath);
