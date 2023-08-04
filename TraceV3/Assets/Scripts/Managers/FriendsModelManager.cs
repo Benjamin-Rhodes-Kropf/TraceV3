@@ -26,9 +26,6 @@ public class FriendsModelManager
 
     public static FriendModel GetFriendModelByOtherFriendID(string otherFriend)
     {
-        // var friend = (from fri in FbManager.instance._allFriends
-        //     where (fri.friendID == otherFriend)
-        //     select fri).First();
         var friend = (from fri in FbManager.instance._allFriends
             where fri.friendID == otherFriend
             select fri).FirstOrDefault();
@@ -56,7 +53,6 @@ public class FriendsModelManager
 
     public bool IsBestFriend(string id)
     {
-        Debug.Log("IsBestFriend");
         return GetFriendModelByOtherFriendID(id).isBestFriend;
     }
 

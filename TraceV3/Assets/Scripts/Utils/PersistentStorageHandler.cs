@@ -6,12 +6,11 @@ using UnityEngine;
 
 public class PersistentStorageHandler : MonoBehaviour
 {
-
     public static PersistentStorageHandler s_Instance;
 
     private void Awake()
     {
-        Debug.Log(Application.persistentDataPath);
+        Debug.Log("persistentDataPath:" + Application.persistentDataPath);
         s_Instance = this;
     }
 

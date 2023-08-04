@@ -31,7 +31,7 @@ public class BackgroundDownloadManager: MonoBehaviour
         
         var filePath = Path.Combine(Application.persistentDataPath, downloadPath);
         
-        Debug.LogError("TraceID (V1) :: "+ filePath);
+        //Debug.Log("TraceID (V1) :: "+ filePath);
 
         if (File.Exists(filePath))
         {

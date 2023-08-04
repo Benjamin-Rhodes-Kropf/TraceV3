@@ -21,7 +21,7 @@ namespace CanvasManagers
         [Header("Contacts Info")] 
         public ContactView _contactPrfab;
         public Transform _contactParent;
-        public SimpleDemo _enhanceScroller;
+        public ContactScrollManager _enhanceScroller;
         
         [Header("Requests Info")] 
         public RequestView _requestPrefab;

@@ -16,7 +16,7 @@ namespace EnhancedScrollerDemos.SuperSimpleDemo
     ///  - What each cell size is (GetCellSize)
     ///  - What the cell at a given index should be (GetCell)
     /// </summary>
-    public class SimpleDemo : MonoBehaviour, IEnhancedScrollerDelegate
+    public class ContactScrollManager : MonoBehaviour, IEnhancedScrollerDelegate
     {
         /// <summary>
         /// Internal representation of our data. Note that the scroller will never see

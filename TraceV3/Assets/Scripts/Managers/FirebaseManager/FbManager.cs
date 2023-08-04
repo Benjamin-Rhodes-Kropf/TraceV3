@@ -39,8 +39,7 @@ public partial class FbManager : MonoBehaviour
     [SerializeField] private StorageReference _firebaseStorageReference;
     [SerializeField] private FirebaseFirestore _firebaseFirestore;
 
-    [Header("Login Settings")] 
-    [SerializeField] private bool autoLogin;
+    [Header("Login Settings")]
     [SerializeField] private bool resetPlayerPrefs;
 
     [Header("Maps References")]
@@ -71,7 +70,7 @@ public partial class FbManager : MonoBehaviour
 
         IsFirebaseUserInitialised = false;
 
-        //makes sure nothing can use the db until its enabled
+        //makes sure nothing can use the db until its enabled and connected
         dependencyStatus = DependencyStatus.UnavailableUpdating;
         
         if (instance != null)
@@ -91,12 +90,8 @@ public partial class FbManager : MonoBehaviour
             if (dependencyStatus == DependencyStatus.Available)
             {
                 InitializeFirebase();
-                if (!autoLogin)
-                {
-                    //clear cache
-                    PlayerPrefs.SetString("Username", null);
-                    PlayerPrefs.SetString("Password", null);
-                }
+                PlayerPrefs.SetString("Username", null);
+                PlayerPrefs.SetString("Password", null);
                 Debug.Log("Auto Logging in with username:" + PlayerPrefs.GetString("Username"));
                 Debug.Log("Auto Logging in with password:" + PlayerPrefs.GetString("Password"));
             }
@@ -105,8 +100,8 @@ public partial class FbManager : MonoBehaviour
                 Debug.LogError("Could not resolve all Firebase dependencies: " + dependencyStatus);
             }
         });
-
-    } 
+   } 
+   
    private void InitializeFirebase()
     {
         Debug.Log("initializing firebase");
@@ -1300,7 +1295,6 @@ public partial class FbManager : MonoBehaviour
     #region Sending and Recieving Traces
     public void UploadTrace(string fileLocation, float radius, Vector2 location, MediaType mediaType, List<string> usersToSendToList)
     {
-        Debug.Log(" UploadTrace()");
         Debug.Log(" UploadTrace(): File Location:" + fileLocation);
         
         //PUSH DATA TO REAL TIME DB
