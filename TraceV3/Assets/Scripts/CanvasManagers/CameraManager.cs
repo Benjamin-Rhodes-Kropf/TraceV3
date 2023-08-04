@@ -46,8 +46,7 @@ public class CameraManager : MonoBehaviour//PressInputBase
     {
         //ScreenManager.instance.uiController.ToggleFlash();
     }
-    
-    
+
     //closing the video preview
     public void CloseVideoPreview()
     {

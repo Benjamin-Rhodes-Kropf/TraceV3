@@ -1328,19 +1328,11 @@ public partial class FbManager : MonoBehaviour
         foreach (var user in usersToSendToList) //each of the users in usersToSendToList is a UID
         {
             count++;
-            //update data for within trace
             childUpdates["Traces/" + key + "/Reciver/" + user + "/HasViewed"] = false;
             childUpdates["Traces/" + key + "/Reciver/" + user + "/ProfilePhoto"] = "null";
-            //update data for each user
             childUpdates["TracesRecived/" + user +"/"+ key + "/Sender"] = thisUserModel.userID;
             Debug.Log("Count" + count);
         }
-        //phone numbers
-        
-        
-        
-        
-        Debug.Log("Userse to Send to Count:" + usersToSendToList.Count);
         childUpdates["Traces/" + key + "/numPeopleSent"] = count;
         childUpdates["TracesSent/" + _firebaseUser.UserId.ToString() +"/" + key] = DateTime.UtcNow.ToString();
         //UPLOAD IMAGE
@@ -1348,22 +1340,16 @@ public partial class FbManager : MonoBehaviour
         traceReference.PutFileAsync(fileLocation)
             .ContinueWith((Task<StorageMetadata> task) => {
                 if (task.IsFaulted || task.IsCanceled) {
-                    // Uh-oh, an error occurred!
-                    Debug.Log("FB Error: Failed to Upload File");
-                    Debug.Log("FB Error:" + task.Exception.ToString());
+                    Debug.LogError("FB Error failed to upload with task.exception: " + task.Exception.ToString());
                     SendTraceManager.instance.isSendingTrace = false;
-                    //tell user there was an error
+                    return;
                 }
-                else {
-                    // Metadata contains file metadata such as size, content-type, and download URL.
-                    StorageMetadata metadata = task.Result;
-                    // string md5Hash = metadata.Md5Hash;
+                else if(task.IsCompleted)
+                {
                     Debug.Log("FB: Finished uploading...");
-                    //upload metadata to real time DB
-                    _databaseReference.UpdateChildrenAsync(childUpdates);
-                    SendTraceManager.instance.isSendingTrace = false;
-                    
-                    try //test
+                    _databaseReference.UpdateChildrenAsync(childUpdates); //update real time DB
+                    SendTraceManager.instance.isSendingTrace = false; //done sendingTrace cant callback because its a void
+                    try 
                     {
                         SendTraceManager.instance.SendNotificationToUsersWhoRecivedTheTrace();
                     }

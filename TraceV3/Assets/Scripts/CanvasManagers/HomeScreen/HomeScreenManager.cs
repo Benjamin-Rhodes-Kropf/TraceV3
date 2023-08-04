@@ -13,13 +13,38 @@ public class HomeScreenManager : MonoBehaviour
     [Header("External")]
     public static bool isInSendTraceView;
     [SerializeField] private TraceManager _traceManager;
-
+    
+    
     [Header("Internal")]
     [SerializeField] private GameObject _tutorialCanvas;
     [SerializeField] private OpenTraceManager openTraceManager;
     [SerializeField] private ViewTraceManager viewTraceManager;
+    [SerializeField] private Animator _loadingAnimator;
+
+    private void OnEnable()
+    {
+        if (SendTraceManager.instance.isSendingTrace)
+        {
+            StartCoroutine(PlayLoadingAnimationUntilTraceSends());
+        }
+    }
+
+    public IEnumerator PlayLoadingAnimationUntilTraceSends()
+    {
+        Debug.Log("Start Loading Animation");
+        _loadingAnimator.Play("loading");
+        yield return new WaitUntil(() => !SendTraceManager.instance.isSendingTrace);
     
-    
+        // Wait for the current animation to complete before starting the next one
+        while (_loadingAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1)
+        {
+            yield return null;
+        }
+
+        Debug.Log("Start Done Loading Animation");
+        _loadingAnimator.Play("doneloading");
+    }
+
     public void CloseViewTrace()
     {
         viewTraceManager.ClosePreview();
@@ -44,6 +69,11 @@ public class HomeScreenManager : MonoBehaviour
     public void ToggleTutorial()
     {
         _tutorialCanvas.SetActive(!_tutorialCanvas.gameObject.active);
+    }
+
+    public static void SelectorPressed()
+    {
+        
     }
     
     public void OpenTrace(string traceID, string senderName, string senderID, string sendDate, string mediaType, int numOfPeopleSent) //Todo: Make mediaType an Enum

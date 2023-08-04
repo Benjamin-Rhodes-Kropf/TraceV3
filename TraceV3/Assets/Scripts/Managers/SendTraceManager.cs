@@ -12,7 +12,7 @@ public class SendTraceManager : MonoBehaviour
     
     [Header("external values")]
     [SerializeField]private OnlineMapsLocationService _onlineMapsLocationService;
-
+    
     [Header("Trace Values")]
     [SerializeField]private const float maxRadius = 0.8f;
     [SerializeField]private const float minRadius = 0.02f;
@@ -55,7 +55,7 @@ public class SendTraceManager : MonoBehaviour
         location = _onlineMapsLocationService.GetUserLocation();
         FbManager.instance.UploadTrace(fileLocation, selectedRadius, location, mediaType,usersToSendTrace);
         FbManager.instance.AnalyticsOnSendTrace(usersToSendTrace.Count, videoLength, camFlippedCount);
-        SendLocalNotification("Sending Trace", "give us a moment to upload...", 1f);
+        SendLocalNotification("Sending Trace", "hang on while we upload it!", 1f);
     }
 
     public void SendNotificationToUsersWhoRecivedTheTrace()
@@ -73,10 +73,6 @@ public class SendTraceManager : MonoBehaviour
                 StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user, FbManager.instance.thisUserModel.name, "Sent You A Trace!", location.y,location.x));
             }
         }
-        
-        //phone numbers here
-        
-        
         SendLocalNotification("Trace Sent", "lets hope they find it!",1f);
     }
     

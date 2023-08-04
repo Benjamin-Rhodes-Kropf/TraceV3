@@ -6,8 +6,6 @@ using UnityEngine;
 public class SendOrRecievedViewSelectorManager : MonoBehaviour
 {
     [Header("External")] 
-    [SerializeField] private DrawTraceOnMap _drawTraceOnMap;
-    
     [SerializeField] private Animator selectorAnimator;
     public void OnEnable()
     {
