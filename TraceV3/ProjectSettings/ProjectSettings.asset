@@ -1990,6 +1990,36 @@ PlayerSettings:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: f85968c7d3fa84bcd9209b20c7b1ff7b, type: 2}
+  - {fileID: 8456736684650657537, guid: 4cc24b4e70c6f49dbae02f68da29824a, type: 2}
+  - {fileID: 11400000, guid: c9d0ccc261dd34aacaccf62bfcd7e923, type: 2}
+  - {fileID: 11400000, guid: 3e2771b3a7ece409386a9fd434c54d56, type: 2}
+  - {fileID: 11400000, guid: e02df379f6c70424ba7d23ecd593cab5, type: 2}
+  - {fileID: 11400000, guid: 7cbe80aee64b840ef96a0a8c73262ba7, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1

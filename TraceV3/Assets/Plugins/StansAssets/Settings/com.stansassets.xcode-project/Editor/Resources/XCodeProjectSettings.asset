@@ -35,8 +35,7 @@ MonoBehaviour:
     - 9cCe4mrEKYof3ZPIM1Wx
   - Name: NSContactsUsageDescription
     Type: 0
-    StringValue: Please change 'Contacts Usage Description' with IOS Native Contacts
-      Editor Settings
+    StringValue: Trace uses your contacts to help you find friends
     IntegerValue: 0
     FloatValue: 0
     BooleanValue: 1
@@ -174,6 +173,96 @@ MonoBehaviour:
       BooleanValue: 1
       ChildrenIds: []
     uniqueIdKey: 7ItassYEi19aRwYQxgBH
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: instagram
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: D7w8Z6ZdJ00cKoHt2JFn
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: whatsapp
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: EViJ30ASmfwp7GMas8nB
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: instagram
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: GwZa30uhUnEHpJiMT8ft
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: whatsapp
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: L5oJdU7R3bHVk4d1RvTh
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: instagram
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: 5fx1gKDITnqhuACKcr6W
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: whatsapp
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: visrS31qBL2FxOO4xs5G
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: instagram
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: jmDhUxYSoLVuI4Aekn8Y
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: whatsapp
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: JJ0W6E1cPmdUEA3GoPcL
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: instagram
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: T4ioLFMSdaekTHClAcmq
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: whatsapp
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: mxvHjhQZikbH45VW9oVF
   Languages: []
   ShellScripts: []
   m_BuildProperties:

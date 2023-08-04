@@ -89,17 +89,17 @@ namespace SA.iOS
         //--------------------------------------
 
         public string ContactsUsageDescription =
-            "Please change 'Contacts Usage Description' with IOS Native Contacts Editor Settings";
+            "Trace uses your contacts to help you find friends";
 
         //--------------------------------------
         // Core Location
         //--------------------------------------
 
         public string LocationAlwaysAndWhenInUseUsageDescription =
-            "Please change 'Location Always And When In Use Usage Description' with IOS Native Core Location Editor Settings";
+            "Trace uses your location to help you find and send traces";
 
         public string LocationWhenInUseUsageDescription =
-            "Please change 'Location When In Use Usage Description' with IOS Native Core Location Editor Settings";
+            "Trace uses your location to help you find and send traces";
 
         //--------------------------------------
         // Event Kit
