@@ -1341,6 +1341,11 @@ public partial class FbManager : MonoBehaviour
             childUpdates["TracesRecived/" + user +"/"+ key + "/Sender"] = thisUserModel.userID;
             Debug.Log("Count" + count);
         }
+        //phone numbers
+        
+        
+        
+        
         Debug.Log("Userse to Send to Count:" + usersToSendToList.Count);
         childUpdates["Traces/" + key + "/numPeopleSent"] = count;
         childUpdates["TracesSent/" + _firebaseUser.UserId.ToString() +"/" + key] = DateTime.UtcNow.ToString();

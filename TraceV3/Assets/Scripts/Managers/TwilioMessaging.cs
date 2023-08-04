@@ -20,15 +20,15 @@ public class TwilioMessaging : MonoBehaviour
 
     public void SendSMS ()
     {
-        WWWForm form = new WWWForm ();
-        form.AddField ("To", to);
-        form.AddField ("From", from);
-        //string bodyWithoutSpace = body.Replace (" ", "%20");//Twilio doesn't need this conversion
-        form.AddField ("Body", body);
-        string completeurl = "https://"+account_sid+":" + auth +"@" +url+account_sid+service;
-        Debug.Log (completeurl);
-        WWW www = new WWW (completeurl, form);
-        StartCoroutine (WaitForRequest (www));
+        // WWWForm form = new WWWForm ();
+        // form.AddField ("To", to);
+        // form.AddField ("From", from);
+        // //string bodyWithoutSpace = body.Replace (" ", "%20");//Twilio doesn't need this conversion
+        // form.AddField ("Body", body);
+        // string completeurl = "https://"+account_sid+":" + auth +"@" +url+account_sid+service;
+        // Debug.Log (completeurl);
+        // WWW www = new WWW (completeurl, form);
+        // StartCoroutine (WaitForRequest (www));
     }
 	
     IEnumerator WaitForRequest (WWW www)

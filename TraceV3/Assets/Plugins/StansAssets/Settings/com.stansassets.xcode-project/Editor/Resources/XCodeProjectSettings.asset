@@ -35,7 +35,8 @@ MonoBehaviour:
     - 9cCe4mrEKYof3ZPIM1Wx
   - Name: NSContactsUsageDescription
     Type: 0
-    StringValue: Trace uses your contacts to help you find friends
+    StringValue: Please change 'Contacts Usage Description' with IOS Native Contacts
+      Editor Settings
     IntegerValue: 0
     FloatValue: 0
     BooleanValue: 1
@@ -263,6 +264,42 @@ MonoBehaviour:
       BooleanValue: 1
       ChildrenIds: []
     uniqueIdKey: mxvHjhQZikbH45VW9oVF
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: instagram
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: U4dV0Ud5W1k8eVOEkWoT
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: whatsapp
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: USElmNDXlK4CQde32g9p
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: instagram
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: FevkHVqpMplt7SgaifFZ
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: whatsapp
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: BN33rDVWJH6YQsCTFR0u
   Languages: []
   ShellScripts: []
   m_BuildProperties:

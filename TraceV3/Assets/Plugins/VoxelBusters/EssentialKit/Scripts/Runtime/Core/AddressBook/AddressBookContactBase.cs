@@ -125,7 +125,6 @@ namespace VoxelBusters.EssentialKit.AddressBookCore
                     }
 
                     // send result to caller object
-                    Debug.Log("BIG ERRORR");
                     return;
                     CallbackDispatcher.InvokeOnMainThread(callback, result, error);
                 });

@@ -73,6 +73,10 @@ public class SendTraceManager : MonoBehaviour
                 StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user, FbManager.instance.thisUserModel.name, "Sent You A Trace!", location.y,location.x));
             }
         }
+        
+        //phone numbers here
+        
+        
         SendLocalNotification("Trace Sent", "lets hope they find it!",1f);
     }
     
