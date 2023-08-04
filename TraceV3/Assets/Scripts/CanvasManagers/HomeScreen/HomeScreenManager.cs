@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -59,7 +60,7 @@ public class HomeScreenManager : MonoBehaviour
         //determine what type of trace it is
         if (mediaType == MediaType.PHOTO.ToString())
         {
-            StartCoroutine(FbManager.instance.GetTracePhotoByUrl(traceID, (texture) =>
+            StartCoroutine(GetTraceTexture(traceID, (texture) =>
             {
                 if (texture != null)
                 {
@@ -72,11 +73,25 @@ public class HomeScreenManager : MonoBehaviour
                 }
             }));
             return;
+            #region Old Way
+            // StartCoroutine(FbManager.instance.GetTracePhotoByUrl(traceID, (texture) =>
+            // {
+            //     if (texture != null)
+            //     {
+            //         openTraceManager.ActivatePhotoFormat(traceID, sendDate, senderName, senderID, numOfPeopleSent);
+            //         openTraceManager.displayTrace.texture = texture;
+            //     }
+            //     else
+            //     {
+            //         Debug.LogError("LoadTraceImage Failed");
+            //     }
+            // }));
+            // return;
+            #endregion
         }
         if (mediaType == MediaType.VIDEO.ToString())
         {
-            Debug.Log("mediaType == MediaType.Video.ToString()");
-            StartCoroutine(FbManager.instance.GetTraceVideoByUrl(traceID, (path) =>
+            StartCoroutine(GetVideoPath(traceID, (path) =>
             {
                 if (path != null)
                 {
@@ -90,6 +105,23 @@ public class HomeScreenManager : MonoBehaviour
                 }
             }));
             return;
+            #region OldCode
+            // Debug.Log("mediaType == MediaType.Video.ToString()");
+            // StartCoroutine(FbManager.instance.GetTraceVideoByUrl(traceID, (path) =>
+            // {
+            //     if (path != null)
+            //     {
+            //         Debug.Log("Open Trace View");
+            //         openTraceManager.videoPlayer.url = path;
+            //         StartCoroutine((openTraceManager.ActivateVideoFormat(traceID,sendDate,senderName, senderID, numOfPeopleSent)));
+            //     }
+            //     else
+            //     {
+            //         Debug.LogError("LoadTraceImage Failed");
+            //     }
+            // }));
+            return;
+            #endregion
         }
         
     }
@@ -98,4 +130,31 @@ public class HomeScreenManager : MonoBehaviour
     {
         TraceManager.instance.UpdateMap(new Vector2(0,0));
     }
+
+    private IEnumerator GetVideoPath(string traceId, Action<string> callback)
+    {
+        var filePath = Path.Combine(Application.persistentDataPath, "ReceivedTraces/Videos/"+traceId+".mp4");
+        if (File.Exists(filePath))
+            callback(filePath);
+        else
+            StartCoroutine(FbManager.instance.GetTraceVideoByUrl(traceId, callback));
+        yield return null;
+    }
+
+
+    private IEnumerator GetTraceTexture(string traceId, Action<Texture> callback)
+    {
+        var filePath = Path.Combine(Application.persistentDataPath, "ReceivedTraces/Photos/"+traceId+".png");
+        if (File.Exists(filePath))
+        {
+            byte[] textureData = File.ReadAllBytes(filePath);
+            Texture2D loadedTexture = new Texture2D(128, 128,TextureFormat.RGB24,false); // Provide initial dimensions, it will be overridden by LoadImage.
+            loadedTexture.LoadImage(textureData);
+            callback(loadedTexture);
+        }
+        else
+            StartCoroutine(FbManager.instance.GetTracePhotoByUrl(traceId, callback));
+        yield return null;
+    }
+    
 }

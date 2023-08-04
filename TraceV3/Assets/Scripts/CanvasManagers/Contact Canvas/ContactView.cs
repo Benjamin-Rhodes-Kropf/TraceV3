@@ -12,7 +12,7 @@ public class ContactView : MonoBehaviour
 {
    public TMP_Text _givenName;
    public TMP_Text _phoneNumber;
-   public Image _contactImage;
+   public RawImage _contactImage;
    public Button _addButton;
    public Button _removeButton;
    
@@ -26,8 +26,8 @@ public class ContactView : MonoBehaviour
       _givenName = null;
       _phoneNumber = null;
       _contactImage = null;
-      // Destroy( _contactImage.sprite); //destroy
-      // Destroy( _contactImage); //destroy
+      Destroy( _contactImage.texture); //destroy
+      Destroy( _contactImage); //destroy
       _addButton = null;
       _removeButton = null;
    }
@@ -36,32 +36,47 @@ public class ContactView : MonoBehaviour
    {
       _givenName.text = contact.FirstName + " "+ contact.LastName;
       _phoneNumber.text = contact.PhoneNumbers[0];
-      _contactImage.sprite = null;
-      contact.LoadImage((result, error) =>
+      _contactImage.texture = null;
+
+      var persistentData = PersistentStorageHandler.s_Instance.GetTextureFromPersistentStorage("contacts", contact.PhoneNumbers[0]);
+      if (persistentData.updateImage)
       {
-         var texture = result.GetTexture();
-         if (texture)
+         contact.LoadImage((result, error) =>
          {
-            var sprite = Sprite.Create(
-               texture,
-               new Rect(0, 0, texture.width, texture.height),
-               new Vector2(0.5f, 0.5f));
-            _contactImage.sprite = sprite;
-            //_contactImage.sprite = CropTexture(texture);
-         }
-      });
+            var texture = result.GetTexture();
+            if (texture)
+            {
+               var newTexture = PersistentStorageHandler.s_Instance.CropImage(texture);
+               SaveToPersistentStorage(newTexture);
+               _contactImage.texture = newTexture;
+            }
+         });
+      }
+      else
+      {
+         _contactImage.texture = persistentData.texture;
+      }
+
       _addButton.onClick.RemoveAllListeners();
       _addButton.onClick.AddListener(OnContactButtonAddClicked);
       _removeButton.onClick.RemoveAllListeners();
       _removeButton.onClick.AddListener(OnRemoveClick);
    }
 
+   IEnumerator SaveToPersistentStorage(Texture2D texture2D)
+   {
+      texture2D.Apply();
+      yield return new WaitForEndOfFrame();
+      PersistentStorageHandler.s_Instance.SaveTextureToPersistentStorage(texture2D,"contacts",_phoneNumber.text);
+   }
+   
+   
 //Todo: Just for Testing  Purpose
-   public void ContactInfoUpdate(string Name,string  ContactNumber, Sprite _sprite)
+   public void ContactInfoUpdate(string Name,string  ContactNumber, Texture2D _texture)
    {
       _givenName.text = Name;
       _phoneNumber.text = ContactNumber;
-      _contactImage.sprite = _sprite;
+      _contactImage.texture = _texture;
    }
    
    private void OnContactButtonAddClicked()

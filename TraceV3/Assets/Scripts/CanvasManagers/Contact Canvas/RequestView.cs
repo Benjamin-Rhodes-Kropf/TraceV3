@@ -11,7 +11,7 @@ public class RequestView : MonoBehaviour
 {
     public TMP_Text _displayName;
     public TMP_Text _userName;
-    public Image _profilePicture;
+    public RawImage _profilePicture;
     public Button _acceptButton;
     public Button _removeButton;
     public TMP_Text _buttonText;
@@ -24,12 +24,14 @@ public class RequestView : MonoBehaviour
 
     public void OnDestroy()
     {
-        StopCoroutine(_userCoroutine);
+        if (_userCoroutine != null)
+            StopCoroutine(_userCoroutine);
+    
         // Release object references
         _displayName = null;
         _userName = null;
-        _profilePicture.sprite = null;
-        Destroy( _profilePicture.sprite); //destroy
+        _profilePicture.texture = null;
+        Destroy( _profilePicture.texture); //destroy
         Destroy( _profilePicture); //destroy
         _acceptButton = null;
         _removeButton = null;
@@ -41,17 +43,29 @@ public class RequestView : MonoBehaviour
     {
         requestId = FriendRequestManager.Instance.GetRequestID(user.userID, isReceivedRequest);
         senderId = user.userID;
-        user.ProfilePicture((sprite =>
+
+        var persistentData = PersistentStorageHandler.s_Instance.GetTextureFromPersistentStorage("requests",senderId);
+        if (persistentData.updateImage)
         {
-            try
+            user.PPTexture((texture =>
             {
-                _profilePicture.sprite = sprite;
-            }
-            catch (Exception e)
-            {
+                try
+                {
+                    _profilePicture.texture = texture;
+                    StartCoroutine(SaveToPersistentStorage((Texture2D)texture));
+                }
+                catch (Exception e)
+                {
                 
-            }
-        }));
+                }
+            }));
+        }
+        else
+        {
+            _profilePicture.texture = persistentData.texture;
+        }
+       
+        
         _userName.text = user.username;
         _displayName.text = user.name;
         _userCoroutine = user._downloadPCoroutine;
@@ -71,7 +85,15 @@ public class RequestView : MonoBehaviour
         _removeButton.onClick.RemoveAllListeners();
         _removeButton.onClick.AddListener(OnClickRemove);
     }
-  
+    
+    
+    IEnumerator SaveToPersistentStorage(Texture2D texture2D)
+    {
+        texture2D.Apply();
+        yield return new WaitForEndOfFrame();
+        PersistentStorageHandler.s_Instance.SaveTextureToPersistentStorage(texture2D,"requests",senderId);
+    }
+    
     public void OnClickAccept()
     {
         print("Accept Function Called");
@@ -99,7 +121,6 @@ public class RequestView : MonoBehaviour
         FriendRequestManager.Instance.RemoveRequestFromList(requestId, _buttonText.text != "Sent");
         ContactsCanvas.UpdateRedMarks?.Invoke();
         gameObject.SetActive(false);
-
     }
 
 

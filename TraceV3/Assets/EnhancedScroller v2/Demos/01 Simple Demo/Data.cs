@@ -12,6 +12,6 @@ namespace EnhancedScrollerDemos.SuperSimpleDemo
         public IAddressBookContact _Contact;
         public string _Name;
         public string _ContactNumber;
-        public Sprite _Sprite;
+        public Texture2D _Texture;
     }
 }

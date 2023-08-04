@@ -82,26 +82,38 @@ public class FriendView : MonoBehaviour
         
         _addRemoveButton.onClick.AddListener(isFriendAdd ? RemoveFriends :  SendFriendRequest);
         _bestFriendButton.onClick.AddListener(OnBestFriendButtonClick);
-        
-        user.ProfilePicture((sprite =>
+
+        var persistentData = PersistentStorageHandler.s_Instance.GetTextureFromPersistentStorage("friends", _uid);
+        if (persistentData.updateImage)
         {
-            try
+            user.PPTexture((sprite =>
             {
-                _profilePic.texture = sprite.texture;
-                // Invoke(nameof(DestroyImage),0.5f);
-            }
-            catch (Exception e)
-            {
-                print(e.Message);
-            }
-        }));
+                try
+                {
+                    _profilePic.texture = sprite;
+                    StartCoroutine(SaveToPersistentStorage((Texture2D)sprite));
+                }
+                catch (Exception e)
+                {
+                    print(e.Message);
+                }
+            }));
+        }
+        else
+        {
+            _profilePic.texture = persistentData.texture;
+        }
+        
+        
     }
 
-    private void DestroyImage()
+    IEnumerator SaveToPersistentStorage(Texture2D texture2D)
     {
-        DestroyImmediate(_profilePic.texture);
-        DestroyImmediate(_profilePic);
+        texture2D.Apply();
+        yield return new WaitForEndOfFrame();
+        PersistentStorageHandler.s_Instance.SaveTextureToPersistentStorage(texture2D,"friends",_uid);
     }
+    
 
     private (string buttonText, int colorIndex) GetButtonData(FriendButtonType buttonType)
     {

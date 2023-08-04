@@ -22,7 +22,7 @@ namespace EnhancedScrollerDemos.SuperSimpleDemo
         public void SetData(Data data)
         {
 #if UNITY_EDITOR
-            _View.ContactInfoUpdate(data._Name,data._ContactNumber,data._Sprite);
+            _View.ContactInfoUpdate(data._Name,data._ContactNumber,data._Texture);
 #elif UNITY_IPHONE
             _View.UpdateContactInfo(data._Contact);
 #endif
