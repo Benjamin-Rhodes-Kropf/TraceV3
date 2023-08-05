@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1c887eda-f9a8-484b-a49c-05752c8318ba" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../../Scenes/Main.unity" beforeDir="false" afterPath="$PROJECT_DIR$/../../Scenes/Main.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FirebaseManager/FbManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/FirebaseManager/FbManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SendTraceManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SendTraceManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TwilioMessaging.cs" beforeDir="false" afterPath="$PROJECT_DIR$/TwilioMessaging.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Animations/LoadingHomeScreen/BottomPanelMask.controller" beforeDir="false" afterPath="$PROJECT_DIR$/../../Animations/LoadingHomeScreen/BottomPanelMask.controller" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../StreamingAssets/build_info" beforeDir="false" afterPath="$PROJECT_DIR$/../../StreamingAssets/build_info" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../../ProjectSettings/ProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/../../../ProjectSettings/ProjectSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
