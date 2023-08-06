@@ -90,8 +90,6 @@ public partial class FbManager : MonoBehaviour
             if (dependencyStatus == DependencyStatus.Available)
             {
                 InitializeFirebase();
-                PlayerPrefs.SetString("Username", null);
-                PlayerPrefs.SetString("Password", null);
                 Debug.Log("Auto Logging in with username:" + PlayerPrefs.GetString("Username"));
                 Debug.Log("Auto Logging in with password:" + PlayerPrefs.GetString("Password"));
             }

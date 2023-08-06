@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -20,7 +21,8 @@ public class HomeScreenManager : MonoBehaviour
     [SerializeField] private OpenTraceManager openTraceManager;
     [SerializeField] private ViewTraceManager viewTraceManager;
     [SerializeField] private Animator _loadingAnimator;
-
+    [SerializeField] private TMP_Text _locationNameDisplay;
+    
     private void OnEnable()
     {
         if (SendTraceManager.instance.isSendingTrace)
