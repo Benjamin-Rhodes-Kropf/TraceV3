@@ -119,7 +119,7 @@ public class MapboxGeocoding : MonoBehaviour
                 }
             }
         }
-        else if (zoomLevel > 12)
+        else if (zoomLevel > 10)
         {
             // Use the second context text (if available)
             foreach (var feature in filteredFeatures)
@@ -130,7 +130,7 @@ public class MapboxGeocoding : MonoBehaviour
                 }
             }
         }
-        else if (zoomLevel > 5)
+        else if (zoomLevel > 6)
         {
             // Use the third context text (if available)
             foreach (var feature in filteredFeatures)
@@ -154,9 +154,14 @@ public class MapboxGeocoding : MonoBehaviour
         }
 
         //failsafe
-        foreach (var name in filteredFeatures)
+        for (int i = filteredFeatures.Count - 1; i >= 0; i--)
         {
-            return name.text;
+            var name = filteredFeatures[i].text;
+            // Do something with 'name' (e.g., print, store, etc.)
+
+            // If you want to return the last name in the loop, you can use the return statement here.
+            // Otherwise, the loop will continue iterating and overwrite 'name' in each iteration.
+            return name;
         }
 
         // If no context text is available, return the default location name
