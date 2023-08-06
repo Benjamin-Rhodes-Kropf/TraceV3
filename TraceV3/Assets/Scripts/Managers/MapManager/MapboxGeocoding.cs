@@ -23,7 +23,7 @@ public class MapboxGeocoding : MonoBehaviour
     [Header("Location Info")]
     public string locationName; // The location name to search for (e.g., "New York City")
     public MapboxResponseData _MapboxResponseData;
-    
+    public List<Feature> filteredFeatures;
     // Awake is called before Start
     void Awake()
     {
@@ -38,19 +38,7 @@ public class MapboxGeocoding : MonoBehaviour
         }
     }
     
-    // Start is called before the first frame update
-    void Start()
-    {
-        // Make the API call with the combined location string
-        StartCoroutine(GetGeocodingData(longitude, latitude, (result) => {
-            // Callback function to handle the geocoding data
-            // You can do something with 'result' here
-            locationName = result;
-            Debug.Log(result);
-        }));
-    }
-
-    IEnumerator GetGeocodingData(float longitude, float latitude, System.Action<string> locationCallback)
+    public IEnumerator GetGeocodingData(float longitude, float latitude, System.Action<string> locationCallback)
     {
         //Format the URL for the GET request
         // Format the URL for the GET request
@@ -84,7 +72,7 @@ public class MapboxGeocoding : MonoBehaviour
                     float zoomLevel = _onlineMaps.floatZoom;
 
                     // Now you can use the zoom level to set your location string or perform other actions
-                     locationCallback(GetLocationName(zoomLevel, mapboxData));
+                    locationCallback(GetLocationName(zoomLevel, mapboxData));
                 }
                 
                 // Extract and print relevant information from the response
@@ -101,44 +89,78 @@ public class MapboxGeocoding : MonoBehaviour
     
     private string GetLocationName(float zoomLevel, MapboxResponseData mapboxData)
     {
-        // Get the relevant context text based on the zoom level
-        // Adjust the zoom level thresholds and context text selection based on your requirements
-        if (zoomLevel > 15)
+        
+        
+        // Use a list to store the features without postcodes
+        // List<Feature> filteredFeatures = new List<Feature>();
+        filteredFeatures = new List<Feature>();
+
+
+        // Iterate through mapboxData.features and filter out features with "postcode" in their ids
+        foreach (var feature in mapboxData.features)
         {
-            foreach (var feature in mapboxData.features)
+            if (!feature.id.Contains("postcode"))
             {
-                if (feature.context != null && feature.context.Length > 0)
-                {
-                    // Return the first context text (you can choose based on your preference)
-                    return feature.context[0].text;
-                }
+                // Add the feature to the filteredFeatures list if it does not contain "postcode"
+                filteredFeatures.Add(feature);
             }
         }
-        else if (zoomLevel > 10)
+
+        // Get the relevant context text based on the zoom level
+        // Adjust the zoom level thresholds and context text selection based on your requirements
+        if (zoomLevel > 18)
         {
-            // Use the second context text (if available)
-            foreach (var feature in mapboxData.features)
+            foreach (var feature in filteredFeatures)
             {
                 if (feature.context != null && feature.context.Length > 1)
                 {
-                    return feature.context[1].text;
+                    // Return the first context text (you can choose based on your preference)
+                    return filteredFeatures[1].text;
                 }
             }
         }
-        else
+        else if (zoomLevel > 12)
         {
-            // Use the third context text (if available)
-            foreach (var feature in mapboxData.features)
+            // Use the second context text (if available)
+            foreach (var feature in filteredFeatures)
             {
                 if (feature.context != null && feature.context.Length > 2)
                 {
-                    return feature.context[2].text;
+                    return filteredFeatures[2].text;;
+                }
+            }
+        }
+        else if (zoomLevel > 5)
+        {
+            // Use the third context text (if available)
+            foreach (var feature in filteredFeatures)
+            {
+                if (feature.context != null && feature.context.Length > 3)
+                {
+                    return filteredFeatures[3].text;;
+                }
+            }
+        }
+        else if (zoomLevel > 0)
+        {
+            // Use the third context text (if available)
+            foreach (var feature in filteredFeatures)
+            {
+                if (feature.context != null && feature.context.Length > 4)
+                {
+                    return filteredFeatures[4].text;;
                 }
             }
         }
 
+        //failsafe
+        foreach (var name in filteredFeatures)
+        {
+            return name.text;
+        }
+
         // If no context text is available, return the default location name
-        return "Default Location Name";
+        return "null";
     }
 }
 

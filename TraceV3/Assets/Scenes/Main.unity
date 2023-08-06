@@ -188,11 +188,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14dc8730eee2f4a3ca968f7d8eecd701, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _onlineMaps: {fileID: 6068666308761308066}
   accessToken: pk.eyJ1IjoiYmVucmsxMDAiLCJhIjoiY2xlNXRqMmZwMGc4cTNwbnh4OWcxYjhhbSJ9.tKfaEUT7hvBsZml5ucE5CA
   geocodingBaseUrl: https://api.mapbox.com/geocoding/v5/mapbox.places/
-  latitude: 43.80283514981714
-  longitude: -72.90064871637576
+  latitude: 43.802834
+  longitude: -72.90065
   locationName: 
+  _MapboxResponseData:
+    type: 
+    query: []
+    features: []
+    attribution: 
 --- !u!1 &209913001
 GameObject:
   m_ObjectHideFlags: 0
@@ -1374,6 +1380,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &831197461 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8258322249657470561, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+  m_PrefabInstance: {fileID: 3367896875909936826}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &864861247
 GameObject:
   m_ObjectHideFlags: 0
@@ -9604,6 +9621,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 906833078}
     m_Modifications:
+    - target: {fileID: 694695250689113937, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_RootOrder
+      value: 16
+      objectReference: {fileID: 0}
     - target: {fileID: 1361899929577008941, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 6
@@ -10173,6 +10194,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6068666308761308066}
     - target: {fileID: 3367896875706325130, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: _onlineMaps
+      value: 
+      objectReference: {fileID: 6068666308761308066}
+    - target: {fileID: 3367896875706325130, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: _traceManager
       value: 
       objectReference: {fileID: 6068666308761308084}
@@ -10185,9 +10210,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1562857409}
     - target: {fileID: 3367896875706325130, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: _locationNameDisplay
+      value: 
+      objectReference: {fileID: 831197461}
+    - target: {fileID: 3367896875706325130, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: _tutorialWelomeScreen
       value: 
       objectReference: {fileID: 323791738}
+    - target: {fileID: 3367896875706325130, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: onlineMapsControlBase
+      value: 
+      objectReference: {fileID: 6068666308761308067}
     - target: {fileID: 3367896875706325130, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: _tutorialLetsLeaveScreen
       value: 

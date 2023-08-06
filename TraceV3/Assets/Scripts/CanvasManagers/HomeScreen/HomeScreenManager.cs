@@ -13,8 +13,10 @@ public class HomeScreenManager : MonoBehaviour
 
     [Header("External")]
     public static bool isInSendTraceView;
+    [SerializeField] private OnlineMaps _onlineMaps;
     [SerializeField] private TraceManager _traceManager;
-    
+    [SerializeField] private OnlineMapsControlBase onlineMapsControlBase;
+
     
     [Header("Internal")]
     [SerializeField] private GameObject _tutorialCanvas;
@@ -22,14 +24,25 @@ public class HomeScreenManager : MonoBehaviour
     [SerializeField] private ViewTraceManager viewTraceManager;
     [SerializeField] private Animator _loadingAnimator;
     [SerializeField] private TMP_Text _locationNameDisplay;
-    
+
+
+    private void Start()
+    {
+        //when to update location name
+        onlineMapsControlBase.OnMapDrag += ChangeLocationText;
+        onlineMapsControlBase.OnMapPress += ChangeLocationText;
+        onlineMapsControlBase.OnMapZoom += ChangeLocationText;
+    }
+
     private void OnEnable()
     {
         if (SendTraceManager.instance.isSendingTrace)
         {
             StartCoroutine(PlayLoadingAnimationUntilTraceSends());
         }
+        _locationNameDisplay.text = "";
     }
+    
 
     public IEnumerator PlayLoadingAnimationUntilTraceSends()
     {
@@ -73,9 +86,29 @@ public class HomeScreenManager : MonoBehaviour
         _tutorialCanvas.SetActive(!_tutorialCanvas.gameObject.active);
     }
 
-    public static void SelectorPressed()
+    public void ChangeLocationText()
     {
-        
+        StartCoroutine(ChangeLocationTextReduceApiCallSpeed());
+    }
+
+    private bool isLocationTextUpdateRunning = false;
+    IEnumerator ChangeLocationTextReduceApiCallSpeed()
+    {
+        if (!isLocationTextUpdateRunning)
+        {
+            isLocationTextUpdateRunning = true;
+            yield return new WaitForSeconds(0.2f);
+            Debug.Log("ChangeLocationTextSlowApiCalls: lng" + _onlineMaps.position.x);
+            StartCoroutine(MapboxGeocoding.Instance.GetGeocodingData(_onlineMaps.position.x ,_onlineMaps.position.y, (result) => {
+                if (result != "null")
+                    _locationNameDisplay.text = result;
+            }));
+            isLocationTextUpdateRunning = false;
+        }
+        else
+        {
+            yield return null;
+        }
     }
     
     public void OpenTrace(string traceID, string senderName, string senderID, string sendDate, string mediaType, int numOfPeopleSent) //Todo: Make mediaType an Enum
