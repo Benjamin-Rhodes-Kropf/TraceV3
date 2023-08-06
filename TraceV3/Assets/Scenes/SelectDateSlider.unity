@@ -692,7 +692,7 @@ MonoBehaviour:
   _slider: {fileID: 114000013542613526}
   _labelMaxRange: {fileID: 1240100331}
   _labelMinRange: {fileID: 210881053}
-  MaxValue: 500
+  MaxValue: 250
 --- !u!114 &2145705914
 MonoBehaviour:
   m_ObjectHideFlags: 0

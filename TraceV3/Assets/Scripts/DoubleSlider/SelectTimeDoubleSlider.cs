@@ -40,20 +40,20 @@ namespace TS.DoubleSlider
             float lowerValue = _slider.HigherValue;
             float lowerIncrement = _slider.MinIncrement;
             
-            _labelMaxRange.text = "max:" + Mathf.RoundToInt(higherValue) + "--" + higherIncrement;
-            _labelMinRange.text = "min:" + Mathf.RoundToInt(lowerValue) + "--" +lowerIncrement;
-            
+            // _labelMaxRange.text = "max:" + Mathf.RoundToInt(higherValue) + "--" + higherIncrement;
+            // _labelMinRange.text = "min:" + Mathf.RoundToInt(lowerValue) + "--" +lowerIncrement;
+            //
             //offset date option
             // _labelMaxRange.text = GetMonthAndDay((int)higherValue + GetDayOfYear());
             // _labelMinRange.text = GetMonthAndDay((int)lowerValue + GetDayOfYear());
 
             //direct string option
-            _labelMaxRange.text = GetSliderStringValue(higherValue);
-            _labelMinRange.text = GetSliderStringValue(lowerValue);
+            // _labelMaxRange.text = GetSliderStringValue(higherValue, higherIncrement);
+            // _labelMinRange.text = GetSliderStringValue(lowerValue, lowerIncrement);
 
             //offset skew option
-            //_labelMaxRange.text = GetSliderTimeValue(higherValue);
-            //_labelMinRange.text =  GetSliderTimeValue(lowerValue);
+            _labelMaxRange.text = GetSliderTimeValue(higherValue, higherIncrement);
+            _labelMinRange.text =  GetSliderTimeValue(lowerValue, lowerIncrement);
             
             
             if (lowerValue == 0 && lowerIncrement == 0)
@@ -67,7 +67,7 @@ namespace TS.DoubleSlider
         }
 
         //string option
-        public static string GetSliderStringValue(float value)
+        public static string GetSliderStringValue(float value, float increment)
         {
             string displayString = "";
             if (value < 100)
@@ -77,6 +77,10 @@ namespace TS.DoubleSlider
                     displayString = (int)hours + " hour";
                 else
                     displayString = (int)hours + " hours";
+                if((int)increment == 1)
+                    displayString += " and one minute";
+                else
+                    displayString += " and " + increment + " minutes";
             }else if (value < 200)
             {
                 float days = Map(value, 100, 200,1,7);
@@ -84,6 +88,10 @@ namespace TS.DoubleSlider
                     displayString = (int)days + " day";
                 else
                     displayString = (int)days + " days";
+                if((int)increment == 1)
+                    displayString += " and one hour";
+                else
+                    displayString += " and " + increment + " hours";
             }else if (value < 300)
             {
                 float weeks = Map(value, 200, 300,1,4);
@@ -91,6 +99,10 @@ namespace TS.DoubleSlider
                     displayString = (int)weeks + " week";
                 else
                     displayString = (int)weeks + " weeks";
+                if((int)increment == 1)
+                    displayString += " and one day";
+                else
+                    displayString += " and " + increment + " days";
             }else if (value < 400)
             {
                 float months = Map(value, 300, 400,1,7);
@@ -98,6 +110,10 @@ namespace TS.DoubleSlider
                     displayString = (int)months + " month";
                 else
                     displayString = (int)months + " months";
+                if((int)increment == 1)
+                    displayString += " and one week";
+                else
+                    displayString += " and " + increment + " weeks";
             }else if (value < 500)
             {
                 float months = Map(value, 400, 500,7,13);
@@ -111,7 +127,7 @@ namespace TS.DoubleSlider
             return displayString;
         }
         
-        public static string GetSliderTimeValue(float value)
+        public static string GetSliderTimeValue(float value, float increment)
         {
             //convert value to time
             float minutes = 0;
@@ -120,29 +136,39 @@ namespace TS.DoubleSlider
             float weeks = 0;
             float months = 0;
             
-            if (value < 100)
+            if (value < 50)
             {
-                hours = Map(value, 0, 100,1,24);
+                hours = Map(value, 0, 50,1,24);
+                minutes = Map(increment, 0, 50, 0, 60);
+            }else if (value < 100)
+            {
+                days = Map(value, 50, 100,1,7);
+                hours = Map(increment, 0, 50, 0, 24);
+            }else if (value < 150)
+            {
+                weeks = Map(value, 100, 150,1,4);
+                days = Map(increment, 0, 50, 0, 7);
             }else if (value < 200)
             {
-                days = Map(value, 100, 200,1,7);
-            }else if (value < 300)
+                months = Map(value, 150, 200,1,7); 
+                weeks = Map(increment, 0, 50,0,3);
+            }else if (value < 250)
             {
-                weeks = Map(value, 200, 300,1,4);
-            }else if (value < 400)
-            {
-                months = Map(value, 300, 400,1,7);
-            }else if (value < 500)
-            {
-                months = Map(value, 400, 500,7,13);
+                months = Map(value, 200, 250,7,13);
+                weeks = Map(increment, 0, 50,0,3);
             }
             
             //get time offset
             DateTime dateTime = new DateTime(DateTime.Now.Year, 1, 1).AddDays(GetDayOfYear());
-            DateTime display = dateTime.AddMinutes(minutes + hours*60 + days *1440 + weeks*10080 + months * 43829.1f);
-            
+            dateTime = dateTime.AddMinutes(minutes);
+            dateTime = dateTime.AddHours(hours);
+            dateTime = dateTime.AddDays(days);
+            dateTime = dateTime.AddDays(weeks*7);
+            dateTime = dateTime.AddMonths((int)months);
 
-            return display.ToString();
+            Debug.Log("value:" + value + "::"+ dateTime.ToLongTimeString());
+
+            return dateTime.ToString();
             //structure string correctly
             // if (months > 0 || weeks > 0)
             // {

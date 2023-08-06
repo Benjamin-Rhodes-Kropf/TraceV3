@@ -127,6 +127,9 @@ namespace TS.DoubleSlider
             else
             {
                 HigherValue = _sliderMin.Value;
+            }
+            if(Mathf.Abs(_sliderMin.Velocity) > _resetVelocityThreshold)
+            {
                 MinIncrement = 0f;
             }
             
@@ -150,6 +153,9 @@ namespace TS.DoubleSlider
             else
             {
                 LowerValue = _sliderMax.Value;
+            }
+            if(Mathf.Abs(_sliderMin.Velocity) > _resetVelocityThreshold)
+            {
                 MaxIncrement = 0f;
             }
 
