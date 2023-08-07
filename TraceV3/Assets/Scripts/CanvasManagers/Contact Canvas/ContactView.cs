@@ -83,7 +83,7 @@ public class ContactView : MonoBehaviour
    {
       StartCoroutine(FbManager.instance.SendInvite(_phoneNumber.text));
       FbManager.instance.AnalyticsOnAddContact(_phoneNumber.text);
-      HelperMethods.SendSMS(_phoneNumber.text, "What up! add me on trace! It’s exclusive 🎉 https://linktr.ee/leaveatrace");
+      HelperMethods.SendSMS(_phoneNumber.text, "What up! You should download trace! it's super fun. https://linktr.ee/leaveatrace");
    }
 
    private void OnRemoveClick()

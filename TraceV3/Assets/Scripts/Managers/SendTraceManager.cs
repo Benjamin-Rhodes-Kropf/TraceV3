@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using Unity.Notifications.iOS;
 
@@ -49,6 +50,7 @@ public class SendTraceManager : MonoBehaviour
         return(NewValue);
     }
     
+    
     public void SendTrace()
     {
         Debug.Log("SEND TRACE!");
@@ -56,10 +58,14 @@ public class SendTraceManager : MonoBehaviour
         FbManager.instance.UploadTrace(fileLocation, selectedRadius, location, mediaType,usersToSendTrace);
         FbManager.instance.AnalyticsOnSendTrace(usersToSendTrace.Count, videoLength, camFlippedCount);
         SendLocalNotification("Sending Trace", "hang on while we upload it!", 1f);
+        Debug.Log("SEND SMS");
+        SendBulkSMS.Instance.SendTraceSMS(HelperMethods.GetPhoneNumbersFromList(usersToSendTrace), new Vector2(location.y, location.x));
     }
-
+    
     public void SendNotificationToUsersWhoRecivedTheTrace()
     {
+        Debug.Log("SEND Notifications");
+
         //notify if they have app
         foreach (var user in usersToSendTrace)
         {

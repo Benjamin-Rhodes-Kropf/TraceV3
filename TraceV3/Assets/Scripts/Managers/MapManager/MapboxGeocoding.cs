@@ -11,6 +11,8 @@ public class MapboxGeocoding : MonoBehaviour
     
     [Header("Refrences")] 
     [SerializeField] private OnlineMaps _onlineMaps;
+    [SerializeField] private OnlineMapsLocationService _onlineMapsLocationService;
+
     
     [Header("Mapbox API Settings")]
     public string accessToken = "pk.eyJ1IjoiYmVucmsxMDAiLCJhIjoiY2xlNXRqMmZwMGc4cTNwbnh4OWcxYjhhbSJ9.tKfaEUT7hvBsZml5ucE5CA";
@@ -22,6 +24,7 @@ public class MapboxGeocoding : MonoBehaviour
     
     [Header("Location Info")]
     public string locationName; // The location name to search for (e.g., "New York City")
+    public string userLocationName;
     public MapboxResponseData _MapboxResponseData;
     public List<Feature> filteredFeatures;
     // Awake is called before Start
@@ -37,9 +40,21 @@ public class MapboxGeocoding : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    public void GetUserLocationName()
+    {
+        _onlineMapsLocationService.GetLocation(out longitude, out latitude);
+        StartCoroutine(MapboxGeocoding.Instance.GetGeocodingData(longitude ,latitude, (result) => {
+            if (result != "null")
+            {
+                userLocationName = result;
+            }
+        }));
+    }
     
     public IEnumerator GetGeocodingData(float longitude, float latitude, System.Action<string> locationCallback)
     {
+        Debug.Log("SEND GetGeocodingData");
         //Format the URL for the GET request
         // Format the URL for the GET request
         string location = longitude + "," + latitude;
@@ -161,6 +176,7 @@ public class MapboxGeocoding : MonoBehaviour
 
             // If you want to return the last name in the loop, you can use the return statement here.
             // Otherwise, the loop will continue iterating and overwrite 'name' in each iteration.
+            locationName = name;
             return name;
         }
 

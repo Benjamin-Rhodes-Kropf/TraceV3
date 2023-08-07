@@ -1,52 +1,58 @@
 using System;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class SendSMSText : MonoBehaviour
 {
     private static SendSMSText _instance;
     public static SendSMSText Instance => _instance;
     
-    //https://maps.apple.com/?ll=42.097553,-71.181867&q=Trace&t=h
-    string url = "api.twilio.com/2010-04-01/Accounts/";
-    string service="/Messages.json";
-    public string from;
-    public string to;
-    public string account_sid;
-    public string auth;
-    public string body;
+    [Header("New Stuff")]
+    public string accountSid = "YOUR_ACCOUNT_SID";
+    public string authToken = "YOUR_AUTH_TOKEN";
+    public string twilioPhoneNumber = "YOUR_TWILIO_PHONE_NUMBER";
+    public string recipientPhoneNumber = "RECIPIENT_PHONE_NUMBER";
+    public string messageText = "Hello, this is a test message from Unity using Twilio!";
+    private string twilioApiUrl = "https://api.twilio.com/2010-04-01/Accounts/";
 
     private void Start()
     {
-        // SendSMS();
+        SendTextMessage();
     }
 
-    public void SendSMS (string phoneNumber = "", string body = "")
+    
+    public void SendTextMessage()
     {
-        WWWForm form = new WWWForm ();
-        form.AddField ("To", to);
-        form.AddField ("From", from);
-        //string bodyWithoutSpace = body.Replace (" ", "%20");//Twilio doesn't need this conversion
-        form.AddField ("Body", body);
-        string completeurl = "https://"+account_sid+":" + auth +"@" +url+account_sid+service;
-        Debug.Log (completeurl);
-        WWW www = new WWW (completeurl, form);
-        StartCoroutine (WaitForRequest (www));
+        StartCoroutine(SendMessageCoroutine());
     }
 
-    public void SendTraceSMS(string phoneNumber, string body, float lat, float lng, float radius)
+    private IEnumerator SendMessageCoroutine()
     {
-        WWWForm form = new WWWForm ();
-        form.AddField ("To", to);
-        form.AddField ("From", from);
-        //string bodyWithoutSpace = body.Replace (" ", "%20");//Twilio doesn't need this conversion
-        form.AddField ("Body", body);
-        string completeurl = "https://"+account_sid+":" + auth +"@" +url+account_sid+service;
-        Debug.Log (completeurl);
-        WWW www = new WWW (completeurl, form);
-        StartCoroutine (WaitForRequest (www));
+        string base64Credentials = System.Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes($"{accountSid}:{authToken}"));
+        string twilioUrl = $"{twilioApiUrl}{accountSid}/Messages.json";
+
+        WWWForm form = new WWWForm();
+        form.AddField("From", twilioPhoneNumber);
+        form.AddField("To", recipientPhoneNumber);
+        form.AddField("Body", messageText);
+
+        Dictionary<string, string> headers = form.headers;
+        headers["Authorization"] = "Basic " + base64Credentials;
+
+        WWW www = new WWW(twilioUrl, form.data, headers);
+        yield return www;
+
+        if (string.IsNullOrEmpty(www.error))
+        {
+            Debug.Log("Text message sent successfully!");
+        }
+        else
+        {
+            Debug.LogError($"Error sending text message: {www.error}");
+        }
     }
-	
+    
     IEnumerator WaitForRequest (WWW www)
     {
         yield return www;

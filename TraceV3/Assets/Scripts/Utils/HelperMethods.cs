@@ -51,6 +51,24 @@ public static class HelperMethods
         for (int i = 0; i < layerTransforms.Length; i++)
             layerTransforms[i].gameObject.layer = layer;
     }
+    
+    public static List<String> GetPhoneNumbersFromList(List<String> usersToSendTrace)
+    {
+        // Matches various phone numbers: with/without spaces, hyphens, brackets, or country codes.
+        Regex regex = new Regex(@"^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$");
+        List<String> phoneNumbers = new List<String>();
+
+        foreach (string user in usersToSendTrace)
+        {
+            if (regex.IsMatch(user))
+            {
+                phoneNumbers.Add(user);
+            }
+        }
+
+        return phoneNumbers;
+    }
+    
     public static void SendSMS(string phoneNumber, string contents)
     {
         ISN_TextMessage.Send(contents, phoneNumber);

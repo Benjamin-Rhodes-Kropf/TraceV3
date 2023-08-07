@@ -28,6 +28,7 @@ public class SelectRadiusCanvas : MonoBehaviour
    
     private void OnEnable()
     {
+        MapboxGeocoding.Instance.GetUserLocationName(); //not a great time to call this
         if (!firstTimeEnabled)
         {
             firstTimeEnabled = true;
