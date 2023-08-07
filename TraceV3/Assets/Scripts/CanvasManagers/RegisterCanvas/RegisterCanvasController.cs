@@ -45,8 +45,8 @@ namespace CanvasManagers
         {
             _view.LoadingState(true);
             string email = "";
-             email = _view.emailText.text.ToString().ToLower();
-             Debug.Log("OnClickRegister");
+            email = _view.emailText.text.ToString().ToLower();
+            Debug.Log("OnClickRegister");
 
 #if UNITY_EDITOR
 #else

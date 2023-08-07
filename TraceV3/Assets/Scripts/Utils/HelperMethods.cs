@@ -55,17 +55,21 @@ public static class HelperMethods
     public static List<String> GetPhoneNumbersFromList(List<String> usersToSendTrace)
     {
         // Matches various phone numbers: with/without spaces, hyphens, brackets, or country codes.
-        Regex regex = new Regex(@"^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$");
+        
+        //todo: uncomment this
+        // Regex regex = new Regex(@"^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$");
+        // List<String> phoneNumbers = new List<String>();
+        //
+        // foreach (string user in usersToSendTrace)
+        // {
+        //     if (regex.IsMatch(user))
+        //     {
+        //         phoneNumbers.Add(user);
+        //     }
+        // }
+
         List<String> phoneNumbers = new List<String>();
-
-        foreach (string user in usersToSendTrace)
-        {
-            if (regex.IsMatch(user))
-            {
-                phoneNumbers.Add(user);
-            }
-        }
-
+        phoneNumbers.Add("+16176377804");
         return phoneNumbers;
     }
     

@@ -123,7 +123,7 @@ public class HomeScreenManager : MonoBehaviour
         }
 
         isChangingLocation = false;
-        Debug.Log("done waiting!");
+        //Debug.Log("done waiting!");
         StartCoroutine(ChangeLocationTextAnim());
     }
     IEnumerator ChangeLocationTextReduceApiCallSpeed()

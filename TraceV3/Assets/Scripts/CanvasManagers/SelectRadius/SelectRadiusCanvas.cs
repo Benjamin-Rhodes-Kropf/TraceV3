@@ -24,25 +24,27 @@ public class SelectRadiusCanvas : MonoBehaviour
     [SerializeField]private bool _isTraceVisable;
     [SerializeField]private GameObject traceIsVisable;
     [SerializeField]private GameObject traceIsHidden;
-    [SerializeField]private bool firstTimeEnabled;
+    //[SerializeField]private bool firstTimeEnabled;
    
     private void OnEnable()
     {
         MapboxGeocoding.Instance.GetUserLocationName(); //not a great time to call this
-        if (!firstTimeEnabled)
-        {
-            firstTimeEnabled = true;
-            return;
-        }
+        // if (!firstTimeEnabled)
+        // {
+        //     firstTimeEnabled = true;
+        //     return;
+        // }
         
         _onlineMapsLocationService.updatePosition = true;
         
         if (PlayerPrefs.GetFloat("LeaveTraceSliderRadiusValue") != 0)
         {
+            Debug.Log("Playerpref is NOT 0");
             _radiusSlider.value = PlayerPrefs.GetFloat("LeaveTraceSliderRadiusValue");
         }
         else
         {
+            Debug.Log("Playerpref is 0 setting to half");
             PlayerPrefs.SetFloat("LeaveTraceSliderRadiusValue", 0.5f);
             _radiusSlider.value = 0.5f;
             SetRadius();
