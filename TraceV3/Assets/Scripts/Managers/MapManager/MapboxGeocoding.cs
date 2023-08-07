@@ -130,7 +130,7 @@ public class MapboxGeocoding : MonoBehaviour
                 if (feature.context != null && feature.context.Length > 1)
                 {
                     // Return the first context text (you can choose based on your preference)
-                    return filteredFeatures[1].text;
+                    return filteredFeatures[1].place_name;
                 }
             }
         }
@@ -141,7 +141,7 @@ public class MapboxGeocoding : MonoBehaviour
             {
                 if (feature.context != null && feature.context.Length > 2)
                 {
-                    return filteredFeatures[2].text;;
+                    return filteredFeatures[2].place_name;;
                 }
             }
         }
@@ -152,7 +152,7 @@ public class MapboxGeocoding : MonoBehaviour
             {
                 if (feature.context != null && feature.context.Length > 3)
                 {
-                    return filteredFeatures[3].text;;
+                    return filteredFeatures[3].place_name;;
                 }
             }
         }
@@ -163,7 +163,7 @@ public class MapboxGeocoding : MonoBehaviour
             {
                 if (feature.context != null && feature.context.Length > 4)
                 {
-                    return filteredFeatures[4].text;;
+                    return filteredFeatures[4].place_name;;
                 }
             }
         }
@@ -171,7 +171,7 @@ public class MapboxGeocoding : MonoBehaviour
         //failsafe
         for (int i = filteredFeatures.Count - 1; i >= 0; i--)
         {
-            var name = filteredFeatures[i].text;
+            var name = filteredFeatures[i].place_name;
             // Do something with 'name' (e.g., print, store, etc.)
 
             // If you want to return the last name in the loop, you can use the return statement here.
