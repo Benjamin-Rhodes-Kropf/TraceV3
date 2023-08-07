@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using EnhancedUI;
 using EnhancedUI.EnhancedScroller;
 
@@ -22,51 +23,79 @@ namespace EnhancedScrollerDemos.MultipleCellTypesDemo
         public EnhancedScrollerCellView rowCellViewPrefab;
         public EnhancedScrollerCellView footerCellViewPrefab;
 
-        /// <summary>
-        /// The base path to the resources folder where sprites are located
-        /// </summary>
-        public string resourcePath;
+       
 
         void Start()
         {
             // tell the scroller that this script will be its delegate
             scroller.Delegate = this;
 
-            LoadData();
+            // LoadData();
         }
 
         /// <summary>
         /// Populates the data with a lot of records
         /// </summary>
-        private void LoadData()
+        public void LoadData(List<SendTraceCellViewData>  bestFriends, List<SendTraceCellViewData> friends, List<SendTraceCellViewData> contacts)
         {
             // create some data
             // note we are using different data class fields for the header, row, and footer rows. This works due to polymorphism.
 
             _data = new SmallList<Data>();
 
-            _data.Add(new HeaderData() { category = "Platinum Players" });
-            _data.Add(new RowData() { userName = "John Smith", userAvatarSpritePath = resourcePath + "/avatar_male", userHighScore = 21323199 });
-            _data.Add(new RowData() { userName = "Jane Doe", userAvatarSpritePath = resourcePath + "/avatar_female", userHighScore = 20793219 });
-            _data.Add(new RowData() { userName = "Julie Prost", userAvatarSpritePath = resourcePath + "/avatar_female", userHighScore = 19932132 });
-            _data.Add(new FooterData());
 
-            _data.Add(new HeaderData() { category = "Gold Players" });
-            _data.Add(new RowData() { userName = "Jim Bob", userAvatarSpritePath = resourcePath + "/avatar_male", userHighScore = 1002132 });
-            _data.Add(new RowData() { userName = "Susan Anthony", userAvatarSpritePath = resourcePath + "/avatar_female", userHighScore = 991234 });
-            _data.Add(new FooterData());
+            if (bestFriends.Count > 0)
+            {
+                _data.Add(new HeaderData() { category = "Best Friends"});
+                    Debug.Log("Best Friend Added");
+                    for (var index = 0; index < bestFriends.Count; index++)
+                    {
+                        var bestFriend = bestFriends[index];
+                        _data.Add(new RowData()
+                        {
+                            _userData = bestFriend,
+                            _index =  index
+                        });
+                    }
 
-            _data.Add(new HeaderData() { category = "Silver Players" });
-            _data.Add(new RowData() { userName = "Gary Richards", userAvatarSpritePath = resourcePath + "/avatar_male", userHighScore = 905723 });
-            _data.Add(new RowData() { userName = "John Doe", userAvatarSpritePath = resourcePath + "/avatar_male", userHighScore = 702318 });
-            _data.Add(new RowData() { userName = "Lisa Ford", userAvatarSpritePath = resourcePath + "/avatar_female", userHighScore = 697767 });
-            _data.Add(new RowData() { userName = "Jacob Morris", userAvatarSpritePath = resourcePath + "/avatar_male", userHighScore = 409393 });
-            _data.Add(new RowData() { userName = "Carolyn Shephard", userAvatarSpritePath = resourcePath + "/avatar_female", userHighScore = 104352 });
-            _data.Add(new RowData() { userName = "Guy Wilson", userAvatarSpritePath = resourcePath + "/avatar_male", userHighScore = 88321 });
-            _data.Add(new RowData() { userName = "Jackie Jones", userAvatarSpritePath = resourcePath + "/avatar_female", userHighScore = 20826 });
-            _data.Add(new RowData() { userName = "Sally Brewer", userAvatarSpritePath = resourcePath + "/avatar_female", userHighScore = 17389 });
-            _data.Add(new RowData() { userName = "Joe West", userAvatarSpritePath = resourcePath + "/avatar_male", userHighScore = 2918 });
-            _data.Add(new FooterData());
+                    _data.Add(new FooterData());
+            }
+            
+            if (friends.Count > 0)
+            {
+                _data.Add(new HeaderData() { category = "Friends"});
+                Debug.Log(" Friend Added");
+
+                for (var index = 0; index < friends.Count; index++)
+                {
+                    var friend = friends[index];
+                    _data.Add(new RowData()
+                    {
+                        _userData = friend,
+                        _index =  index
+                    });
+                }
+
+                _data.Add(new FooterData());
+            }
+            
+            if (contacts.Count > 0)
+            {
+                _data.Add(new HeaderData() { category = "Contacts"});
+                Debug.Log("Contact Added");
+
+                for (var index = 0; index < contacts.Count; index++)
+                {
+                    var contact = contacts[index];
+                    _data.Add(new RowData()
+                    {
+                        _userData = contact,
+                        _index = index
+                    });
+                }
+
+                _data.Add(new FooterData());
+            }
 
             // tell the scroller to reload now that we have the data
             scroller.ReloadData();
@@ -100,17 +129,17 @@ namespace EnhancedScrollerDemos.MultipleCellTypesDemo
             if (_data[dataIndex] is HeaderData)
             {
                 // header views
-                return 70f;
+                return 50f;
             }
             else if (_data[dataIndex] is RowData)
             {
                 // row views
-                return 100f;
+                return 135f;
             }
             else
             {
                 // footer views
-                return 90f;
+                return 50f;
             }
         }
 
@@ -142,7 +171,7 @@ namespace EnhancedScrollerDemos.MultipleCellTypesDemo
                 cellView = scroller.GetCellView(rowCellViewPrefab) as CellViewRow;
 
                 // optional for clarity: set the cell's name to something to indicate this is a row
-                cellView.name = "[Row] " + (_data[dataIndex] as RowData).userName;
+                cellView.name = "[Row] " + (_data[dataIndex] as RowData)._userData._textData;
             }
             else
             {

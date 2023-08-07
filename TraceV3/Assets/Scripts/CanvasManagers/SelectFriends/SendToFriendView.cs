@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using EnhancedScrollerDemos.MultipleCellTypesDemo;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,14 +23,36 @@ public class SendToFriendView : MonoBehaviour
     private bool sendToThisFriend = false;
     private string _uid = "";
     public bool _isBestFriend = false;
+    public bool _isContact = false;
+    public int _Index;
+
+
+    private CellViewRow _cellView;
+    private Action<bool> SelectionCallBack;
 
     private Coroutine _downloadRoutine;
-    public string friendUID {
-        get
-        {
-            return _uid;
-        }
+    public string friendUID => _uid;
+
+    public void UpdateUIElements(SendTraceCellViewData data, int index, Action<bool> changeSelectionCallBack)
+    {
+        
+        friendViewToggle.onValueChanged.RemoveAllListeners();
+        
+        _nickName.text = data._textData;
+        _uid = data._userId;
+        friendViewToggle.isOn = data._isSelected;
+        _profilePic.texture = data._profilePicture;
+        _isBestFriend = data._isBestFriend;
+        _isContact = data._isContact;
+        _Index = index;
+        SelectionCallBack = null;
+        SelectionCallBack = changeSelectionCallBack;
+        
+        friendViewToggle.onValueChanged.AddListener(TogglePressed);
+        
     }
+    
+    
     public void UpdateFrindData(bool isBestFriend, UserModel user = null, bool isFriendAdd = false)
     {
         _isBestFriend = isBestFriend;
@@ -39,24 +62,43 @@ public class SendToFriendView : MonoBehaviour
             _nickName.text = user.name;
             _uid = user.userID;
             _downloadRoutine = user._downloadPCoroutine;
-            user.ProfilePicture((sprite =>
+            
+            var persistentData = PersistentStorageHandler.s_Instance.GetTextureFromPersistentStorage("friends", _uid);
+            if (persistentData.updateImage)
             {
-                try
+                user.PPTexture((sprite =>
                 {
-                    _profilePic.texture = sprite.texture;
-                }
-                catch (Exception e)
-                {
-                    print(e.Message);
-                }
-            }));
+                    try
+                    {
+                        _profilePic.texture = sprite;
+                        StartCoroutine(SaveToPersistentStorage((Texture2D)sprite));
+                    }
+                    catch (Exception e)
+                    {
+                        print(e.Message);
+                    }
+                }));
+            }
+            else
+            {
+                _profilePic.texture = persistentData.texture;
+            }
         }
     }
 
-    public void TogglePressed()
+    IEnumerator SaveToPersistentStorage(Texture2D texture2D)
     {
-        sendToThisFriend = friendViewToggle.isOn;
+        texture2D.Apply();
+        yield return new WaitForEndOfFrame();
+        PersistentStorageHandler.s_Instance.SaveTextureToPersistentStorage(texture2D,"friends",_uid);
+    }
+
+    public void TogglePressed(bool isOn)
+    {
+        sendToThisFriend = isOn;
         SelectFriendsControler.whoToSendTo[_uid] = sendToThisFriend;
+        SelectFriendsControler.s_Instance.UpdateListDataForThisIndex(_Index,friendViewToggle.isOn,_isBestFriend,_isContact);
+        SelectionCallBack?.Invoke(friendViewToggle.isOn);
     }
 
     public void SetToggleState(bool setToggleState)

@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using EnhancedUI.EnhancedScroller;
+using TMPro;
 
 namespace EnhancedScrollerDemos.MultipleCellTypesDemo
 {
@@ -22,7 +23,7 @@ namespace EnhancedScrollerDemos.MultipleCellTypesDemo
         /// <summary>
         /// A link to the Unity UI Text object to show the category
         /// </summary>
-        public Text categoryText;
+        public TextMeshProUGUI categoryText;
 
         /// <summary>
         /// Override of the base class's SetData function. This links the data

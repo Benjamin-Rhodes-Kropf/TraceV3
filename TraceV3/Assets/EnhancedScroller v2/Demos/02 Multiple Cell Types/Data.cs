@@ -28,20 +28,8 @@ namespace EnhancedScrollerDemos.MultipleCellTypesDemo
     /// </summary>
     public class RowData : Data
     {
-        /// <summary>
-        /// The name of the user
-        /// </summary>
-        public string userName;
-
-        /// <summary>
-        /// The user avatar's path to the sprite resource
-        /// </summary>
-        public string userAvatarSpritePath;
-
-        /// <summary>
-        /// The user's high score
-        /// </summary>
-        public ulong userHighScore;
+        public SendTraceCellViewData _userData;
+        public int _index;
     }
 
     /// <summary>

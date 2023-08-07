@@ -365,65 +365,30 @@ namespace CanvasManagers
         private bool isLoaded = false;
         private void OnContactsSelection()
         {
-            AddressBookContactsAccessStatus status = AddressBook.GetContactsAccessStatus();
-            Debug.Log("Contact Status:" + status);
-
 #if !UNITY_EDITOR
-            AddressBook.RequestContactsAccess(callback: OnRequestContactsAccessFinish);
-            LoadAllContacts();
+            NativeContactsManager.s_Instance.LoadUserContacts(OnReadContactsFinish,OnReadContactsFailed);
 #elif UNITY_EDITOR
             _view._enhanceScroller.LoadLargeData(null,_view._testContactList);
 #endif          
             SelectionPanelClick("Contacts");
         }
-        private void OnRequestContactsAccessFinish(AddressBookRequestContactsAccessResult result, Error error)
+
+        private void OnReadContactsFailed(string message)
         {
-            Debug.Log("Request for contacts access finished.");
-            Debug.Log("Address book contacts access status: " + result.AccessStatus);
-            if (result.AccessStatus == AddressBookContactsAccessStatus.Denied)
-            {
-                //Todo:This Does not work
-                Debug.Log("Prompt Again");
-                AddressBook.ReadContactsWithUserPermission(callback: null);
-            }
+            Debug.Log(message);
         }
         
-        private void OnReadContactsFinish(AddressBookReadContactsResult result, Error error)
-        {
-            if (error == null)
-            {
-                var     contacts    = result.Contacts;
-                Debug.Log("Request to read contacts finished successfully.");
-                Debug.Log("Total contacts fetched: " + contacts.Length);
-                Debug.Log("Below are the contact details (capped to first 10 results only):");
-                isLoaded = true;
-
-                if (contacts.Length > 0)
-                {
-                    _view._enhanceScroller.LoadLargeData(contacts);
-                }
-                
-                foreach (var contact in contacts)
-                {
-                    LogContactInfo(contact);
-                }
-            }
-            else
-            {
-                Debug.Log("Request to read contacts failed with error. Error: " + error);
-            }
-        }
-        private void LoadAllContacts()
+        private void OnReadContactsFinish(IAddressBookContact[] contacts)
         {
             if (isLoaded)
                 return;
-
-#if UNITY_EDITOR
             
-#elif UNITY_IOS
-            _allContacts = new List<IAddressBookContact>();
-            AddressBook.ReadContactsWithUserPermission(OnReadContactsFinish);
-#endif
+            _view._enhanceScroller.LoadLargeData(contacts);
+                
+            foreach (var contact in contacts)
+                LogContactInfo(contact);
+                
+            isLoaded = true;
         }
         
         private String StripUnicodeCharactersFromString(string inputValue)

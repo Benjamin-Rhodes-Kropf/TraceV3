@@ -47,7 +47,7 @@ public class ContactView : MonoBehaviour
             if (texture)
             {
                var newTexture = PersistentStorageHandler.s_Instance.CropImage(texture);
-               SaveToPersistentStorage(newTexture);
+               StartCoroutine(SaveToPersistentStorage(newTexture));
                _contactImage.texture = newTexture;
             }
          });
