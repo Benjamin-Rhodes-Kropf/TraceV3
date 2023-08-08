@@ -26,6 +26,10 @@ public class SelectFriendsCanvas : MonoBehaviour
     [SerializeField] private GameObject bestFriendLine;
     [SerializeField] private GameObject bestFriendSpace;
     [SerializeField] private Transform allFriendText;
+    [SerializeField] private Transform contactsText;
+
+
+    public GameObject _enhanceScroll;
     
     //visuals
     public bool selectAllFriends = true;
@@ -45,6 +49,7 @@ public class SelectFriendsCanvas : MonoBehaviour
             _controller = gameObject.AddComponent<SelectFriendsControler>();
             _controller.bestFriendText = bestFriendText;
             _controller.allFriendsText = allFriendText;
+            _controller.contactsText = contactsText;
         }
         selectAllFriends = true;
         _controller.Init(this);

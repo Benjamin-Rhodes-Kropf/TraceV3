@@ -51,6 +51,22 @@ public class SendToFriendView : MonoBehaviour
         friendViewToggle.onValueChanged.AddListener(TogglePressed);
         
     }
+
+
+    public void UpdateContactData(SendTraceCellViewData data)
+    {
+        _isContact = true;
+        
+        if (data == null) return;
+        
+        friendViewToggle.onValueChanged.RemoveAllListeners();
+        _nickName.text = data._textData;
+        _uid = data._userId;
+        friendViewToggle.isOn = data._isSelected;
+        _profilePic.texture = data._profilePicture;
+        _isBestFriend = data._isBestFriend;
+        friendViewToggle.onValueChanged.AddListener(OnSearchTogglePressed);
+    }
     
     
     public void UpdateFrindData(bool isBestFriend, UserModel user = null, bool isFriendAdd = false)
@@ -59,6 +75,8 @@ public class SendToFriendView : MonoBehaviour
         Debug.Log("UpdateFriendData");
         if (user != null)
         {
+            friendViewToggle.onValueChanged.RemoveAllListeners();
+            friendViewToggle.onValueChanged.AddListener(OnSearchTogglePressed);
             _nickName.text = user.name;
             _uid = user.userID;
             _downloadRoutine = user._downloadPCoroutine;
@@ -99,6 +117,13 @@ public class SendToFriendView : MonoBehaviour
         SelectFriendsControler.whoToSendTo[_uid] = sendToThisFriend;
         SelectFriendsControler.s_Instance.UpdateListDataForThisIndex(_Index,friendViewToggle.isOn,_isBestFriend,_isContact);
         SelectionCallBack?.Invoke(friendViewToggle.isOn);
+    }
+
+    public void OnSearchTogglePressed(bool isOn)
+    {
+        sendToThisFriend = isOn;
+        SelectFriendsControler.whoToSendTo[_uid] = sendToThisFriend;
+        SelectFriendsControler.s_Instance.UpdateCellViewVisuals(_uid, isOn, _isBestFriend,_isContact);
     }
 
     public void SetToggleState(bool setToggleState)

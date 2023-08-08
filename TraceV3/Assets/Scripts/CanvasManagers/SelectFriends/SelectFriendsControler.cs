@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using UnityEngine;
 using VoxelBusters.EssentialKit;
@@ -12,6 +13,7 @@ public class SelectFriendsControler : MonoBehaviour
     public static Dictionary<string, bool> whoToSendTo;
     public Transform bestFriendText;
     public Transform allFriendsText;
+    public Transform contactsText;
 
     public static SelectFriendsControler s_Instance;
     
@@ -249,23 +251,33 @@ public class SelectFriendsControler : MonoBehaviour
     }
     
     
-    private void UpdateFriendViewInfo(UserModel user, bool isBestFriend)
+    private void UpdateFriendViewInfo(UserModel user, bool isBestFriend, bool isContact = false, SendTraceCellViewData contactData = null)
     {
         Debug.Log("UpdateFriendViewInfo");
         int bestFriendsIndex = bestFriendText.GetSiblingIndex();
         int allFriendsIndex = allFriendsText.GetSiblingIndex();
+        int contactsIndex = contactsText.GetSiblingIndex();
         SendToFriendView view = GameObject.Instantiate(_view.friendViewPrefab, _view._displayFrindsParent);
-        if (isBestFriend)
+        if (user == null)
         {
-            view.GetComponent<Transform>().SetSiblingIndex(bestFriendsIndex+1);
-            view.GetComponent<SendToFriendView>().SetToggleState(whoToSendTo[user.userID]);
+            view.transform.SetSiblingIndex(contactsIndex + 1);
+            view.UpdateContactData(contactData);
         }
         else
         {
-            view.GetComponent<Transform>().SetSiblingIndex(allFriendsIndex+1);
-            view.GetComponent<SendToFriendView>().SetToggleState(whoToSendTo[user.userID]);
+            if (isBestFriend)
+            {
+                view.GetComponent<Transform>().SetSiblingIndex(bestFriendsIndex + 1);
+                view.GetComponent<SendToFriendView>().SetToggleState(whoToSendTo[user.userID]);
+            }
+            else
+            {
+                view.GetComponent<Transform>().SetSiblingIndex(allFriendsIndex + 1);
+                view.GetComponent<SendToFriendView>().SetToggleState(whoToSendTo[user.userID]);
+            }
+            view.UpdateFrindData(isBestFriend, user,false);
         }
-        view.UpdateFrindData(isBestFriend, user,false);
+
         _allFriendsView.Add(view);
         _view._friendsList.Add(view);
     }
@@ -298,15 +310,53 @@ public class SelectFriendsControler : MonoBehaviour
         }
     }
 
-
+    public void UpdateCellViewVisuals(string uid,bool isSelected, bool isBestFriend,bool isContact)
+    {
+        if (isBestFriend)
+        {
+            for (int i = 0; i < _bestFriendsData.Count; i++)
+            {
+                var bestFriend = _bestFriendsData[i];
+                if (!bestFriend._userId.Equals(uid)) continue;
+                
+                _bestFriendsData[i]._isSelected = isSelected;
+                break;
+            }
+        }else if (isContact)
+        {
+            for (int i = 0; i < _contactsData.Count; i++)
+            {
+                var contact = _contactsData[i];
+                if (!contact._userId.Equals(uid)) continue;
+                _contactsData[i]._isSelected = isSelected;
+                break;
+            }
+        }
+        else
+        {
+            for (int i = 0; i < _friendsData.Count; i++)
+            {
+                var friend = _friendsData[i];
+                if (!friend._userId.Equals(uid)) continue;
+                
+                _friendsData[i]._isSelected = isSelected;
+                break;
+            }
+        }
+    }
+    
     private void OnSearchBarValueChange(string inputText)
     {
         ClearFriendsView();
         if (inputText.Length <= 1)
         {
-            LoadAllFriends();
+            _view._enhanceScroll.SetActive(true);
+            _view._enhanceScroller.LoadData(_bestFriendsData,_friendsData,_contactsData);
+            _view._friendsScroll.SetActive(false);
             return;
         }
+        _view._enhanceScroll.SetActive(false);
+        _view._friendsScroll.SetActive(true);
         
         Debug.Log("Search Friends");
         int numOfBestFriends = 0;
@@ -316,6 +366,25 @@ public class SelectFriendsControler : MonoBehaviour
             bool isBestFriend = FriendsModelManager.Instance.IsBestFriend(user.userID);
             UpdateFriendViewInfo(user, isBestFriend);
         }
+
+        var contacts = GetContactsByName(inputText);
+        foreach (var contact in contacts)
+        {
+            UpdateFriendViewInfo(null, false, true, contact);
+        }
+    }
+
+
+
+    private List<SendTraceCellViewData> GetContactsByName(string name)
+    {
+        List<SendTraceCellViewData> selectedUsers = new List<SendTraceCellViewData>();
+        if (string.IsNullOrEmpty(name) is false && _contactsData.Count > 0)
+        {
+            var searchResults = _contactsData.Where(user => user._textData.Contains(name));
+            selectedUsers.AddRange(searchResults);
+        }
+        return selectedUsers;
     }
 }
 
