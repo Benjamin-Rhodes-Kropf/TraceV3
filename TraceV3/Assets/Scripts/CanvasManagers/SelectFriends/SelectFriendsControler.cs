@@ -150,16 +150,14 @@ public class SelectFriendsControler : MonoBehaviour
 #if !UNITY_EDITOR
         NativeContactsManager.s_Instance.LoadUserContacts(OnReadContactsFinish,OnReadContactsFailed);
 #elif UNITY_EDITOR
-
-
-        for (var i = 0; i < 500; i++)
+        foreach (var contact in NativeContactsManager.s_Instance._SampleContacts)
         {
             var sample = new SendTraceCellViewData
             {
-                _textData = "Salman  Saleem "+i,
+                _textData =  contact._name,
                 _isSelected = false,
-                _userId = "Salman  Saleem "+i,
-                _profilePicture = null,
+                _userId = contact._phone,
+                _profilePicture = contact._profilePicture,
                 _isBestFriend = false,
                 _isContact = true
             };

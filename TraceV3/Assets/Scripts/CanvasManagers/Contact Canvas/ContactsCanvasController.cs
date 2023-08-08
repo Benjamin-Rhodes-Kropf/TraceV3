@@ -368,7 +368,7 @@ namespace CanvasManagers
 #if !UNITY_EDITOR
             NativeContactsManager.s_Instance.LoadUserContacts(OnReadContactsFinish,OnReadContactsFailed);
 #elif UNITY_EDITOR
-            _view._enhanceScroller.LoadLargeData(null,_view._testContactList);
+            _view._enhanceScroller.LoadLargeData(null,NativeContactsManager.s_Instance._SampleContacts);
 #endif          
             SelectionPanelClick("Contacts");
         }

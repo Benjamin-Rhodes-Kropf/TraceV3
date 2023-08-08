@@ -7,11 +7,12 @@ using VoxelBusters.EssentialKit;
 
 public class NativeContactsManager : MonoBehaviour
 {
+    public List<SampleContacts> _SampleContacts;
+
     private Action<IAddressBookContact[]> OnSuccessfullyReadContacts;
     private Action<string> OnFailedReadContacts;
-
+    
     public static NativeContactsManager s_Instance;
-
 
     private void Awake()
     {
@@ -21,7 +22,6 @@ public class NativeContactsManager : MonoBehaviour
 
     public void LoadUserContacts(Action<IAddressBookContact[]> OnSuccess, Action<string> OnFailed)
     {
-        
         // Reset Callbacks
         OnSuccessfullyReadContacts = null;
         OnFailedReadContacts = null;
@@ -71,4 +71,11 @@ public class NativeContactsManager : MonoBehaviour
             OnFailedReadContacts("Request to read contacts failed with error. Error: " + error);
         }
     }
+}
+[System.Serializable]
+public class SampleContacts
+{
+    public string _name;
+    public string _phone;
+    public Texture2D _profilePicture;
 }
