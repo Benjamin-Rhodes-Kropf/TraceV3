@@ -57,19 +57,17 @@ public static class HelperMethods
         // Matches various phone numbers: with/without spaces, hyphens, brackets, or country codes.
         
         //todo: uncomment this
-        // Regex regex = new Regex(@"^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$");
-        // List<String> phoneNumbers = new List<String>();
-        //
-        // foreach (string user in usersToSendTrace)
-        // {
-        //     if (regex.IsMatch(user))
-        //     {
-        //         phoneNumbers.Add(user);
-        //     }
-        // }
-
+        Regex regex = new Regex(@"^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$");
         List<String> phoneNumbers = new List<String>();
-        phoneNumbers.Add("+16176377804");
+        
+        foreach (string user in usersToSendTrace)
+        {
+            if (regex.IsMatch(user))
+            {
+                phoneNumbers.Add(user);
+            }
+        }
+        
         return phoneNumbers;
     }
     
