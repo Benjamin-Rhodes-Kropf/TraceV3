@@ -114,12 +114,10 @@ namespace CanvasManagers
                 }
             }
         }
-
-
-
+        
         private void SearchUsersInDB(string inputText)
         {
-            UserDataManager.Instance.GetAllUsersBySearch(inputText, out List<UserModel> friends, out List<UserModel> requests,out List<UserModel> requestsSent, out List<UserModel> others);
+            UserDataManager.Instance.GetAllUsersBySearch(inputText, out List<UserModel> friends, out List<UserModel> requests,out List<UserModel> requestsSent, out List<UserModel> others, out List<UserModel> superusers);
             TryGetContactsByName(inputText.ToLower(), out List<IAddressBookContact> contacts);
             switch (_CurrentSelectedUserTab)
             {
@@ -144,6 +142,12 @@ namespace CanvasManagers
                     PopulateContactViews(contacts);
                     PopulateOtherUsers(others,friends,requests,requestsSent);
                     break;
+            }
+            
+            //Debug super users Later we will put into list
+            foreach (var user in superusers)
+            {
+                Debug.Log(user.name);
             }
         }
         

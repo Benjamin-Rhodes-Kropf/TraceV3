@@ -7,7 +7,8 @@ using UnityEngine;
 public class AlgoliaManager : MonoBehaviour
 {
     private SearchClient client;
-    private SearchIndex index;
+    private SearchIndex indexUsers;
+    private SearchIndex indexSuperUsers;
     public static AlgoliaManager instance;
     
     
@@ -20,14 +21,17 @@ public class AlgoliaManager : MonoBehaviour
     private void InitAlgolia()
     {
         instance = this;
+        
+        //search normal users
         client = new SearchClient("Q324B39BS7", "f5c161e91e27b4bd94cdf05a5bd53ef4");
-        index = client.InitIndex("users");
+        indexUsers = client.InitIndex("users");
+        indexSuperUsers = client.InitIndex("superusers");
     }
     
 
     public List<UserModel> SearchUser(string parameter)
     {
-        var result  =  index.Search<UserModel>(new Query(parameter));
+        var result  =  indexUsers.Search<UserModel>(new Query(parameter));
         
         // //filter current user out of search request
         List<UserModel> filteredResult = new List<UserModel>();
@@ -65,6 +69,53 @@ public class AlgoliaManager : MonoBehaviour
 
              filteredResult.Add( result.Hits[i]);
              i++;
+        }
+        
+        return filteredResult;
+    }
+    
+    public List<UserModel> SearchSuperUser(string parameter)
+    {
+        var result  =  indexSuperUsers.Search<UserModel>(new Query(parameter));
+        
+        Debug.Log("Result Count" + result.Hits.Count);
+        // //filter current user out of search request
+        List<UserModel> filteredResult = new List<UserModel>();
+        
+        //check if user exists in other lists
+        int i = 0;
+        foreach (var userID in result.Hits)
+        {
+            var objID = userID.objectID;
+            
+            //check if user exists locally in other capacity
+            if (isUserThisUser(objID))
+            {
+                i++;
+                continue;
+            }
+    
+            if (isUserFriend(objID))
+            {
+                i++;
+                continue;
+            }
+    
+            if (isUserRequestSent(objID))
+            {
+                i++;
+                continue;
+            }
+    
+            if (isUserRequestRecived(objID))
+            {
+                i++;
+                continue;
+            }
+    
+            filteredResult.Add( result.Hits[i]);
+            Debug.Log("adding filtered result:" + result.Hits[i].name);
+            i++;
         }
         
         return filteredResult;

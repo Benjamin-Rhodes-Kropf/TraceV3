@@ -28,6 +28,13 @@ public class UserDataManager
         selectedUsers = AlgoliaManager.instance.SearchUser(name);
         return selectedUsers;
     }
+    public List<UserModel> GetSuperUsersByLetters(string name)
+    {
+        List<UserModel> selectedUsers = new List<UserModel>();
+        selectedUsers = AlgoliaManager.instance.SearchSuperUser(name);
+        Debug.Log("Number Of Super:" + selectedUsers.Count);
+        return selectedUsers;
+    }
     public bool IsUsernameAvailable(string userName)
     {
         var users = GetUsersByLetters(userName); //todo: this is why a lot of usernames are not available because the letters are similar
@@ -146,17 +153,19 @@ public class UserDataManager
         }
         return selectedUsers;
     }
-    public void GetAllUsersBySearch(string name, out List<UserModel> friends, out List<UserModel> requests, out List<UserModel> requestsSent, out List<UserModel> others)
+    public void GetAllUsersBySearch(string name, out List<UserModel> friends, out List<UserModel> requests, out List<UserModel> requestsSent, out List<UserModel> others, out List<UserModel> superusers)
     {
         friends = new List<UserModel>();
         requests = new List<UserModel>();
+        superusers = new List<UserModel>();
         requestsSent = new List<UserModel>();
         others = new List<UserModel>();
-
+        
         friends = GetFriendsByNameOld(name);
         requests = GetRequestsByNameOld(name);
         requestsSent = GetRequestsByNameOld(name, false);
         others = GetUsersByLetters(name);
+        superusers = GetSuperUsersByLetters(name);
         
         foreach (var user in others)
         {

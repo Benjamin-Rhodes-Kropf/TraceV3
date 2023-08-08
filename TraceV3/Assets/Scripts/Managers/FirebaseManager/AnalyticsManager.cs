@@ -57,20 +57,20 @@ public partial class FbManager
     }
     public void AnalyticsSetBatchNumber(string batchNumber)
     {
-        Debug.Log("Analytics: AnalyticsSetBatchNumber");
-        Debug.Log("batchNumber:" + batchNumber);
+        //Debug.Log("Analytics: AnalyticsSetBatchNumber");
+        //Debug.Log("batchNumber:" + batchNumber);
         FirebaseAnalytics.SetUserProperty("batch_number",batchNumber.ToString());
     }
     public void AnalyticsSetTracesReceived(string tracesReceived)
     {
-        Debug.Log("Analytics: AnalyticsSetTracesReceived");
-        Debug.Log("tracesReceived:" + tracesReceived);
+        //Debug.Log("Analytics: AnalyticsSetTracesReceived");
+        //Debug.Log("tracesReceived:" + tracesReceived);
         FirebaseAnalytics.SetUserProperty("traces_received",tracesReceived.ToString());
     }
     public void AnalyticsSetTracesSent(string tracesSent)
     {
-        Debug.Log("Analytics: AnalyticsSetTracesReceived");
-        Debug.Log("tracesReceived:" + tracesSent);
+        //Debug.Log("Analytics: AnalyticsSetTracesReceived");
+        //Debug.Log("tracesReceived:" + tracesSent);
         FirebaseAnalytics.SetUserProperty("traces_sent",tracesSent.ToString());
     }
     
