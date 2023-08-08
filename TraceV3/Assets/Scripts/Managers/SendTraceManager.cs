@@ -55,6 +55,11 @@ public class SendTraceManager : MonoBehaviour
     {
         Debug.Log("SEND TRACE!");
         location = _onlineMapsLocationService.GetUserLocation();
+        if (selectedRadius == 0)
+        {
+            Debug.Log("Selected Radius Set Wrong");
+            selectedRadius = 0.4f;
+        }
         FbManager.instance.UploadTrace(fileLocation, selectedRadius, location, mediaType,usersToSendTrace);
         FbManager.instance.AnalyticsOnSendTrace(usersToSendTrace.Count, videoLength, camFlippedCount);
         SendLocalNotification("Sending Trace", "hang on while we upload it!", 1f);
