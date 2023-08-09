@@ -16,7 +16,8 @@ public class UserView : MonoBehaviour
         Remove,
         Cancel,
         Accept,
-        Follow
+        Follow,
+        UnFollow
     }
 
     [SerializeField] private RawImage _profilePic;
@@ -29,12 +30,10 @@ public class UserView : MonoBehaviour
     [SerializeField] private Button _bestFriendButton;
     [SerializeField] private Color[] _colors;
     [SerializeField] private Sprite[] _heartSprite;
-
+    
+    private FriendModel.RelationShipType _relationShipType;
     private string _uid = "";
-    private bool isBestFriend = false;
-    private bool isFriend = false;
-    private bool isSuperUser = false;
-
+    
     public string friendUID {
         get
         {
@@ -63,42 +62,49 @@ public class UserView : MonoBehaviour
     
     public void UpdateFriendData(UserModel user, FriendModel.RelationShipType relationShipType)
     {
-        //todo: make switch case for relationship type
-        switch (relationShipType)
-        {
-            case FriendModel.RelationShipType.Friend:
-                this.isFriend = true;
-                break;
-            case FriendModel.RelationShipType.BestFriend:
-                this.isFriend = true;
-                this.isBestFriend = true;
-                break;
-            case FriendModel.RelationShipType.Following:
-                this.isSuperUser = true;
-                break;
-            case FriendModel.RelationShipType.User:
-                //nothing here because it is only for friends or people the user follows
-                break;
-            case FriendModel.RelationShipType.SuperUser:
-                this.isSuperUser = true;
-                //nothing here because it is only for friends or people the user follows
-                break;
-        }
-
         _userCoroutine = user._downloadPCoroutine;
         _userName.text = user.username;
         _nickName.text = user.name;
         _uid = user.ID;
         FriendButtonType buttonType = FriendButtonType.Add;
-        buttonType = isFriend ? FriendButtonType.Remove : FriendButtonType.Add;
+        
+        //todo: make switch case for relationship type
+        switch (relationShipType)
+        {
+            case FriendModel.RelationShipType.Friend:
+                buttonType = FriendButtonType.Remove;
+                _bestFriend.sprite = _heartSprite[0];
+                _bestFriendButton.gameObject.SetActive(true);
+                _addRemoveButton.onClick.AddListener(RemoveFriends);
+                break;
+            case FriendModel.RelationShipType.BestFriend:
+                buttonType = FriendButtonType.Remove;
+                _bestFriend.sprite = _heartSprite[1];
+                _bestFriendButton.gameObject.SetActive(true);
+                _addRemoveButton.onClick.AddListener(RemoveFriends);
+                break;
+            case FriendModel.RelationShipType.Following:
+                buttonType = FriendButtonType.UnFollow; ;
+                _bestFriendButton.gameObject.SetActive(false);
+                //_addRemoveButton.onClick.AddListener(RemoveFollowing);
+                break;
+            case FriendModel.RelationShipType.User:
+                buttonType = FriendButtonType.Add;
+                _bestFriendButton.gameObject.SetActive(false);
+                _addRemoveButton.onClick.AddListener(SendFriendRequest);
+                break;
+            case FriendModel.RelationShipType.SuperUser:
+                buttonType = FriendButtonType.Follow;
+                _bestFriendButton.gameObject.SetActive(false);
+                //_addRemoveButton.onClick.AddListener(AddFollowing);
+                break;
+        }
         var buttonData = GetButtonData(buttonType);
+        
         _buttonBackground.color = _colors[buttonData.colorIndex];
         _buttonText.text = buttonData.buttonText;
-        _bestFriend.sprite = isBestFriend ? _heartSprite[0] : _heartSprite[1];
-        _bestFriendButton.gameObject.SetActive(isFriend);
         _bestFriendButton.onClick.RemoveAllListeners();
         _addRemoveButton.onClick.RemoveAllListeners();
-        _addRemoveButton.onClick.AddListener(isFriend ? RemoveFriends :  SendFriendRequest);
         _bestFriendButton.onClick.AddListener(OnBestFriendButtonClick);
 
         var persistentData = PersistentStorageHandler.s_Instance.GetTextureFromPersistentStorage("friends", _uid);
@@ -121,8 +127,6 @@ public class UserView : MonoBehaviour
         {
             _profilePic.texture = persistentData.texture;
         }
-        
-        
     }
 
     IEnumerator SaveToPersistentStorage(Texture2D texture2D)
@@ -145,6 +149,8 @@ public class UserView : MonoBehaviour
                 return ("Cancel", 2);
             case FriendButtonType.Follow:
                 return ("Follow", 3);
+            case FriendButtonType.UnFollow:
+                return ("UnFollow", 4);
             default:
                 return ("Add", 0);
         }
@@ -202,22 +208,41 @@ public class UserView : MonoBehaviour
 
     private void OnBestFriendButtonClick()
     {
-        if (isFriend is false)
+        if (!(_relationShipType == FriendModel.RelationShipType.Friend || _relationShipType == FriendModel.RelationShipType.BestFriend))
             return;
         _bestFriendButton.interactable = false;
-        StartCoroutine(FbManager.instance.SetBestFriend(friendUID, !isBestFriend, (isSuccess) =>
+        if (_relationShipType == FriendModel.RelationShipType.Friend)
         {
-            if (isSuccess)
+            StartCoroutine(FbManager.instance.SetBestFriend(friendUID, true, (isSuccess) =>
             {
-                isBestFriend = !isBestFriend;
-                _bestFriend.sprite = isBestFriend ? _heartSprite[0] : _heartSprite[1];
-                FriendsModelManager.Instance.SetBestFriend(friendUID, isBestFriend);
-                TraceManager.instance.UpdateMap(new Vector2(0,0));
-                FbManager.instance.AnalyticsOnHeartFriend(friendUID);
-            }
+                if (isSuccess)
+                {
+                    _relationShipType = FriendModel.RelationShipType.BestFriend;
+                    _bestFriend.sprite = _heartSprite[1];
+                    FriendsModelManager.Instance.SetBestFriend(friendUID, true);
+                    TraceManager.instance.UpdateMap(new Vector2(0,0));
+                    FbManager.instance.AnalyticsOnHeartFriend(friendUID);
+                }
+                _bestFriendButton.interactable = true;
+            }));
+            return;
+        }
 
-            _bestFriendButton.interactable = true;
-        }));
+        if (_relationShipType == FriendModel.RelationShipType.BestFriend)
+        {
+            StartCoroutine(FbManager.instance.SetBestFriend(friendUID, false, (isSuccess) =>
+            {
+                if (isSuccess)
+                {
+                    _relationShipType = FriendModel.RelationShipType.Friend;
+                    _bestFriend.sprite = _heartSprite[0];
+                    FriendsModelManager.Instance.SetBestFriend(friendUID, false);
+                    TraceManager.instance.UpdateMap(new Vector2(0,0));
+                    FbManager.instance.AnalyticsOnHeartFriend(friendUID);
+                }
+                _bestFriendButton.interactable = true;
+            }));
+            return;
+        }
     }
-   
 }
