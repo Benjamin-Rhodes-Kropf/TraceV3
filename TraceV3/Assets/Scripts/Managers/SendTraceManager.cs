@@ -63,7 +63,7 @@ public class SendTraceManager : MonoBehaviour
         FbManager.instance.UploadTrace(fileLocation, selectedRadius, location, mediaType,usersToSendTrace);
         FbManager.instance.AnalyticsOnSendTrace(usersToSendTrace.Count, videoLength, camFlippedCount);
         SendLocalNotification("Sending Trace", "hang on while we upload it!", 1f);
-        Debug.Log("SEND SMS");
+        Debug.Log("Send Trace:SMS");
         SendBulkSMS.Instance.SendTraceSMS(HelperMethods.GetPhoneNumbersFromList(usersToSendTrace), new Vector2(location.y, location.x));
     }
     

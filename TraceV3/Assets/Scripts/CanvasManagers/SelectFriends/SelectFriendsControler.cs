@@ -303,6 +303,7 @@ public class SelectFriendsControler : MonoBehaviour
         {
             if (user.Value) //is selected to send to
             {
+                Debug.Log("SendTrace: adding user to users to send to:" + user.Key);
                 SendTraceManager.instance.usersToSendTrace.Add(user.Key);
             }
         }
