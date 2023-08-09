@@ -15,12 +15,12 @@ public class UserModel
     public string phone;
     public string photo;
     public string password;
+    public bool issuperuser;
 
     public string ID => string.IsNullOrEmpty(userID) ? objectID : userID; //todo: we dont use this anymore but the workaround is bad see below
-    
     private Sprite profilePicture = null;
     public Coroutine _downloadPCoroutine;
-    
+
     public void ProfilePicture(Action<Sprite> callback)
     {
         if (profilePicture == null)
@@ -96,7 +96,7 @@ public class UserModel
         
     }
     
-    public UserModel(string userId, string email, string name, string username, string phone, string photo, string password = "")
+    public UserModel(string userId, string email, string name, string username, string phone, string photo, bool issuperuser, string password = "")
     {
         Debug.Log("Creating New User Model:" + userId + ", " + email + ", " + name + ", " + username + ", " + phone + ", " + photo);
         this.userID = userId;
@@ -105,6 +105,7 @@ public class UserModel
         this.username = username;
         this.phone = phone;
         this.photo = photo;
+        this.issuperuser = issuperuser;
         this.password = password;
     }
 }

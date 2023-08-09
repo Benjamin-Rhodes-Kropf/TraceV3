@@ -13,6 +13,7 @@ public partial class FbManager
     public List<FriendRequests> _allSentRequests;
     public List<FriendModel> _allFriends;
 
+
     #region Continues Listners
     private void HandleReceivedFriendRequest(object sender, ChildChangedEventArgs args)
     {
@@ -136,7 +137,6 @@ public partial class FbManager
     
     private void HandleFriends(object sender, ChildChangedEventArgs args)
     {
-        Debug.Log("HandleFriends");
         if (args.Snapshot == null || args.Snapshot.Value == null) return;
 
         try
@@ -145,16 +145,27 @@ public partial class FbManager
             {
                 var friendId = args.Snapshot.Key.ToString();
                 if (string.IsNullOrEmpty(friendId)) return;
-                bool bestFriend = false;
                 
-                bestFriend = Convert.ToBoolean(args.Snapshot.Value);
+                //get relationship
+                string relationship = args.Snapshot.Value.ToString();
+                FriendModel.RelationShipType relationShipType = FriendModel.RelationShipType.Friend;
+                if (relationship == "True")
+                {
+                    relationShipType = FriendModel.RelationShipType.BestFriend;
+                }else if(relationship == "False")
+                {
+                    relationShipType = FriendModel.RelationShipType.Friend;
+                }else if (relationship == "Following")
+                {
+                    relationShipType = FriendModel.RelationShipType.Following;
+                }
+                
                 var friend = new FriendModel
                 {
                     friendID = friendId,
-                    isBestFriend = bestFriend
+                    relationship = relationShipType
                 };
                 
-                Debug.Log("Add Friend:" + friend.friendID);
                 _allFriends.Add(friend);
                 AddUserToLocalDbByID(friendId);
                 AnalyticsSetUserFriendCount(_allFriends.Count);
@@ -354,7 +365,16 @@ public partial class FbManager
             string username = snapshot.Child("username").Value.ToString();
             string phoneNumber = snapshot.Child("phone").Value.ToString();
             string photoURL = snapshot.Child("photo").Value.ToString();
-            UserModel user = new UserModel(_firebaseUser.UserId, email, displayName, username, phoneNumber, photoURL);
+            
+            //get super user status
+            bool superuser = false;
+            var super = snapshot.Child("superuser");
+            if (super.Exists)
+            {
+                superuser = Convert.ToBoolean(snapshot.Child("superuser").ToString());
+            }
+            
+            UserModel user = new UserModel(_firebaseUser.UserId, email, displayName, username, phoneNumber, photoURL, superuser);
             callBack(user);
         }
 

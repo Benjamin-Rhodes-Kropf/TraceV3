@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
-public class FriendView : MonoBehaviour
+public class UserView : MonoBehaviour
 {
     
     public enum FriendButtonType
@@ -15,7 +15,8 @@ public class FriendView : MonoBehaviour
         Add,
         Remove,
         Cancel,
-        Accept
+        Accept,
+        Follow
     }
 
     [SerializeField] private RawImage _profilePic;
@@ -32,6 +33,8 @@ public class FriendView : MonoBehaviour
     private string _uid = "";
     private bool isBestFriend = false;
     private bool isFriend = false;
+    private bool isSuperUser = false;
+
     public string friendUID {
         get
         {
@@ -46,7 +49,6 @@ public class FriendView : MonoBehaviour
     {
         if (_userCoroutine != null)
             StopCoroutine(_userCoroutine);
-        // Release object references
         _profilePic.texture = null;
         _nickName = null;
         _userName = null;
@@ -58,29 +60,45 @@ public class FriendView : MonoBehaviour
         _colors = null;
         _heartSprite = null;
     }
-
-
-    public void UpdateFriendData(UserModel user, bool isFriendAdd = false, bool isBestOne = false)
+    
+    public void UpdateFriendData(UserModel user, FriendModel.RelationShipType relationShipType)
     {
-        isFriend = isFriendAdd;
-        isBestFriend = isBestOne;
-        
-        
+        //todo: make switch case for relationship type
+        switch (relationShipType)
+        {
+            case FriendModel.RelationShipType.Friend:
+                this.isFriend = true;
+                break;
+            case FriendModel.RelationShipType.BestFriend:
+                this.isFriend = true;
+                this.isBestFriend = true;
+                break;
+            case FriendModel.RelationShipType.Following:
+                this.isSuperUser = true;
+                break;
+            case FriendModel.RelationShipType.User:
+                //nothing here because it is only for friends or people the user follows
+                break;
+            case FriendModel.RelationShipType.SuperUser:
+                this.isSuperUser = true;
+                //nothing here because it is only for friends or people the user follows
+                break;
+        }
+
         _userCoroutine = user._downloadPCoroutine;
         _userName.text = user.username;
         _nickName.text = user.name;
         _uid = user.ID;
         FriendButtonType buttonType = FriendButtonType.Add;
-        buttonType = isFriendAdd ? FriendButtonType.Remove : FriendButtonType.Add;
+        buttonType = isFriend ? FriendButtonType.Remove : FriendButtonType.Add;
         var buttonData = GetButtonData(buttonType);
         _buttonBackground.color = _colors[buttonData.colorIndex];
         _buttonText.text = buttonData.buttonText;
         _bestFriend.sprite = isBestFriend ? _heartSprite[0] : _heartSprite[1];
-        _bestFriendButton.gameObject.SetActive(isFriendAdd);
+        _bestFriendButton.gameObject.SetActive(isFriend);
         _bestFriendButton.onClick.RemoveAllListeners();
         _addRemoveButton.onClick.RemoveAllListeners();
-        
-        _addRemoveButton.onClick.AddListener(isFriendAdd ? RemoveFriends :  SendFriendRequest);
+        _addRemoveButton.onClick.AddListener(isFriend ? RemoveFriends :  SendFriendRequest);
         _bestFriendButton.onClick.AddListener(OnBestFriendButtonClick);
 
         var persistentData = PersistentStorageHandler.s_Instance.GetTextureFromPersistentStorage("friends", _uid);
@@ -125,6 +143,8 @@ public class FriendView : MonoBehaviour
                 return ("Remove", 1);
             case FriendButtonType.Cancel:
                 return ("Cancel", 2);
+            case FriendButtonType.Follow:
+                return ("Follow", 3);
             default:
                 return ("Add", 0);
         }

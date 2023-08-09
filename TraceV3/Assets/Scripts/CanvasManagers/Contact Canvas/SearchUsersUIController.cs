@@ -37,10 +37,10 @@ namespace CanvasManagers
             var text = GameObject.Instantiate(_view._searchTabTextPrefab, _view._searchscrollParent);
             text.text = "Friends";
             searchList.Add(text.gameObject);
-            foreach (var friend in friends)
+            foreach (var user in friends)
             {
-                var view = GameObject.Instantiate(_view.friendViewPrefab, _view._searchscrollParent);
-                view.UpdateFriendData(friend,true, FriendsModelManager.Instance.IsBestFriend(friend.userID));
+                var view = GameObject.Instantiate(_view.userViewPrefab, _view._searchscrollParent);
+                view.UpdateFriendData(user,FriendsModelManager.Instance.GetRelationShipType(user.userID));
                 searchList.Add(view.gameObject);
             }
         }
@@ -77,7 +77,6 @@ namespace CanvasManagers
             }
         }
 
-
         private void PopulateContactViews(List<IAddressBookContact> contacts)
         {
             if (contacts.Count > 0)
@@ -93,9 +92,8 @@ namespace CanvasManagers
                 }
             }
         }
-
-
-        private void PopulateOtherUsers(List<UserModel> others,List<UserModel> friends,List<UserModel> requests,List<UserModel> requestsSent )
+        
+        private void PopulateOtherUsers(List<UserModel> others,List<UserModel> relationships,List<UserModel> requests,List<UserModel> requestsSent)
         {
             if (others.Count > 0)
             {
@@ -104,12 +102,16 @@ namespace CanvasManagers
                 searchList.Add(text.gameObject);
                 foreach (var other in others)
                 {
-                    if (friends.Contains(other)) continue;
+                    if (relationships.Contains(other)) continue;
                     if (requestsSent.Contains(other)) continue;
                     if (requests.Contains(other)) continue;
                     if (other.userID == FbManager.instance.thisUserModel.userID) continue;
-                    var view = GameObject.Instantiate(_view.friendViewPrefab, _view._searchscrollParent);
-                    view.UpdateFriendData(other);
+                    var view = GameObject.Instantiate(_view.userViewPrefab, _view._searchscrollParent);
+                    if(other.issuperuser)
+                        view.UpdateFriendData(other, FriendModel.RelationShipType.SuperUser);
+                    else
+                        view.UpdateFriendData(other, FriendModel.RelationShipType.User);
+                        
                     searchList.Add(view.gameObject);
                 }
             }
@@ -117,30 +119,30 @@ namespace CanvasManagers
         
         private void SearchUsersInDB(string inputText)
         {
-            UserDataManager.Instance.GetAllUsersBySearch(inputText, out List<UserModel> friends, out List<UserModel> requests,out List<UserModel> requestsSent, out List<UserModel> others, out List<UserModel> superusers);
+            UserDataManager.Instance.GetAllUsersBySearch(inputText, out List<UserModel> relationships, out List<UserModel> requests,out List<UserModel> requestsSent, out List<UserModel> others, out List<UserModel> superusers);
             TryGetContactsByName(inputText.ToLower(), out List<IAddressBookContact> contacts);
             switch (_CurrentSelectedUserTab)
             {
                 case UserTabs.Contacts:
                     PopulateContactViews(contacts);
-                    PopulateFriendViews(friends);
+                    PopulateFriendViews(relationships);
                     PopulateReceivedRequests(requests);
                     PopulateSentRequests(requestsSent);
-                    PopulateOtherUsers(others,friends,requests,requestsSent);
+                    PopulateOtherUsers(others,relationships,requests,requestsSent);
                     break;
                 case UserTabs.Friends:
-                    PopulateFriendViews(friends);
+                    PopulateFriendViews(relationships);
                     PopulateReceivedRequests(requests);
                     PopulateSentRequests(requestsSent);
                     PopulateContactViews(contacts);
-                    PopulateOtherUsers(others,friends,requests,requestsSent);
+                    PopulateOtherUsers(others,relationships,requests,requestsSent);
                     break;
                 case UserTabs.Requests:
                     PopulateReceivedRequests(requests);
                     PopulateSentRequests(requestsSent);
-                    PopulateFriendViews(friends);
+                    PopulateFriendViews(relationships);
                     PopulateContactViews(contacts);
-                    PopulateOtherUsers(others,friends,requests,requestsSent);
+                    PopulateOtherUsers(others,relationships,requests,requestsSent);
                     break;
             }
             

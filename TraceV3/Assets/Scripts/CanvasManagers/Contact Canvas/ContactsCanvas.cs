@@ -11,12 +11,12 @@ namespace CanvasManagers
 {
     public class ContactsCanvas : MonoBehaviour
     {
-        public FriendView friendViewPrefab;
+        public UserView userViewPrefab;
         public TMP_InputField _usernameInput;
         public TMP_Text _numberOfFriendsCountTitle;
         public TMP_Text _numberOfFriendsCountScroll;
         public Transform _displayFrindsParent;
-        public List<FriendView> _friendsList;
+        public List<UserView> _friendsList;
 
         [Header("Contacts Info")] 
         public ContactView _contactPrfab;

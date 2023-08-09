@@ -271,7 +271,7 @@ namespace CanvasManagers
             _allRequests.Add(view);
         }
 
-        private List<FriendView> _allFriendsView;
+        private List<UserView> _allFriendsView;
 
         public void UpdateFriendsLayout()
         {
@@ -286,23 +286,23 @@ namespace CanvasManagers
 
         private void LoadAllFriends()
         {
-            var users = UserDataManager.Instance.GetAllFriends();
+            var friends = UserDataManager.Instance.GetAllFriends();
             Debug.Log("Update Layout Called");
             ClearFriendsView();
             
-            _view._numberOfFriendsCountTitle.text = $"{users.Count} Friends";
-            _view._numberOfFriendsCountScroll.text = $"My Friends ({users.Count})";
-            _allFriendsView = new List<FriendView>();
+            _view._numberOfFriendsCountTitle.text = $"{friends.Count} Friends";
+            _view._numberOfFriendsCountScroll.text = $"My Friends ({friends.Count})";
+            _allFriendsView = new List<UserView>();
             
-            foreach (var user in users)
+            foreach (var user in friends)
                 UpdateFriendViewInfo(user);
         }
 
 
         private void UpdateFriendViewInfo(UserModel user)
         {
-            FriendView view = GameObject.Instantiate(_view.friendViewPrefab, _view._displayFrindsParent);
-            view.UpdateFriendData(user,true, FriendsModelManager.Instance.IsBestFriend(user.userID));
+            UserView view = GameObject.Instantiate(_view.userViewPrefab, _view._displayFrindsParent);
+            view.UpdateFriendData(user,FriendsModelManager.Instance.GetRelationShipType(user.userID));
             _allFriendsView.Add(view);
         }
         private void ClearFriendsView()

@@ -354,7 +354,7 @@ public class TraceManager : MonoBehaviour
                         }
                         else
                         {
-                            if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).isBestFriend)
+                            if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).relationship == FriendModel.RelationShipType.BestFriend)
                             {
                                 traceObject.marker = drawTraceOnMap.DrawCirlce(traceObject.lat, traceObject.lng, (traceObject.radius), DrawTraceOnMap.TraceType.RECEIVEDBESTFRIEND, traceObject.id);
                             }

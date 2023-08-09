@@ -33,6 +33,10 @@ public class UserDataManager
         List<UserModel> selectedUsers = new List<UserModel>();
         selectedUsers = AlgoliaManager.instance.SearchSuperUser(name);
         Debug.Log("Number Of Super:" + selectedUsers.Count);
+        foreach (var superuser in selectedUsers)
+        {
+            superuser.issuperuser = true;
+        }
         return selectedUsers;
     }
     public bool IsUsernameAvailable(string userName)
@@ -124,7 +128,7 @@ public class UserDataManager
     }
     public List<UserModel> GetAllFriends()
     {
-        List<UserModel> users = new List<UserModel>();
+        List<UserModel> friends = new List<UserModel>();
         foreach (var friendModel in FbManager.instance._allFriends)
         {
             var _userSearchQuery =
@@ -132,10 +136,18 @@ public class UserDataManager
                 where string.Equals(user.userID, friendModel.friendID, StringComparison.Ordinal)
                 select user;
                 
-            users.AddRange(_userSearchQuery.ToArray());
+            friends.AddRange(_userSearchQuery.ToArray());
         }
+        return friends;
+    }
+
+    public List<UserModel> GetAllFollowedSuperUsers()
+    {
+        List<UserModel> users = new List<UserModel>();
+        //todo: return all followed super users
         return users;
     }
+    
     public List<UserModel> GetFriendsByNameOld(string name)
     {
         var users = GetAllFriends();
@@ -166,6 +178,12 @@ public class UserDataManager
         requestsSent = GetRequestsByNameOld(name, false);
         others = GetUsersByLetters(name);
         superusers = GetSuperUsersByLetters(name);
+
+        //add superusers to be in the others list but display diffrently
+        foreach (var superuser in superusers)
+        {
+            others.Add(superuser);
+        }
         
         foreach (var user in others)
         {

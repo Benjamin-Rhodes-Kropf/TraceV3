@@ -33,7 +33,7 @@ public class SelectFriendsControler : MonoBehaviour
         var users = UserDataManager.Instance.GetAllFriends();
         foreach (var user in users)
         {
-            bool isBestFriend = FriendsModelManager.Instance.IsBestFriend(user.userID);
+            bool isBestFriend = FriendsModelManager.Instance.GetRelationShipType(user.userID) == FriendModel.RelationShipType.BestFriend;
             if (isBestFriend) numOfBestFriends++;
             try
             {
@@ -118,7 +118,7 @@ public class SelectFriendsControler : MonoBehaviour
         var users = UserDataManager.Instance.GetFriendsByNameOld(inputText);
         foreach (var user in users)
         {
-            bool isBestFriend = FriendsModelManager.Instance.IsBestFriend(user.userID);
+            bool isBestFriend = FriendsModelManager.Instance.GetRelationShipType(user.userID) == FriendModel.RelationShipType.BestFriend;
             UpdateFriendViewInfo(user, isBestFriend);
         }
     }

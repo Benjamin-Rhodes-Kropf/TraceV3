@@ -51,7 +51,6 @@ public partial class FbManager : MonoBehaviour
     public Texture userImageTexture;
     public UserModel thisUserModel;
     public List<UserModel> users;
-
     private Dictionary<string, object> _firestoreData;
     
     public bool IsFirebaseUserInitialised
@@ -328,8 +327,17 @@ public partial class FbManager : MonoBehaviour
                 string username = snapshot.Child("username").Value.ToString();
                 string phone = snapshot.Child("phone").Value.ToString();
                 string photoURL = snapshot.Child("photo").Value.ToString();
+                
+                //get super user status
+                bool superuser = false;
+                var super = snapshot.Child("superuser");
+                if (super.Exists)
+                {
+                    superuser = Convert.ToBoolean(snapshot.Child("superuser").ToString());
+                }
+                
                 Debug.Log("Getting Curent User Data");
-                thisUserModel = new UserModel(_firebaseUser.UserId,email,displayName,username,phone,photoURL,password);
+                thisUserModel = new UserModel(_firebaseUser.UserId,email,displayName,username,phone,photoURL,superuser, password);
                 IsFirebaseUserInitialised = true;
                 Debug.Log("User Initialized");
             }

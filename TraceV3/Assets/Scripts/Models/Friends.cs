@@ -6,7 +6,16 @@ using System;
 [Serializable]
 public class FriendModel : IEquatable<FriendModel>
 {
-    public bool isBestFriend = false;
+    public enum RelationShipType
+    {
+        Friend,
+        BestFriend,
+        User,
+        SuperUser,
+        Following
+    }
+    
+    public RelationShipType relationship = RelationShipType.Friend;
     public string friendID;
     public bool Equals(FriendModel other)
     {

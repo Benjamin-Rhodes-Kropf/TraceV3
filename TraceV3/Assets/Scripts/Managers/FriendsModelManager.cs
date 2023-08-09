@@ -9,6 +9,11 @@ public class FriendsModelManager
 {
     private static FriendsModelManager instance = null;
 
+    private FriendsModelManager()
+    {
+        
+    }
+    
     public static FriendsModelManager Instance
     {
         get
@@ -18,10 +23,6 @@ public class FriendsModelManager
 
             return instance;
         }
-    }
-    private FriendsModelManager()
-    {
-        
     }
 
     public static FriendModel GetFriendModelByOtherFriendID(string otherFriend)
@@ -37,23 +38,9 @@ public class FriendsModelManager
         return friend;
     }
 
-    public bool IsAlreadyFriend(string otherFriend)
+    public FriendModel.RelationShipType GetRelationShipType(string id)
     {
-        try
-        {
-            Debug.Log("IsAlreadyFriend");
-            GetFriendModelByOtherFriendID(otherFriend);
-            return true;
-        }
-        catch
-        {
-            return false;
-        }        
-    }
-
-    public bool IsBestFriend(string id)
-    {
-        return GetFriendModelByOtherFriendID(id).isBestFriend;
+        return GetFriendModelByOtherFriendID(id).relationship;
     }
 
     public void SetBestFriend(string id, bool isBestFriend)
@@ -63,7 +50,10 @@ public class FriendsModelManager
         {
             if (FbManager.instance._allFriends[i].friendID.Equals(id))
             {
-                FbManager.instance._allFriends[i].isBestFriend = isBestFriend;
+                if(isBestFriend)
+                    FbManager.instance._allFriends[i].relationship = FriendModel.RelationShipType.BestFriend;
+                else
+                    FbManager.instance._allFriends[i].relationship = FriendModel.RelationShipType.Friend;
                 break;
             }
         }
