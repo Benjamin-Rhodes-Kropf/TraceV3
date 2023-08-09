@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using EnhancedUI.EnhancedScroller;
@@ -22,10 +23,8 @@ namespace EnhancedScrollerDemos.MultipleCellTypesDemo
         /// <summary>
         /// Links to the UI fields
         /// </summary>
-        public Text userNameText;
-        public Image userAvatarImage;
-        public Text userHighScoreText;
-
+        public SendToFriendView _view;
+        
         /// <summary>
         /// Override of the base class's SetData function. This links the data
         /// and updates the UI
@@ -38,11 +37,15 @@ namespace EnhancedScrollerDemos.MultipleCellTypesDemo
 
             // cast the data as rowData and store the reference
             _rowData = data as RowData;
-
-            // update the UI with the data fields
-            userNameText.text = _rowData.userName;
-            userAvatarImage.sprite = Resources.Load<Sprite>(_rowData.userAvatarSpritePath);
-            userHighScoreText.text = string.Format("{0:n0}", _rowData.userHighScore);
+            //Todo : Update UI Elements;
+            _view.UpdateUIElements(_rowData._userData, _rowData._index, UpdateSelectionStatus);
         }
+
+        private void UpdateSelectionStatus(bool isSelected)
+        {
+            Debug.Log("Username "+  _rowData._userData._textData + " :: Toggle Status ::"+ isSelected);
+            _rowData._userData._isSelected = isSelected;
+        }
+        
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using EnhancedScrollerDemos.MultipleCellTypesDemo;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,6 +11,9 @@ public class SelectFriendsCanvas : MonoBehaviour
 {
 
     [Header("Search Bar")] public TMP_InputField _searchBar;
+
+    [Header("Pagination Scroller")] public MultipleCellTypesDemo _enhanceScroller;
+    
     
     [Header("Friend Info")]
     public SendToFriendView friendViewPrefab;
@@ -22,6 +26,10 @@ public class SelectFriendsCanvas : MonoBehaviour
     [SerializeField] private GameObject bestFriendLine;
     [SerializeField] private GameObject bestFriendSpace;
     [SerializeField] private Transform allFriendText;
+    [SerializeField] private Transform contactsText;
+
+
+    public GameObject _enhanceScroll;
     
     //visuals
     public bool selectAllFriends = true;
@@ -41,6 +49,7 @@ public class SelectFriendsCanvas : MonoBehaviour
             _controller = gameObject.AddComponent<SelectFriendsControler>();
             _controller.bestFriendText = bestFriendText;
             _controller.allFriendsText = allFriendText;
+            _controller.contactsText = contactsText;
         }
         selectAllFriends = true;
         _controller.Init(this);
@@ -87,43 +96,45 @@ public class SelectFriendsCanvas : MonoBehaviour
     public void ToggleAllFriends()
     {
         selectAllFriends = !selectAllFriends;
-        if (selectAllFriends)
-        {
-            foreach (var friendObject in _friendsList)
-            {
-                friendObject.SetToggleState(true);
-            }
-            toggleBestFriends = true;
-        }else {
-            foreach (var friendObject in _friendsList)
-            {
-                friendObject.SetToggleState(false);
-            }
-            toggleBestFriends = false;
-        }
+        _controller.SelectAllFriends(selectAllFriends);
+        // if (selectAllFriends)
+        // {
+        //     foreach (var friendObject in _friendsList)
+        //     {
+        //         friendObject.SetToggleState(true);
+        //     }
+        //     toggleBestFriends = true;
+        // }else {
+        //     foreach (var friendObject in _friendsList)
+        //     {
+        //         friendObject.SetToggleState(false);
+        //     }
+        //     toggleBestFriends = false;
+        // }
     }
     
     public void ToggleBestFriends()
     {
         toggleBestFriends = !toggleBestFriends;
-        if (toggleBestFriends)
-        {
-            foreach (var friendObject in _friendsList)
-            {
-                if (friendObject._isBestFriend)
-                {
-                    friendObject.SetToggleState(true);
-                }
-            }
-        }else {
-            foreach (var friendObject in _friendsList)
-            {
-                if (friendObject._isBestFriend)
-                {
-                    friendObject.SetToggleState(false);
-                }
-            }
-        }
+        _controller.SelectBestFriends(toggleBestFriends);
+        // if (toggleBestFriends)
+        // {
+        //     foreach (var friendObject in _friendsList)
+        //     {
+        //         if (friendObject._isBestFriend)
+        //         {
+        //             friendObject.SetToggleState(true);
+        //         }
+        //     }
+        // }else {
+        //     foreach (var friendObject in _friendsList)
+        //     {
+        //         if (friendObject._isBestFriend)
+        //         {
+        //             friendObject.SetToggleState(false);
+        //         }
+        //     }
+        // }
     }
     
     //load map before screen switch

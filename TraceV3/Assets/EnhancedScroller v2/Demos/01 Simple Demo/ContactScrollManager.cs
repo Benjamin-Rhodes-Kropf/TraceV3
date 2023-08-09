@@ -58,7 +58,7 @@ namespace EnhancedScrollerDemos.SuperSimpleDemo
         /// <summary>
         /// Populates the data with a lot of records
         /// </summary>
-        public void LoadLargeData(IAddressBookContact[] contacts= null, List<Contact> _testContacts = null)
+        public void LoadLargeData(IAddressBookContact[] contacts= null, List<SampleContacts> _testContacts = null)
         {
             if (contacts == null && _testContacts == null)
                 return;
@@ -74,9 +74,9 @@ namespace EnhancedScrollerDemos.SuperSimpleDemo
                 _data.Add(new Data()
                 {
                     _Contact = null,
-                    _Texture = contact.profile,
-                    _ContactNumber = contact.phoneNumber,
-                    _Name = contact.givenName
+                    _Texture = contact._profilePicture,
+                    _ContactNumber = contact._phone,
+                    _Name = contact._name
                 });
             }     
   #elif UNITY_IPHONE

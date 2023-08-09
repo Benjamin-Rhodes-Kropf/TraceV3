@@ -5,6 +5,8 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using Unity.VisualScripting;
 using UnityEngine;
+using VoxelBusters.CoreLibrary;
+using VoxelBusters.EssentialKit;
 
 public class NativeMethodsManager
 {
@@ -19,4 +21,7 @@ public class NativeMethodsManager
         if (permission == NativeGallery.Permission.Granted)
             NativeGallery.GetImageFromGallery(callback);
     }
+
+
+    
 }
