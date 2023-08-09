@@ -23,6 +23,8 @@ public class SendTraceManager : MonoBehaviour
     public string fileLocation;
     public MediaType mediaType;
     public List<String> usersToSendTrace;
+    public List<String> phonesToSendTrace;
+
 
     [Header("Analytics Values")] 
     public float videoLength;
@@ -60,18 +62,16 @@ public class SendTraceManager : MonoBehaviour
             Debug.Log("Selected Radius Set Wrong");
             selectedRadius = 0.4f;
         }
-        FbManager.instance.UploadTrace(fileLocation, selectedRadius, location, mediaType,usersToSendTrace);
-        FbManager.instance.AnalyticsOnSendTrace(usersToSendTrace.Count, videoLength, camFlippedCount);
         SendLocalNotification("Sending Trace", "hang on while we upload it!", 1f);
-        Debug.Log("Send Trace:SMS");
-        SendBulkSMS.Instance.SendTraceSMS(HelperMethods.GetPhoneNumbersFromList(usersToSendTrace), new Vector2(location.y, location.x));
+        //todo: no need to get hash or phone number just seperate from get-go
+        FbManager.instance.UploadTrace(usersToSendTrace, phonesToSendTrace, fileLocation, selectedRadius, location, mediaType);
+        SendBulkSMS.Instance.SendTraceSMS(phonesToSendTrace, new Vector2(location.y, location.x));
+        FbManager.instance.AnalyticsOnSendTrace(usersToSendTrace.Count, videoLength, camFlippedCount);
     }
     
     public void SendNotificationToUsersWhoRecivedTheTrace()
     {
-        Debug.Log("SEND Notifications");
-
-        //notify if they have app
+        //users
         foreach (var user in usersToSendTrace)
         {
             try //no clue why this makes it work

@@ -298,15 +298,19 @@ public class SelectFriendsControler : MonoBehaviour
     public void UpdateFriendsSendTo()
     {
         SendTraceManager.instance.usersToSendTrace.Clear();
-        Debug.Log("UpdateFriendsSendTo()");
+        List<string> usersToSendTo = new List<string>();
         foreach (var user in whoToSendTo)
         {
             if (user.Value) //is selected to send to
             {
-                Debug.Log("SendTrace: adding user to users to send to:" + user.Key);
-                SendTraceManager.instance.usersToSendTrace.Add(user.Key);
+                usersToSendTo.Add(user.Key);
             }
         }
+        SendTraceManager.instance.usersToSendTrace = HelperMethods.GetUserHashesFromList(usersToSendTo);
+        SendTraceManager.instance.phonesToSendTrace = HelperMethods.GetPhoneNumbersFromList(usersToSendTo);
+        Debug.Log("UpdateFriendsSendTo: users:" + SendTraceManager.instance.usersToSendTrace.Count);
+        Debug.Log("UpdateFriendsSendTo: phones:" + SendTraceManager.instance.phonesToSendTrace.Count);
+
     }
 
     public void UpdateCellViewVisuals(string uid,bool isSelected, bool isBestFriend,bool isContact)

@@ -1291,7 +1291,7 @@ public partial class FbManager : MonoBehaviour
     #endregion
     
     #region Sending and Recieving Traces
-    public void UploadTrace(string fileLocation, float radius, Vector2 location, MediaType mediaType, List<string> usersToSendToList)
+    public void UploadTrace(List<string> usersToSendTo, List<string> phonesToSendTo, string fileLocation, float radius, Vector2 location, MediaType mediaType)
     {
         Debug.Log(" UploadTrace(): File Location:" + fileLocation);
         
@@ -1301,9 +1301,9 @@ public partial class FbManager : MonoBehaviour
         
         //draw temp circle until it uploads and the map is cleared on update
         SendTraceManager.instance.isSendingTrace = true;
-        _drawTraceOnMap.sendingTraceTraceLoadingObject = new TraceObject(location.x, location.y, radius, usersToSendToList.Count, "null",thisUserModel.name,  DateTime.UtcNow.ToString(), 24, mediaType.ToString(), "temp");
+        _drawTraceOnMap.sendingTraceTraceLoadingObject = new TraceObject(location.x, location.y, radius, usersToSendTo.Count, "null",thisUserModel.name,  DateTime.UtcNow.ToString(), 24, mediaType.ToString(), "temp");
         _drawTraceOnMap.DrawCirlce(location.x, location.y, radius, DrawTraceOnMap.TraceType.SENDING, "null");
-            
+        
         //update global traces
         childUpdates["Traces/" + key + "/senderID"] = _firebaseUser.UserId;
         childUpdates["Traces/" + key + "/senderName"] = thisUserModel.name;
@@ -1323,7 +1323,7 @@ public partial class FbManager : MonoBehaviour
         }
 
         int count = 0;
-        foreach (var user in usersToSendToList) //each of the users in usersToSendToList is a UID
+        foreach (var user in usersToSendTo) //each of the users in usersToSendToList is a UID
         {
             count++;
             childUpdates["Traces/" + key + "/Reciver/" + user + "/HasViewed"] = false;
@@ -1333,6 +1333,7 @@ public partial class FbManager : MonoBehaviour
         }
         childUpdates["Traces/" + key + "/numPeopleSent"] = count;
         childUpdates["TracesSent/" + _firebaseUser.UserId.ToString() +"/" + key] = DateTime.UtcNow.ToString();
+        
         //UPLOAD IMAGE
         StorageReference traceReference = _firebaseStorageReference.Child("/Traces/" + key);
         traceReference.PutFileAsync(fileLocation)
@@ -1359,6 +1360,7 @@ public partial class FbManager : MonoBehaviour
                 }
             });
     }
+    
     public void MarkTraceAsOpened(string traceID)
     {
         Dictionary<string, Object> childUpdates = new Dictionary<string, Object>();
