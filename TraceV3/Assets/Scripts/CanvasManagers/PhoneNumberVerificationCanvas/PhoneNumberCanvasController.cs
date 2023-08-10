@@ -83,18 +83,22 @@ namespace CanvasManagers
             //set phonen number without Verification
             _view.StartCoroutine(FbManager.instance.SetUserPhoneNumber(phoneNumber, (isSuccess) =>
             {
+                Debug.Log("Set phone number callback");
                 if (isSuccess)
                 {
-                    ScreenManager.instance.ChangeScreenForwards("Username");
                     _view.StartCoroutine(FbManager.instance.IsUserListedInInvited(phoneNumberwithoutareacode, (callbackIsSuccess) =>
                     {
                         if (callbackIsSuccess)
                         {
                             Debug.Log("User Invited: true");
                             FbManager.instance.AddInvitesToFriends(phoneNumberwithoutareacode);
+                            FbManager.instance.AddInviteTracesToTracesReceived(phoneNumberwithoutareacode);
                         }
                         else
-                            Debug.LogError("Failed to update phone");
+                            Debug.LogError("Failed to get user invite");
+                        
+                        //change screen only after check
+                        ScreenManager.instance.ChangeScreenForwards("Username");
                     }));
                 }
                 else
@@ -117,17 +121,17 @@ namespace CanvasManagers
                 {
                     if (isSuccess)
                     {
-                        ScreenManager.instance.ChangeScreenForwards("Username");
                         _view.StartCoroutine(FbManager.instance.IsUserListedInInvited(phoneNumberwithoutareacode, (callbackIsSuccess) =>
                         {
                             if (callbackIsSuccess)
                             {
                                 Debug.Log("User Invited: true");
                                 FbManager.instance.AddInvitesToFriends(phoneNumberwithoutareacode);
-
+                                FbManager.instance.AddInviteTracesToTracesReceived(phoneNumberwithoutareacode);
                             }
                             else
                                 Debug.LogError("Failed to update phone");
+                            ScreenManager.instance.ChangeScreenForwards("Username");
                         }));
                     }
                     else

@@ -194,6 +194,7 @@ public class TraceManager : MonoBehaviour
         filtered.Sort((i1, i2) => i1.Item2.CompareTo(i2.Item2));
         return filtered.Select(i => i.Item1).ToList();
     }
+    
     private void UpdateNotificationsForNext50Traces()
     {
         if (recivedTraceObjects.Count < 1)

@@ -541,11 +541,8 @@ public partial class FbManager : MonoBehaviour
     }
     public IEnumerator SetUserPhoneNumber(string _phoneNumber, System.Action<bool> callback)
     {
-        Debug.LogError("Is Database Reference is Null  ? "+ _databaseReference == null);
+        Debug.Log("Setting user phone number:" + _firebaseUser.UserId);
         var DBTask = _databaseReference.Child("users").Child(_firebaseUser.UserId).Child("phone").SetValueAsync(_phoneNumber);
-
-        Debug.LogError("Is Database Completion is Null  ? "+ DBTask == null);
-
         while (DBTask.IsCompleted is false)
             yield return new WaitForEndOfFrame();
         
@@ -910,7 +907,7 @@ public partial class FbManager : MonoBehaviour
     public IEnumerator SendInvite(string _phoneNumber)
     {
         string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 6);
-        var DBTaskAddInvite = _databaseReference.Child("invited").Child(cleanedPhoneNumber).Child(FbManager.instance.thisUserModel.userID).SetValueAsync(DateTime.UtcNow.ToString());
+        var DBTaskAddInvite = _databaseReference.Child("invited").Child(cleanedPhoneNumber).Child("users").Child(FbManager.instance.thisUserModel.userID).SetValueAsync(DateTime.UtcNow.ToString());
         while (DBTaskAddInvite.IsCompleted is false)
             yield return new WaitForEndOfFrame();
     }
@@ -959,30 +956,34 @@ public partial class FbManager : MonoBehaviour
     {
         string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 6);
         Debug.Log("Checking If User Invited:" + cleanedPhoneNumber);
-        
         var DBTask = _databaseReference.Child("invited").Child(cleanedPhoneNumber).GetValueAsync();
+     
         yield return new WaitUntil(() => DBTask.IsCompleted);
+        Debug.Log("IsUserListedInInvited Complete");
         
         if (DBTask.Exception != null)
         {
             // Error occurred while retrieving data (user is not invited)
-            Debug.Log("user NOT Invited");
+            Debug.LogWarning("user NOT Invited");
             callback(false);
-            
+            yield break; 
         }
         else if (DBTask.Result.Exists)
         {
             // User is invited (data exists in the database)
-            Debug.Log("user Invited Setting 1");
+            Debug.LogWarning("user Invited Setting 1");
             PlayerPrefs.SetInt("IsInvited", 1);
             callback(true);
+            yield break; 
         }
         else if(!DBTask.Result.Exists)
         {
-            Debug.Log("user Not Invited");
+            Debug.LogWarning("user Not Invited");
             PlayerPrefs.SetInt("IsInvited", 0);
             callback(false);
+            yield break; 
         }
+        Debug.Log("Smth Strange Happend");
     }
 
     public void AddInvitesToFriends(string phone)
@@ -992,9 +993,7 @@ public partial class FbManager : MonoBehaviour
     public IEnumerator AddInvitesToFriendsCoroutine(string _phoneNumber)
     {
         string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 6);
-        Debug.Log("Checking If User Invited:" + cleanedPhoneNumber);
-        
-        var DBTask = _databaseReference.Child("invited").Child(cleanedPhoneNumber).GetValueAsync();
+        var DBTask = _databaseReference.Child("invited").Child(cleanedPhoneNumber).Child("users").GetValueAsync();
         yield return new WaitUntil(() => DBTask.IsCompleted);
         
         if (DBTask.Exception != null)
@@ -1022,6 +1021,62 @@ public partial class FbManager : MonoBehaviour
             Debug.Log("User Does Not Have Friends");
         }
     }
+    
+    public void AddInviteTracesToTracesReceived(string phone)
+    {
+        StartCoroutine(AddInviteTracesToTracesReceivedCoroutine(phone));
+    }
+
+    public IEnumerator AddInviteTracesToTracesReceivedCoroutine(string _phoneNumber)
+    {
+        string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 6);
+        var DBTask = _databaseReference.Child("invited").Child(cleanedPhoneNumber).Child("traces").GetValueAsync();
+        yield return new WaitUntil(() => DBTask.IsCompleted);
+        
+        if (DBTask.Exception != null)
+        {
+            Debug.Log("user has no traces received or error");
+        }
+        else if (DBTask.Result.Exists)
+        {
+            // Get Trace Object from invites
+            foreach (var traceID in DBTask.Result.Children)
+            {
+                StartCoroutine(AddTracesReceivedBeforeUserToTracesReceived(traceID.Key.ToString(), traceID.Value.ToString(), (callbackIsSuccess) =>
+                {
+                    if (callbackIsSuccess)
+                    {
+                        Debug.Log("Added Friend");
+                    }
+                    else
+                        Debug.LogError("Failed To Add Friend");
+                }));
+            }
+        }
+        else if(!DBTask.Result.Exists)
+        {
+            Debug.Log("User Does Not Have Friends");
+        }
+    }
+
+    public IEnumerator AddTracesReceivedBeforeUserToTracesReceived(string traceID, string senderID, Action<bool> callback)
+    {
+        //create friends
+        var task = _databaseReference.Child("TracesRecived").Child(_firebaseUser.UserId).Child(traceID).Child("Sender").SetValueAsync(senderID);
+        while (task.IsCompleted is false)
+            yield return new WaitForEndOfFrame();
+        if (task.IsCanceled || task.IsFaulted)
+        {
+            print(task.Exception.Message);
+            callback(false);
+        }
+        else
+        {
+            // _allFriends.Add(friend);
+            callback(true);
+        }
+    }
+
     public IEnumerator GetOrSetSpotInQueue(string userID, System.Action<int> callback)
     {
         //check if user is in queue
@@ -1101,7 +1156,7 @@ public partial class FbManager : MonoBehaviour
     public IEnumerator AddUserToInvitedListAndGoToHomeScreen(string _phoneNumber)
     {
         string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 6);
-        var DBTaskAddInvite = _databaseReference.Child("invited").Child(cleanedPhoneNumber).Child(FbManager.instance.thisUserModel.userID).SetValueAsync(DateTime.UtcNow.ToString());
+        var DBTaskAddInvite = _databaseReference.Child("invited").Child(cleanedPhoneNumber).Child("users").Child(FbManager.instance.thisUserModel.userID).SetValueAsync(DateTime.UtcNow.ToString());
         while (DBTaskAddInvite.IsCompleted is false)
             yield return new WaitForEndOfFrame();
         yield return new WaitForSeconds(2f);
@@ -1313,6 +1368,7 @@ public partial class FbManager : MonoBehaviour
         childUpdates["Traces/" + key + "/lat"] = location.x;
         childUpdates["Traces/" + key + "/long"] = location.y;
         childUpdates["Traces/" + key + "/radius"] = radius;
+        
         if (PlayerPrefs.GetInt("LeaveTraceIsVisable") == 1)
         {
             childUpdates["Traces/" + key + "/isVisable"] = true;
@@ -1329,12 +1385,19 @@ public partial class FbManager : MonoBehaviour
             childUpdates["Traces/" + key + "/Reciver/" + user + "/HasViewed"] = false;
             childUpdates["Traces/" + key + "/Reciver/" + user + "/ProfilePhoto"] = "null";
             childUpdates["TracesRecived/" + user +"/"+ key + "/Sender"] = thisUserModel.userID;
-            Debug.Log("Count" + count);
         }
+        foreach (var phone in phonesToSendTo)
+        {
+            count++;
+            //invite and send trace
+            childUpdates["invited/" +  phone.Substring(phone.Length - 6) + "/users/" + thisUserModel.userID] = DateTime.UtcNow.ToString();
+            childUpdates["invited/" +  phone.Substring(phone.Length - 6) + "/traces/" + key] = thisUserModel.userID;
+        }
+        
         childUpdates["Traces/" + key + "/numPeopleSent"] = count;
         childUpdates["TracesSent/" + _firebaseUser.UserId.ToString() +"/" + key] = DateTime.UtcNow.ToString();
         
-        //UPLOAD IMAGE
+        //Upload Content
         StorageReference traceReference = _firebaseStorageReference.Child("/Traces/" + key);
         traceReference.PutFileAsync(fileLocation)
             .ContinueWith((Task<StorageMetadata> task) => {

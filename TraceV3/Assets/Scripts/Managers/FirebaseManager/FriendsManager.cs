@@ -363,7 +363,6 @@ public partial class FbManager
             Debug.LogError(task.Exception);
         }
     }
-    
     public void RemoveFriends(string friendID)
     {
         // Delete the friend request node

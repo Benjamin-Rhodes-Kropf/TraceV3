@@ -17,6 +17,7 @@ namespace CanvasManagers
         public TMP_InputField _countryCodeInputField;
         public EnterCodeCanvas _numberValidationView;
         public GameObject validationScreen;
+        public GameObject loadingSign;
         private PhoneNumberCanvasController _controller;
 
         

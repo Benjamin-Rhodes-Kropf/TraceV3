@@ -1405,6 +1405,7 @@ MonoBehaviour:
   fileLocation: 
   mediaType: 0
   usersToSendTrace: []
+  phonesToSendTrace: []
   videoLength: 0
   camFlippedCount: 0
 --- !u!4 &722720123
@@ -2450,6 +2451,9 @@ MonoBehaviour:
   - _name: Ben
     _phone: +16175977432
     _profilePicture: {fileID: 2800000, guid: 4c3c953838802724b98781c97610a621, type: 3}
+  - _name: Test user
+    _phone: +10000000000
+    _profilePicture: {fileID: 2800000, guid: 4c3c953838802724b98781c97610a621, type: 3}
 --- !u!1 &1189385101
 GameObject:
   m_ObjectHideFlags: 0
@@ -2673,7 +2677,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dependencyStatus: 6
   firebaseStorageReferenceUrl: gs://geosnapv1.appspot.com
-  resetPlayerPrefs: 0
+  resetPlayerPrefs: 1
   _drawTraceOnMap: {fileID: 6068666308761308086}
   _dragAndZoomInertia: {fileID: 6068666308761308082}
   _map: {fileID: 6068666308761308066}
@@ -16782,7 +16786,7 @@ MonoBehaviour:
   createMarkerInUserPosition: 1
   disableEmulatorInPublish: 1
   emulatorCompass: 0
-  emulatorPosition: {x: -71.22295, y: 42}
+  emulatorPosition: {x: -71.22295, y: 18.9}
   findLocationByIP: 0
   lerpCompassValue: 0
   markerScale: 1

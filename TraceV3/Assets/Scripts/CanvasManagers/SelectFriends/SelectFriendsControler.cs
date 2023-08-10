@@ -310,7 +310,6 @@ public class SelectFriendsControler : MonoBehaviour
         SendTraceManager.instance.phonesToSendTrace = HelperMethods.GetPhoneNumbersFromList(usersToSendTo);
         Debug.Log("UpdateFriendsSendTo: users:" + SendTraceManager.instance.usersToSendTrace.Count);
         Debug.Log("UpdateFriendsSendTo: phones:" + SendTraceManager.instance.phonesToSendTrace.Count);
-
     }
 
     public void UpdateCellViewVisuals(string uid,bool isSelected, bool isBestFriend,bool isContact)
