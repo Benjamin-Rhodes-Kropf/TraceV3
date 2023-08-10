@@ -78,6 +78,7 @@ public class SelectFriendsCanvas : MonoBehaviour
     }
     
     public void BackToMainScene() {
+        Debug.Log("BackToMain");
         ClearFriendsList();
        _controller.UnInitialize();
         ScreenManager.instance.isComingFromCameraScene = true;
