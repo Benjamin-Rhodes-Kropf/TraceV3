@@ -13,7 +13,6 @@ public class MapboxGeocoding : MonoBehaviour
     [SerializeField] private OnlineMaps _onlineMaps;
     [SerializeField] private OnlineMapsLocationService _onlineMapsLocationService;
 
-    
     [Header("Mapbox API Settings")]
     public string accessToken = "pk.eyJ1IjoiYmVucmsxMDAiLCJhIjoiY2xlNXRqMmZwMGc4cTNwbnh4OWcxYjhhbSJ9.tKfaEUT7hvBsZml5ucE5CA";
     public string geocodingBaseUrl = "https://api.mapbox.com/geocoding/v5/mapbox.places/";
@@ -44,7 +43,7 @@ public class MapboxGeocoding : MonoBehaviour
     public void GetUserLocationName()
     {
         _onlineMapsLocationService.GetLocation(out longitude, out latitude);
-        StartCoroutine(MapboxGeocoding.Instance.GetGeocodingData(longitude ,latitude, (result) => {
+        StartCoroutine(MapboxGeocoding.Instance.GetGeocodingData(longitude ,latitude, 17, (result) => {
             if (result != "null")
             {
                 userLocationName = result;
@@ -52,7 +51,7 @@ public class MapboxGeocoding : MonoBehaviour
         }));
     }
     
-    public IEnumerator GetGeocodingData(float longitude, float latitude, System.Action<string> locationCallback)
+    public IEnumerator GetGeocodingData(float longitude, float latitude, float zoom, System.Action<string> locationCallback)
     {
         Debug.Log("SEND GetGeocodingData");
         //Format the URL for the GET request

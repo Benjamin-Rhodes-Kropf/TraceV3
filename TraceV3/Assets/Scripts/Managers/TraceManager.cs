@@ -135,6 +135,7 @@ public class TraceManager : MonoBehaviour
             FbManager.instance.AnalyticsOnTracePressed(traceToOpen.Item1.senderName, traceToOpen.Item1.sendTime, "open");
             StartCoroutine(_dragAndZoomInertia.ZoomToObject(new Vector2((float)traceToOpen.Item1.lng, (float)traceToOpen.Item1.lat), -traceToOpen.Item1.radius, 0.1f));
             homeScreenManager.OpenTrace(traceToOpen.Item1.id,  traceToOpen.Item1.senderName,traceToOpen.Item1.senderID,traceToOpen.Item1.sendTime, traceToOpen.Item1.mediaType, traceToOpen.Item1.numPeopleSent);
+            homeScreenManager.UpdateLocationText(17);
         }
         else if(viewableAbleTraces.Count > 0)
         {
@@ -144,6 +145,7 @@ public class TraceManager : MonoBehaviour
             FbManager.instance.AnalyticsOnTracePressed(traceToView.Item1.senderName, traceToView.Item1.sendTime, "view");
             StartCoroutine(_dragAndZoomInertia.ZoomToObject(new Vector2((float)traceToView.Item1.lng, (float)traceToView.Item1.lat), -traceToView.Item1.radius, 0.1f));
             homeScreenManager.ViewTrace( traceToView.Item1.senderName,traceToView.Item1.sendTime, traceToView.Item1.numPeopleSent);
+            homeScreenManager.UpdateLocationText(17);
         }
     }
 

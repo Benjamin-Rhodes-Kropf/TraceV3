@@ -81,7 +81,7 @@ namespace EnhancedScrollerDemos.MultipleCellTypesDemo
             
             if (contacts.Count > 0)
             {
-                _data.Add(new HeaderData() { category = "Contacts"});
+                _data.Add(new HeaderData() { category = "Contacts (sent to via sms)"});
                 Debug.Log("Contact Added");
 
                 for (var index = 0; index < contacts.Count; index++)

@@ -90,7 +90,17 @@ public class HomeScreenManager : MonoBehaviour
 
     public void ChangeLocationText()
     {
-        StartCoroutine(ChangeLocationTextReduceApiCallSpeed());
+        StartCoroutine(ChangeLocationTextReduceApiCallSpeed(_onlineMaps.floatZoom));
+        StartCoroutine(IsChangingLocation());
+    }
+    public void UpdateLocationText(float zoom)
+    {
+        StartCoroutine(ChangeLocationTextReduceApiCallSpeed(zoom));
+        StartCoroutine(IsChangingLocation());
+    }
+
+    public void PlayChangingLocationAnim()
+    {
         StartCoroutine(IsChangingLocation());
     }
 
@@ -126,7 +136,7 @@ public class HomeScreenManager : MonoBehaviour
         //Debug.Log("done waiting!");
         StartCoroutine(ChangeLocationTextAnim());
     }
-    IEnumerator ChangeLocationTextReduceApiCallSpeed()
+    IEnumerator ChangeLocationTextReduceApiCallSpeed(float zoom)
     {
         if (!isLocationTextUpdateRunning)
         {
@@ -134,7 +144,7 @@ public class HomeScreenManager : MonoBehaviour
             _locationTextAnimator.Play("exit");
             yield return new WaitForSeconds(0.3f);
             Debug.Log("ChangeLocationTextSlowApiCalls: lng" + _onlineMaps.position.x);
-            StartCoroutine(MapboxGeocoding.Instance.GetGeocodingData(_onlineMaps.position.x ,_onlineMaps.position.y, (result) => {
+            StartCoroutine(MapboxGeocoding.Instance.GetGeocodingData(_onlineMaps.position.x ,_onlineMaps.position.y, zoom, (result) => {
                 if (result != "null")
                 {
                     locationText = result;

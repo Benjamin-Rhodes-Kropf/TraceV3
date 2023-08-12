@@ -2531,6 +2531,9 @@ MonoBehaviour:
   - _name: Test user
     _phone: +10000000000
     _profilePicture: {fileID: 2800000, guid: 4c3c953838802724b98781c97610a621, type: 3}
+  - _name: Banjo
+    _phone: +16176377804
+    _profilePicture: {fileID: 2800000, guid: 4c3c953838802724b98781c97610a621, type: 3}
 --- !u!1 &1189385101
 GameObject:
   m_ObjectHideFlags: 0
@@ -5330,7 +5333,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Contacts
+  m_text: Contacts (selected will be sent a text)
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 648c45e0c9fdb42d38c00245ae7eeb0c, type: 2}
   m_sharedMaterial: {fileID: -6418485882645887487, guid: 648c45e0c9fdb42d38c00245ae7eeb0c, type: 2}
@@ -10629,6 +10632,18 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1361899929754955314, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361899929754955314, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361899929754955314, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361899929754955314, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 600464280}
@@ -10641,12 +10656,56 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6068666308761308082}
     - target: {fileID: 1361899929754955314, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Target
+      value: 
+      objectReference: {fileID: 201652129}
+    - target: {fileID: 1361899929754955314, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_Target
+      value: 
+      objectReference: {fileID: 878571056}
+    - target: {fileID: 1361899929754955314, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361899929754955314, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361899929754955314, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
       value: StartZoomToUser
       objectReference: {fileID: 0}
     - target: {fileID: 1361899929754955314, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
+      value: GetUserLocationName
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361899929754955314, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_MethodName
+      value: PlayChangingLocationAnim
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361899929754955314, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
       value: DragAndZoomInertia, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361899929754955314, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_TargetAssemblyTypeName
+      value: MapboxGeocoding, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361899929754955314, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_TargetAssemblyTypeName
+      value: HomeScreenManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361899929754955314, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_FloatArgument
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361899929754955314, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[3].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 1361899929754955314, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 1361899929754955315, guid: 6e1ce31360c744747ac445fd786befd0, type: 3}
       propertyPath: m_RootOrder

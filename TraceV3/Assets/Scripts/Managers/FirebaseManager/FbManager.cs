@@ -906,7 +906,7 @@ public partial class FbManager : MonoBehaviour
     #region -User Allowed In App
     public IEnumerator SendInvite(string _phoneNumber)
     {
-        string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 6);
+        string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 10);
         var DBTaskAddInvite = _databaseReference.Child("invited").Child(cleanedPhoneNumber).Child("users").Child(FbManager.instance.thisUserModel.userID).SetValueAsync(DateTime.UtcNow.ToString());
         while (DBTaskAddInvite.IsCompleted is false)
             yield return new WaitForEndOfFrame();
@@ -954,7 +954,7 @@ public partial class FbManager : MonoBehaviour
     }
     public IEnumerator IsUserListedInInvited(string _phoneNumber, System.Action<bool> callback)
     {
-        string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 6);
+        string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 10);
         Debug.Log("Checking If User Invited:" + cleanedPhoneNumber);
         var DBTask = _databaseReference.Child("invited").Child(cleanedPhoneNumber).GetValueAsync();
      
@@ -992,7 +992,7 @@ public partial class FbManager : MonoBehaviour
     }
     public IEnumerator AddInvitesToFriendsCoroutine(string _phoneNumber)
     {
-        string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 6);
+        string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 10);
         var DBTask = _databaseReference.Child("invited").Child(cleanedPhoneNumber).Child("users").GetValueAsync();
         yield return new WaitUntil(() => DBTask.IsCompleted);
         
@@ -1029,7 +1029,7 @@ public partial class FbManager : MonoBehaviour
 
     public IEnumerator AddInviteTracesToTracesReceivedCoroutine(string _phoneNumber)
     {
-        string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 6);
+        string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 10);
         var DBTask = _databaseReference.Child("invited").Child(cleanedPhoneNumber).Child("traces").GetValueAsync();
         yield return new WaitUntil(() => DBTask.IsCompleted);
         
@@ -1155,7 +1155,7 @@ public partial class FbManager : MonoBehaviour
     }
     public IEnumerator AddUserToInvitedListAndGoToHomeScreen(string _phoneNumber)
     {
-        string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 6);
+        string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 10);
         var DBTaskAddInvite = _databaseReference.Child("invited").Child(cleanedPhoneNumber).Child("users").Child(FbManager.instance.thisUserModel.userID).SetValueAsync(DateTime.UtcNow.ToString());
         while (DBTaskAddInvite.IsCompleted is false)
             yield return new WaitForEndOfFrame();
@@ -1390,8 +1390,8 @@ public partial class FbManager : MonoBehaviour
         {
             count++;
             //invite and send trace
-            childUpdates["invited/" +  phone.Substring(phone.Length - 6) + "/users/" + thisUserModel.userID] = DateTime.UtcNow.ToString();
-            childUpdates["invited/" +  phone.Substring(phone.Length - 6) + "/traces/" + key] = thisUserModel.userID;
+            childUpdates["invited/" +  phone.Substring(phone.Length - 10) + "/users/" + thisUserModel.userID] = DateTime.UtcNow.ToString();
+            childUpdates["invited/" +  phone.Substring(phone.Length - 10) + "/traces/" + key] = thisUserModel.userID;
         }
         
         childUpdates["Traces/" + key + "/numPeopleSent"] = count;

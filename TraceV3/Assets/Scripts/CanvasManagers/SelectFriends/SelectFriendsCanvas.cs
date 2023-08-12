@@ -18,7 +18,7 @@ public class SelectFriendsCanvas : MonoBehaviour
     [Header("Friend Info")]
     public SendToFriendView friendViewPrefab;
     public Transform _displayFrindsParent;
-    public GameObject _youDontHaveAnyFriendsYetText;
+    //public GameObject _youDontHaveAnyFriendsYetText;
     public List<SendToFriendView> _friendsList;
     public GameObject _friendsScroll;
     [SerializeField] private SelectFriendsControler _controller;
@@ -41,7 +41,7 @@ public class SelectFriendsCanvas : MonoBehaviour
     {
         
         //objects
-        _youDontHaveAnyFriendsYetText.SetActive(false);
+        //_youDontHaveAnyFriendsYetText.SetActive(false);
         //controller
         _friendsList = new List<SendToFriendView>();
         if (_controller == null)
@@ -74,7 +74,7 @@ public class SelectFriendsCanvas : MonoBehaviour
 
     public void DisplayNoFriendsText()
     {
-        _youDontHaveAnyFriendsYetText.SetActive(true);
+        //_youDontHaveAnyFriendsYetText.SetActive(true);
     }
     
     public void BackToMainScene() {

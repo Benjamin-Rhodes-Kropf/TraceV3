@@ -49,7 +49,7 @@ public class SendBulkSMS : MonoBehaviour
         Debug.Log("SEND GOT LOCATION SMS");
         string message = "";
         if(MapboxGeocoding.Instance.locationName != null) 
-            message = FbManager.instance.thisUserModel.name + "left you a Trace in " + MapboxGeocoding.Instance.userLocationName + "! to open it you can download the app.";
+            message = FbManager.instance.thisUserModel.name + " left you a Trace in " + MapboxGeocoding.Instance.userLocationName + "! To see it download 'Leave a Trace' on the Appstore.";
         else
             message = "Ben left you a Trace!";
         
