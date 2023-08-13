@@ -384,10 +384,8 @@ namespace CanvasManagers
                 return;
             
             _view._enhanceScroller.LoadLargeData(contacts);
-                
-            foreach (var contact in contacts)
-                LogContactInfo(contact);
-                
+            _allContacts = new List<IAddressBookContact>();
+            _allContacts.AddRange(contacts);
             isLoaded = true;
         }
         
@@ -412,17 +410,19 @@ namespace CanvasManagers
 
         private void TryGetContactsByName(string name, out List<IAddressBookContact> selectedContacts)
         {
+            Debug.Log("Searching Contacts");
+
             selectedContacts = new List<IAddressBookContact>();
             
-            if (_allContacts == null)
+            if (_allContacts is not { Count: > 0 })
                 return;
-            if (_allContacts.Count <= 0 )
-                return;
+
+            Debug.Log("Searching Contacts with name "+ name   + _allContacts.Count);
             // Todo : Check Why Contain Function for Contact Given Name is not working ?
             
             if (string.IsNullOrEmpty(name) is false )
             {
-                var list = _allContacts.Where(contact => (contact.FirstName + " "+ contact.LastName).Contains(name, StringComparison.InvariantCultureIgnoreCase)  && contact.PhoneNumbers.Length>0).ToList();
+                var list = _allContacts.Where(contact => (contact.FirstName + " "+ contact.LastName).ToLower().Contains(name, StringComparison.InvariantCultureIgnoreCase)  && contact.PhoneNumbers.Length>0).ToList();
                 selectedContacts.AddRange(list);
             }
         }
