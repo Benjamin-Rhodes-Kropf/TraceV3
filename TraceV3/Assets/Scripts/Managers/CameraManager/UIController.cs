@@ -31,9 +31,6 @@ public class UIController : MonoBehaviour
     {
         //To show microphone prompt to avoid a conflict which occurs once in start
         StartCoroutine(CameraAwake());
-
-        //assigning the ui controller in screenamanet script
-
     }
 
     IEnumerator CameraAwake()
@@ -49,16 +46,8 @@ public class UIController : MonoBehaviour
         string subDirectory = "SaveImages/Traces";
         savePath = Path.Combine(Application.persistentDataPath, subDirectory);
         Directory.CreateDirectory(savePath);
-        yield return new WaitForSeconds(0.5f);
-        
+
         //get permissions
-        if (Application.platform == RuntimePlatform.IPhonePlayer)
-        {
-            if (!Application.HasUserAuthorization(UserAuthorization.Microphone))
-            {
-                Application.RequestUserAuthorization(UserAuthorization.Microphone);
-            }
-        }
         if (Application.platform == RuntimePlatform.IPhonePlayer)
         {
             if (!Application.HasUserAuthorization(UserAuthorization.WebCam))
@@ -70,8 +59,19 @@ public class UIController : MonoBehaviour
                 }
             }
         }
-        
         StartAudio();
+        // if (Application.platform == RuntimePlatform.IPhonePlayer)
+        // {
+        //     if (!Application.HasUserAuthorization(UserAuthorization.Microphone))
+        //     {
+        //         Application.RequestUserAuthorization(UserAuthorization.Microphone);
+        //         while (!Application.HasUserAuthorization(UserAuthorization.Microphone))
+        //         {
+        //             yield return null;
+        //         }
+        //     }
+        // }
+        
     }
 
     async void StartAudio()

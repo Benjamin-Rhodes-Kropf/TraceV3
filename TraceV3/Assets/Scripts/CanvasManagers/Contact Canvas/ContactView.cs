@@ -83,7 +83,10 @@ public class ContactView : MonoBehaviour
    {
       StartCoroutine(FbManager.instance.SendInvite(_phoneNumber.text));
       FbManager.instance.AnalyticsOnAddContact(_phoneNumber.text);
-      HelperMethods.SendSMS(_phoneNumber.text, "What up! add me on trace! it's super fun. https://apps.apple.com/us/app/trace-leave-a-trace/id6450400543");
+      HelperMethods.SendSMS(_phoneNumber.text, "What up! add me on trace!");
+      List<string> toNumbers = new List<string>();
+      toNumbers.Add(_phoneNumber.text);
+      StartCoroutine(SendBulkSMS.Instance.SendSMS(toNumbers, FbManager.instance.thisUserModel.name + " invited you to Trace. Leave location locked videos for your friends: https://apps.apple.com/us/app/trace-leave-a-trace/id6450400543", null));
    }
 
    private void OnRemoveClick()

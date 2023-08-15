@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Text;
 using Firebase.Messaging;
 using Helper;
-using Unity.Notifications.iOS;
 using UnityEngine;
 using UnityEngine.iOS;
 
@@ -20,6 +19,7 @@ public class NotificationManager : UnitySingleton<NotificationManager>
         FirebaseMessaging.TokenReceived += OnTokenReceived;
         FirebaseMessaging.MessageReceived += OnMessageReceived;
     }
+    
 
     private void OnTokenReceived(object sender, TokenReceivedEventArgs token)
     {

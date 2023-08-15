@@ -18,8 +18,7 @@ public class NativeContactsManager : MonoBehaviour
     {
         s_Instance = this;
     }
-
-
+    
     public void LoadUserContacts(Action<IAddressBookContact[]> OnSuccess, Action<string> OnFailed)
     {
         // Reset Callbacks
