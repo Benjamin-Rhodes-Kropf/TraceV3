@@ -1405,6 +1405,7 @@ MonoBehaviour:
   fileLocation: 
   mediaType: 0
   usersToSendTrace: []
+  phonesToSendTrace: []
   videoLength: 0
   camFlippedCount: 0
 --- !u!4 &722720123
@@ -15494,7 +15495,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6899231106522116390, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 1043.7104
+      value: 1289.3
       objectReference: {fileID: 0}
     - target: {fileID: 6899231106522116390, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -15502,7 +15503,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6899231106522116390, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -971.3648
+      value: -1079.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6899231106522116393, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6899231107352376943, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
       propertyPath: m_RootOrder
