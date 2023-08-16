@@ -362,14 +362,14 @@ public class SelectFriendsControler : MonoBehaviour
         
         Debug.Log("Search Friends");
         int numOfBestFriends = 0;
-        var users = UserDataManager.Instance.GetFriendsByNameOld(inputText);
+        var users = UserDataManager.Instance.GetFriendsByNameOld(inputText.ToLower());
         foreach (var user in users)
         {
             bool isBestFriend = FriendsModelManager.Instance.IsBestFriend(user.userID);
             UpdateFriendViewInfo(user, isBestFriend);
         }
 
-        var contacts = GetContactsByName(inputText);
+        var contacts = GetContactsByName(inputText.ToLower());
         foreach (var contact in contacts)
         {
             UpdateFriendViewInfo(null, false, true, contact);
@@ -383,7 +383,7 @@ public class SelectFriendsControler : MonoBehaviour
         List<SendTraceCellViewData> selectedUsers = new List<SendTraceCellViewData>();
         if (string.IsNullOrEmpty(name) is false && _contactsData.Count > 0)
         {
-            var searchResults = _contactsData.Where(user => user._textData.Contains(name));
+            var searchResults = _contactsData.Where(user => user._textData.ToLower().Contains(name));
             selectedUsers.AddRange(searchResults);
         }
         return selectedUsers;
