@@ -46,7 +46,7 @@ namespace EnhancedScrollerDemos.MultipleCellTypesDemo
 
             if (bestFriends.Count > 0)
             {
-                _data.Add(new HeaderData() { category = "Best Friends"});
+                _data.Add(new HeaderData() { category = "   Best Friends"});
                     Debug.Log("Best Friend Added");
                     for (var index = 0; index < bestFriends.Count; index++)
                     {
@@ -63,7 +63,7 @@ namespace EnhancedScrollerDemos.MultipleCellTypesDemo
             
             if (friends.Count > 0)
             {
-                _data.Add(new HeaderData() { category = "Friends"});
+                _data.Add(new HeaderData() { category = "   Friends"});
                 Debug.Log(" Friend Added");
 
                 for (var index = 0; index < friends.Count; index++)
@@ -81,7 +81,7 @@ namespace EnhancedScrollerDemos.MultipleCellTypesDemo
             
             if (contacts.Count > 0)
             {
-                _data.Add(new HeaderData() { category = "Contacts (sent to via sms)"});
+                _data.Add(new HeaderData() { category = "   Contacts (sent to via sms)"});
                 Debug.Log("Contact Added");
 
                 for (var index = 0; index < contacts.Count; index++)

@@ -137,7 +137,13 @@ public class SendToFriendView : MonoBehaviour
     {
         if (_downloadRoutine != null)
             StopCoroutine(_downloadRoutine);
-    
-        Destroy(this.gameObject);
+        try
+        {
+            Destroy(this.gameObject);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning("Object Already Destroyed or Failed to Destroy");
+        }
     }
 }

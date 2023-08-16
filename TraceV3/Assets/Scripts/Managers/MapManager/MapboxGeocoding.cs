@@ -113,7 +113,7 @@ public class MapboxGeocoding : MonoBehaviour
         // Iterate through mapboxData.features and filter out features with "postcode" in their ids
         foreach (var feature in mapboxData.features)
         {
-            if (!feature.id.Contains("postcode"))
+            if (!feature.id.Contains("postcode") && !feature.id.Contains("district"))
             {
                 // Add the feature to the filteredFeatures list if it does not contain "postcode"
                 filteredFeatures.Add(feature);
@@ -122,7 +122,17 @@ public class MapboxGeocoding : MonoBehaviour
 
         // Get the relevant context text based on the zoom level
         // Adjust the zoom level thresholds and context text selection based on your requirements
-        if (zoomLevel > 18)
+        if (zoomLevel > 19)
+        {
+            foreach (var feature in filteredFeatures)
+            {
+                if (feature.context != null && feature.context.Length > 1)
+                {
+                    // Return the first context text (you can choose based on your preference)
+                    return filteredFeatures[1].place_name; //could change to 0 to get adress
+                }
+            }
+        }else if (zoomLevel > 18)
         {
             foreach (var feature in filteredFeatures)
             {
