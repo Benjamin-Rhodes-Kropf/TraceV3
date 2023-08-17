@@ -1356,7 +1356,15 @@ public partial class FbManager : MonoBehaviour
         
         //draw temp circle until it uploads and the map is cleared on update
         SendTraceManager.instance.isSendingTrace = true;
-        _drawTraceOnMap.sendingTraceTraceLoadingObject = new TraceObject(location.x, location.y, radius, usersToSendTo.Count, "null",thisUserModel.name,  DateTime.UtcNow.ToString(), 24, mediaType.ToString(), "temp");
+
+        //covert users to send to into receiver objects
+        List<TraceReceiverObject> receiverObjects = new List<TraceReceiverObject>();
+        foreach (var user in usersToSendTo)
+        {
+            receiverObjects.Add(new TraceReceiverObject(user, false));
+        }
+        
+        _drawTraceOnMap.sendingTraceTraceLoadingObject = new TraceObject(location.x, location.y, radius, receiverObjects, "null",thisUserModel.name,  DateTime.UtcNow.ToString(), 24, mediaType.ToString(), "temp");
         _drawTraceOnMap.DrawCirlce(location.x, location.y, radius, DrawTraceOnMap.TraceType.SENDING, "null");
         
         //update global traces
@@ -1452,6 +1460,7 @@ public partial class FbManager : MonoBehaviour
             string senderID = "";
             string senderName = "";
             string sendTime = "";
+            List<TraceReceiverObject> receivers = new List<TraceReceiverObject>();
             float durationHours = 0;
 
             foreach (var thing in DBTask.Result.Children)
@@ -1510,6 +1519,19 @@ public partial class FbManager : MonoBehaviour
                         senderName = thing.Value.ToString();
                         break;
                     }
+                    case "Reciver":
+                    {
+                        Dictionary<string, object> people = thing.Value as Dictionary<string, object>;
+                        foreach (var receiver in people)
+                        {
+                            var receiverID = receiver.Key;
+                            var receiverData = receiver.Value as Dictionary<string, object>;
+                            bool hasViewed = (bool)receiverData["HasViewed"];
+                            //string profilePhoto = receiverData["ProfilePhoto"].ToString(); //if we ever want profile photo
+                            receivers.Add(new TraceReceiverObject(receiverID, hasViewed));
+                        }
+                        break;
+                    }
                     case "numPeopleSent":
                         numPeopleSent = Int32.Parse(thing.Value.ToString());
                         break;
@@ -1527,7 +1549,7 @@ public partial class FbManager : MonoBehaviour
             }
             if (lat != 0 && lng != 0 && radius != 0) //check for malformed data entry
             {
-                var trace = new TraceObject(lng, lat, radius, numPeopleSent, senderID, senderName, sendTime, 20, mediaType,traceID);
+                var trace = new TraceObject(lng, lat, radius, receivers, senderID, senderName, sendTime, 20, mediaType,traceID);
                 TraceManager.instance.recivedTraceObjects.Add(trace);
                 PlayerPrefsManager.s_Instance.ReceivedTraces(TraceManager.instance.recivedTraceObjects);
                 BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
@@ -1552,7 +1574,7 @@ public partial class FbManager : MonoBehaviour
             float radius = 0;
             bool hasBeenOpened;
             string senderID = "";
-            int numPeopleSent = 0;
+            List<TraceReceiverObject> receivers = new List<TraceReceiverObject>();
             string senderName = "";
             string sendTime = "";
             string mediaType = "";
@@ -1616,9 +1638,19 @@ public partial class FbManager : MonoBehaviour
                         sendTime = thing.Value.ToString();
                         break;
                     }
-                    case "numPeopleSent":
-                        numPeopleSent = Int32.Parse(thing.Value.ToString());
+                    case "Reciver":
+                    {
+                        Dictionary<string, object> people = thing.Value as Dictionary<string, object>;
+                        foreach (var receiver in people)
+                        {
+                            var receiverID = receiver.Key;
+                            var receiverData = receiver.Value as Dictionary<string, object>;
+                            bool hasViewed = (bool)receiverData["HasViewed"];
+                            //string profilePhoto = receiverData["ProfilePhoto"].ToString(); //if we ever want profile photo
+                            receivers.Add(new TraceReceiverObject(receiverID,hasViewed));
+                        }
                         break;
+                    }
                     case "mediaType":
                     {
                         mediaType = thing.Value.ToString();
@@ -1634,7 +1666,7 @@ public partial class FbManager : MonoBehaviour
             
             if (lat != 0 && lng != 0 && radius != 0)
             {
-                var trace = new TraceObject(lng, lat, radius, numPeopleSent, senderID,senderName, sendTime, 20, mediaType,traceID);
+                var trace = new TraceObject(lng, lat, radius, receivers, senderID,senderName, sendTime, 20, mediaType,traceID);
                 TraceManager.instance.sentTraceObjects.Add(trace);
                 TraceManager.instance.UpdateMap(new Vector2());
                 FbManager.instance.AnalyticsSetTracesSent(TraceManager.instance.sentTraceObjects.Count.ToString());

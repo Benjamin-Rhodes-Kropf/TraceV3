@@ -77,10 +77,10 @@ public class HomeScreenManager : MonoBehaviour
         _traceManager.UpdateMap(new Vector2(0,0));
     }
     
-    public void ViewTrace(string senderName, string sendDate, int numOfPeopleSent)
+    public void ViewTrace(string senderName, string sendDate, List<TraceReceiverObject> receivers)
     {
         CloseOpenTrace();
-        viewTraceManager.ActivateView(senderName, sendDate, numOfPeopleSent);   
+        viewTraceManager.ActivateView(senderName, sendDate, receivers.Count);   
     }
 
     public void ToggleTutorial()
@@ -182,7 +182,7 @@ public class HomeScreenManager : MonoBehaviour
     }
     #endregion
     
-    public void OpenTrace(string traceID, string senderName, string senderID, string sendDate, string mediaType, int numOfPeopleSent) //Todo: Make mediaType an Enum
+    public void OpenTrace(string traceID, string senderName, string senderID, string sendDate, string mediaType, List<TraceReceiverObject> receivers) //Todo: Make mediaType an Enum
     {
         CloseViewTrace();
         Debug.Log("Open Trace");
@@ -200,7 +200,7 @@ public class HomeScreenManager : MonoBehaviour
             {
                 if (texture != null)
                 {
-                    openTraceManager.ActivatePhotoFormat(traceID, sendDate, senderName, senderID, numOfPeopleSent);
+                    openTraceManager.ActivatePhotoFormat(traceID, sendDate, senderName, senderID, receivers.Count);
                     openTraceManager.displayTrace.texture = texture;
                 }
                 else
@@ -233,7 +233,7 @@ public class HomeScreenManager : MonoBehaviour
                 {
                     Debug.Log("Open Trace View");
                     openTraceManager.videoPlayer.url = path;
-                    StartCoroutine((openTraceManager.ActivateVideoFormat(traceID,sendDate,senderName, senderID, numOfPeopleSent)));
+                    StartCoroutine((openTraceManager.ActivateVideoFormat(traceID,sendDate,senderName, senderID, receivers.Count)));
                 }
                 else
                 {

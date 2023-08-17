@@ -136,7 +136,7 @@ public class TraceManager : MonoBehaviour
             HapticManager.instance.SelectionHaptic();
             FbManager.instance.AnalyticsOnTracePressed(traceToOpen.Item1.senderName, traceToOpen.Item1.sendTime, "open");
             StartCoroutine(_dragAndZoomInertia.ZoomToObject(new Vector2((float)traceToOpen.Item1.lng, (float)traceToOpen.Item1.lat), -traceToOpen.Item1.radius, 0.1f));
-            homeScreenManager.OpenTrace(traceToOpen.Item1.id,  traceToOpen.Item1.senderName,traceToOpen.Item1.senderID,traceToOpen.Item1.sendTime, traceToOpen.Item1.mediaType, traceToOpen.Item1.numPeopleSent);
+            homeScreenManager.OpenTrace(traceToOpen.Item1.id,  traceToOpen.Item1.senderName,traceToOpen.Item1.senderID,traceToOpen.Item1.sendTime, traceToOpen.Item1.mediaType, traceToOpen.Item1.people);
             homeScreenManager.UpdateLocationText(17);
         }
         else if(viewableAbleTraces.Count > 0)
@@ -146,7 +146,7 @@ public class TraceManager : MonoBehaviour
             HapticManager.instance.SelectionHaptic();
             FbManager.instance.AnalyticsOnTracePressed(traceToView.Item1.senderName, traceToView.Item1.sendTime, "view");
             StartCoroutine(_dragAndZoomInertia.ZoomToObject(new Vector2((float)traceToView.Item1.lng, (float)traceToView.Item1.lat), -traceToView.Item1.radius, 0.1f));
-            homeScreenManager.ViewTrace( traceToView.Item1.senderName,traceToView.Item1.sendTime, traceToView.Item1.numPeopleSent);
+            homeScreenManager.ViewTrace( traceToView.Item1.senderName,traceToView.Item1.sendTime, traceToView.Item1.people);
             homeScreenManager.UpdateLocationText(17);
         }
     }
@@ -484,6 +484,19 @@ public class TraceManager : MonoBehaviour
     }
 }
 
+[Serializable]
+public class TraceReceiverObject
+{
+    public string id;
+    public string photo;
+    public bool hasBeenOpened;
+    public TraceReceiverObject(string id, bool hasBeenOpened, string photo = null)
+    {
+        this.id = id;
+        this.hasBeenOpened = hasBeenOpened;
+        this.photo = photo;
+    }
+}
 
 [Serializable]
 public class TraceObject
@@ -495,7 +508,7 @@ public class TraceObject
     public double lat;
     public double lng;
     public float radius;
-    public int numPeopleSent; //replace this with recievers
+    public List<TraceReceiverObject> people; //replace this with recievers
     public double distanceToUser;
     public string mediaType;
     public string senderID;
@@ -506,13 +519,13 @@ public class TraceObject
     public string sendTime;
     public double endTimeStamp;
     
-    public TraceObject(double longitude, double latitude, float radius, int numPeopleSent, string senderID, string senderName, string sendTime, double endTimeStamp, string mediaType, string id)
+    public TraceObject(double longitude, double latitude, float radius, List<TraceReceiverObject> people, string senderID, string senderName, string sendTime, double endTimeStamp, string mediaType, string id)
     {
         lng = longitude;
         lat = latitude;
         this.radius = radius;
         this.senderID = senderID;
-        this.numPeopleSent = numPeopleSent;
+        this.people = people;
         this.senderName = senderName;
         this.sendTime = sendTime;
         this.endTimeStamp = endTimeStamp;
