@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using InfinityCode.OnlineMapsExamples;
+using JetBrains.Annotations;
+using Newtonsoft.Json;
 using Unity.Notifications.iOS;
 using UnityEngine;
 
@@ -486,7 +488,9 @@ public class TraceManager : MonoBehaviour
 [Serializable]
 public class TraceObject
 {
+    [JsonIgnore]
     public OnlineMapsMarker marker;
+    
     public string id;
     public double lat;
     public double lng;

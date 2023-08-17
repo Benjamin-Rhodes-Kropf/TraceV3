@@ -15,7 +15,7 @@ public class ContactView : MonoBehaviour
    public RawImage _contactImage;
    public Button _addButton;
    public Button _removeButton;
-   
+   public Texture2D _contactImagePlaceHolder;
    public void OnDestroy()
    {
       // Unsubscribe from event handlers
@@ -50,6 +50,10 @@ public class ContactView : MonoBehaviour
                StartCoroutine(SaveToPersistentStorage(newTexture));
                _contactImage.texture = newTexture;
             }
+            else
+            {
+               _contactImage.texture = _contactImagePlaceHolder;
+            }
          });
       }
       else
@@ -76,7 +80,7 @@ public class ContactView : MonoBehaviour
    {
       _givenName.text = Name;
       _phoneNumber.text = ContactNumber;
-      _contactImage.texture = _texture;
+      _contactImage.texture = _texture ? _texture : _contactImagePlaceHolder;
    }
    
    private void OnContactButtonAddClicked()
