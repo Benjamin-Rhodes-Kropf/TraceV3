@@ -69,7 +69,7 @@ MonoBehaviour:
           m_minLaunches: 5
   m_addressBookSettings:
     m_isEnabled: 1
-    m_defaultImage: {fileID: 0}
+    m_defaultImage: {fileID: 2800000, guid: b56bb3fcb07e04fd3bb3504fb97f3878, type: 3}
   m_nativeUISettings:
     m_isEnabled: 1
     m_customUICollection:
