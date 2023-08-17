@@ -169,7 +169,7 @@ public class TraceManager : MonoBehaviour
                   Mathf.Sin(dLon / 2) * Mathf.Sin(dLon / 2);
         var c = 2 * Mathf.Atan2(Mathf.Sqrt(a), Mathf.Sqrt(1 - a));
         distance = R * c;
-        distance = distance * 1000f; // meters
+        distance = distance * 1000f; //meters
         distance -= radiusOfTraceInMeters; //account for trace radius
         return distance;
     }
@@ -491,7 +491,7 @@ public class TraceObject
     public double lat;
     public double lng;
     public float radius;
-    public int numPeopleSent;
+    public int numPeopleSent; //replace this with recievers
     public double distanceToUser;
     public string mediaType;
     public string senderID;
