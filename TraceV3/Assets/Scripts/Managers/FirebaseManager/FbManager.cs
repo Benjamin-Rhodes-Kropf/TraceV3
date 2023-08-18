@@ -1186,36 +1186,6 @@ public partial class FbManager : MonoBehaviour
             }
             StartCoroutine(GetRecievedTrace(args.Snapshot.Key));
         }
-
-        // void HandleChildChanged(object sender, ChildChangedEventArgs args) {
-        //     if (args.DatabaseError != null) {
-        //         Debug.LogError(args.DatabaseError.Message);
-        //         return;
-        //     }
-        //     // Do something with the data in args.Snapshot
-        //     Debug.Log("child changed:" +args.Snapshot);
-        //     Debug.Log("value:" +  args.Snapshot.GetRawJsonValue());
-        // }
-
-        // void HandleChildRemoved(object sender, ChildChangedEventArgs args) {
-        //     if (args.DatabaseError != null) {
-        //         Debug.LogError(args.DatabaseError.Message);
-        //         return;
-        //     }
-        //     // Do something with the data in args.Snapshot
-        //     Debug.Log("child removed:" +args.Snapshot);
-        //     Debug.Log("value:" +  args.Snapshot.GetRawJsonValue());
-        // }
-
-        // void HandleChildMoved(object sender, ChildChangedEventArgs args) {
-        //     if (args.DatabaseError != null) {
-        //         Debug.LogError(args.DatabaseError.Message);
-        //         return;
-        //     }
-        //     // Do something with the data in args.Snapshot
-        //     Debug.Log("child moved:" +args.Snapshot);
-        //     Debug.Log("value:" +  args.Snapshot.GetRawJsonValue());
-        // }
     }
     public void SubscribeOrUnsubscribeToSentTraces(bool subscribe)
     {
@@ -1223,16 +1193,10 @@ public partial class FbManager : MonoBehaviour
         if (subscribe)
         {
             refrence.ChildAdded += HandleChildAdded;
-            //refrence.ChildChanged += HandleChildChanged;
-            //refrence.ChildRemoved += HandleChildRemoved;
-            //refrence.ChildMoved += HandleChildMoved;
         }
         else
         {
             refrence.ChildAdded -= HandleChildAdded;
-            //refrence.ChildChanged -= HandleChildChanged;
-            //refrence.ChildRemoved -= HandleChildRemoved;
-            //refrence.ChildMoved -= HandleChildMoved;
         }
 
         void HandleChildAdded(object sender, ChildChangedEventArgs args) {
@@ -1241,38 +1205,7 @@ public partial class FbManager : MonoBehaviour
                 return;
             }
             StartCoroutine(GetSentTrace(args.Snapshot.Key));
-            //Debug.Log("value:" +  args.Snapshot.GetRawJsonValue());
         }
-
-        // void HandleChildChanged(object sender, ChildChangedEventArgs args) {
-        //     if (args.DatabaseError != null) {
-        //         Debug.Log("HandleChildAdded Error");
-        //         //return;
-        //     }
-        //     // Do something with the data in args.Snapshot
-        //     Debug.Log("child changed:" +args.Snapshot);
-        //     Debug.Log("value:" +  args.Snapshot.GetRawJsonValue());
-        // }
-
-        // void HandleChildRemoved(object sender, ChildChangedEventArgs args) {
-        //     if (args.DatabaseError != null) {
-        //         Debug.LogError(args.DatabaseError.Message);
-        //         return;
-        //     }
-        //     // Do something with the data in args.Snapshot
-        //     Debug.Log("child removed:" +args.Snapshot);
-        //     Debug.Log("value:" +  args.Snapshot.GetRawJsonValue());
-        // }
-
-        // void HandleChildMoved(object sender, ChildChangedEventArgs args) {
-        //     if (args.DatabaseError != null) {
-        //         Debug.LogError(args.DatabaseError.Message);
-        //         return;
-        //     }
-        //     // Do something with the data in args.Snapshot
-        //     Debug.Log("child moved:" +args.Snapshot);
-        //     Debug.Log("value:" +  args.Snapshot.GetRawJsonValue());
-        // }
     }
     public void SubscribeToFriendShipRequests()
     {
