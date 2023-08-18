@@ -1184,7 +1184,7 @@ public partial class FbManager : MonoBehaviour
                 Debug.Log("HandleChildAdded Error");
                 return;
             }
-            StartCoroutine(GetRecievedTrace(args.Snapshot.Key));
+            StartCoroutine(GetRecievedTrace(args.Snapshot.Key)); //todo: why pass key when args.Snapshot probraly has data
         }
     }
     public void SubscribeOrUnsubscribeToSentTraces(bool subscribe)
@@ -1484,7 +1484,7 @@ public partial class FbManager : MonoBehaviour
             {
                 var trace = new TraceObject(lng, lat, radius, receivers, senderID, senderName, sendTime, 20, mediaType,traceID);
                 TraceManager.instance.recivedTraceObjects.Add(trace);
-                PlayerPrefsManager.s_Instance.ReceivedTraces(TraceManager.instance.recivedTraceObjects);
+                PlayerPrefsManager.s_Instance.ReceivedTraces(TraceManager.instance.recivedTraceObjects);  //todo: this is not good... it runs for each one
                 BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
                 TraceManager.instance.UpdateMap(new Vector2());
                 FbManager.instance.AnalyticsSetTracesReceived(TraceManager.instance.recivedTraceObjects.Count.ToString());

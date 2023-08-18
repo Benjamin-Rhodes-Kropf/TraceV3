@@ -12,7 +12,7 @@ public class PlayerPrefsManager : MonoBehaviour
         s_Instance = this;
     }
 
-
+    //todo: do same thing for sent traces
     public void ReceivedTraces(List<TraceObject> traces)
     {
         string traceJSON = JsonConvert.SerializeObject(traces);
@@ -30,12 +30,4 @@ public class PlayerPrefsManager : MonoBehaviour
         traces = JsonConvert.DeserializeObject<List<TraceObject>>(tracesString);
         return traces;
     }
-
-
-
-
-
-
-
-
 }
