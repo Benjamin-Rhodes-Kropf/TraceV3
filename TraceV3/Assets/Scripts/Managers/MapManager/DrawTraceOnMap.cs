@@ -26,7 +26,7 @@ public class DrawTraceOnMap : MonoBehaviour
     [SerializeField] private Texture2D secondarySentTexture;
     
 
-    public OnlineMapsMarker DrawCirlce(double lat, double lng, float radius, TraceType traceType, string markerID)
+    public OnlineMapsMarker DrawCircle(double lat, double lng, float radius, TraceType traceType, string markerID)
     {
         OnlineMapsMarker _onlineMapsMarker = PlaceTrace(lat, lng, radius, traceType, markerID);
         _onlineMapsMarker.displayedTexture = _onlineMapsMarker.secondaryZoomedOutTexture;
@@ -107,7 +107,7 @@ public class DrawTraceOnMap : MonoBehaviour
         //draw loading trace
         if (SendTraceManager.instance.isSendingTrace)
         {
-            DrawCirlce(SendTraceManager.instance.location.x, SendTraceManager.instance.location.y, SendTraceManager.instance.selectedRadius, TraceType.SENDING, "loading");
+            DrawCircle(SendTraceManager.instance.location.x, SendTraceManager.instance.location.y, SendTraceManager.instance.selectedRadius, TraceType.SENDING, "loading");
         }
     }
     

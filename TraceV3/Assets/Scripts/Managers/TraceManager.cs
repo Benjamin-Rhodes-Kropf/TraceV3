@@ -341,12 +341,12 @@ public class TraceManager : MonoBehaviour
                     {
                         if (dist < 0)
                         {
-                            traceObject.marker = drawTraceOnMap.DrawCirlce(traceObject.lat, traceObject.lng, (traceObject.radius), DrawTraceOnMap.TraceType.OPENING, traceObject.id);
+                            traceObject.marker = drawTraceOnMap.DrawCircle(traceObject.lat, traceObject.lng, (traceObject.radius), DrawTraceOnMap.TraceType.OPENING, traceObject.id);
                             traceObject.canBeOpened = true;
                         }
                         else
                         {                               
-                            traceObject.marker = drawTraceOnMap.DrawCirlce(traceObject.lat, traceObject.lng, (traceObject.radius), DrawTraceOnMap.TraceType.RECEIVED, traceObject.id);
+                            traceObject.marker = drawTraceOnMap.DrawCircle(traceObject.lat, traceObject.lng, (traceObject.radius), DrawTraceOnMap.TraceType.RECEIVED, traceObject.id);
                             traceObject.canBeOpened = false;
                         }
                     }
@@ -354,18 +354,18 @@ public class TraceManager : MonoBehaviour
                     {
                         if (dist < 0)
                         {
-                            traceObject.marker = drawTraceOnMap.DrawCirlce(traceObject.lat, traceObject.lng, (traceObject.radius), DrawTraceOnMap.TraceType.RECEIVED, traceObject.id);
+                            traceObject.marker = drawTraceOnMap.DrawCircle(traceObject.lat, traceObject.lng, (traceObject.radius), DrawTraceOnMap.TraceType.RECEIVED, traceObject.id);
                             traceObject.canBeOpened = true;
                         }
                         else
                         {
                             if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).isBestFriend)
                             {
-                                traceObject.marker = drawTraceOnMap.DrawCirlce(traceObject.lat, traceObject.lng, (traceObject.radius), DrawTraceOnMap.TraceType.RECEIVEDBESTFRIEND, traceObject.id);
+                                traceObject.marker = drawTraceOnMap.DrawCircle(traceObject.lat, traceObject.lng, (traceObject.radius), DrawTraceOnMap.TraceType.RECEIVEDBESTFRIEND, traceObject.id);
                             }
                             else
                             {
-                                traceObject.marker = drawTraceOnMap.DrawCirlce(traceObject.lat, traceObject.lng, (traceObject.radius), DrawTraceOnMap.TraceType.RECEIVED, traceObject.id);
+                                traceObject.marker = drawTraceOnMap.DrawCircle(traceObject.lat, traceObject.lng, (traceObject.radius), DrawTraceOnMap.TraceType.RECEIVED, traceObject.id);
                             }
                             traceObject.canBeOpened = false;
                         }
@@ -380,7 +380,7 @@ public class TraceManager : MonoBehaviour
             {
                 if (!traceobject.hasBeenAdded)
                 {
-                    traceobject.marker = drawTraceOnMap.DrawCirlce(traceobject.lat, traceobject.lng, (traceobject.radius), DrawTraceOnMap.TraceType.SENT, traceobject.id);
+                    traceobject.marker = drawTraceOnMap.DrawCircle(traceobject.lat, traceobject.lng, (traceobject.radius), DrawTraceOnMap.TraceType.SENT, traceobject.id);
                     traceobject.hasBeenAdded = true;
                 }
             }
@@ -389,7 +389,7 @@ public class TraceManager : MonoBehaviour
             {
                 Debug.Log("Drawing Sending Trace Loading On Map");
                 var loadingTraceObject = drawTraceOnMap.sendingTraceTraceLoadingObject;
-                drawTraceOnMap.DrawCirlce(loadingTraceObject.lat, loadingTraceObject.lng, loadingTraceObject.radius, DrawTraceOnMap.TraceType.SENDING, loadingTraceObject.id);
+                drawTraceOnMap.DrawCircle(loadingTraceObject.lat, loadingTraceObject.lng, loadingTraceObject.radius, DrawTraceOnMap.TraceType.SENDING, loadingTraceObject.id);
             }
         }
     }

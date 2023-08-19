@@ -63,35 +63,30 @@ public partial class FbManager : MonoBehaviour
     
    void Awake()
    {
-       if (resetPlayerPrefs)
-        {
+       //do not destroy
+       if (instance != null)
+       {Destroy(gameObject);}
+       instance = this;
+       DontDestroyOnLoad(this.gameObject);
+       
+        //settings
+        if (resetPlayerPrefs)
             PlayerPrefs.DeleteAll();
-        }
-
-        IsFirebaseUserInitialised = false;
-
-        //makes sure nothing can use the db until its enabled and connected
-        dependencyStatus = DependencyStatus.UnavailableUpdating;
         
-        if (instance != null)
-        {Destroy(gameObject);}
-        instance = this;
-        DontDestroyOnLoad(this.gameObject);
-
+        //setup fb for initialization
+        IsFirebaseUserInitialised = false;
+        dependencyStatus = DependencyStatus.UnavailableUpdating;
         _firebaseStorage = FirebaseStorage.DefaultInstance;
         _firebaseStorageReference = _firebaseStorage.GetReferenceFromUrl(firebaseStorageReferenceUrl);
-
         _firebaseFirestore = FirebaseFirestore.DefaultInstance;
         
-        //Check that all of the necessary dependencies for Firebase are present on the system
+        //Check that all of the necessary dependencies for fb are present on the system
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
         {
             dependencyStatus = task.Result;
             if (dependencyStatus == DependencyStatus.Available)
             {
                 InitializeFirebase();
-                Debug.Log("Auto Logging in with username:" + PlayerPrefs.GetString("Username"));
-                Debug.Log("Auto Logging in with password:" + PlayerPrefs.GetString("Password"));
             }
             else
             {
@@ -118,24 +113,26 @@ public partial class FbManager : MonoBehaviour
     #region -User Login/Logout
     public IEnumerator AutoLogin()
     {
-        Debug.Log("AutoLogin initalized");
+        //wait for fb to finnish setting up
         while (dependencyStatus != DependencyStatus.Available)
         {
             yield return null;
         }
+        
         String savedUsername = PlayerPrefs.GetString("Username");
         String savedPassword = PlayerPrefs.GetString("Password");
-        
-        Debug.Log("saved user:" +  PlayerPrefs.GetString("Username"));
+
         if (savedUsername != "null" && savedPassword != "null")
         {
+            Debug.Log("Auto Logging in with username:" + PlayerPrefs.GetString("Username"));
+            Debug.Log("Auto Logging in with password:" + PlayerPrefs.GetString("Password"));
             StartCoroutine(FbManager.instance.Login(savedUsername, savedPassword, (myReturnValue) => {
                 if (myReturnValue.callbackEnum == CallbackEnum.SUCCESS)
                 {
                     Debug.Log("AutoLogin SUCCESS");
                     SetUserLoginSatus(true);
-                    Debug.Log("is in queue: " + PlayerPrefs.GetInt("IsInvited"));
-                    if (PlayerPrefs.GetInt("IsInvited") == 1)
+                    
+                    if (PlayerPrefs.GetInt("IsInvited") == 1) //if user already invited dont check queue again
                     {
                         Debug.Log("user has been invited");
                         ScreenManager.instance.ChangeScreenFade("HomeScreen");
@@ -572,7 +569,6 @@ public partial class FbManager : MonoBehaviour
         {
             var DBTask = _databaseReference.Child("users").Child(_firebaseUser.UserId).Child("isOnline").SetValueAsync(_isOnline);
             yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
-
             if (DBTask.Exception != null)
             {
                 Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
@@ -584,37 +580,17 @@ public partial class FbManager : MonoBehaviour
             }
         }
         else
+        {
             callback(false);
-    }
- 
-    public IEnumerator UploadProfilePhoto(byte[] _picBytes, System.Action<bool,string> callback)
-    {
-        StorageReference imageRef = _firebaseStorage.GetReference("ProfilePhoto/"+_firebaseUser.UserId+".png");
-
-        var task = imageRef.PutBytesAsync(_picBytes);
-
-        while (task.IsCompleted is false)
-            yield return new WaitForEndOfFrame();
-        if (task.IsFaulted || task.IsCanceled)
-        {
-            Debug.LogError("Task Faulted Due To :: "+ task.Exception.ToString());
-            callback(false,"");
-        }
-        else
-        {
-            Debug.LogError("Image Uploaded Successfully");
-            var url = task.Result.Path + "";
-            callback(true,url);
         }
     }
+    
     public void UploadProfilePicture(Texture raw)
     {
-// Cast the original texture to Texture2D
+        // Cast the original texture to Texture2D
         Texture2D convertedTexture  = (Texture2D)raw;
-        
-// Apply the changes to make them visible
+        // Apply the changes to make them visible
         convertedTexture.Apply();
-
         StartCoroutine(FbManager.instance.UploadProfilePhoto(convertedTexture.EncodeToPNG(), (isUploaded, url) =>
         {
             if (isUploaded)
@@ -634,6 +610,27 @@ public partial class FbManager : MonoBehaviour
                     }));
             }
         }));
+    }
+    
+    public IEnumerator UploadProfilePhoto(byte[] _picBytes, System.Action<bool,string> callback)
+    {
+        StorageReference imageRef = _firebaseStorage.GetReference("ProfilePhoto/"+_firebaseUser.UserId+".png");
+
+        var task = imageRef.PutBytesAsync(_picBytes);
+
+        while (task.IsCompleted is false)
+            yield return new WaitForEndOfFrame();
+        if (task.IsFaulted || task.IsCanceled)
+        {
+            Debug.LogError("Task Faulted Due To :: "+ task.Exception.ToString());
+            callback(false,"");
+        }
+        else
+        {
+            Debug.LogError("Image Uploaded Successfully");
+            var url = task.Result.Path + "";
+            callback(true,url);
+        }
     }
     #endregion
     #region -User Info
@@ -695,8 +692,6 @@ public partial class FbManager : MonoBehaviour
             callback(DBTask.Result.ToString());
         }
     }
-    
-    
     private void HandleUserAdded(object sender, ChildChangedEventArgs args)
     {
         Debug.Log("HandleUserAdded");
@@ -897,13 +892,12 @@ public partial class FbManager : MonoBehaviour
             }
         });
     }
-
     private void HandleRemoveUser(object sender, ChildChangedEventArgs args)
     {
         //todo: handle remove user
     }
     #endregion
-    #region -User Allowed In App
+    #region -User Permissioning
     public IEnumerator SendInvite(string _phoneNumber)
     {
         string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 10);
@@ -952,6 +946,7 @@ public partial class FbManager : MonoBehaviour
         }));
 #endif
     }
+    
     public IEnumerator IsUserListedInInvited(string _phoneNumber, System.Action<bool> callback)
     {
         string cleanedPhoneNumber = _phoneNumber.Substring(_phoneNumber.Length - 10);
@@ -1298,7 +1293,7 @@ public partial class FbManager : MonoBehaviour
         }
         
         _drawTraceOnMap.sendingTraceTraceLoadingObject = new TraceObject(location.x, location.y, radius, receiverObjects, "null",thisUserModel.name,  DateTime.UtcNow.ToString(), 24, mediaType.ToString(), "temp");
-        _drawTraceOnMap.DrawCirlce(location.x, location.y, radius, DrawTraceOnMap.TraceType.SENDING, "null");
+        _drawTraceOnMap.DrawCircle(location.x, location.y, radius, DrawTraceOnMap.TraceType.SENDING, "null");
         
         //update global traces
         childUpdates["Traces/" + key + "/senderID"] = _firebaseUser.UserId;
@@ -1484,7 +1479,6 @@ public partial class FbManager : MonoBehaviour
             {
                 var trace = new TraceObject(lng, lat, radius, receivers, senderID, senderName, sendTime, 20, mediaType,traceID);
                 TraceManager.instance.recivedTraceObjects.Add(trace);
-                PlayerPrefsManager.s_Instance.ReceivedTraces(TraceManager.instance.recivedTraceObjects);  //todo: this is not good... it runs for each one
                 BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
                 TraceManager.instance.UpdateMap(new Vector2());
                 FbManager.instance.AnalyticsSetTracesReceived(TraceManager.instance.recivedTraceObjects.Count.ToString());
