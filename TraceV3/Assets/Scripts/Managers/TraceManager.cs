@@ -23,9 +23,9 @@ public class TraceManager : MonoBehaviour
     [SerializeField] private Vector2 userLocation;
     [SerializeField] private DragAndZoomInertia _dragAndZoomInertia;
     public string currentlyClickingTraceID;
-    public List<TraceObject> recivedTraceObjects;
-    public List<TraceObject> sentTraceObjects;
-    public List<TraceObject> recivedTraceObjectsByDistanceToUser;
+    public List<TraceObject> receivedTraceObjects;
+    public List<TraceObject> sentTraceObjects; 
+    private List<TraceObject> recivedTraceObjectsByDistanceToUser; //todo: why tf isnt this getting used?
 
     [Header("Variables")] 
     [SerializeField] private float pinModeMultiplyer;
@@ -69,29 +69,25 @@ public class TraceManager : MonoBehaviour
         //sort traces based on location of click and which view the user is in
         if (!HomeScreenManager.isInSendTraceView)
         {
-            foreach (var trace in recivedTraceObjects)
+            foreach (var trace in receivedTraceObjects)
             {
-                double distance = 0;
+                double distanceFromMouse = 0;
                 if (trace.marker.isShowingPrimaryTexture)
                 {
-                    Debug.Log("TraceClickMode: cirlce");
-                    distance = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.lat, (float)trace.lng, trace.radius*1000f);
-                    Debug.Log("Click Radius:0");
+                    distanceFromMouse = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.lat, (float)trace.lng, trace.radius*1000f);
                 }
                 else
                 {
-                    Debug.Log("TraceClickMode: pin");
-                    distance = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.lat, (float)trace.lng, _clickRadiusAnimationCurve.Evaluate(onlineMaps.floatZoom)*pinModeMultiplyer);
-                    Debug.Log("Click Radius:"+ _clickRadiusAnimationCurve.Evaluate(onlineMaps.floatZoom)*pinModeMultiplyer);
+                    distanceFromMouse = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.lat, (float)trace.lng, _clickRadiusAnimationCurve.Evaluate(onlineMaps.floatZoom)*pinModeMultiplyer);
                 }
-
-                Debug.Log( "Trace:"+trace.id +" Dist: " + distance);
-                if (distance < 0 && !trace.hasBeenOpened && trace.canBeOpened)
+                
+                if (distanceFromMouse < 0 && (trace.hasBeenOpened || trace.canBeOpened))
                 {
-                    accessibleTraces.Add((trace, distance));
-                }else if (distance < 0 && !trace.hasBeenOpened && !trace.canBeOpened)
+                    accessibleTraces.Add((trace, distanceFromMouse));
+                }
+                else if (distanceFromMouse < 0 && !trace.hasBeenOpened && !trace.canBeOpened) 
                 {
-                    viewableAbleTraces.Add((trace, distance));
+                    viewableAbleTraces.Add((trace, distanceFromMouse));
                 }
             }
         }
@@ -102,18 +98,13 @@ public class TraceManager : MonoBehaviour
                 double distance = 0;
                 if (trace.marker.isShowingPrimaryTexture)
                 {
-                    Debug.Log("TraceClickMode: cirlce");
                     distance = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.lat, (float)trace.lng, trace.radius*1000f);
-                    Debug.Log("Click Radius:0");
                 }
                 else
                 {
-                    Debug.Log("TraceClickMode: pin");
                     distance = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.lat, (float)trace.lng, _clickRadiusAnimationCurve.Evaluate(onlineMaps.floatZoom)*pinModeMultiplyer);
-                    Debug.Log("Click Radius:"+ _clickRadiusAnimationCurve.Evaluate(onlineMaps.floatZoom)*pinModeMultiplyer);
                 }
                 
-                Debug.Log( "Trace:"+trace.id +" Dist: " + distance);
                 if (distance < 0 && !trace.hasBeenOpened && !trace.canBeOpened)
                 {
                     viewableAbleTraces.Add((trace, distance));
@@ -127,10 +118,14 @@ public class TraceManager : MonoBehaviour
             accessibleTraces.Sort((i1, i2) => i1.Item2.CompareTo(i2.Item2));
             var traceToOpen = accessibleTraces[accessibleTraces.Count - 1];
             
-            //keep track of which trace should be hollow for when we redraw the map
+            Debug.Log("OPEN TRACE:" + traceToOpen.Item1.id);
+            Debug.Log("OPEN TRACE: can be opened:" + traceToOpen.Item1.canBeOpened);
+            Debug.Log("OPEN TRACE: has been opened:" + traceToOpen.Item1.hasBeenOpened);
+            
+            //keep track of which trace should be hollow for if we redraw the map after action taken
             currentlyClickingTraceID = traceToOpen.Item1.id;
             
-            //new way because they are linked
+            //convert trace image to hollow if clicked
             traceToOpen.Item1.marker.displayedTexture =  traceToOpen.Item1.marker.primaryHollowInTexture;
 
             HapticManager.instance.SelectionHaptic();
@@ -143,6 +138,11 @@ public class TraceManager : MonoBehaviour
         {
             viewableAbleTraces.Sort((i1, i2) => i1.Item2.CompareTo(i2.Item2));
             var traceToView = viewableAbleTraces[viewableAbleTraces.Count - 1];
+            
+            Debug.Log("VIEW TRACE:" + traceToView.Item1.id);
+            Debug.Log("VIEW TRACE: can be opened:" + traceToView.Item1.canBeOpened);
+            Debug.Log("VIEW TRACE: has been opened:" + traceToView.Item1.hasBeenOpened);
+            
             HapticManager.instance.SelectionHaptic();
             FbManager.instance.AnalyticsOnTracePressed(traceToView.Item1.senderName, traceToView.Item1.sendTime, "view");
             StartCoroutine(_dragAndZoomInertia.ZoomToObject(new Vector2((float)traceToView.Item1.lng, (float)traceToView.Item1.lat), -traceToView.Item1.radius, 0.1f));
@@ -177,18 +177,18 @@ public class TraceManager : MonoBehaviour
     }
     public IOrderedEnumerable<TraceObject> OrderTracesByDistanceToUser()
     {
-        foreach (var traceObject in recivedTraceObjects)
+        foreach (var traceObject in receivedTraceObjects)
         {
             traceObject.distanceToUser = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(
                 userLocation.x,userLocation.y,(float)traceObject.lat, (float)traceObject.lng, traceObject.radius);
         }
-        var traceObjectsInOrderOfDistance = recivedTraceObjects.OrderBy(f => f.distanceToUser);
+        var traceObjectsInOrderOfDistance = receivedTraceObjects.OrderBy(f => f.distanceToUser);
         return traceObjectsInOrderOfDistance;
     }
     private List<TraceObject> ApplyDistanceFilterTraces(float userLat, float userLon)
     {
         var filtered = new List<(TraceObject, double)>();
-        foreach (var trace in recivedTraceObjects)
+        foreach (var trace in receivedTraceObjects)
         {
             var distance = ApproximateDistanceBetweenTwoLatLongsInM(userLat, userLon, trace.lat,
                 trace.lng);
@@ -201,17 +201,17 @@ public class TraceManager : MonoBehaviour
     
     private void UpdateNotificationsForNext50Traces()
     {
-        if (recivedTraceObjects.Count < 1)
+        if (receivedTraceObjects.Count < 1)
         {
             Debug.Log("UpdateNotificationsForNextTraces: No Traces Available!");
             return;
         }
 
-        recivedTraceObjects = ApplyDistanceFilterTraces(_previousLatitude, _previousLongitude);
+        receivedTraceObjects = ApplyDistanceFilterTraces(_previousLatitude, _previousLongitude);
 
-        for (var i = 0; i < recivedTraceObjects.Count && i < 50; i++)
+        for (var i = 0; i < receivedTraceObjects.Count && i < 50; i++)
         {
-            var trace = recivedTraceObjects[i];
+            var trace = receivedTraceObjects[i];
             if (!trace.hasBeenOpened)
             {
                 ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng,trace.radius, " ", trace.senderName);
@@ -279,7 +279,7 @@ public class TraceManager : MonoBehaviour
     public int GetRecivedTraceIndexByID(string traceID)
     {
         int counter = 0;
-        foreach (var trace in recivedTraceObjects)
+        foreach (var trace in receivedTraceObjects)
         {
             if (trace.id == traceID)
             {
@@ -332,46 +332,11 @@ public class TraceManager : MonoBehaviour
 
         if (!HomeScreenManager.isInSendTraceView)
         {
-            foreach (var traceObject in recivedTraceObjects)
+            foreach (var traceObject in receivedTraceObjects)
             {
                 var dist = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates((float)traceObject.lat, (float)traceObject.lng, currentLatitude, currentLongitude, (float)(traceObject.radius*1000));
-                if (!traceObject.hasBeenAdded && !traceObject.hasBeenOpened)
-                {
-                    if (currentlyClickingTraceID == traceObject.id)
-                    {
-                        if (dist < 0)
-                        {
-                            traceObject.marker = drawTraceOnMap.DrawCircle(traceObject.lat, traceObject.lng, (traceObject.radius), DrawTraceOnMap.TraceType.OPENING, traceObject.id);
-                            traceObject.canBeOpened = true;
-                        }
-                        else
-                        {                               
-                            traceObject.marker = drawTraceOnMap.DrawCircle(traceObject.lat, traceObject.lng, (traceObject.radius), DrawTraceOnMap.TraceType.RECEIVED, traceObject.id);
-                            traceObject.canBeOpened = false;
-                        }
-                    }
-                    else
-                    {
-                        if (dist < 0)
-                        {
-                            traceObject.marker = drawTraceOnMap.DrawCircle(traceObject.lat, traceObject.lng, (traceObject.radius), DrawTraceOnMap.TraceType.RECEIVED, traceObject.id);
-                            traceObject.canBeOpened = true;
-                        }
-                        else
-                        {
-                            if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).isBestFriend)
-                            {
-                                traceObject.marker = drawTraceOnMap.DrawCircle(traceObject.lat, traceObject.lng, (traceObject.radius), DrawTraceOnMap.TraceType.RECEIVEDBESTFRIEND, traceObject.id);
-                            }
-                            else
-                            {
-                                traceObject.marker = drawTraceOnMap.DrawCircle(traceObject.lat, traceObject.lng, (traceObject.radius), DrawTraceOnMap.TraceType.RECEIVED, traceObject.id);
-                            }
-                            traceObject.canBeOpened = false;
-                        }
-                    }
-                    traceObject.hasBeenAdded = true;
-                }
+                if (!traceObject.hasBeenAdded)
+                    traceObject.marker = drawTraceOnMap.DrawCircle(traceObject.lat, traceObject.lng, (traceObject.radius), GetTraceType(dist, traceObject), traceObject.id);
             }
         }
         else
@@ -394,12 +359,84 @@ public class TraceManager : MonoBehaviour
         }
     }
 
+    private DrawTraceOnMap.TraceType GetTraceType(double dist, TraceObject traceObject)
+    {
+        if (!traceObject.hasBeenOpened)
+        {
+            if (currentlyClickingTraceID == traceObject.id)
+            {
+                if (dist < 0)
+                {
+                    //if they can open the trace draw trace opening color depending on friendship
+                    traceObject.canBeOpened = true;
+                    if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).isBestFriend)
+                    {
+                        return DrawTraceOnMap.TraceType.OPENINGBESTFRIEND;
+                    }
+                    else
+                    {
+                        return DrawTraceOnMap.TraceType.OPENING;
+                    }
+                }
+                else
+                {
+                    //if they cant open the trace draw trace recieved color depending on friendship
+                    traceObject.canBeOpened = false;
+                    if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).isBestFriend)
+                    {
+                        return DrawTraceOnMap.TraceType.RECEIVEDBESTFRIEND;
+                    }
+                    else
+                    {
+                        return DrawTraceOnMap.TraceType.RECEIVED;
+                    }
+                }
+            } //if they are not clicking on the trace
+            else
+            {
+                if (dist < 0)
+                {
+                    //if they can open the trace draw trace opening color depending on friendship
+                    traceObject.canBeOpened = true;
+                }
+                else
+                {
+                    //if they cant open the trace draw trace color depending on friendship
+                    traceObject.canBeOpened = false;
+                }
+                if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).isBestFriend)
+                {
+                    return DrawTraceOnMap.TraceType.RECEIVEDBESTFRIEND;
+                }
+                else
+                {
+                    return DrawTraceOnMap.TraceType.RECEIVED;
+                }
+            }
+        }
+        else //trace object has been opened
+        {
+            traceObject.canBeOpened = true; //all trace that have been opened can be opened regardless of distance
+            if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).isBestFriend)
+            {
+                return DrawTraceOnMap.TraceType.OPENEDBESTFRIEND;
+            }
+            else
+            {
+                return DrawTraceOnMap.TraceType.OPENED;
+            }
+        }
+    }
+
+    
+    
+    
     public void TraceViewSwitched()
     {
         ClearTracesOnMap();
         if (!HomeScreenManager.isInSendTraceView)
         {
-            foreach (var traceobject in recivedTraceObjects)
+            foreach (var traceobject in receivedTraceObjects)
             {
                 traceobject.hasBeenAdded = false;
             }
@@ -425,7 +462,7 @@ public class TraceManager : MonoBehaviour
     public void ClearTracesOnMap()
     {
         drawTraceOnMap.Clear();
-        foreach (var traceobject in recivedTraceObjects)
+        foreach (var traceobject in receivedTraceObjects)
         {
             traceobject.hasBeenAdded = false;
         }
@@ -519,7 +556,7 @@ public class TraceObject
     public string sendTime;
     public double endTimeStamp;
     
-    public TraceObject(double longitude, double latitude, float radius, List<TraceReceiverObject> people, string senderID, string senderName, string sendTime, double endTimeStamp, string mediaType, string id)
+    public TraceObject(double longitude, double latitude, float radius, List<TraceReceiverObject> people, string senderID, string senderName, string sendTime, double endTimeStamp, string mediaType, string id, bool hasBeenOpened)
     {
         lng = longitude;
         lat = latitude;
@@ -531,5 +568,6 @@ public class TraceObject
         this.endTimeStamp = endTimeStamp;
         this.mediaType = mediaType;
         this.id = id;
+        this.hasBeenOpened = hasBeenOpened;
     }
 }

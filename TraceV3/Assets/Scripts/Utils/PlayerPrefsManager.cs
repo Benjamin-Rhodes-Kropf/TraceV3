@@ -21,10 +21,10 @@ public class PlayerPrefsManager : MonoBehaviour
         {
             Debug.Log("iOS app went to background");
             Debug.Log("Saving Player Prefs");
-            if(TraceManager.instance.recivedTraceObjects.Count > 0)
-                SaveReceivedTracesToPlayerPrefs(TraceManager.instance.recivedTraceObjects);
-            if(TraceManager.instance.recivedTraceObjects.Count > 0)
-                SaveSentTracesToPlayerPrefs(TraceManager.instance.recivedTraceObjects);
+            if(TraceManager.instance.receivedTraceObjects.Count > 0)
+                SaveReceivedTracesToPlayerPrefs(TraceManager.instance.receivedTraceObjects);
+            if(TraceManager.instance.receivedTraceObjects.Count > 0)
+                SaveSentTracesToPlayerPrefs(TraceManager.instance.receivedTraceObjects);
             if(FbManager.instance._allFriends.Count > 0)
                 SaveFriendsToPlayerPrefs(FbManager.instance._allFriends);
         }
@@ -37,10 +37,10 @@ public class PlayerPrefsManager : MonoBehaviour
     private void OnApplicationQuit()
     {
         Debug.Log("Saving Player Prefs");
-        if(TraceManager.instance.recivedTraceObjects.Count > 0)
-            SaveReceivedTracesToPlayerPrefs(TraceManager.instance.recivedTraceObjects);
-        if(TraceManager.instance.recivedTraceObjects.Count > 0)
-            SaveSentTracesToPlayerPrefs(TraceManager.instance.recivedTraceObjects);
+        if(TraceManager.instance.receivedTraceObjects.Count > 0)
+            SaveReceivedTracesToPlayerPrefs(TraceManager.instance.receivedTraceObjects);
+        if(TraceManager.instance.receivedTraceObjects.Count > 0)
+            SaveSentTracesToPlayerPrefs(TraceManager.instance.receivedTraceObjects);
         if(FbManager.instance._allFriends.Count > 0)
             SaveFriendsToPlayerPrefs(FbManager.instance._allFriends);
     }

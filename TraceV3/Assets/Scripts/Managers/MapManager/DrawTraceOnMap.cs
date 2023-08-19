@@ -77,17 +77,26 @@ public class DrawTraceOnMap : MonoBehaviour
             case TraceType.SENT:
                 _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primarySentTexture, secondarySentTexture, primarySendingTextureHollow, markerID);
                 return _onlineMapsMarker;
+            case TraceType.SENDING:
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primarySendingTextureHollow, secondarySentTexture, primarySendingTextureHollow, markerID);
+                return _onlineMapsMarker;
             case TraceType.RECEIVED:
                 _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, markerID);
                 return _onlineMapsMarker;
             case TraceType.RECEIVEDBESTFRIEND:
                 _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverTextureBF, secondaryReceiverTextureBF, primaryReceivingHollowTextureBF, markerID);
                 return _onlineMapsMarker;
-            case TraceType.SENDING:
-                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primarySendingTextureHollow, secondarySentTexture, primarySendingTextureHollow, markerID);
-                return _onlineMapsMarker;
             case TraceType.OPENING:
                 _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, markerID);
+                return _onlineMapsMarker;
+            case TraceType.OPENINGBESTFRIEND:
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTextureBF, secondaryReceiverTextureBF, primaryReceivingHollowTextureBF, markerID);
+                return _onlineMapsMarker;
+            case TraceType.OPENED:
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, markerID);
+                return _onlineMapsMarker;
+            case TraceType.OPENEDBESTFRIEND:
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTextureBF, secondaryReceiverTextureBF, primaryReceivingHollowTextureBF, markerID);
                 return _onlineMapsMarker;
         }
         return null;
@@ -111,6 +120,6 @@ public class DrawTraceOnMap : MonoBehaviour
         }
     }
     
-    public enum TraceType {RECEIVED, RECEIVEDBESTFRIEND, SENT, SENDING, OPENING};
+    public enum TraceType {RECEIVED, RECEIVEDBESTFRIEND, SENT, SENDING, OPENING, OPENINGBESTFRIEND, OPENED, OPENEDBESTFRIEND};
 }
 

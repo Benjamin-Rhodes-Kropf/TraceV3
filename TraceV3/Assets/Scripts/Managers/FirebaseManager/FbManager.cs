@@ -355,7 +355,7 @@ public partial class FbManager : MonoBehaviour
             SetUserLoginSatus(false);
         }
         
-        TraceManager.instance.recivedTraceObjects.Clear();
+        TraceManager.instance.receivedTraceObjects.Clear();
         TraceManager.instance.sentTraceObjects.Clear();
         HomeScreenManager.isInSendTraceView = false;
         thisUserModel = new UserModel();
@@ -1292,7 +1292,7 @@ public partial class FbManager : MonoBehaviour
             receiverObjects.Add(new TraceReceiverObject(user, false));
         }
         
-        _drawTraceOnMap.sendingTraceTraceLoadingObject = new TraceObject(location.x, location.y, radius, receiverObjects, "null",thisUserModel.name,  DateTime.UtcNow.ToString(), 24, mediaType.ToString(), "temp");
+        _drawTraceOnMap.sendingTraceTraceLoadingObject = new TraceObject(location.x, location.y, radius, receiverObjects, "null",thisUserModel.name,  DateTime.UtcNow.ToString(), 24, mediaType.ToString(), "temp", true);
         _drawTraceOnMap.DrawCircle(location.x, location.y, radius, DrawTraceOnMap.TraceType.SENDING, "null");
         
         //update global traces
@@ -1363,11 +1363,10 @@ public partial class FbManager : MonoBehaviour
     public void MarkTraceAsOpened(string traceID)
     {
         Dictionary<string, Object> childUpdates = new Dictionary<string, Object>();
-        childUpdates["TracesRecived/" + _firebaseUser.UserId + "/" + traceID] = null;
         childUpdates["Traces/" + traceID + "/Reciver/"+ _firebaseUser.UserId +"/HasViewed"] = true;
         _databaseReference.UpdateChildrenAsync(childUpdates);
-        //Update Map
-        TraceManager.instance.recivedTraceObjects[TraceManager.instance.GetRecivedTraceIndexByID(traceID)].hasBeenOpened = true;
+        //Update Map To Display Trace as Opened
+        TraceManager.instance.receivedTraceObjects[TraceManager.instance.GetRecivedTraceIndexByID(traceID)].hasBeenOpened = true;
     }
     public IEnumerator GetRecievedTrace(string traceID)
     {
@@ -1388,6 +1387,7 @@ public partial class FbManager : MonoBehaviour
             string senderID = "";
             string senderName = "";
             string sendTime = "";
+            bool traceHasBeenOpenedByThisUser = false;
             List<TraceReceiverObject> receivers = new List<TraceReceiverObject>();
             float durationHours = 0;
 
@@ -1457,6 +1457,12 @@ public partial class FbManager : MonoBehaviour
                             bool hasViewed = (bool)receiverData["HasViewed"];
                             //string profilePhoto = receiverData["ProfilePhoto"].ToString(); //if we ever want profile photo
                             receivers.Add(new TraceReceiverObject(receiverID, hasViewed));
+                            
+                            //check if this user opened it
+                            if (receiverID == FbManager.instance.thisUserModel.userID && hasViewed)
+                            {
+                                traceHasBeenOpenedByThisUser = true;
+                            }
                         }
                         break;
                     }
@@ -1477,11 +1483,11 @@ public partial class FbManager : MonoBehaviour
             }
             if (lat != 0 && lng != 0 && radius != 0) //check for malformed data entry
             {
-                var trace = new TraceObject(lng, lat, radius, receivers, senderID, senderName, sendTime, 20, mediaType,traceID);
-                TraceManager.instance.recivedTraceObjects.Add(trace);
+                var trace = new TraceObject(lng, lat, radius, receivers, senderID, senderName, sendTime, 20, mediaType,traceID, traceHasBeenOpenedByThisUser);
+                TraceManager.instance.receivedTraceObjects.Add(trace);
                 BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
                 TraceManager.instance.UpdateMap(new Vector2());
-                FbManager.instance.AnalyticsSetTracesReceived(TraceManager.instance.recivedTraceObjects.Count.ToString());
+                FbManager.instance.AnalyticsSetTracesReceived(TraceManager.instance.receivedTraceObjects.Count.ToString());
             }
         }
     }
@@ -1499,7 +1505,6 @@ public partial class FbManager : MonoBehaviour
             double lat = 0;
             double lng = 0;
             float radius = 0;
-            bool hasBeenOpened;
             string senderID = "";
             List<TraceReceiverObject> receivers = new List<TraceReceiverObject>();
             string senderName = "";
@@ -1593,7 +1598,7 @@ public partial class FbManager : MonoBehaviour
             
             if (lat != 0 && lng != 0 && radius != 0)
             {
-                var trace = new TraceObject(lng, lat, radius, receivers, senderID,senderName, sendTime, 20, mediaType,traceID);
+                var trace = new TraceObject(lng, lat, radius, receivers, senderID,senderName, sendTime, 20, mediaType,traceID, false);
                 TraceManager.instance.sentTraceObjects.Add(trace);
                 TraceManager.instance.UpdateMap(new Vector2());
                 FbManager.instance.AnalyticsSetTracesSent(TraceManager.instance.sentTraceObjects.Count.ToString());

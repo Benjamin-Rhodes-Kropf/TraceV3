@@ -90,13 +90,13 @@ public class MapboxGeocoding : MonoBehaviour
                 }
                 
                 // Extract and print relevant information from the response
-                foreach (var feature in mapboxData.features)
-                {
-                    Debug.Log("Place Name: " + feature.place_name);
-                    Debug.Log("Latitude: " + feature.center[1]);
-                    Debug.Log("Longitude: " + feature.center[0]);
-                    Debug.Log("--------------");
-                }
+                // foreach (var feature in mapboxData.features)
+                // {
+                //     Debug.Log("Place Name: " + feature.place_name);
+                //     Debug.Log("Latitude: " + feature.center[1]);
+                //     Debug.Log("Longitude: " + feature.center[0]);
+                //     Debug.Log("--------------");
+                // }
             }
         }
     }
