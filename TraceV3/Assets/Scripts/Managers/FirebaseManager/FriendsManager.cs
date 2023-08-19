@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using CanvasManagers;
 using UnityEngine;
 using Firebase.Database;
@@ -155,6 +156,17 @@ public partial class FbManager
                 };
                 
                 Debug.Log("Add Friend:" + friend.friendID);
+
+                if (lowConnectivitySmartLogin)
+                {
+                    var alreadyExistsLocally = _allFriends.FirstOrDefault(friendObject => friendObject.friendID == friendId);
+                    if (alreadyExistsLocally != null)
+                    {
+                        Debug.Log("friend already exists locally");
+                        return;
+                    }
+                }
+                
                 _allFriends.Add(friend);
                 AddUserToLocalDbByID(friendId);
                 AnalyticsSetUserFriendCount(_allFriends.Count);

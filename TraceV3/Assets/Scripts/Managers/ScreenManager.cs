@@ -308,6 +308,14 @@ public class ScreenManager : MonoBehaviour
     public void ChangeScreenFade(string ScreenID)
     {
         UIScreen newScreen = ScreenFromID(ScreenID);
+        
+        //check if screen is already selected
+        if (current.Name == ScreenID)
+        {
+            Debug.LogWarning(ScreenID + " is already selected");
+            return;
+        }
+        
         if ( newScreen != null)
         {
             //startScreen leaves the view and endScreen slides into view

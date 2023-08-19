@@ -2750,6 +2750,8 @@ MonoBehaviour:
   dependencyStatus: 6
   firebaseStorageReferenceUrl: gs://geosnapv1.appspot.com
   resetPlayerPrefs: 0
+  fakeLoginWaitTime: 0
+  lowConnectivitySmartLogin: 1
   _drawTraceOnMap: {fileID: 6068666308761308086}
   _dragAndZoomInertia: {fileID: 6068666308761308082}
   _map: {fileID: 6068666308761308066}
@@ -17043,9 +17045,8 @@ MonoBehaviour:
   userLocation: {x: 0, y: 0}
   _dragAndZoomInertia: {fileID: 6068666308761308082}
   currentlyClickingTraceID: 
-  recivedTraceObjects: []
+  receivedTraceObjects: []
   sentTraceObjects: []
-  recivedTraceObjectsByDistanceToUser: []
   pinModeMultiplyer: 100
   _clickRadiusAnimationCurve:
     serializedVersion: 2
@@ -17337,7 +17338,7 @@ MonoBehaviour:
     lat: 0
     lng: 0
     radius: 0
-    numPeopleSent: 0
+    people: []
     distanceToUser: 0
     mediaType: 
     senderID: 
@@ -18349,6 +18350,10 @@ PrefabInstance:
     - target: {fileID: 7069077438171782117, guid: 48051510910734c74ae02d431ff9434b, type: 3}
       propertyPath: m_OverridePixelPerfect
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7793653265278976770, guid: 48051510910734c74ae02d431ff9434b, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7793653265278976770, guid: 48051510910734c74ae02d431ff9434b, type: 3}
       propertyPath: waitBeforeFade

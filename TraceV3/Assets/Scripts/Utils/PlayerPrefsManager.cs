@@ -8,6 +8,7 @@ public class PlayerPrefsManager : MonoBehaviour
     public static PlayerPrefsManager Instance;
     private const string m_ReceivedTracesKey = "DBReceivedTraces_Key";
     private const string m_SentTracesKey = "DBSentTraces_Key";
+    private const string m_UsersKey = "DBUsers_Key";
     private const string m_FriendsKey = "DBFriends_Key";
 
     void Awake()
@@ -24,9 +25,12 @@ public class PlayerPrefsManager : MonoBehaviour
             if(TraceManager.instance.receivedTraceObjects.Count > 0)
                 SaveReceivedTracesToPlayerPrefs(TraceManager.instance.receivedTraceObjects);
             if(TraceManager.instance.receivedTraceObjects.Count > 0)
-                SaveSentTracesToPlayerPrefs(TraceManager.instance.receivedTraceObjects);
+                SaveSentTracesToPlayerPrefs(TraceManager.instance.sentTraceObjects);
             if(FbManager.instance._allFriends.Count > 0)
                 SaveFriendsToPlayerPrefs(FbManager.instance._allFriends);
+            if(FbManager.instance.users.Count > 0)
+                SaveUsersToPlayerPrefs(FbManager.instance.users);
+            PlayerPrefs.SetInt("DBDataCached", 1);
         }
         else
         {
@@ -40,9 +44,12 @@ public class PlayerPrefsManager : MonoBehaviour
         if(TraceManager.instance.receivedTraceObjects.Count > 0)
             SaveReceivedTracesToPlayerPrefs(TraceManager.instance.receivedTraceObjects);
         if(TraceManager.instance.receivedTraceObjects.Count > 0)
-            SaveSentTracesToPlayerPrefs(TraceManager.instance.receivedTraceObjects);
+            SaveSentTracesToPlayerPrefs(TraceManager.instance.sentTraceObjects);
         if(FbManager.instance._allFriends.Count > 0)
             SaveFriendsToPlayerPrefs(FbManager.instance._allFriends);
+        if(FbManager.instance.users.Count > 0)
+            SaveUsersToPlayerPrefs(FbManager.instance.users);
+        PlayerPrefs.SetInt("DBDataCached", 1);
     }
     
     public void SaveReceivedTracesToPlayerPrefs(List<TraceObject> traces)
@@ -69,6 +76,14 @@ public class PlayerPrefsManager : MonoBehaviour
         PlayerPrefs.Save();
     }
     
+    public void SaveUsersToPlayerPrefs(List<UserModel> users)
+    {
+        string usersJSON = JsonConvert.SerializeObject(users);
+        Debug.Log(usersJSON);
+        PlayerPrefs.SetString(m_UsersKey,usersJSON);
+        PlayerPrefs.Save();
+    }
+    
     
     public List<TraceObject> GetReceivedTracesFromPlayerPrefs()
     {
@@ -90,5 +105,13 @@ public class PlayerPrefsManager : MonoBehaviour
         var friendsString = PlayerPrefs.GetString(m_FriendsKey,"");
         friends = JsonConvert.DeserializeObject<List<FriendModel>>(friendsString);
         return friends;
+    }
+    
+    public List<UserModel> GetUsersFromPlayerPrefs()
+    {
+        var users = new List<UserModel>();
+        var usersString = PlayerPrefs.GetString(m_UsersKey,"");
+        users = JsonConvert.DeserializeObject<List<UserModel>>(usersString);
+        return users;
     }
 }

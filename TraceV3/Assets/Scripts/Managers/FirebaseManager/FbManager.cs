@@ -39,8 +39,11 @@ public partial class FbManager : MonoBehaviour
     [SerializeField] private StorageReference _firebaseStorageReference;
     [SerializeField] private FirebaseFirestore _firebaseFirestore;
 
-    [Header("Login Settings")]
+    [Header("Developer Settings")]
     [SerializeField] private bool resetPlayerPrefs;
+    [SerializeField] private int fakeLoginWaitTime;
+    [SerializeField] private bool lowConnectivitySmartLogin;
+
 
     [Header("Maps References")]
     [SerializeField] private DrawTraceOnMap _drawTraceOnMap;
@@ -107,7 +110,24 @@ public partial class FbManager : MonoBehaviour
    private void Start()
     {
         StartCoroutine(AutoLogin());
+        
+        //get player prefs cache while the user is logging in and put user through even if they haven't finished logging in
+        if (PlayerPrefs.GetInt("DBDataCached") == 1 && lowConnectivitySmartLogin && PlayerPrefs.GetString("Password") != "null" && PlayerPrefs.GetString("Password") != "") //makes sure user has been logged in before
+        {
+            StartCoroutine(LowConnectivityPreLogin());
+        }
     }
+
+   public IEnumerator LowConnectivityPreLogin()
+   {
+       yield return new WaitForSeconds(0.2f);
+       ScreenManager.instance.ChangeScreenFade("HomeScreen");
+       users = PlayerPrefsManager.Instance.GetUsersFromPlayerPrefs();
+       _allFriends = PlayerPrefsManager.Instance.GetFriendsFromPlayerPrefs();
+       TraceManager.instance.receivedTraceObjects = PlayerPrefsManager.Instance.GetReceivedTracesFromPlayerPrefs();
+       TraceManager.instance.sentTraceObjects = PlayerPrefsManager.Instance.GetSentTracesFromPlayerPrefs();
+   }
+
 
    #region This User
     #region -User Login/Logout
@@ -118,7 +138,15 @@ public partial class FbManager : MonoBehaviour
         {
             yield return null;
         }
-        
+
+#if UNITY_EDITOR
+        if (lowConnectivitySmartLogin)
+        {
+            //used for testing local DB caching
+            yield return new WaitForSeconds(fakeLoginWaitTime); 
+        } 
+#endif
+
         String savedUsername = PlayerPrefs.GetString("Username");
         String savedPassword = PlayerPrefs.GetString("Password");
 
@@ -126,14 +154,18 @@ public partial class FbManager : MonoBehaviour
         {
             Debug.Log("Auto Logging in with username:" + PlayerPrefs.GetString("Username"));
             Debug.Log("Auto Logging in with password:" + PlayerPrefs.GetString("Password"));
+
             StartCoroutine(FbManager.instance.Login(savedUsername, savedPassword, (myReturnValue) => {
                 if (myReturnValue.callbackEnum == CallbackEnum.SUCCESS)
                 {
                     Debug.Log("AutoLogin SUCCESS");
                     SetUserLoginSatus(true);
-                    
+
                     if (PlayerPrefs.GetInt("IsInvited") == 1) //if user already invited dont check queue again
                     {
+                        if (lowConnectivitySmartLogin && PlayerPrefs.GetInt("DBDataCached") == 1) //user should already be in
+                            return;
+                        
                         Debug.Log("user has been invited");
                         ScreenManager.instance.ChangeScreenFade("HomeScreen");
                     }
@@ -141,6 +173,9 @@ public partial class FbManager : MonoBehaviour
                     {
                         StartCoroutine(FbManager.instance.ManagerUserPermissions(callbackObject =>
                         {
+                            if (lowConnectivitySmartLogin) //user should already be in
+                                return;
+                            
                             if (callbackObject == true)
                             {
                                 ScreenManager.instance.ChangeScreenFade("HomeScreen");
@@ -364,7 +399,8 @@ public partial class FbManager : MonoBehaviour
         
         //todo: clear player-prefs cache when we logout
         //reset player prefs
-        PlayerPrefs.SetString("Username", "null");
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.SetString("Username", "null"); //todo: just make this truly null
         PlayerPrefs.SetString("Password", "null");
         PlayerPrefs.SetInt("IsInvited", 0);
         ScreenManager.instance.ChangeScreenForwards("Welcome");
@@ -1370,6 +1406,16 @@ public partial class FbManager : MonoBehaviour
     }
     public IEnumerator GetRecievedTrace(string traceID)
     {
+        if (lowConnectivitySmartLogin)
+        {
+            var alreadyExistsLocally = TraceManager.instance.receivedTraceObjects.FirstOrDefault(traceObject => traceObject.id == traceID);
+            if (alreadyExistsLocally != null)
+            {
+                Debug.Log("Trace already exists locally");
+                yield break;
+            }
+        }
+        
         var DBTask = _databaseReference.Child("Traces").Child(traceID).GetValueAsync();
         yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
         
@@ -1493,6 +1539,16 @@ public partial class FbManager : MonoBehaviour
     }
     public IEnumerator GetSentTrace(string traceID)
     {
+        if (lowConnectivitySmartLogin)
+        {
+            var alreadyExistsLocally = TraceManager.instance.sentTraceObjects.FirstOrDefault(traceObject => traceObject.id == traceID);
+            if (alreadyExistsLocally != null)
+            {
+                Debug.Log("Trace already exists locally");
+                yield break;
+            }
+        }
+        
         var DBTask = _databaseReference.Child("Traces").Child(traceID).GetValueAsync();
         yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
         

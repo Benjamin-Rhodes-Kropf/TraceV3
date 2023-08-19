@@ -104,11 +104,18 @@ public class TraceManager : MonoBehaviour
                 {
                     distance = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.lat, (float)trace.lng, _clickRadiusAnimationCurve.Evaluate(onlineMaps.floatZoom)*pinModeMultiplyer);
                 }
-                
-                if (distance < 0 && !trace.hasBeenOpened && !trace.canBeOpened)
+
+                //open all sent traces
+                if (distance < 0)
                 {
-                    viewableAbleTraces.Add((trace, distance));
+                    accessibleTraces.Add((trace, distance));
                 }
+                // accessibleTraces.Add((trace, distance));
+                
+                // if (distance < 0 && !trace.hasBeenOpened && !trace.canBeOpened)
+                // {
+                //     viewableAbleTraces.Add((trace, distance));
+                // }
             }   
         }
         
