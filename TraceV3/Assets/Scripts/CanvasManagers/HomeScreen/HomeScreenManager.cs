@@ -182,25 +182,25 @@ public class HomeScreenManager : MonoBehaviour
     }
     #endregion
     
-    public void OpenTrace(string traceID, string senderName, string senderID, string sendDate, string mediaType, List<TraceReceiverObject> receivers) //Todo: Make mediaType an Enum
+    public void OpenTrace(TraceObject trace) //Todo: Make mediaType an Enum
     {
         CloseViewTrace();
         Debug.Log("Open Trace");
-        if (traceID == null)
+        if (trace.id == null)
         {
             Debug.Log("Open Trace");
             return;
         }
-        Debug.Log("mediaType:" + mediaType);
+        Debug.Log("mediaType:" + trace.mediaType);
         
         //determine what type of trace it is
-        if (mediaType == MediaType.PHOTO.ToString())
+        if (trace.mediaType == MediaType.PHOTO.ToString())
         {
-            StartCoroutine(GetTraceTexture(traceID, (texture) =>
+            StartCoroutine(GetTraceTexture(trace.id, (texture) =>
             {
                 if (texture != null)
                 {
-                    openTraceManager.ActivatePhotoFormat(traceID, sendDate, senderName, senderID, receivers.Count);
+                    openTraceManager.ActivatePhotoFormat(trace);
                     openTraceManager.displayTrace.texture = texture;
                 }
                 else
@@ -209,31 +209,16 @@ public class HomeScreenManager : MonoBehaviour
                 }
             }));
             return;
-            #region Old Way
-            // StartCoroutine(FbManager.instance.GetTracePhotoByUrl(traceID, (texture) =>
-            // {
-            //     if (texture != null)
-            //     {
-            //         openTraceManager.ActivatePhotoFormat(traceID, sendDate, senderName, senderID, numOfPeopleSent);
-            //         openTraceManager.displayTrace.texture = texture;
-            //     }
-            //     else
-            //     {
-            //         Debug.LogError("LoadTraceImage Failed");
-            //     }
-            // }));
-            // return;
-            #endregion
         }
-        if (mediaType == MediaType.VIDEO.ToString())
+        if (trace.mediaType == MediaType.VIDEO.ToString())
         {
-            StartCoroutine(GetVideoPath(traceID, (path) =>
+            StartCoroutine(GetVideoPath(trace.id, (path) =>
             {
                 if (path != null)
                 {
                     Debug.Log("Open Trace View");
                     openTraceManager.videoPlayer.url = path;
-                    StartCoroutine((openTraceManager.ActivateVideoFormat(traceID,sendDate,senderName, senderID, receivers.Count)));
+                    StartCoroutine((openTraceManager.ActivateVideoFormat(trace)));
                 }
                 else
                 {
@@ -241,23 +226,6 @@ public class HomeScreenManager : MonoBehaviour
                 }
             }));
             return;
-            #region OldCode
-            // Debug.Log("mediaType == MediaType.Video.ToString()");
-            // StartCoroutine(FbManager.instance.GetTraceVideoByUrl(traceID, (path) =>
-            // {
-            //     if (path != null)
-            //     {
-            //         Debug.Log("Open Trace View");
-            //         openTraceManager.videoPlayer.url = path;
-            //         StartCoroutine((openTraceManager.ActivateVideoFormat(traceID,sendDate,senderName, senderID, numOfPeopleSent)));
-            //     }
-            //     else
-            //     {
-            //         Debug.LogError("LoadTraceImage Failed");
-            //     }
-            // }));
-            return;
-            #endregion
         }
         
     }

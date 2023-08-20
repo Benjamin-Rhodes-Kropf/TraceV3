@@ -19,7 +19,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] private GameObject videoObject;
     [SerializeField] private RectTransform _videoRectTransform;
     [SerializeField] private float videoScaleConstant;
-    [SerializeField] private string traceID;
+    [SerializeField] private TraceObject trace;
     [SerializeField] private string senderID;
     [SerializeField] private TMP_Text senderNameDisplay;
     [SerializeField] private TMP_Text senderDateDisplay;
@@ -201,23 +201,21 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
 
     
     
-    public void ActivatePhotoFormat(string traceID, string sendDate, string senderName, string senderID, int numOfPeopleSent)
+    public void ActivatePhotoFormat(TraceObject trace)
     {
-        this.traceID = traceID;
-        senderNameDisplay.text = senderName;
-        senderDateDisplay.text = "Left " + HelperMethods.ReformatDate(sendDate) + HelperMethods.ReformatRecipients(numOfPeopleSent);
-        this.senderID = senderID;
+        this.trace = trace;
+        senderNameDisplay.text = trace.senderName;
+        senderDateDisplay.text = "Left " + HelperMethods.ReformatDate(trace.sendTime) + HelperMethods.ReformatRecipients(trace.people.Count);
         canUsePhysics = true;
         isPhoto = true;
         imageObject.SetActive(true);
         videoObject.SetActive(false);
     }
-    public IEnumerator ActivateVideoFormat(string traceID, string sendDate, string senderName, string senderID, int numOfPeopleSent)
+    public IEnumerator ActivateVideoFormat(TraceObject trace)
     {
-        this.traceID = traceID;
-        this.senderID = senderID;
-        senderNameDisplay.text = senderName;
-        senderDateDisplay.text = "Left " + HelperMethods.ReformatDate(sendDate) + HelperMethods.ReformatRecipients(numOfPeopleSent);
+        this.trace = trace;
+        senderNameDisplay.text = trace.senderName;
+        senderDateDisplay.text = "Left " + HelperMethods.ReformatDate(trace.sendTime) + HelperMethods.ReformatRecipients(trace.people.Count);
 
         isPhoto = false;
         imageObject.SetActive(false);
@@ -329,21 +327,24 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
             {
                 videoPlayer.Play();
             }
+            
             //Update Map and Database
-            FbManager.instance.MarkTraceAsOpened(traceID);
-            TraceManager.instance.ClearTracesOnMap();
-
-            Vector2 _location = _onlineMapsLocation.GetUserLocation();
-            try
-            {//todo: no clue why it works the second time
-                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!", _location.y, _location.x));
-            }
-            catch (Exception e)
+            if (!trace.hasBeenOpened)
             {
-                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!", _location.y, _location.x));
-                Console.WriteLine(e);
-                throw;
+                FbManager.instance.MarkTraceAsOpened(trace.id);
+                Vector2 _location = _onlineMapsLocation.GetUserLocation();
+                try{//todo: no clue why it works the second time
+                    StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!", _location.y, _location.x));
+                }
+                catch (Exception e)
+                {
+                    StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!", _location.y, _location.x));
+                    Console.WriteLine(e);
+                    throw;
+                }
             }
+            
+            TraceManager.instance.ClearTracesOnMap(); //todo: maybe do this more seamlessly it causes traces on map to dip for a second unitl it repaints
         }
         
         if (hasBegunOpenTrace && changeInYVal < changeInYvalCloseLimit && !isDragging && canCloseTrace)

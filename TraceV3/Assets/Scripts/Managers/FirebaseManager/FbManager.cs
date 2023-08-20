@@ -687,7 +687,8 @@ public partial class FbManager : MonoBehaviour
                 DestroyImmediate(myReturnValue);
             }
             {
-                onFailed?.Invoke("Image not Found");
+                Debug.LogWarning("Image Not Found in Firebase Storage for user:" + userId);
+                //onFailed?.Invoke("Image not Found");
             }
         }));
     }
@@ -1402,7 +1403,9 @@ public partial class FbManager : MonoBehaviour
         childUpdates["Traces/" + traceID + "/Reciver/"+ _firebaseUser.UserId +"/HasViewed"] = true;
         _databaseReference.UpdateChildrenAsync(childUpdates);
         //Update Map To Display Trace as Opened
-        TraceManager.instance.receivedTraceObjects[TraceManager.instance.GetRecivedTraceIndexByID(traceID)].hasBeenOpened = true;
+        var traceIndex = TraceManager.instance.GetReceivedTraceIndexByID(traceID);
+        if(traceIndex != -1)
+            TraceManager.instance.receivedTraceObjects[traceIndex].hasBeenOpened = true;
     }
     public IEnumerator GetRecievedTrace(string traceID)
     {

@@ -138,7 +138,7 @@ public class TraceManager : MonoBehaviour
             HapticManager.instance.SelectionHaptic();
             FbManager.instance.AnalyticsOnTracePressed(traceToOpen.Item1.senderName, traceToOpen.Item1.sendTime, "open");
             StartCoroutine(_dragAndZoomInertia.ZoomToObject(new Vector2((float)traceToOpen.Item1.lng, (float)traceToOpen.Item1.lat), -traceToOpen.Item1.radius, 0.1f));
-            homeScreenManager.OpenTrace(traceToOpen.Item1.id,  traceToOpen.Item1.senderName,traceToOpen.Item1.senderID,traceToOpen.Item1.sendTime, traceToOpen.Item1.mediaType, traceToOpen.Item1.people);
+            homeScreenManager.OpenTrace(traceToOpen.Item1);
             homeScreenManager.UpdateLocationText(17);
         }
         else if(viewableAbleTraces.Count > 0)
@@ -151,10 +151,10 @@ public class TraceManager : MonoBehaviour
             Debug.Log("VIEW TRACE: has been opened:" + traceToView.Item1.hasBeenOpened);
             
             HapticManager.instance.SelectionHaptic();
-            FbManager.instance.AnalyticsOnTracePressed(traceToView.Item1.senderName, traceToView.Item1.sendTime, "view");
             StartCoroutine(_dragAndZoomInertia.ZoomToObject(new Vector2((float)traceToView.Item1.lng, (float)traceToView.Item1.lat), -traceToView.Item1.radius, 0.1f));
             homeScreenManager.ViewTrace( traceToView.Item1.senderName,traceToView.Item1.sendTime, traceToView.Item1.people);
             homeScreenManager.UpdateLocationText(17);
+            FbManager.instance.AnalyticsOnTracePressed(traceToView.Item1.senderName, traceToView.Item1.sendTime, "view");
         }
     }
 
@@ -283,19 +283,14 @@ public class TraceManager : MonoBehaviour
         //If required then we can stop the location service by this
         Input.location.Stop();
     }
-    public int GetRecivedTraceIndexByID(string traceID)
+    public int GetReceivedTraceIndexByID(string traceID)
     {
-        int counter = 0;
-        foreach (var trace in receivedTraceObjects)
+        int index = receivedTraceObjects.FindIndex(p => p.id == traceID);
+        if (index == -1) // FindIndex returns -1 if no match is found.
         {
-            if (trace.id == traceID)
-            {
-                return counter;
-            }
-            counter++;
+            Debug.LogError("Failed to GetReceivedTraceIndexByID:" + traceID);
         }
-        Debug.LogError("Failed to find" + traceID);
-        return -1;
+        return index;
     }
 
 
