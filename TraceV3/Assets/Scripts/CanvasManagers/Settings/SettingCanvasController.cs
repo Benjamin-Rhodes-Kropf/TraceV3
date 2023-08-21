@@ -43,9 +43,12 @@ public class SettingCanvasController
     {
         _view._usernameText.text = FbManager.instance.thisUserModel.username;
         _view._profileNameText.text = FbManager.instance.thisUserModel.name;
-        FbManager.instance.thisUserModel.ProfilePicture(sprite =>
+        if (FbManager.instance.IsFirebaseUserLoggedIn && FbManager.instance.IsFirebaseInitialised)
         {
-            _view._profileImage.texture = sprite.texture;
-        });
+            FbManager.instance.thisUserModel.ProfilePicture(sprite =>
+            {
+                _view._profileImage.texture = sprite.texture;
+            });
+        }
     }
 }

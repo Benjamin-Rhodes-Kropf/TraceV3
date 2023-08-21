@@ -28,8 +28,8 @@ public partial class FbManager : MonoBehaviour
 {
     [Header("Dont Destroy")]
     public static FbManager instance;
-    
-    [Header("Firebase References")]
+
+    [Header("Firebase References")] 
     [SerializeField] private DependencyStatus dependencyStatus;
     [SerializeField] private String firebaseStorageReferenceUrl;
     [SerializeField] private FirebaseAuth _firebaseAuth;    
@@ -42,9 +42,8 @@ public partial class FbManager : MonoBehaviour
     [Header("Developer Settings")]
     [SerializeField] private bool resetPlayerPrefs;
     [SerializeField] private int fakeLoginWaitTime;
-    [SerializeField] private bool lowConnectivitySmartLogin;
-
-
+    public bool lowConnectivitySmartLogin;
+    
     [Header("Maps References")]
     [SerializeField] private DrawTraceOnMap _drawTraceOnMap;
     [SerializeField] private DragAndZoomInertia _dragAndZoomInertia;
@@ -57,7 +56,18 @@ public partial class FbManager : MonoBehaviour
 
     private Dictionary<string, object> _firestoreData;
     
+    public bool IsFirebaseUserLoggedIn
+    {
+        get;
+        private set;
+    }
     public bool IsFirebaseUserInitialised
+    {
+        get;
+        private set;
+    }
+    
+    public bool IsFirebaseInitialised
     {
         get;
         private set;
@@ -78,6 +88,8 @@ public partial class FbManager : MonoBehaviour
         
         //setup fb for initialization
         IsFirebaseUserInitialised = false;
+        IsFirebaseInitialised = false;
+        IsFirebaseUserLoggedIn = false;
         dependencyStatus = DependencyStatus.UnavailableUpdating;
         _firebaseStorage = FirebaseStorage.DefaultInstance;
         _firebaseStorageReference = _firebaseStorage.GetReferenceFromUrl(firebaseStorageReferenceUrl);
@@ -106,7 +118,9 @@ public partial class FbManager : MonoBehaviour
         _allReceivedRequests = new List<FriendRequests>();
         _allSentRequests = new List<FriendRequests>();
         _allFriends = new List<FriendModel>();
+        IsFirebaseInitialised = true;
     } 
+   
    private void Start()
     {
         StartCoroutine(AutoLogin());
@@ -114,20 +128,19 @@ public partial class FbManager : MonoBehaviour
         //get player prefs cache while the user is logging in and put user through even if they haven't finished logging in
         if (PlayerPrefs.GetInt("DBDataCached") == 1 && lowConnectivitySmartLogin && PlayerPrefs.GetString("Password") != "null" && PlayerPrefs.GetString("Password") != "") //makes sure user has been logged in before
         {
-            StartCoroutine(LowConnectivityPreLogin());
+            LowConnectivityPreLogin();
         }
     }
 
-   public IEnumerator LowConnectivityPreLogin()
+   public void LowConnectivityPreLogin()
    {
-       yield return new WaitForSeconds(0.2f);
        ScreenManager.instance.ChangeScreenFade("HomeScreen");
-       users = PlayerPrefsManager.Instance.GetUsersFromPlayerPrefs();
-       _allFriends = PlayerPrefsManager.Instance.GetFriendsFromPlayerPrefs();
+       //thisUserModel = PlayerPrefsManager.Instance.GetThisUserFromPlayerPrefs();
+       //users = PlayerPrefsManager.Instance.GetUsersFromPlayerPrefs();
+       //_allFriends = PlayerPrefsManager.Instance.GetFriendsFromPlayerPrefs();
        TraceManager.instance.receivedTraceObjects = PlayerPrefsManager.Instance.GetReceivedTracesFromPlayerPrefs();
        TraceManager.instance.sentTraceObjects = PlayerPrefsManager.Instance.GetSentTracesFromPlayerPrefs();
    }
-
 
    #region This User
     #region -User Login/Logout
@@ -160,7 +173,6 @@ public partial class FbManager : MonoBehaviour
                 {
                     Debug.Log("AutoLogin SUCCESS");
                     SetUserLoginSatus(true);
-
                     if (PlayerPrefs.GetInt("IsInvited") == 1) //if user already invited dont check queue again
                     {
                         if (lowConnectivitySmartLogin && PlayerPrefs.GetInt("DBDataCached") == 1) //user should already be in
@@ -173,7 +185,7 @@ public partial class FbManager : MonoBehaviour
                     {
                         StartCoroutine(FbManager.instance.ManagerUserPermissions(callbackObject =>
                         {
-                            if (lowConnectivitySmartLogin) //user should already be in
+                            if (lowConnectivitySmartLogin && IsFirebaseUserLoggedIn) //user should already be in
                                 return;
                             
                             if (callbackObject == true)
@@ -186,6 +198,7 @@ public partial class FbManager : MonoBehaviour
                             }
                         }));
                     }
+                    IsFirebaseUserLoggedIn = true;
                 }
                 else
                 {
@@ -330,6 +343,8 @@ public partial class FbManager : MonoBehaviour
     
     private void GetCurrentUserData(string password)
     {
+        //todo: dont do if cache exists
+        
         // Get a reference to the "users" node in the database
         DatabaseReference usersRef = _databaseReference.Child("users");
         
@@ -671,6 +686,7 @@ public partial class FbManager : MonoBehaviour
     #endregion
     #region -User Info
     public void GetProfilePhotoFromFirebaseStorage(string userId, Action<Texture> onSuccess, Action<string> onFailed, ref Coroutine _coroutine) {
+        
         _coroutine = StartCoroutine(GetProfilePhotoFromFirebaseStorageRoutine(userId, (myReturnValue) => {
             if (myReturnValue != null)
             {
@@ -694,6 +710,12 @@ public partial class FbManager : MonoBehaviour
     }
     public IEnumerator GetProfilePhotoFromFirebaseStorageRoutine(string userId, System.Action<Texture> callback)
     {
+        if (dependencyStatus != DependencyStatus.Available)
+        {
+            Debug.LogWarning("GetProfilePhotoFromFirebaseStorageRoutine was not called because DependencyStatus.Available is not available");
+            yield break;
+        }
+        
         var url = "";
         StorageReference pathReference = _firebaseStorage.GetReference("ProfilePhoto/"+userId+".png");
         var task = pathReference.GetDownloadUrlAsync();

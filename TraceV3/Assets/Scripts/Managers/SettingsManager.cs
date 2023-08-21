@@ -34,7 +34,7 @@ public class SettingsManager : MonoBehaviour
         onFailed += CallBackFunctionOnImageRetriveFailedFromDatabase;
         profileName.text = FbManager.instance.thisUserModel.name;
         userName.text = FbManager.instance.thisUserModel.username;
-        FbManager.instance.GetProfilePhotoFromFirebaseStorage(FbManager.instance.thisUserModel.userID, onSuccess,onFailed,ref downloadPCoroutine);
+        //FbManager.instance.GetProfilePhotoFromFirebaseStorage(FbManager.instance.thisUserModel.userID, onSuccess,onFailed,ref downloadPCoroutine);
     }
 
     public void OpenGalleryForProfilePictureSelection() {
@@ -50,8 +50,6 @@ public class SettingsManager : MonoBehaviour
     void  CallBackFunctionOnImageRetriveFromDatabase(Texture _profileImage) {
         FbManager.instance.userImageTexture = _profileImage;
         profileImage.texture = FbManager.instance.userImageTexture;
-
-        //return _profileImage;
     }
 
     void CallBackFunctionOnImageRetriveFailedFromDatabase(string message)

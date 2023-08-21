@@ -8,6 +8,7 @@ public class PlayerPrefsManager : MonoBehaviour
     public static PlayerPrefsManager Instance;
     private const string m_ReceivedTracesKey = "DBReceivedTraces_Key";
     private const string m_SentTracesKey = "DBSentTraces_Key";
+    private const string m_UserKey = "DBThisUser_Key";
     private const string m_UsersKey = "DBUsers_Key";
     private const string m_FriendsKey = "DBFriends_Key";
 
@@ -30,6 +31,8 @@ public class PlayerPrefsManager : MonoBehaviour
                 SaveFriendsToPlayerPrefs(FbManager.instance._allFriends);
             if(FbManager.instance.users.Count > 0)
                 SaveUsersToPlayerPrefs(FbManager.instance.users);
+            if(FbManager.instance.thisUserModel != null)
+                SaveThisUserToPlayerPrefs(FbManager.instance.thisUserModel);
             PlayerPrefs.SetInt("DBDataCached", 1);
         }
         else
@@ -49,6 +52,8 @@ public class PlayerPrefsManager : MonoBehaviour
             SaveFriendsToPlayerPrefs(FbManager.instance._allFriends);
         if(FbManager.instance.users.Count > 0)
             SaveUsersToPlayerPrefs(FbManager.instance.users);
+        if(FbManager.instance.thisUserModel != null)
+            SaveThisUserToPlayerPrefs(FbManager.instance.thisUserModel);
         PlayerPrefs.SetInt("DBDataCached", 1);
     }
     
@@ -75,12 +80,20 @@ public class PlayerPrefsManager : MonoBehaviour
         PlayerPrefs.SetString(m_FriendsKey,friendsJSON);
         PlayerPrefs.Save();
     }
-    
+
     public void SaveUsersToPlayerPrefs(List<UserModel> users)
     {
         string usersJSON = JsonConvert.SerializeObject(users);
         Debug.Log(usersJSON);
-        PlayerPrefs.SetString(m_UsersKey,usersJSON);
+        PlayerPrefs.SetString(m_UsersKey, usersJSON);
+        PlayerPrefs.Save();
+    }
+
+    public void SaveThisUserToPlayerPrefs(UserModel user)
+    {
+        string userJSON = JsonConvert.SerializeObject(user);
+        Debug.Log(userJSON);
+        PlayerPrefs.SetString(m_UserKey,userJSON);
         PlayerPrefs.Save();
     }
     
@@ -106,12 +119,19 @@ public class PlayerPrefsManager : MonoBehaviour
         friends = JsonConvert.DeserializeObject<List<FriendModel>>(friendsString);
         return friends;
     }
-    
     public List<UserModel> GetUsersFromPlayerPrefs()
     {
         var users = new List<UserModel>();
         var usersString = PlayerPrefs.GetString(m_UsersKey,"");
         users = JsonConvert.DeserializeObject<List<UserModel>>(usersString);
         return users;
+    }
+    
+    public UserModel GetThisUserFromPlayerPrefs()
+    {
+        var user = new UserModel();
+        var userString = PlayerPrefs.GetString(m_UserKey,"");
+        user = JsonConvert.DeserializeObject<UserModel>(userString);
+        return user;
     }
 }
