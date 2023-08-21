@@ -21773,18 +21773,22 @@ MonoBehaviour:
     m_RotationOrder: 4
   changeInYvalGoLimit: 500
   changeInYDvLimit: 2000
-  m_YResetLimit: -800
+  m_YResetLimit: -10000
+  changeInYvalEnterCommentsLimit: 100
   changeInYvalExitLimit: -100
   changeInYvalCloseLimit: -200
   dyForScreenSwitchLimit: 0
   stopAtScreenTopLimit: 1000
   openUp_targetYVal: 0
-  imageHeightTarget: 0
+  viewImageHeightTarget: 0
+  commentImageHeightTarget: 6000
   isPhoto: 0
   isDragging: 0
   canUsePhysics: 0
   canCloseTrace: 0
+  canOpenComments: 0
   hasBegunOpenTrace: 0
+  hasBegunOpenComments: 0
   hasBegunCloseTrace: 0
   g_gameObject: {fileID: 5018903674878201331}
   g_transform: {fileID: 5018903674878201330}
