@@ -21642,7 +21642,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _homeScreenManager: {fileID: 878571056}
-  _onlineMapsLocation: {fileID: 0}
+  _onlineMapsLocation: {fileID: 6068666308761308073}
   imageObject: {fileID: 737867114}
   videoObject: {fileID: 9176076432397620534}
   _videoRectTransform: {fileID: 1774053180721600769}
@@ -21743,30 +21743,30 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: -1000
-      value: 1
-      inSlope: -0.001
-      outSlope: -0.001
-      tangentMode: 34
-      weightedMode: 0
+      value: 0.9955139
+      inSlope: -0.005020862
+      outSlope: -0.005020862
+      tangentMode: 0
+      weightedMode: 3
       inWeight: 0
-      outWeight: 0.33333334
+      outWeight: 0.1554054
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: -0.001
-      outSlope: -0.001
-      tangentMode: 136
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+      inSlope: -0.0063523194
+      outSlope: -0.004399943
+      tangentMode: 1
+      weightedMode: 3
+      inWeight: 0.0945946
+      outWeight: 0.18243243
     - serializedVersion: 3
       time: 1000
-      value: -1
-      inSlope: -0.001
-      outSlope: -0.001
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
+      value: -1.0044861
+      inSlope: -0.005608072
+      outSlope: -0.005608072
+      tangentMode: 0
+      weightedMode: 1
+      inWeight: 0.13605443
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -21774,8 +21774,9 @@ MonoBehaviour:
   changeInYvalGoLimit: 500
   changeInYDvLimit: 2000
   m_YResetLimit: -10000
-  changeInYvalEnterCommentsLimit: 100
-  changeInYvalExitLimit: -100
+  changeInYvalEnterCommentsLimit: 400
+  changeInYvalExitCommentsLimit: -100
+  changeInYvalExitLimit: -2000
   changeInYvalCloseLimit: -200
   dyForScreenSwitchLimit: 0
   stopAtScreenTopLimit: 1000
@@ -21784,12 +21785,7 @@ MonoBehaviour:
   commentImageHeightTarget: 5400
   isPhoto: 0
   isDragging: 0
-  canUsePhysics: 0
-  canCloseTrace: 0
-  canOpenComments: 0
-  hasBegunOpenTrace: 0
-  hasBegunOpenComments: 0
-  hasBegunCloseTrace: 0
+  currentState: 0
   g_gameObject: {fileID: 5018903674878201331}
   g_transform: {fileID: 5018903674878201330}
   springStiffness: 30

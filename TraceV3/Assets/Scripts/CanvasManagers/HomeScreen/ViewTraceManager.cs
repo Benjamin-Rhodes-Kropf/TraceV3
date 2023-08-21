@@ -125,8 +125,8 @@ public class ViewTraceManager :  MonoBehaviour, IDragHandler, IEndDragHandler
     public void ClosePreview()
     {
         Debug.Log("ExitTrace");
-        hasBegunExit = true;
-        m_targetYVal = -1000;
+        // hasBegunExit = true;
+        // m_targetYVal = -1000;
     }
     
     public void Update()
