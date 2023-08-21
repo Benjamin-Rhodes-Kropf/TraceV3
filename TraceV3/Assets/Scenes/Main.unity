@@ -3027,8 +3027,8 @@ MonoBehaviour:
   dependencyStatus: 6
   firebaseStorageReferenceUrl: gs://geosnapv1.appspot.com
   resetPlayerPrefs: 0
-  fakeLoginWaitTime: 0
-  lowConnectivitySmartLogin: 0
+  fakeLoginWaitTime: 5
+  lowConnectivitySmartLogin: 1
   _drawTraceOnMap: {fileID: 6068666308761308086}
   _dragAndZoomInertia: {fileID: 6068666308761308082}
   _map: {fileID: 6068666308761308066}

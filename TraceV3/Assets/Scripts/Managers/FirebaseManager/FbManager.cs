@@ -135,9 +135,9 @@ public partial class FbManager : MonoBehaviour
    public void LowConnectivityPreLogin()
    {
        ScreenManager.instance.ChangeScreenFade("HomeScreen");
-       //thisUserModel = PlayerPrefsManager.Instance.GetThisUserFromPlayerPrefs();
-       //users = PlayerPrefsManager.Instance.GetUsersFromPlayerPrefs();
-       //_allFriends = PlayerPrefsManager.Instance.GetFriendsFromPlayerPrefs();
+       //thisUserModel = PlayerPrefsManager.Instance.GetThisUserFromPlayerPrefs(); //todo: get this one working so it dont crash
+       users = PlayerPrefsManager.Instance.GetUsersFromPlayerPrefs();
+       _allFriends = PlayerPrefsManager.Instance.GetFriendsFromPlayerPrefs();
        TraceManager.instance.receivedTraceObjects = PlayerPrefsManager.Instance.GetReceivedTracesFromPlayerPrefs();
        TraceManager.instance.sentTraceObjects = PlayerPrefsManager.Instance.GetSentTracesFromPlayerPrefs();
    }
