@@ -275,6 +275,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         if (!isDragging)
         {
             m_transform.position = new Vector3(m_transform.position.x, m_transform.position.y + Dy*frictionWeight + slideRestitutionCurve.Evaluate(changeInYVal)*100f); 
+            Debug.Log("Set Y to:" + (m_transform.position.y + Dy*frictionWeight + slideRestitutionCurve.Evaluate(changeInYVal)*100f));
             bobOffset = Mathf.Sin(Time.time * bobSpeed) * bobHeight;
         }
         var scaleArrow = arrowScale.Evaluate(changeInYVal);
@@ -290,6 +291,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         gTransformVelocity += acceleration * Time.deltaTime;
         g_transform.position += new Vector3(0,gTransformVelocity, 0) * Time.deltaTime;
 
+
         //only apply friction before screen switch
         if (!hasBegunOpenTrace)
         {
@@ -297,10 +299,10 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         }
         
         //upper limit
-        if (changeInYVal > changeInYDvLimit)
-        {
-            Dy = 0;
-        }
+        // if (changeInYVal > changeInYDvLimit)
+        // {
+        //     Dy = 0;
+        // }
         
         //first open trace
         if (changeInYVal > changeInYvalGoLimit && !hasBegunOpenTrace && !hasBegunOpenComments && !isDragging && Dy > dyForScreenSwitchLimit)
@@ -354,15 +356,13 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         }
         
         //if change in y val positive open comments
-        if (changeInYVal > changeInYvalEnterCommentsLimit && hasBegunOpenTrace && !hasBegunOpenComments && !isDragging && canOpenComments) //&& Dy < dyLimitForScreenExit
+        if (changeInYVal > changeInYvalEnterCommentsLimit && hasBegunOpenTrace && !hasBegunOpenComments && !isDragging && canOpenComments && !hasBegunCloseTrace) //&& Dy < dyLimitForScreenExit
         {
             Debug.Log("EnterComments");
             hasBegunOpenComments = true;
             m_targetYVal = commentImageHeightTarget;
         }
         
-        //if change in y val negative close view
-
         //if change in y val negative close view
         if (changeInYVal < changeInYvalExitLimit && !isDragging && Dy < dyLimitForScreenExit && canCloseTrace)
         {

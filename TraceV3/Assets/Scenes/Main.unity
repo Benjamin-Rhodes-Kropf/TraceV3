@@ -21781,7 +21781,7 @@ MonoBehaviour:
   stopAtScreenTopLimit: 1000
   openUp_targetYVal: 0
   viewImageHeightTarget: 0
-  commentImageHeightTarget: 6000
+  commentImageHeightTarget: 5400
   isPhoto: 0
   isDragging: 0
   canUsePhysics: 0
