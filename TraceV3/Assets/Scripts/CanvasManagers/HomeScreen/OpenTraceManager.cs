@@ -70,9 +70,6 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         MediaView,
         OpeningCommentView,
         CommentView,
-        Idle,
-        Dragging,
-        UsingPhysics
     }
     
     [Header("Swipe Physics Secondary")]
@@ -271,7 +268,6 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
 
     public void Update()
     {
-        return;
         switch (currentState)
         {
             case State.Closed:
@@ -307,6 +303,12 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
                 //state actions
                 ApplyPhysics();
                 AnimateSecondaryMotions();
+
+                // if (changeInYVal < 0)
+                // {
+                //     Dy = 0;
+                // }
+                
                 //state junctions
                 if (DoneOpeningMediaView())
                     DoneOpeningMediaTransition();
@@ -315,16 +317,22 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
                 //state actions
                 ApplyPhysics();
                 AnimateSecondaryMotions();
-
-                if (CloseSlideUpToView())
-                    CloseSlideUpToViewTransition();
+                
                 if(OpenCommentView())
                     OpenCommentViewTransition();
+                else if (CloseSlideUpToView())
+                    CloseSlideUpToViewTransition();
                 break;
             case State.OpeningCommentView:
                 //state actions
                 ApplyPhysics();
                 AnimateSecondaryMotions();
+                
+                // if (changeInYVal > 0)
+                // {
+                //     Dy = 0;
+                // }
+                
                 //state junctions
                 if(DoneOpeningCommentView())
                     currentState = State.CommentView;
@@ -334,31 +342,8 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
                 AnimateSecondaryMotions();
                 if (CloseComments())
                     OpenMediaViewTransition();
-                
-                break;
-            case State.Idle:
-                if (isDragging)
-                    currentState = State.Dragging;
-                else
-                    currentState = State.UsingPhysics;
-                break;
-            case State.Dragging:
-                if (!isDragging)
-                    currentState = State.Idle;
-                break;
-            case State.UsingPhysics:
-                ApplyPhysics();
-                AnimateSecondaryMotions();
                 break;
         }
-        
-        
-        //once at top of window begin playing media
-        if (g_transform.localPosition.y > 1000)
-        {
-            //Play Video
-            }
-        
     }
 
     #region State Junctions
@@ -432,26 +417,31 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         {
             videoPlayer.Play();
         }
-            
+
+        TraceManager.instance.ClearTracesOnMap(); //todo: maybe do this more seamlessly it causes traces on map to dip for a second unitl it repaints
+
+        currentState = State.MediaView;
+        return;
         //Update Map and Database
         if (!trace.hasBeenOpened)
         {
-            FbManager.instance.MarkTraceAsOpened(trace.id);
+            FbManager.instance.MarkTraceAsOpened(trace);
             Vector2 _location = _onlineMapsLocation.GetUserLocation();
             try{//todo: no clue why it works the second time
                 StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!", _location.y, _location.x));
             }
             catch (Exception e)
             {
-                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!", _location.y, _location.x));
-                Console.WriteLine(e);
-                throw;
+                try
+                {
+                    StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!", _location.y, _location.x));
+                }
+                catch (Exception exception)
+                {
+                    Debug.LogWarning("Failed to Notify User");
+                }
             }
         }
-            
-        TraceManager.instance.ClearTracesOnMap(); //todo: maybe do this more seamlessly it causes traces on map to dip for a second unitl it repaints
-
-        currentState = State.MediaView;
     }
     
     void ClosedTransition()
@@ -469,7 +459,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
             return;
         }
         m_transform.position = new Vector3(m_transform.position.x, m_transform.position.y + Dy + slideRestitutionCurve.Evaluate(changeInYVal)*100f);
-        Debug.Log("Set Y to:" + (m_transform.position.y + Dy*frictionWeight + slideRestitutionCurve.Evaluate(changeInYVal)*100f));
+        //Debug.Log("Set Y to:" + (m_transform.position.y + Dy*frictionWeight + slideRestitutionCurve.Evaluate(changeInYVal)*100f));
         Dy *= frictionWeight;
         bobOffset = Mathf.Sin(Time.time * bobSpeed) * bobHeight; 
         changeInYVal =  m_transform.position.y-m_targetYVal;

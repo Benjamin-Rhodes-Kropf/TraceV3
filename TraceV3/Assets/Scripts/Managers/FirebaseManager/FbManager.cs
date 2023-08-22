@@ -1419,15 +1419,12 @@ public partial class FbManager : MonoBehaviour
             });
     }
     
-    public void MarkTraceAsOpened(string traceID)
+    public void MarkTraceAsOpened(TraceObject trace)
     {
         Dictionary<string, Object> childUpdates = new Dictionary<string, Object>();
-        childUpdates["Traces/" + traceID + "/Reciver/"+ _firebaseUser.UserId +"/HasViewed"] = true;
+        childUpdates["Traces/" + trace.id + "/Reciver/"+ _firebaseUser.UserId +"/HasViewed"] = true;
         _databaseReference.UpdateChildrenAsync(childUpdates);
-        //Update Map To Display Trace as Opened
-        var traceIndex = TraceManager.instance.GetReceivedTraceIndexByID(traceID);
-        if(traceIndex != -1)
-            TraceManager.instance.receivedTraceObjects[traceIndex].hasBeenOpened = true;
+        trace.hasBeenOpened = true;
     }
     public IEnumerator GetRecievedTrace(string traceID)
     {
