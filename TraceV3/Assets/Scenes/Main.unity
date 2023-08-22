@@ -21774,7 +21774,7 @@ MonoBehaviour:
   changeInYvalGoLimit: 500
   changeInYDvLimit: 2000
   m_YResetLimit: -10000
-  changeInYvalEnterCommentsLimit: 400
+  changeInYvalEnterCommentsLimit: 100
   changeInYvalExitCommentsLimit: -100
   changeInYvalExitLimit: -2000
   changeInYvalCloseLimit: -200
