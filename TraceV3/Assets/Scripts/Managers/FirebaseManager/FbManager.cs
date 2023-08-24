@@ -1424,7 +1424,7 @@ public partial class FbManager : MonoBehaviour
         Dictionary<string, Object> childUpdates = new Dictionary<string, Object>();
         childUpdates["Traces/" + trace.id + "/Reciver/"+ _firebaseUser.UserId +"/HasViewed"] = true;
         _databaseReference.UpdateChildrenAsync(childUpdates);
-        trace.hasBeenOpened = true;
+        trace.HasBeenOpened = true;
     }
     public IEnumerator GetRecievedTrace(string traceID)
     {

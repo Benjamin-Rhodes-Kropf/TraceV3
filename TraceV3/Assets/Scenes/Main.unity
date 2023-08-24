@@ -4619,7 +4619,7 @@ MonoBehaviour:
   firebaseStorageReferenceUrl: gs://geosnapv1.appspot.com
   resetPlayerPrefs: 0
   fakeLoginWaitTime: 0
-  lowConnectivitySmartLogin: 1
+  lowConnectivitySmartLogin: 0
   _drawTraceOnMap: {fileID: 6068666308761308086}
   _dragAndZoomInertia: {fileID: 6068666308761308082}
   _map: {fileID: 6068666308761308066}
@@ -21688,7 +21688,6 @@ MonoBehaviour:
     senderName: 
     hasBeenAdded: 0
     canBeOpened: 0
-    hasBeenOpened: 0
     sendTime: 
     endTimeStamp: 0
   senderID: 
@@ -21753,12 +21752,12 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: -0.0063523194
-      outSlope: -0.004399943
+      inSlope: -0.00083544926
+      outSlope: -0.00077104056
       tangentMode: 1
       weightedMode: 3
-      inWeight: 0.0945946
-      outWeight: 0.18243243
+      inWeight: 0.57432437
+      outWeight: 0.45945945
     - serializedVersion: 3
       time: 1000
       value: -1.0044861
@@ -21776,8 +21775,10 @@ MonoBehaviour:
   m_YResetLimit: -10000
   changeInYvalEnterCommentsLimit: 100
   changeInYvalExitCommentsLimit: -100
-  changeInYvalExitLimit: -2000
-  changeInYvalCloseLimit: -200
+  changeInYvalSlidUpExitLimit: -100
+  changeInYvalMediaEnterLimit: -1
+  changeInYvalMediaExitLimit: -100
+  changeInYvalCloseLimit: -100
   dyForScreenSwitchLimit: 0
   stopAtScreenTopLimit: 1000
   openUp_targetYVal: 0
@@ -25452,7 +25453,7 @@ MonoBehaviour:
   useProxy: 1
   useSoftwareJPEGDecoder: 0
   width: 4096
-  _activeTypeSettings: 07User ID21018benrk10006Map ID228225cljkem6q300e201qp76zfaaya12Access
+  _activeTypeSettings: 07User ID21018benrk10006Map ID228225cle5v79j8000201k1lr5tl86v12Access
     Token293290pk.eyJ1IjoiYmVucmsxMDAiLCJhIjoiY2xid3VqdWJjMDdodDNubjdpaTU2OWZiYSJ9.3ytRbwK51mPCf73LWaJjmA
   _zoom: 18
   latitude: 42
@@ -25964,7 +25965,6 @@ MonoBehaviour:
     senderName: 
     hasBeenAdded: 0
     canBeOpened: 0
-    hasBeenOpened: 0
     sendTime: 
     endTimeStamp: 0
   _scaleMapElements: {fileID: 6068666308761308085}
@@ -30449,7 +30449,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7891300783617491487
 RectTransform:
   m_ObjectHideFlags: 0

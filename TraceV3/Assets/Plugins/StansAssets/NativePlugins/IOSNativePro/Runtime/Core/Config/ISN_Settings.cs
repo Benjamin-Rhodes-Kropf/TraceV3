@@ -88,7 +88,7 @@ namespace SA.iOS
         // Contacts Settings
         //--------------------------------------
 
-        public string ContactsUsageDescription =
+        public string ContactsUsageDescription = 
             "Trace uses your contacts to help you find friends";
 
         //--------------------------------------

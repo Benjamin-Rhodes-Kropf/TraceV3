@@ -81,11 +81,11 @@ public class TraceManager : MonoBehaviour
                     distanceFromMouse = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.lat, (float)trace.lng, _clickRadiusAnimationCurve.Evaluate(onlineMaps.floatZoom)*pinModeMultiplyer);
                 }
                 
-                if (distanceFromMouse < 0 && (trace.hasBeenOpened || trace.canBeOpened))
+                if (distanceFromMouse < 0 && (trace.HasBeenOpened || trace.canBeOpened))
                 {
                     accessibleTraces.Add((trace, distanceFromMouse));
                 }
-                else if (distanceFromMouse < 0 && !trace.hasBeenOpened && !trace.canBeOpened) 
+                else if (distanceFromMouse < 0 && !trace.HasBeenOpened && !trace.canBeOpened) 
                 {
                     viewableAbleTraces.Add((trace, distanceFromMouse));
                 }
@@ -127,7 +127,7 @@ public class TraceManager : MonoBehaviour
             
             Debug.Log("OPEN TRACE:" + traceToOpen.Item1.id);
             Debug.Log("OPEN TRACE: can be opened:" + traceToOpen.Item1.canBeOpened);
-            Debug.Log("OPEN TRACE: has been opened:" + traceToOpen.Item1.hasBeenOpened);
+            Debug.Log("OPEN TRACE: has been opened:" + traceToOpen.Item1.HasBeenOpened);
             
             //keep track of which trace should be hollow for if we redraw the map after action taken
             currentlyClickingTraceID = traceToOpen.Item1.id;
@@ -135,7 +135,7 @@ public class TraceManager : MonoBehaviour
             //convert trace image to hollow if clicked
             traceToOpen.Item1.marker.displayedTexture =  traceToOpen.Item1.marker.primaryHollowInTexture;
 
-            HapticManager.instance.SelectionHaptic();
+            HapticManager.instance.PlaySelectionHaptic();
             FbManager.instance.AnalyticsOnTracePressed(traceToOpen.Item1.senderName, traceToOpen.Item1.sendTime, "open");
             StartCoroutine(_dragAndZoomInertia.ZoomToObject(new Vector2((float)traceToOpen.Item1.lng, (float)traceToOpen.Item1.lat), -traceToOpen.Item1.radius, 0.1f));
             homeScreenManager.OpenTrace(traceToOpen.Item1);
@@ -148,9 +148,9 @@ public class TraceManager : MonoBehaviour
             
             Debug.Log("VIEW TRACE:" + traceToView.Item1.id);
             Debug.Log("VIEW TRACE: can be opened:" + traceToView.Item1.canBeOpened);
-            Debug.Log("VIEW TRACE: has been opened:" + traceToView.Item1.hasBeenOpened);
+            Debug.Log("VIEW TRACE: has been opened:" + traceToView.Item1.HasBeenOpened);
             
-            HapticManager.instance.SelectionHaptic();
+            HapticManager.instance.PlaySelectionHaptic();
             StartCoroutine(_dragAndZoomInertia.ZoomToObject(new Vector2((float)traceToView.Item1.lng, (float)traceToView.Item1.lat), -traceToView.Item1.radius, 0.1f));
             homeScreenManager.ViewTrace( traceToView.Item1.senderName,traceToView.Item1.sendTime, traceToView.Item1.people);
             homeScreenManager.UpdateLocationText(17);
@@ -219,7 +219,7 @@ public class TraceManager : MonoBehaviour
         for (var i = 0; i < receivedTraceObjects.Count && i < 50; i++)
         {
             var trace = receivedTraceObjects[i];
-            if (!trace.hasBeenOpened)
+            if (!trace.HasBeenOpened)
             {
                 ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng,trace.radius, " ", trace.senderName);
             }
@@ -363,7 +363,7 @@ public class TraceManager : MonoBehaviour
 
     private DrawTraceOnMap.TraceType GetTraceType(double dist, TraceObject traceObject)
     {
-        if (!traceObject.hasBeenOpened)
+        if (!traceObject.HasBeenOpened)
         {
             if (currentlyClickingTraceID == traceObject.id)
             {
@@ -554,9 +554,23 @@ public class TraceObject
     public string senderName;
     public bool hasBeenAdded;
     public bool canBeOpened = false;
-    public bool hasBeenOpened = false;
+    private bool _hasBeenOpened = false;
     public string sendTime;
     public double endTimeStamp;
+    
+    // Getter and Setter for hasBeenOpened
+    public bool HasBeenOpened
+    {
+        get { return _hasBeenOpened; }
+        set
+        {
+            _hasBeenOpened = value;
+            if (value == true)
+            {
+                marker.Dispose(); //destroy marker as it is now rendering the wrong thing
+            }
+        }
+    }
     
     public TraceObject(double longitude, double latitude, float radius, List<TraceReceiverObject> people, string senderID, string senderName, string sendTime, double endTimeStamp, string mediaType, string id, bool hasBeenOpened)
     {
@@ -570,6 +584,6 @@ public class TraceObject
         this.endTimeStamp = endTimeStamp;
         this.mediaType = mediaType;
         this.id = id;
-        this.hasBeenOpened = hasBeenOpened;
+        _hasBeenOpened = hasBeenOpened; //dont use setter because we dont want to destroy objects coming from memory
     }
 }

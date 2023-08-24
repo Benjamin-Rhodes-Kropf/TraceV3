@@ -20,9 +20,14 @@ public class HapticManager : MonoBehaviour
     {
         MMVibrationManager.Haptic(HapticTypes.SoftImpact); //Todo: on input on release button
     }
-    public void SelectionHaptic()
+    public void PlaySelectionHaptic()
     {
         MMVibrationManager.Haptic(HapticTypes.LightImpact);
+    }
+
+    public void PlayHeavyImpactHaptic()
+    {
+        MMVibrationManager.Haptic(HapticTypes.HeavyImpact);
     }
     
     public void SuccessHaptic()
