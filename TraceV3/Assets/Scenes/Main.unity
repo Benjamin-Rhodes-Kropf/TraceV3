@@ -21770,15 +21770,16 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  changeInYvalGoLimit: 500
+  changeInYvalGoLimit: 70
   changeInYDvLimit: 2000
   m_YResetLimit: -10000
   changeInYvalEnterCommentsLimit: 100
-  changeInYvalExitCommentsLimit: -100
-  changeInYvalSlidUpExitLimit: -100
+  changeInYvalExitCommentsLimit: -80
+  changeInYvalSlidUpExitLimit: -80
   changeInYvalMediaEnterLimit: -1
-  changeInYvalMediaExitLimit: -100
-  changeInYvalCloseLimit: -100
+  changeInYvalMediaExitLimit: -80
+  changeInYvalCommentEnterLimit: -1
+  changeInYvalCloseLimit: -80
   dyForScreenSwitchLimit: 0
   stopAtScreenTopLimit: 1000
   openUp_targetYVal: 0

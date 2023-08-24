@@ -51,6 +51,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] private float changeInYvalSlidUpExitLimit;
     [SerializeField] private float changeInYvalMediaEnterLimit;
     [SerializeField] private float changeInYvalMediaExitLimit;
+    [SerializeField] private float changeInYvalCommentEnterLimit;
     [SerializeField] private float changeInYvalCloseLimit;
     [SerializeField] private float dyForScreenSwitchLimit;
     [SerializeField] private float stopAtScreenTopLimit;
@@ -72,6 +73,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         MediaView,
         OpeningCommentView,
         CommentView,
+        ClosingCommentView,
     }
     
     [Header("Swipe Physics Secondary")]
@@ -269,6 +271,17 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
 
     public void Update()
     {
+        //add action overrides to make more fluent or change state transition if statements
+        if (Dy < -800 && currentState == State.OpeningMediaView)
+        {
+            currentState = State.ClosingCommentView;
+        }
+        if (Dy > 800 && currentState == State.ClosingCommentView)
+        {
+            currentState = State.ClosingCommentView;
+        }
+
+
         switch (currentState)
         {
             case State.Closed:
@@ -306,9 +319,10 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
                 AnimateSecondaryMotions();
 
                 //if its over shot the target
-                if (changeInYVal > 0)
+                if (changeInYVal > -50)
                 {
-                    Dy = 0;
+                    Dy *= 0.98f;
+                    Debug.Log("Big Friction");
                 }
                 
                 Debug.Log("opening media view: " + changeInYVal);
@@ -332,9 +346,10 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
                 AnimateSecondaryMotions();
                 
                 //if its over shot the target
-                if (changeInYVal > 0)
+                if (changeInYVal > -60)
                 {
-                    Dy = 0;
+                    Dy *= 0.9f;
+                    Debug.Log("Big Friction");
                 }
                 
                 //state junctions
@@ -345,7 +360,23 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
                 ApplyPhysics();
                 AnimateSecondaryMotions();
                 if (CloseComments())
-                    OpenMediaViewTransition();
+                    CloseCommentViewTransition();
+                break;
+            case State.ClosingCommentView:
+                //state actions
+                ApplyPhysics();
+                AnimateSecondaryMotions();
+                
+                if (changeInYVal < 50)
+                {
+                    Dy *= 0.97f;
+                    Debug.Log("Big Friction");
+                }
+                
+                Debug.Log("closing comment view: " + changeInYVal);
+                //state junctions
+                if (DoneOpeningMediaView())
+                    DoneOpeningMediaTransition();
                 break;
         }
     }
@@ -357,12 +388,12 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     }
     bool DoneOpeningMediaView()
     {
-        return (changeInYVal > changeInYvalMediaEnterLimit && changeInYVal < changeInYvalEnterCommentsLimit);
+        return (changeInYVal > changeInYvalMediaEnterLimit && changeInYVal < changeInYvalEnterCommentsLimit && Mathf.Abs(changeInYVal) < 40);
     }
 
     bool DoneOpeningCommentView()
     {
-        return (changeInYVal > changeInYvalSlidUpExitLimit);
+        return (changeInYVal > changeInYvalCommentEnterLimit);
     }
     bool OpenMediaView()
     {
@@ -399,6 +430,19 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         Debug.Log("OpeningMediaView");
         m_targetYVal = viewImageHeightTarget;
         currentState = State.OpeningMediaView;
+        
+        //start playing video early
+        if (!isPhoto)
+        {
+            videoPlayer.Play();
+        }
+    }
+    
+    void CloseCommentViewTransition()
+    {
+        Debug.Log("CloseCommentViewTransition");
+        m_targetYVal = viewImageHeightTarget;
+        currentState = State.ClosingCommentView;
         
         //start playing video early
         if (!isPhoto)
