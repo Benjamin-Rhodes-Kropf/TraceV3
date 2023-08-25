@@ -505,6 +505,11 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         }
     }
 
+    public void MuteVideoAudio()
+    {
+        videoPlayer.SetDirectAudioMute(0,true);
+    }
+
     void DoneOpeningCommentTransition()
     {
         Dy = 0;

@@ -13,9 +13,7 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioSource backgroundAS;
     [SerializeField] private AudioSource audioSource;
 
-
-
-
+    
     public bool isMusicOn { get; set; }
 
 

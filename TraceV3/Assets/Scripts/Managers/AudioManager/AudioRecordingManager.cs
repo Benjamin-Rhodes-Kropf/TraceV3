@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UIElements;
 
 public class AudioRecordingManager : MonoBehaviour
 {
@@ -11,34 +13,42 @@ public class AudioRecordingManager : MonoBehaviour
     private List<float> currentRecording = new List<float>();
     private int startRecordingTime;
 
+    [Header("External")] 
+    [SerializeField] private OpenTraceManager openTraceManager;
+    
+    [Header("UI")]
+    public GameObject doneOptions;
+    public GameObject recordAudio;
+    
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
     }
-
-    void Update()
+    
+    public void ToggleRecording()
     {
-        // Start recording with the 'R' key
-        if (Input.GetKeyDown(KeyCode.R) && !isRecording)
-        {
-            StartRecording();
-        }
-
-        // Stop recording with the 'S' key
-        if (Input.GetKeyDown(KeyCode.S) && isRecording)
+        if (isRecording)
         {
             StopRecording();
+            openTraceManager.MuteVideoAudio();
+            PlayRecording();
+            recordAudio.SetActive(false);
+            doneOptions.SetActive(true);
         }
-
-        // Play recording with the 'P' key
-        if (Input.GetKeyDown(KeyCode.P) && !isRecording)
+        else
         {
-            StartCoroutine(LoadAndPlayWav()); //this plays it from persistant data
-            //PlayRecording();
+            openTraceManager.MuteVideoAudio();
+            StartRecording();
         }
     }
 
-    void StartRecording()
+    void OnEnable()
+    {
+        recordAudio.SetActive(true);
+        doneOptions.SetActive(false);
+    }
+
+    public void StartRecording()
     {
         isRecording = true;
         currentRecording.Clear();
@@ -48,7 +58,7 @@ public class AudioRecordingManager : MonoBehaviour
         startRecordingTime = Microphone.GetPosition(null); // Store the start position for accurate clip length later
     }
 
-    void StopRecording()
+    public void StopRecording()
     {
         if (!isRecording)
             return;
@@ -57,13 +67,13 @@ public class AudioRecordingManager : MonoBehaviour
 
         int endRecordingTime = Microphone.GetPosition(null);
         int length = endRecordingTime - startRecordingTime;
-
         float[] clipData = new float[length];
+        
         audioSource.clip.GetData(clipData, startRecordingTime);
         currentRecording.AddRange(clipData);
 
         Microphone.End(null);
-
+        
         float[] fullClip = currentRecording.ToArray();
         audioSource.clip = AudioClip.Create("RecordedClip", fullClip.Length, 1, 44100, false);
         audioSource.clip.SetData(fullClip, 0);
@@ -72,9 +82,12 @@ public class AudioRecordingManager : MonoBehaviour
         ExportClipData(audioSource.clip);
     }
 
-    void PlayRecording()
+    public void PlayRecording()
     {
-        audioSource.Play();
+        if (!isRecording)
+        {
+            StartCoroutine(LoadAndPlayWav()); //this plays it from persistant data
+        }
     }
     
     void ExportClipData(AudioClip clip)
@@ -141,6 +154,19 @@ public class AudioRecordingManager : MonoBehaviour
             }
         }
     }
+
+    public void UploadAudioClipToDatabase()
+    {
+        
+    } 
+
+    public void CancelSendingAudioClip()
+    {
+        audioSource.Stop();
+        Destroy(audioSource.clip);
+        recordAudio.SetActive(true);
+        doneOptions.SetActive(false);
+    } 
 
     void WriteString(Stream stream, string value)
     {
