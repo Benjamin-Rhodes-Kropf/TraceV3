@@ -26231,8 +26231,6 @@ MonoBehaviour:
   userLocation: {x: 0, y: 0}
   _dragAndZoomInertia: {fileID: 6068666308761308082}
   currentlyClickingTraceID: 
-  receivedTraceObjects: []
-  sentTraceObjects: []
   pinModeMultiplyer: 100
   _clickRadiusAnimationCurve:
     serializedVersion: 2

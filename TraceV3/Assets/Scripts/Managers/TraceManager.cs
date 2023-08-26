@@ -22,9 +22,10 @@ public class TraceManager : MonoBehaviour
     [SerializeField] private SendOrRecievedViewSelectorManager sentRecivedToggle;
     [SerializeField] private Vector2 userLocation;
     [SerializeField] private DragAndZoomInertia _dragAndZoomInertia;
-    public string currentlyClickingTraceID;
-    public List<TraceObject> receivedTraceObjects;
-    public List<TraceObject> sentTraceObjects; 
+    public string currentlyClickingTraceID; 
+    
+    public Dictionary<string, TraceObject> receivedTraceObjects;
+    public Dictionary<string, TraceObject> sentTraceObjects; 
     private List<TraceObject> recivedTraceObjectsByDistanceToUser; //todo: why tf isnt this getting used?
 
     [Header("Variables")] 
@@ -44,6 +45,9 @@ public class TraceManager : MonoBehaviour
         {Destroy(gameObject);}
         instance = this;
         DontDestroyOnLoad(this.gameObject);
+        
+        receivedTraceObjects = new Dictionary<string, TraceObject>();
+        sentTraceObjects = new Dictionary<string, TraceObject>();
     }
 
 
@@ -72,22 +76,22 @@ public class TraceManager : MonoBehaviour
             foreach (var trace in receivedTraceObjects)
             {
                 double distanceFromMouse = 0;
-                if (trace.marker.isShowingPrimaryTexture)
+                if (trace.Value.marker.isShowingPrimaryTexture)
                 {
-                    distanceFromMouse = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.lat, (float)trace.lng, trace.radius*1000f);
+                    distanceFromMouse = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.Value.lat, (float)trace.Value.lng, trace.Value.radius*1000f);
                 }
                 else
                 {
-                    distanceFromMouse = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.lat, (float)trace.lng, _clickRadiusAnimationCurve.Evaluate(onlineMaps.floatZoom)*pinModeMultiplyer);
+                    distanceFromMouse = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.Value.lat, (float)trace.Value.lng, _clickRadiusAnimationCurve.Evaluate(onlineMaps.floatZoom)*pinModeMultiplyer);
                 }
                 
-                if (distanceFromMouse < 0 && (trace.HasBeenOpened || trace.canBeOpened))
+                if (distanceFromMouse < 0 && (trace.Value.HasBeenOpened || trace.Value.canBeOpened))
                 {
-                    accessibleTraces.Add((trace, distanceFromMouse));
+                    accessibleTraces.Add((trace.Value, distanceFromMouse));
                 }
-                else if (distanceFromMouse < 0 && !trace.HasBeenOpened && !trace.canBeOpened) 
+                else if (distanceFromMouse < 0 && !trace.Value.HasBeenOpened && !trace.Value.canBeOpened) 
                 {
-                    viewableAbleTraces.Add((trace, distanceFromMouse));
+                    viewableAbleTraces.Add((trace.Value, distanceFromMouse));
                 }
             }
         }
@@ -96,19 +100,19 @@ public class TraceManager : MonoBehaviour
             foreach (var trace in sentTraceObjects)
             {
                 double distance = 0;
-                if (trace.marker.isShowingPrimaryTexture)
+                if (trace.Value.marker.isShowingPrimaryTexture)
                 {
-                    distance = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.lat, (float)trace.lng, trace.radius*1000f);
+                    distance = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.Value.lat, (float)trace.Value.lng, trace.Value.radius*1000f);
                 }
                 else
                 {
-                    distance = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.lat, (float)trace.lng, _clickRadiusAnimationCurve.Evaluate(onlineMaps.floatZoom)*pinModeMultiplyer);
+                    distance = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.Value.lat, (float)trace.Value.lng, _clickRadiusAnimationCurve.Evaluate(onlineMaps.floatZoom)*pinModeMultiplyer);
                 }
 
                 //open all sent traces
                 if (distance < 0)
                 {
-                    accessibleTraces.Add((trace, distance));
+                    accessibleTraces.Add((trace.Value, distance));
                 }
                 // accessibleTraces.Add((trace, distance));
                 
@@ -184,12 +188,18 @@ public class TraceManager : MonoBehaviour
     }
     public IOrderedEnumerable<TraceObject> OrderTracesByDistanceToUser()
     {
-        foreach (var traceObject in receivedTraceObjects)
+        foreach (var traceObjectPair in receivedTraceObjects)
         {
+            var traceObject = traceObjectPair.Value; // This is your TraceObject.
             traceObject.distanceToUser = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(
-                userLocation.x,userLocation.y,(float)traceObject.lat, (float)traceObject.lng, traceObject.radius);
+                userLocation.x, userLocation.y, 
+                (float)traceObject.lat, 
+                (float)traceObject.lng, 
+                traceObject.radius);
         }
-        var traceObjectsInOrderOfDistance = receivedTraceObjects.OrderBy(f => f.distanceToUser);
+
+        // Order the values of the dictionary.
+        var traceObjectsInOrderOfDistance = receivedTraceObjects.Values.OrderBy(f => f.distanceToUser);
         return traceObjectsInOrderOfDistance;
     }
     private List<TraceObject> ApplyDistanceFilterTraces(float userLat, float userLon)
@@ -197,9 +207,9 @@ public class TraceManager : MonoBehaviour
         var filtered = new List<(TraceObject, double)>();
         foreach (var trace in receivedTraceObjects)
         {
-            var distance = ApproximateDistanceBetweenTwoLatLongsInM(userLat, userLon, trace.lat,
-                trace.lng);
-            filtered.Add((trace, distance));
+            var distance = ApproximateDistanceBetweenTwoLatLongsInM(userLat, userLon, trace.Value.lat,
+                trace.Value.lng);
+            filtered.Add((trace.Value, distance));
         }
 
         filtered.Sort((i1, i2) => i1.Item2.CompareTo(i2.Item2));
@@ -214,11 +224,11 @@ public class TraceManager : MonoBehaviour
             return;
         }
 
-        receivedTraceObjects = ApplyDistanceFilterTraces(_previousLatitude, _previousLongitude);
+        List<TraceObject> distanceFilterTraces = ApplyDistanceFilterTraces(_previousLatitude, _previousLongitude);
 
-        for (var i = 0; i < receivedTraceObjects.Count && i < 50; i++)
+        for (var i = 0; i < distanceFilterTraces.Count && i < 50; i++)
         {
-            var trace = receivedTraceObjects[i];
+            var trace = distanceFilterTraces[i];
             if (!trace.HasBeenOpened)
             {
                 ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng,trace.radius, " ", trace.senderName);
@@ -283,18 +293,7 @@ public class TraceManager : MonoBehaviour
         //If required then we can stop the location service by this
         Input.location.Stop();
     }
-    public int GetReceivedTraceIndexByID(string traceID)
-    {
-        int index = receivedTraceObjects.FindIndex(p => p.id == traceID);
-        if (index == -1) // FindIndex returns -1 if no match is found.
-        {
-            Debug.LogError("Failed to GetReceivedTraceIndexByID:" + traceID);
-        }
-        return index;
-    }
-
-
-
+    
     // Update is called once per frame //todo: move out of update
     void UpdateTracesOnMap()
     {
@@ -336,19 +335,19 @@ public class TraceManager : MonoBehaviour
         {
             foreach (var traceObject in receivedTraceObjects)
             {
-                var dist = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates((float)traceObject.lat, (float)traceObject.lng, currentLatitude, currentLongitude, (float)(traceObject.radius*1000));
-                if (!traceObject.hasBeenAdded)
-                    traceObject.marker = drawTraceOnMap.DrawCircle(traceObject.lat, traceObject.lng, (traceObject.radius), GetTraceType(dist, traceObject), traceObject.id);
+                var dist = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates((float)traceObject.Value.lat, (float)traceObject.Value.lng, currentLatitude, currentLongitude, (float)(traceObject.Value.radius*1000));
+                if (!traceObject.Value.hasBeenAdded)
+                    traceObject.Value.marker = drawTraceOnMap.DrawCircle(traceObject.Value.lat, traceObject.Value.lng, (traceObject.Value.radius), GetTraceType(dist, traceObject.Value), traceObject.Value.id);
             }
         }
         else
         {
             foreach (var traceobject in sentTraceObjects)
             {
-                if (!traceobject.hasBeenAdded)
+                if (!traceobject.Value.hasBeenAdded)
                 {
-                    traceobject.marker = drawTraceOnMap.DrawCircle(traceobject.lat, traceobject.lng, (traceobject.radius), DrawTraceOnMap.TraceType.SENT, traceobject.id);
-                    traceobject.hasBeenAdded = true;
+                    traceobject.Value.marker = drawTraceOnMap.DrawCircle(traceobject.Value.lat, traceobject.Value.lng, (traceobject.Value.radius), DrawTraceOnMap.TraceType.SENT, traceobject.Value.id);
+                    traceobject.Value.hasBeenAdded = true;
                 }
             }
 
@@ -440,14 +439,14 @@ public class TraceManager : MonoBehaviour
         {
             foreach (var traceobject in receivedTraceObjects)
             {
-                traceobject.hasBeenAdded = false;
+                traceobject.Value.hasBeenAdded = false;
             }
         }
         else
         {
             foreach (var traceobject in sentTraceObjects)
             {
-                traceobject.hasBeenAdded = false;
+                traceobject.Value.hasBeenAdded = false;
             }
         }
         UpdateTracesOnMap();
@@ -466,11 +465,11 @@ public class TraceManager : MonoBehaviour
         drawTraceOnMap.Clear();
         foreach (var traceobject in receivedTraceObjects)
         {
-            traceobject.hasBeenAdded = false;
+            traceobject.Value.hasBeenAdded = false;
         }
         foreach (var traceobject in sentTraceObjects)
         {
-            traceobject.hasBeenAdded = false;
+            traceobject.Value.hasBeenAdded = false;
         }
     }
     void OnApplicationQuit()

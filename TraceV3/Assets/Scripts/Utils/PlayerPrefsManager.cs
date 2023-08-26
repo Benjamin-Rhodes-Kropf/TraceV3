@@ -57,7 +57,7 @@ public class PlayerPrefsManager : MonoBehaviour
         PlayerPrefs.SetInt("DBDataCached", 1);
     }
     
-    public void SaveReceivedTracesToPlayerPrefs(List<TraceObject> traces)
+    public void SaveReceivedTracesToPlayerPrefs(Dictionary<string,TraceObject> traces)
     {
         string traceJSON = JsonConvert.SerializeObject(traces);
         Debug.Log(traceJSON);
@@ -65,7 +65,7 @@ public class PlayerPrefsManager : MonoBehaviour
         PlayerPrefs.Save();
     }
     
-    public void SaveSentTracesToPlayerPrefs(List<TraceObject> traces)
+    public void SaveSentTracesToPlayerPrefs(Dictionary<string,TraceObject> traces)
     {
         string traceJSON = JsonConvert.SerializeObject(traces);
         Debug.Log(traceJSON);
@@ -98,20 +98,21 @@ public class PlayerPrefsManager : MonoBehaviour
     }
     
     
-    public List<TraceObject> GetReceivedTracesFromPlayerPrefs()
+    public Dictionary<string, TraceObject> GetReceivedTracesFromPlayerPrefs()
     {
-        var traces = new List<TraceObject>();
+        var traces = new Dictionary<string, TraceObject>();
         var tracesString = PlayerPrefs.GetString(m_ReceivedTracesKey,"");
-        traces = JsonConvert.DeserializeObject<List<TraceObject>>(tracesString);
+        traces = JsonConvert.DeserializeObject<Dictionary<string,TraceObject>>(tracesString);
         return traces;
     }
-    public List<TraceObject> GetSentTracesFromPlayerPrefs()
+    public Dictionary<string, TraceObject> GetSentTracesFromPlayerPrefs()
     {
-        var traces = new List<TraceObject>();
+        var traces = new Dictionary<string, TraceObject>();
         var tracesString = PlayerPrefs.GetString(m_SentTracesKey,"");
-        traces = JsonConvert.DeserializeObject<List<TraceObject>>(tracesString);
+        traces = JsonConvert.DeserializeObject<Dictionary<string,TraceObject>>(tracesString);
         return traces;
     }
+    
     public List<FriendModel> GetFriendsFromPlayerPrefs()
     {
         var friends = new List<FriendModel>();

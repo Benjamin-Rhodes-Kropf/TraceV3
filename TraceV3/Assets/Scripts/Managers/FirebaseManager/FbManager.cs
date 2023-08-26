@@ -1442,7 +1442,7 @@ public partial class FbManager : MonoBehaviour
     {
         if (lowConnectivitySmartLogin)
         {
-            var alreadyExistsLocally = TraceManager.instance.receivedTraceObjects.FirstOrDefault(traceObject => traceObject.id == traceID);
+            var alreadyExistsLocally = TraceManager.instance.receivedTraceObjects.FirstOrDefault(pair => pair.Value.id == traceID).Value;
             if (alreadyExistsLocally != null)
             {
                 Debug.Log("Trace already exists locally");
@@ -1579,7 +1579,8 @@ public partial class FbManager : MonoBehaviour
             if (lat != 0 && lng != 0 && radius != 0) //check for malformed data entry
             {
                 var trace = new TraceObject(lng, lat, radius, receivers, senderID, senderName, sendTime, 20, mediaType,traceID, traceHasBeenOpenedByThisUser);
-                TraceManager.instance.receivedTraceObjects.Add(trace);
+                TraceManager.instance.receivedTraceObjects.Add(trace.id,trace);
+                Debug.Log("Added:" + trace.id + " to dict");
                 BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
                 TraceManager.instance.UpdateMap(new Vector2());
                 FbManager.instance.AnalyticsSetTracesReceived(TraceManager.instance.receivedTraceObjects.Count.ToString());
@@ -1590,7 +1591,7 @@ public partial class FbManager : MonoBehaviour
     {
         if (lowConnectivitySmartLogin)
         {
-            var alreadyExistsLocally = TraceManager.instance.sentTraceObjects.FirstOrDefault(traceObject => traceObject.id == traceID);
+            var alreadyExistsLocally = TraceManager.instance.sentTraceObjects.FirstOrDefault(traceObject => traceObject.Value.id == traceID).Value;
             if (alreadyExistsLocally != null)
             {
                 Debug.Log("Trace already exists locally");
@@ -1719,7 +1720,7 @@ public partial class FbManager : MonoBehaviour
             if (lat != 0 && lng != 0 && radius != 0)
             {
                 var trace = new TraceObject(lng, lat, radius, receivers, senderID,senderName, sendTime, 20, mediaType,traceID, false);
-                TraceManager.instance.sentTraceObjects.Add(trace);
+                TraceManager.instance.sentTraceObjects.Add(trace.id,trace);
                 TraceManager.instance.UpdateMap(new Vector2());
                 FbManager.instance.AnalyticsSetTracesSent(TraceManager.instance.sentTraceObjects.Count.ToString());
             }
