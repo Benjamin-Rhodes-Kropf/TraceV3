@@ -25,23 +25,6 @@ public class AudioRecordingManager : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
     }
     
-    public void ToggleRecording()
-    {
-        if (isRecording)
-        {
-            StopRecording();
-            openTraceManager.MuteVideoAudio();
-            PlayRecording();
-            recordAudio.SetActive(false);
-            doneOptions.SetActive(true);
-        }
-        else
-        {
-            openTraceManager.MuteVideoAudio();
-            StartRecording();
-        }
-    }
-
     void OnEnable()
     {
         recordAudio.SetActive(true);
@@ -50,9 +33,12 @@ public class AudioRecordingManager : MonoBehaviour
 
     public void StartRecording()
     {
+        recordAudio.SetActive(true);
+        doneOptions.SetActive(false);
+        openTraceManager.MuteVideoAudio();
         isRecording = true;
         currentRecording.Clear();
-
+        
         Microphone.End(null); // Ensure the microphone is turned off
         audioSource.clip = Microphone.Start(null, false, 300, 44100); // Max recording time set to 5 minutes (300 seconds) for safety
         startRecordingTime = Microphone.GetPosition(null); // Store the start position for accurate clip length later
@@ -64,7 +50,7 @@ public class AudioRecordingManager : MonoBehaviour
             return;
 
         isRecording = false;
-
+    
         int endRecordingTime = Microphone.GetPosition(null);
         int length = endRecordingTime - startRecordingTime;
         float[] clipData = new float[length];
@@ -86,6 +72,8 @@ public class AudioRecordingManager : MonoBehaviour
     {
         if (!isRecording)
         {
+            recordAudio.SetActive(false);
+            doneOptions.SetActive(true);
             StartCoroutine(LoadAndPlayWav()); //this plays it from persistant data
         }
     }
