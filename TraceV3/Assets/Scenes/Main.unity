@@ -7574,7 +7574,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.12941177}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -21918,6 +21918,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _homeScreenManager: {fileID: 878571056}
   _onlineMapsLocation: {fileID: 6068666308761308073}
+  _audioRecordingManager: {fileID: 5018903675241078127}
   imageObject: {fileID: 737867114}
   videoObject: {fileID: 9176076432397620534}
   _videoRectTransform: {fileID: 1774053180721600769}

@@ -13,6 +13,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [Header("External")] 
     [SerializeField] private HomeScreenManager _homeScreenManager;
     [SerializeField] private OnlineMapsLocationService _onlineMapsLocation;
+    [SerializeField] private AudioRecordingManager _audioRecordingManager;
     
     [Header("Trace Stuff")]
     [SerializeField] private GameObject imageObject;
@@ -476,7 +477,9 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         var pos = m_transform.position;
         m_transform.position = new Vector3(pos.x, m_targetYVal, pos.z);
         HapticManager.instance.PlaySelectionHaptic();
-
+        _audioRecordingManager.StopPlayingRecording();
+        UnMuteVideoAudio();
+        
         //TraceManager.instance.ClearTracesOnMap(); //todo: maybe do this more seamlessly it causes traces on map to dip for a second unitl it repaints
 
         currentState = State.MediaView;
@@ -508,6 +511,11 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     public void MuteVideoAudio()
     {
         videoPlayer.SetDirectAudioMute(0,true);
+    }
+
+    public void UnMuteVideoAudio()
+    {
+        videoPlayer.SetDirectAudioMute(0,false);
     }
 
     void DoneOpeningCommentTransition()

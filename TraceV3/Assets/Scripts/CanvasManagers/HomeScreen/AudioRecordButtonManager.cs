@@ -63,7 +63,6 @@ public class AudioRecordButtonManager : MonoBehaviour, IPointerDownHandler, IPoi
         while (touch || isDragging)
         {
             var ratio = (Time.time - startTime) / maxDuration;
-            Debug.Log("Ratio:" + ratio);
             if (ratio > 1)
             {
                 onRecordTouchUp?.Invoke();

@@ -1003,7 +1003,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &1361899930089332813
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7742,11 +7742,54 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _homeScreenManager: {fileID: 0}
   _onlineMapsLocation: {fileID: 0}
+  _audioRecordingManager: {fileID: 0}
   imageObject: {fileID: 3367896875548574672}
   videoObject: {fileID: 5902764150914196364}
   _videoRectTransform: {fileID: 3901137257164337083}
   videoScaleConstant: 0.84
-  traceID: 
+  trace:
+    marker:
+      label: 
+      traceID: 
+      radius: 0
+      range:
+        max: 20.999
+        min: 1
+        maxLimit: 20.999
+        minLimit: 1
+      tags: []
+      _enabled: 1
+      latitude: 0
+      longitude: 0
+      _scale: 1
+      expand: 1
+      align: 7
+      locked: 0
+      markerColliderRect:
+        serializedVersion: 2
+        x: -0.5
+        y: -0.5
+        width: 1
+        height: 1
+      _rotation: 0
+      _displayedTexture: {fileID: 0}
+      _primaryZoomedInTexture: {fileID: 0}
+      _primaryHollowInTexture: {fileID: 0}
+      _secondaryZoomedOutTexture: {fileID: 0}
+      isShowingPrimaryTexture: 0
+    id: 
+    lat: 0
+    lng: 0
+    radius: 0
+    people: []
+    distanceToUser: 0
+    mediaType: 
+    senderID: 
+    senderName: 
+    hasBeenAdded: 0
+    canBeOpened: 0
+    sendTime: 
+    endTimeStamp: 0
   senderID: 
   senderNameDisplay: {fileID: 7717927383064230760}
   senderDateDisplay: {fileID: 7717927383156532571}
@@ -7830,18 +7873,21 @@ MonoBehaviour:
   changeInYvalGoLimit: 500
   changeInYDvLimit: 2000
   m_YResetLimit: -800
-  changeInYvalExitLimit: -100
+  changeInYvalEnterCommentsLimit: 0
+  changeInYvalExitCommentsLimit: 0
+  changeInYvalSlidUpExitLimit: 0
+  changeInYvalMediaEnterLimit: 0
+  changeInYvalMediaExitLimit: 0
+  changeInYvalCommentEnterLimit: 0
   changeInYvalCloseLimit: -200
   dyForScreenSwitchLimit: 0
   stopAtScreenTopLimit: 1000
   openUp_targetYVal: 0
-  imageHeightTarget: 0
+  viewImageHeightTarget: 0
+  commentImageHeightTarget: 0
   isPhoto: 0
   isDragging: 0
-  canUsePhysics: 0
-  canCloseTrace: 0
-  hasBegunOpenTrace: 0
-  hasBegunCloseTrace: 0
+  currentState: 0
   g_gameObject: {fileID: 7717927383768431433}
   g_transform: {fileID: 7717927383768431432}
   springStiffness: 30

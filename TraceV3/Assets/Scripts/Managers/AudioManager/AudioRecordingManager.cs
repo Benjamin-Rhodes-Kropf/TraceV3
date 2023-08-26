@@ -77,6 +77,17 @@ public class AudioRecordingManager : MonoBehaviour
             StartCoroutine(LoadAndPlayWav()); //this plays it from persistant data
         }
     }
+
+    public void StopPlayingRecording()
+    {
+        if (!isRecording)
+        {
+            recordAudio.SetActive(true);
+            doneOptions.SetActive(false);
+            audioSource.Stop();
+            Destroy(audioSource.clip);
+        }
+    }
     
     void ExportClipData(AudioClip clip)
     {
