@@ -1842,7 +1842,8 @@ public partial class FbManager : MonoBehaviour
                     _databaseReference.UpdateChildrenAsync(childUpdates); //update real time DB
                     try 
                     {
-                        SendCommentManager.instance.SendNotificationToUsersWhoRecivedTheComment();
+                        //todo: un comment for production
+                        //SendCommentManager.instance.SendNotificationToUsersWhoRecivedTheComment();
                     }
                     catch (Exception e)
                     {

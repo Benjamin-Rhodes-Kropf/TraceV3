@@ -57,7 +57,9 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] private float changeInYvalCloseLimit;
     [SerializeField] private float dyForScreenSwitchLimit;
     [SerializeField] private float stopAtScreenTopLimit;
+    [SerializeField] private float hugeCloseLimit;
     [SerializeField] private int openUp_targetYVal = 0;
+    [SerializeField] private float openCommentViewWhileOpeningMiedaLimit = 6000;
     [SerializeField] private int viewImageHeightTarget;
     [SerializeField] private int commentImageHeightTarget;
 
@@ -276,14 +278,14 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     public void Update()
     {
         //add action overrides to make more fluent or change state transition if statements
-        if (Dy < -800 && currentState == State.OpeningMediaView)
-        {
-            currentState = State.ClosingCommentView;
-        }
-        if (Dy > 800 && currentState == State.ClosingCommentView)
-        {
-            currentState = State.ClosingCommentView;
-        }
+        // if (Dy < -800 && currentState == State.OpeningMediaView)
+        // {
+        //     currentState = State.ClosingCommentView;
+        // }
+        // if (Dy > 800 && currentState == State.ClosingCommentView)
+        // {
+        //     currentState = State.ClosingCommentView;
+        // }
 
 
         switch (currentState)
@@ -330,6 +332,10 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
                 }
                 
                 //state junctions
+                if(HugeClose())
+                    CloseSlideUpToViewTransition();
+                if (OpenCommentViewWhileOpeningMedia())
+                    OpenCommentViewTransition();
                 if (DoneOpeningMediaView())
                     DoneOpeningMediaTransition();
                 break;
@@ -349,13 +355,14 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
                 AnimateSecondaryMotions();
                 
                 //if its over shot the target
-                if (changeInYVal > -60)
-                {
-                    Dy *= 0.9f;
-                    Debug.Log("Big Friction");
-                }
+                // if (changeInYVal > -60 && changeInYVal < -50)
+                // {
+                //     Dy *= 0.8f;
+                //     Debug.Log("Big Friction");
+                // }
                 
                 //state junctions
+                
                 if(DoneOpeningCommentView())
                     DoneOpeningCommentTransition();
                 break;
@@ -370,14 +377,16 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
                 ApplyPhysics();
                 AnimateSecondaryMotions();
                 
-                if (changeInYVal < 50)
+                if (changeInYVal > 10 && changeInYVal < 40)
                 {
-                    Dy *= 0.97f;
+                    Dy *= 0.9f;
                     Debug.Log("Big Friction");
                 }
-                
+
                 Debug.Log("closing comment view: " + changeInYVal);
                 //state junctions
+                if (HugeCloseOutOfCommentView())
+                    CloseSlideUpToViewTransition();
                 if (DoneOpeningMediaView())
                     DoneOpeningMediaTransition();
                 break;
@@ -391,7 +400,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     }
     bool DoneOpeningMediaView()
     {
-        return (changeInYVal > changeInYvalMediaEnterLimit && changeInYVal < changeInYvalEnterCommentsLimit && Mathf.Abs(changeInYVal) < 40);
+        return (changeInYVal > changeInYvalMediaEnterLimit && changeInYVal < changeInYvalEnterCommentsLimit && Mathf.Abs(changeInYVal) < 50);
     }
 
     bool DoneOpeningCommentView()
@@ -401,6 +410,21 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     bool OpenMediaView()
     {
         return (changeInYVal > changeInYvalGoLimit && !isDragging && Dy > dyForScreenSwitchLimit);
+    }
+
+    bool HugeClose()
+    {
+        return (changeInYVal < hugeCloseLimit && Dy < 0);
+    }
+    
+    bool HugeCloseOutOfCommentView()
+    {
+        return (changeInYVal < hugeCloseLimit && Dy < 0);
+    }
+    
+    bool OpenCommentViewWhileOpeningMedia()
+    {
+        return (m_transform.position.y > openCommentViewWhileOpeningMiedaLimit);
     }
 
     bool OpenCommentView()
@@ -482,7 +506,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         _audioRecordingManager.StopPlayingRecording();
         UnMuteVideoAudio();
         
-        //TraceManager.instance.ClearTracesOnMap(); //todo: maybe do this more seamlessly it causes traces on map to dip for a second unitl it repaints
+        TraceManager.instance.ClearTracesOnMap(); //todo: maybe do this more seamlessly it causes traces on map to dip for a second unitl it repaints
 
         currentState = State.MediaView;
         return;

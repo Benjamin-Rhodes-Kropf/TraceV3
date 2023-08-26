@@ -60,20 +60,33 @@ public class AudioRecordButtonManager : MonoBehaviour, IPointerDownHandler, IPoi
         onTouchDown?.Invoke();
         // Animate the countdown
         var startTime = Time.time;
-        while (touch || isDragging)
+        while (touch)
         {
             var ratio = (Time.time - startTime) / maxDuration;
-            if (ratio > 1)
-            {
-                onRecordTouchUp?.Invoke();
-                Reset();
-                audioRecordingManager.PlayRecording();
-                yield break;
-            }
+            touch = ratio <= 1f;
             countdown.fillAmount = ratio;
             button.fillAmount = 1f - ratio;
             yield return null;
         }
+        Reset();
+        SendTraceManager.instance.videoLength = Time.time - startTime; //keep track of vid length for analytics
+        onRecordTouchUp?.Invoke();
+        
+        
+        // while (touch)
+        // {
+        //     var ratio = (Time.time - startTime) / maxDuration;
+        //     if (ratio > 1)
+        //     {
+        //         onRecordTouchUp?.Invoke();
+        //         Reset();
+        //         audioRecordingManager.PlayRecording();
+        //         yield break;
+        //     }
+        //     countdown.fillAmount = ratio;
+        //     button.fillAmount = 1f - ratio;
+        //     yield return null;
+        // }
         Debug.Log("Ratio: Break!");
         onRecordTouchUp?.Invoke();
         Reset();

@@ -22222,7 +22222,9 @@ MonoBehaviour:
   changeInYvalCloseLimit: -80
   dyForScreenSwitchLimit: 0
   stopAtScreenTopLimit: 1000
+  hugeCloseLimit: -100
   openUp_targetYVal: 0
+  openCommentViewWhileOpeningMiedaLimit: 4000
   viewImageHeightTarget: 0
   commentImageHeightTarget: 5400
   isPhoto: 0
