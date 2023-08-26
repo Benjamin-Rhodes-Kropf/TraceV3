@@ -530,14 +530,12 @@ public class TraceCommentObject
     public string time;
     public string senderName;
     public string senderID;
-    public string audio;
-    public TraceCommentObject(string id, string time, string senderID, string senderName,  string audio)
+    public TraceCommentObject(string id, string time, string senderID, string senderName)
     {
         this.id = id;
         this.time = time;
         this.senderName = senderName;
         this.senderID = senderID;
-        this.audio = audio;
     }
 }
 

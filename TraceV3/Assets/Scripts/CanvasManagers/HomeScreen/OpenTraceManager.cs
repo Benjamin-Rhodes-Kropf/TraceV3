@@ -17,11 +17,11 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] private CommentDisplayManager _commentDisplayManager;
 
     [Header("Trace Stuff")]
+    public TraceObject trace;
     [SerializeField] private GameObject imageObject;
     [SerializeField] private GameObject videoObject;
     [SerializeField] private RectTransform _videoRectTransform;
     [SerializeField] private float videoScaleConstant;
-    [SerializeField] private TraceObject trace;
     [SerializeField] private string senderID;
     [SerializeField] private TMP_Text senderNameDisplay;
     [SerializeField] private TMP_Text senderDateDisplay;
@@ -329,7 +329,6 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
                     Debug.Log("Big Friction");
                 }
                 
-                Debug.Log("opening media view: " + changeInYVal);
                 //state junctions
                 if (DoneOpeningMediaView())
                     DoneOpeningMediaTransition();

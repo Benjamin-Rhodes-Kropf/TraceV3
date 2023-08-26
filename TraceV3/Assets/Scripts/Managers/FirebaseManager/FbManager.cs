@@ -1227,10 +1227,12 @@ public partial class FbManager : MonoBehaviour
         if (subscribe)
         {
             refrence.ChildAdded += HandleChildAdded;
+            refrence.ChildChanged += HandleChildChanged;
         }
         else
         {
             refrence.ChildAdded -= HandleChildAdded;
+            refrence.ChildChanged -= HandleChildChanged;
         }
         
         void HandleChildAdded(object sender, ChildChangedEventArgs args) {
@@ -1238,7 +1240,16 @@ public partial class FbManager : MonoBehaviour
                 Debug.Log("HandleChildAdded Error");
                 return;
             }
-            StartCoroutine(GetRecievedTrace(args.Snapshot.Key)); //todo: why pass key when args.Snapshot probraly has data
+            StartCoroutine(GetReceivedTrace(args.Snapshot.Key)); //todo: why pass key when args.Snapshot probraly has data
+        }
+        
+        void HandleChildChanged(object sender, ChildChangedEventArgs args) {
+            if (args.DatabaseError != null) {
+                Debug.Log("HandleChildAdded Error");
+                return;
+            }
+            Debug.Log("HandleChildChanged");
+            StartCoroutine(GetReceivedTrace(args.Snapshot.Key)); //todo: why pass key when args.Snapshot probraly has data
         }
     }
     public void SubscribeOrUnsubscribeToSentTraces(bool subscribe)
@@ -1332,7 +1343,7 @@ public partial class FbManager : MonoBehaviour
     #endregion
     #endregion
     
-    #region Sending and Recieving Traces
+    #region Sending and Recieving Traces and Comments
     public void UploadTrace(List<string> usersToSendTo, List<string> phonesToSendTo, string fileLocation, float radius, Vector2 location, MediaType mediaType)
     {
         Debug.Log(" UploadTrace(): File Location:" + fileLocation);
@@ -1380,6 +1391,7 @@ public partial class FbManager : MonoBehaviour
             childUpdates["Traces/" + key + "/Reciver/" + user + "/HasViewed"] = false;
             childUpdates["Traces/" + key + "/Reciver/" + user + "/ProfilePhoto"] = "null";
             childUpdates["TracesRecived/" + user +"/"+ key + "/Sender"] = thisUserModel.userID;
+            childUpdates["TracesRecived/" + user+"/" + key + "/updated"] = DateTime.UtcNow.ToString();
         }
         foreach (var phone in phonesToSendTo)
         {
@@ -1418,7 +1430,6 @@ public partial class FbManager : MonoBehaviour
                 }
             });
     }
-    
     public void MarkTraceAsOpened(TraceObject trace)
     {
         Dictionary<string, Object> childUpdates = new Dictionary<string, Object>();
@@ -1426,7 +1437,8 @@ public partial class FbManager : MonoBehaviour
         _databaseReference.UpdateChildrenAsync(childUpdates);
         trace.HasBeenOpened = true;
     }
-    public IEnumerator GetRecievedTrace(string traceID)
+    
+    public IEnumerator GetReceivedTrace(string traceID)
     {
         if (lowConnectivitySmartLogin)
         {
@@ -1545,8 +1557,7 @@ public partial class FbManager : MonoBehaviour
                             string time = commentData["time"].ToString();
                             string sender = commentData["senderID"].ToString();
                             string name = commentData["senderName"].ToString();
-                            string audio = commentData["audio"].ToString();
-                            comments.Add(new TraceCommentObject(commentID, time, sender, name, audio));
+                            comments.Add(new TraceCommentObject(commentID, time, sender, name));
                         }
                         break;
                     }
@@ -1601,6 +1612,7 @@ public partial class FbManager : MonoBehaviour
             float radius = 0;
             string senderID = "";
             List<TraceReceiverObject> receivers = new List<TraceReceiverObject>();
+            List<TraceCommentObject> comments = new List<TraceCommentObject>();
             string senderName = "";
             string sendTime = "";
             string mediaType = "";
@@ -1674,6 +1686,20 @@ public partial class FbManager : MonoBehaviour
                             bool hasViewed = (bool)receiverData["HasViewed"];
                             //string profilePhoto = receiverData["ProfilePhoto"].ToString(); //if we ever want profile photo
                             receivers.Add(new TraceReceiverObject(receiverID,hasViewed));
+                        }
+                        break;
+                    }
+                    case "comments":
+                    {
+                        Dictionary<string, object> _comments = thing.Value as Dictionary<string, object>;
+                        foreach (var comment in _comments)
+                        {
+                            var commentID = comment.Key;
+                            var commentData = comment.Value as Dictionary<string, object>;
+                            string time = commentData["time"].ToString();
+                            string sender = commentData["senderID"].ToString();
+                            string name = commentData["senderName"].ToString();
+                            comments.Add(new TraceCommentObject(commentID, time, sender, name));
                         }
                         break;
                     }
@@ -1781,6 +1807,50 @@ public partial class FbManager : MonoBehaviour
             callback(path);
         }
     }
+    
+    public void UploadComment(TraceObject trace, string fileLocation)
+    {
+        Debug.Log(" UploadComment(): File Location:" + fileLocation);
+        
+        //PUSH DATA TO REAL TIME DB
+        string key = _databaseReference.Child("Traces").Child(trace.id).Child("comments").Push().Key;
+        Dictionary<string, Object> childUpdates = new Dictionary<string, Object>();
+        
+        //update global traces
+        childUpdates["Traces/" + trace.id + "/comments/" + key + "/senderName"] = thisUserModel.name;
+        childUpdates["Traces/" + trace.id + "/comments/" + key + "/senderID"] = thisUserModel.userID;
+        childUpdates["Traces/" + trace.id + "/comments/" + key + "/time"] = DateTime.UtcNow.ToString();
+
+        foreach (var user in trace.people)
+        {
+            childUpdates["TracesRecived/" + user.id +"/"+ trace.id + "/updated"] = DateTime.UtcNow.ToString();
+            childUpdates["TracesRecived/" + user.id +"/"+ trace.id + "/Sender"] = trace.senderID; //IDK why but it deletes if I dont push again
+        }
+        
+        //Upload Content
+        StorageReference traceReference = _firebaseStorageReference.Child("/Comments/" + trace.id + "/" + key);
+        traceReference.PutFileAsync(fileLocation)
+            .ContinueWith((Task<StorageMetadata> task) => {
+                if (task.IsFaulted || task.IsCanceled) {
+                    Debug.LogError("FB Error failed to upload with task.exception: " + task.Exception.ToString());
+                    return;
+                }
+                else if(task.IsCompleted)
+                {
+                    Debug.Log("FB: Finished uploading...");
+                    _databaseReference.UpdateChildrenAsync(childUpdates); //update real time DB
+                    try 
+                    {
+                        SendCommentManager.instance.SendNotificationToUsersWhoRecivedTheComment();
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        throw;
+                    }
+                }
+            });
+    }
     #endregion
     
     //possibly useful
@@ -1823,8 +1893,8 @@ public partial class FbManager : MonoBehaviour
 
         if (!task.IsFaulted && !task.IsCanceled)
         {
-            Debug.Log("Download URL: " + task.Result);
-            Debug.Log("Actual  URL: " + url);
+            // Debug.Log("Download URL: " + task.Result);
+            // Debug.Log("Actual  URL: " + url);
             url = task.Result + "";
             onSuccess(url);
         }

@@ -78,6 +78,19 @@ public class AudioRecordingManager : MonoBehaviour
         }
     }
 
+    public void SendRecording()
+    {
+        string path = Path.Combine(Application.persistentDataPath, "Recording.wav").Replace("\\", "/");
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+        path = "file:///" + path;
+#else
+        path = "file://" + path;
+#endif
+        Debug.Log("Generated path: " + path);
+        
+        SendCommentManager.instance.SendComment(path, openTraceManager.trace);
+    }
+
     public void StopPlayingRecording()
     {
         if (!isRecording)

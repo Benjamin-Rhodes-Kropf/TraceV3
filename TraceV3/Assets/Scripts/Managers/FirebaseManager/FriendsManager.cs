@@ -155,7 +155,7 @@ public partial class FbManager
                     isBestFriend = bestFriend
                 };
                 
-                Debug.Log("Add Friend:" + friend.friendID);
+                //Debug.Log("Add Friend:" + friend.friendID);
 
                 if (lowConnectivitySmartLogin)
                 {
