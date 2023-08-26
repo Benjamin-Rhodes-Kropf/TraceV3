@@ -87,6 +87,7 @@ GameObject:
   - component: {fileID: 982229965321399934}
   - component: {fileID: 982229965321399904}
   - component: {fileID: 982229965321399905}
+  - component: {fileID: 7280356516079757067}
   m_Layer: 5
   m_Name: Audio Recording
   m_TagString: Untagged
@@ -155,6 +156,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 10
+--- !u!114 &7280356516079757067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 982229965321399935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ebf11ee5a15c44739cf663bbb93cd40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _displayNameAndTime: {fileID: 0}
 --- !u!1 &982229966547502273
 GameObject:
   m_ObjectHideFlags: 0
@@ -411,9 +425,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SelectFriendsCanvas, Assembly-CSharp
-        m_MethodName: ToggleAllFriends
+      - m_Target: {fileID: 7280356516079757067}
+        m_TargetAssemblyTypeName: AudioView, Assembly-CSharp
+        m_MethodName: PlayAudioRecording
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

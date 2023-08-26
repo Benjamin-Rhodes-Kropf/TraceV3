@@ -1,18 +1,39 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class AudioView : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [Header("Contents")]
+    [SerializeField] private TMP_Text _displayNameAndTime;
+    [SerializeField] private string traceID;
+    [SerializeField] private string audioID;
+    [SerializeField] private List<float> audioSample;
+
+    [Header("Refrences")] [SerializeField] 
+    private GameObject singleWave;
+
+    public void UpdateDisplayedData(string traceID, string audioID, string displayName, string time, List<float> audioSample)
+    {
+        this.traceID = traceID;
+        this.audioID = audioID;
+        this._displayNameAndTime.text = displayName + "|" + time;
+        this.audioSample = audioSample;
+    }
+
+    public void GenerateAudioWaveDisplay()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
+    public void GetAudioRecording()
     {
         
+    }
+
+    public void PlayAudioRecording()
+    {
+        Debug.Log("Play Audio Recording:");
     }
 }

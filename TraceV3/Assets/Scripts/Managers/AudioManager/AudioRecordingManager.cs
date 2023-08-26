@@ -188,7 +188,6 @@ public class AudioRecordingManager : MonoBehaviour
     
     IEnumerator LoadAndPlayWav(string fileName = "Recording.wav")
     {
-        
         string path = Path.Combine(Application.persistentDataPath, fileName).Replace("\\", "/");
         #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
         path = "file:///" + path;
