@@ -524,6 +524,24 @@ public class TraceManager : MonoBehaviour
 }
 
 [Serializable]
+public class TraceCommentObject
+{
+    public string id;
+    public string time;
+    public string senderName;
+    public string senderID;
+    public string audio;
+    public TraceCommentObject(string id, string time, string senderID, string senderName,  string audio)
+    {
+        this.id = id;
+        this.time = time;
+        this.senderName = senderName;
+        this.senderID = senderID;
+        this.audio = audio;
+    }
+}
+
+[Serializable]
 public class TraceReceiverObject
 {
     public string id;
@@ -548,6 +566,7 @@ public class TraceObject
     public double lng;
     public float radius;
     public List<TraceReceiverObject> people; //replace this with recievers
+    public List<TraceCommentObject> comments;
     public double distanceToUser;
     public string mediaType;
     public string senderID;
@@ -567,7 +586,7 @@ public class TraceObject
             _hasBeenOpened = value;
             if (value == true)
             {
-                marker.Dispose(); //destroy marker as it is now rendering the wrong thing
+                marker.Dispose(); //destroy marker as it is now rendering the wrong thing //todo: set value when trace opened
             }
         }
     }

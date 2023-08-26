@@ -14,7 +14,8 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] private HomeScreenManager _homeScreenManager;
     [SerializeField] private OnlineMapsLocationService _onlineMapsLocation;
     [SerializeField] private AudioRecordingManager _audioRecordingManager;
-    
+    [SerializeField] private CommentDisplayManager _commentDisplayManager;
+
     [Header("Trace Stuff")]
     [SerializeField] private GameObject imageObject;
     [SerializeField] private GameObject videoObject;
@@ -244,6 +245,8 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         videoPlayer.Play();
         videoPlayer.Pause(); 
         ScaleVideoAspectRatio();
+        
+        _commentDisplayManager.DisplayComments(trace);
         // _videoRectTransform.sizeDelta = new Vector2(videoPlayer.width, videoPlayer.height);
         // Debug.Log("Video Height: " + videoPlayer.height + " Video Width: " + videoPlayer.width);
     }

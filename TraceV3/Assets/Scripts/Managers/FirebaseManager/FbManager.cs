@@ -1457,6 +1457,7 @@ public partial class FbManager : MonoBehaviour
             string sendTime = "";
             bool traceHasBeenOpenedByThisUser = false;
             List<TraceReceiverObject> receivers = new List<TraceReceiverObject>();
+            List<TraceCommentObject> comments = new List<TraceCommentObject>();
             float durationHours = 0;
 
             foreach (var thing in DBTask.Result.Children)
@@ -1531,6 +1532,21 @@ public partial class FbManager : MonoBehaviour
                             {
                                 traceHasBeenOpenedByThisUser = true;
                             }
+                        }
+                        break;
+                    }
+                    case "comments":
+                    {
+                        Dictionary<string, object> _comments = thing.Value as Dictionary<string, object>;
+                        foreach (var comment in _comments)
+                        {
+                            var commentID = comment.Key;
+                            var commentData = comment.Value as Dictionary<string, object>;
+                            string time = commentData["time"].ToString();
+                            string sender = commentData["senderID"].ToString();
+                            string name = commentData["senderName"].ToString();
+                            string audio = commentData["audio"].ToString();
+                            comments.Add(new TraceCommentObject(commentID, time, sender, name, audio));
                         }
                         break;
                     }
