@@ -90,7 +90,7 @@ public class AudioRecordButtonManager : MonoBehaviour, IPointerDownHandler, IPoi
         Debug.Log("Ratio: Break!");
         onRecordTouchUp?.Invoke();
         Reset();
-        audioRecordingManager.PlayRecording();
+        audioRecordingManager.FinishedRecording();
     }
 
     void RecordAnimation()

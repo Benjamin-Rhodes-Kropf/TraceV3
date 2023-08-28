@@ -10,7 +10,6 @@ using UnityEngine;
 
 public class TraceManager : MonoBehaviour
 {
-    // Required package "com.unity.mobile.notifications": "2.1.1",
     public static TraceManager instance;
     [SerializeField] private HomeScreenManager homeScreenManager;
     [SerializeField] private OnlineMapsControlBase onlineMapsControlBase;
@@ -161,7 +160,6 @@ public class TraceManager : MonoBehaviour
             FbManager.instance.AnalyticsOnTracePressed(traceToView.Item1.senderName, traceToView.Item1.sendTime, "view");
         }
     }
-
     private static double ApproximateDistanceBetweenTwoLatLongsInM(double lat1, double lon1, double lat2, double lon2)
     {
         var ldRadians = lat1 / 57.3 * 0.017453292519943295769236907684886;
@@ -215,7 +213,6 @@ public class TraceManager : MonoBehaviour
         filtered.Sort((i1, i2) => i1.Item2.CompareTo(i2.Item2));
         return filtered.Select(i => i.Item1).ToList();
     }
-    
     private void UpdateNotificationsForNext50Traces()
     {
         if (receivedTraceObjects.Count < 1)
@@ -287,14 +284,11 @@ public class TraceManager : MonoBehaviour
         // Schedule notification for entry base
         iOSNotificationCenter.ScheduleNotification(entryBasedNotification);
     }
-    
     public void StopLocationServices()
     {
         //If required then we can stop the location service by this
         Input.location.Stop();
     }
-    
-    // Update is called once per frame //todo: move out of update
     void UpdateTracesOnMap()
     {
         Vector2 previousUserLocation = userLocation;
@@ -360,6 +354,11 @@ public class TraceManager : MonoBehaviour
         }
     }
 
+    public void RefreshTrace(TraceObject traceObject)
+    {
+        homeScreenManager.RefreshTraceView(traceObject);
+    }
+    
     private DrawTraceOnMap.TraceType GetTraceType(double dist, TraceObject traceObject)
     {
         if (!traceObject.HasBeenOpened)
@@ -428,10 +427,6 @@ public class TraceManager : MonoBehaviour
             }
         }
     }
-
-    
-    
-    
     public void TraceViewSwitched()
     {
         ClearTracesOnMap();
@@ -451,8 +446,6 @@ public class TraceManager : MonoBehaviour
         }
         UpdateTracesOnMap();
     }
-
-    
     public void UpdateMap(Vector2 vector2)
     {
         // Debug.Log("Map Update");
@@ -477,13 +470,11 @@ public class TraceManager : MonoBehaviour
         Debug.Log("Application ending after " + Time.time + " seconds");
         ScheduleNotifications();
     }
-    
     private void OnApplicationPaused()
     {
         Debug.Log("Application Paused after " + Time.time + " seconds");
         ScheduleNotifications();
     }
-
     private void ScheduleNotifications()
     {
         Vector2 previousUserLocation = userLocation;
@@ -588,13 +579,14 @@ public class TraceObject
         }
     }
     
-    public TraceObject(double longitude, double latitude, float radius, List<TraceReceiverObject> people, string senderID, string senderName, string sendTime, double endTimeStamp, string mediaType, string id, bool hasBeenOpened)
+    public TraceObject(double longitude, double latitude, float radius, List<TraceReceiverObject> people, List<TraceCommentObject> comments, string senderID, string senderName, string sendTime, double endTimeStamp, string mediaType, string id, bool hasBeenOpened)
     {
         lng = longitude;
         lat = latitude;
         this.radius = radius;
         this.senderID = senderID;
         this.people = people;
+        this.comments = comments;
         this.senderName = senderName;
         this.sendTime = sendTime;
         this.endTimeStamp = endTimeStamp;

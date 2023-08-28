@@ -227,7 +227,11 @@ public class HomeScreenManager : MonoBehaviour
             }));
             return;
         }
-        
+    }
+
+    public void RefreshTraceView(TraceObject traceObject)
+    {
+        openTraceManager.RefreshTrace(traceObject);
     }
     
     public void UpdateMap()

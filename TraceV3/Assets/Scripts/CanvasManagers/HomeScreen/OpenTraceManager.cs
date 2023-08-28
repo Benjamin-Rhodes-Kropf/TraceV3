@@ -212,7 +212,6 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         m_targetYVal = openUp_targetYVal;
         _homeScreenManager.RefreshMap();
     }
-
     
     public void ActivatePhotoFormat(TraceObject trace)
     {
@@ -248,9 +247,13 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         videoPlayer.Pause(); 
         ScaleVideoAspectRatio();
         
-        _commentDisplayManager.DisplayComments(trace);
-        // _videoRectTransform.sizeDelta = new Vector2(videoPlayer.width, videoPlayer.height);
-        // Debug.Log("Video Height: " + videoPlayer.height + " Video Width: " + videoPlayer.width);
+        _commentDisplayManager.DisplayComments(trace.comments);
+    }
+
+    public void RefreshTrace(TraceObject trace)
+    {
+        if(trace.id == this.trace.id) //make sure we are refreshing the correct one
+            this.trace = trace;
     }
 
     public void ScaleVideoAspectRatio()
@@ -536,12 +539,14 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
 
     public void MuteVideoAudio()
     {
-        videoPlayer.SetDirectAudioMute(0,true);
+        videoPlayer.Pause();
+        //videoPlayer.SetDirectAudioMute(0,true);
     }
 
     public void UnMuteVideoAudio()
     {
-        videoPlayer.SetDirectAudioMute(0,false);
+        videoPlayer.Play();
+        //videoPlayer.SetDirectAudioMute(0,false);
     }
 
     void DoneOpeningCommentTransition()

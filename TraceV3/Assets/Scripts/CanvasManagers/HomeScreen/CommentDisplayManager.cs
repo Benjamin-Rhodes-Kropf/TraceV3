@@ -8,7 +8,7 @@ public class CommentDisplayManager : MonoBehaviour
     [SerializeField] private Transform verticalLayoutGroup;
 
 
-    public void DisplayComments(TraceObject traceObject)
+    public void DisplayComments(List<TraceCommentObject> traceCommentObjects)
     {
         
     }

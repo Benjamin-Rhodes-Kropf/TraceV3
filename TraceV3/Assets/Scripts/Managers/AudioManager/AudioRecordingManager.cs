@@ -68,14 +68,15 @@ public class AudioRecordingManager : MonoBehaviour
         ExportClipData(audioSource.clip);
     }
 
-    public void PlayRecording()
+    public void FinishedRecording()
     {
-        if (!isRecording)
-        {
-            recordAudio.SetActive(false);
-            doneOptions.SetActive(true);
-            StartCoroutine(LoadAndPlayWav()); //this plays it from persistant data
-        }
+        // if (!isRecording)
+        // {
+        //     recordAudio.SetActive(false);
+        //     doneOptions.SetActive(true);
+        //     StartCoroutine(LoadAndPlayWav()); //this plays it from persistant data
+        // }
+        SendRecording();
     }
 
     public void SendRecording()

@@ -1249,7 +1249,7 @@ public partial class FbManager : MonoBehaviour
                 return;
             }
             Debug.Log("HandleChildChanged");
-            StartCoroutine(GetReceivedTrace(args.Snapshot.Key)); //todo: why pass key when args.Snapshot probraly has data
+            StartCoroutine(HandleReceivedTraceChanged(args.Snapshot.Key)); //todo: why pass key when args.Snapshot probraly has data
         }
     }
     public void SubscribeOrUnsubscribeToSentTraces(bool subscribe)
@@ -1258,10 +1258,12 @@ public partial class FbManager : MonoBehaviour
         if (subscribe)
         {
             refrence.ChildAdded += HandleChildAdded;
+            refrence.ChildChanged += HandleChildChanged;
         }
         else
         {
             refrence.ChildAdded -= HandleChildAdded;
+            refrence.ChildChanged -= HandleChildChanged;
         }
 
         void HandleChildAdded(object sender, ChildChangedEventArgs args) {
@@ -1270,6 +1272,15 @@ public partial class FbManager : MonoBehaviour
                 return;
             }
             StartCoroutine(GetSentTrace(args.Snapshot.Key));
+        }
+        
+        void HandleChildChanged(object sender, ChildChangedEventArgs args) {
+            if (args.DatabaseError != null) {
+                Debug.Log("HandleChildAdded Error");
+                return;
+            }
+            Debug.Log("HandleChildChanged");
+            StartCoroutine(HandleSentTraceChanged(args.Snapshot.Key)); //todo: why pass key when args.Snapshot probraly has data
         }
     }
     public void SubscribeToFriendShipRequests()
@@ -1362,7 +1373,7 @@ public partial class FbManager : MonoBehaviour
             receiverObjects.Add(new TraceReceiverObject(user, false));
         }
         
-        _drawTraceOnMap.sendingTraceTraceLoadingObject = new TraceObject(location.x, location.y, radius, receiverObjects, "null",thisUserModel.name,  DateTime.UtcNow.ToString(), 24, mediaType.ToString(), "temp", true);
+        _drawTraceOnMap.sendingTraceTraceLoadingObject = new TraceObject(location.x, location.y, radius, receiverObjects, new List<TraceCommentObject>(), "null",thisUserModel.name,  DateTime.UtcNow.ToString(), 24, mediaType.ToString(), "temp", true);
         _drawTraceOnMap.DrawCircle(location.x, location.y, radius, DrawTraceOnMap.TraceType.SENDING, "null");
         
         //update global traces
@@ -1549,6 +1560,7 @@ public partial class FbManager : MonoBehaviour
                     }
                     case "comments":
                     {
+                        Debug.Log("Getting Comments");
                         Dictionary<string, object> _comments = thing.Value as Dictionary<string, object>;
                         foreach (var comment in _comments)
                         {
@@ -1557,6 +1569,7 @@ public partial class FbManager : MonoBehaviour
                             string time = commentData["time"].ToString();
                             string sender = commentData["senderID"].ToString();
                             string name = commentData["senderName"].ToString();
+                            Debug.Log("Adding Comment From:" + senderName);
                             comments.Add(new TraceCommentObject(commentID, time, sender, name));
                         }
                         break;
@@ -1578,7 +1591,7 @@ public partial class FbManager : MonoBehaviour
             }
             if (lat != 0 && lng != 0 && radius != 0) //check for malformed data entry
             {
-                var trace = new TraceObject(lng, lat, radius, receivers, senderID, senderName, sendTime, 20, mediaType,traceID, traceHasBeenOpenedByThisUser);
+                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, 20, mediaType,traceID, traceHasBeenOpenedByThisUser);
                 TraceManager.instance.receivedTraceObjects.Add(trace.id,trace);
                 Debug.Log("Added:" + trace.id + " to dict");
                 BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
@@ -1719,8 +1732,291 @@ public partial class FbManager : MonoBehaviour
             
             if (lat != 0 && lng != 0 && radius != 0)
             {
-                var trace = new TraceObject(lng, lat, radius, receivers, senderID,senderName, sendTime, 20, mediaType,traceID, false);
+                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID,senderName, sendTime, 20, mediaType,traceID, false);
                 TraceManager.instance.sentTraceObjects.Add(trace.id,trace);
+                TraceManager.instance.UpdateMap(new Vector2());
+                FbManager.instance.AnalyticsSetTracesSent(TraceManager.instance.sentTraceObjects.Count.ToString());
+            }
+        }
+    }
+    public IEnumerator HandleReceivedTraceChanged(string traceID)
+    {
+        if (lowConnectivitySmartLogin)
+        {
+            var alreadyExistsLocally = TraceManager.instance.receivedTraceObjects.FirstOrDefault(pair => pair.Value.id == traceID).Value;
+            if (alreadyExistsLocally != null)
+            {
+                Debug.Log("Trace already exists locally");
+                yield break;
+            }
+        }
+        
+        var DBTask = _databaseReference.Child("Traces").Child(traceID).GetValueAsync();
+        yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
+        
+        if (DBTask.IsFaulted)
+        {
+            Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+        }
+        else
+        {
+            double lat = 0;
+            double lng = 0;
+            float radius = 0;
+            int numPeopleSent = 0;
+            string mediaType = "";
+            string senderID = "";
+            string senderName = "";
+            string sendTime = "";
+            bool traceHasBeenOpenedByThisUser = false;
+            List<TraceReceiverObject> receivers = new List<TraceReceiverObject>();
+            List<TraceCommentObject> comments = new List<TraceCommentObject>();
+            float durationHours = 0;
+
+            foreach (var thing in DBTask.Result.Children)
+            {
+                switch (thing.Key.ToString())
+                {
+                    case "lat":
+                    {
+                        try
+                        {
+                            lat = (double)thing.Value;
+                        }
+                        catch (Exception e)
+                        {
+                            lat = 0;
+                        }
+                        break;
+                    }
+                    case "long":
+                    {
+                        try
+                        {
+                            lng = (double)thing.Value;
+                        }
+                        catch (Exception e)
+                        {
+                            lng = 0;
+                        }
+                        
+                        break;
+                    }
+                    case "radius":
+                    {
+                        try
+                        {
+                            radius = float.Parse(thing.Value.ToString());
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.LogError("failed to parse string to float");
+                        }
+                        break;
+                    }
+                    case "mediaType":
+                    { 
+                        mediaType = thing.Value.ToString();
+                        break;
+                    }
+                    case "senderID":
+                    { 
+                        senderID = thing.Value.ToString();
+                        break;
+                    }
+                    case "senderName":
+                    {
+                        senderName = thing.Value.ToString();
+                        break;
+                    }
+                    case "Reciver":
+                    {
+                        Dictionary<string, object> people = thing.Value as Dictionary<string, object>;
+                        foreach (var receiver in people)
+                        {
+                            var receiverID = receiver.Key;
+                            var receiverData = receiver.Value as Dictionary<string, object>;
+                            bool hasViewed = (bool)receiverData["HasViewed"];
+                            //string profilePhoto = receiverData["ProfilePhoto"].ToString(); //if we ever want profile photo
+                            receivers.Add(new TraceReceiverObject(receiverID, hasViewed));
+                            
+                            //check if this user opened it
+                            if (receiverID == FbManager.instance.thisUserModel.userID && hasViewed)
+                            {
+                                traceHasBeenOpenedByThisUser = true;
+                            }
+                        }
+                        break;
+                    }
+                    case "comments":
+                    {
+                        Debug.Log("Getting Comments");
+                        Dictionary<string, object> _comments = thing.Value as Dictionary<string, object>;
+                        foreach (var comment in _comments)
+                        {
+                            var commentID = comment.Key;
+                            var commentData = comment.Value as Dictionary<string, object>;
+                            string time = commentData["time"].ToString();
+                            string sender = commentData["senderID"].ToString();
+                            string name = commentData["senderName"].ToString();
+                            Debug.Log("Adding Comment From:" + senderName);
+                            comments.Add(new TraceCommentObject(commentID, time, sender, name));
+                        }
+                        break;
+                    }
+                    case "numPeopleSent":
+                        numPeopleSent = Int32.Parse(thing.Value.ToString());
+                        break;
+                    case "sendTime":
+                    {
+                        sendTime = thing.Value.ToString();
+                        break;
+                    }
+                    case "durationHours":
+                    {
+                        durationHours = (float)thing.Value;
+                        break;
+                    }
+                }
+            }
+            if (lat != 0 && lng != 0 && radius != 0) //check for malformed data entry
+            {
+                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, 20, mediaType,traceID, traceHasBeenOpenedByThisUser);
+                Debug.Log("Changed:" + trace.id + " to dict");
+                TraceManager.instance.sentTraceObjects[trace.id] = trace; //update trace
+                TraceManager.instance.RefreshTrace(trace);
+                BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
+                TraceManager.instance.UpdateMap(new Vector2());
+                FbManager.instance.AnalyticsSetTracesReceived(TraceManager.instance.receivedTraceObjects.Count.ToString());
+            }
+        }
+    }
+    public IEnumerator HandleSentTraceChanged(string traceID)
+    {
+        var DBTask = _databaseReference.Child("Traces").Child(traceID).GetValueAsync();
+        yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
+        
+        if (DBTask.IsFaulted)
+        {
+            Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+        }
+        else
+        {
+            double lat = 0;
+            double lng = 0;
+            float radius = 0;
+            string senderID = "";
+            List<TraceReceiverObject> receivers = new List<TraceReceiverObject>();
+            List<TraceCommentObject> comments = new List<TraceCommentObject>();
+            string senderName = "";
+            string sendTime = "";
+            string mediaType = "";
+            float durationHours = 0;
+
+            foreach (var thing in DBTask.Result.Children)
+            {
+                switch (thing.Key.ToString())
+                {
+                    case "lat":
+                    {
+                        // Debug.Log(traceID + "lat: " + thing.Value);
+                        // Debug.Log(thing.Value);
+                        try
+                        {
+                            lat = (double)thing.Value;
+                        }
+                        catch (Exception e)
+                        {
+                            lat = 0;
+                        }
+                        break;
+                    }
+                    case "long":
+                    {
+                        try
+                        {
+                            lng = (double)thing.Value;
+                        }
+                        catch (Exception e)
+                        {
+                            lng = 0;
+                        }
+                        
+                        break;
+                    }
+                    case "radius":
+                    {
+                        try
+                        {
+                            radius = float.Parse(thing.Value.ToString());
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.LogError("failed to parse string to float");
+                        }
+                        break;
+                    }
+                    case "senderID":
+                    {
+                        senderID = thing.Value.ToString();
+                        break;
+                    }
+                    case "senderName":
+                    {
+                        senderName = thing.Value.ToString();
+                        break;
+                    }
+                    case "sendTime":
+                    {
+                        sendTime = thing.Value.ToString();
+                        break;
+                    }
+                    case "Reciver":
+                    {
+                        Dictionary<string, object> people = thing.Value as Dictionary<string, object>;
+                        foreach (var receiver in people)
+                        {
+                            var receiverID = receiver.Key;
+                            var receiverData = receiver.Value as Dictionary<string, object>;
+                            bool hasViewed = (bool)receiverData["HasViewed"];
+                            //string profilePhoto = receiverData["ProfilePhoto"].ToString(); //if we ever want profile photo
+                            receivers.Add(new TraceReceiverObject(receiverID,hasViewed));
+                        }
+                        break;
+                    }
+                    case "comments":
+                    {
+                        Dictionary<string, object> _comments = thing.Value as Dictionary<string, object>;
+                        foreach (var comment in _comments)
+                        {
+                            var commentID = comment.Key;
+                            var commentData = comment.Value as Dictionary<string, object>;
+                            string time = commentData["time"].ToString();
+                            string sender = commentData["senderID"].ToString();
+                            string name = commentData["senderName"].ToString();
+                            comments.Add(new TraceCommentObject(commentID, time, sender, name));
+                        }
+                        break;
+                    }
+                    case "mediaType":
+                    {
+                        mediaType = thing.Value.ToString();
+                        break;
+                    }
+                    case "durationHours":
+                    {
+                        durationHours = (float)thing.Value;
+                        break;
+                    }
+                }
+            }
+            
+            if (lat != 0 && lng != 0 && radius != 0)
+            {
+                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID,senderName, sendTime, 20, mediaType,traceID, false);
+                Debug.Log("Trace Comments Update To:" + comments.Count);
+                TraceManager.instance.sentTraceObjects[trace.id] = trace; //update trace
+                TraceManager.instance.RefreshTrace(trace); //update if currently being displayed
                 TraceManager.instance.UpdateMap(new Vector2());
                 FbManager.instance.AnalyticsSetTracesSent(TraceManager.instance.sentTraceObjects.Count.ToString());
             }
@@ -1828,6 +2124,8 @@ public partial class FbManager : MonoBehaviour
             childUpdates["TracesRecived/" + user.id +"/"+ trace.id + "/Sender"] = trace.senderID; //IDK why but it deletes if I dont push again
         }
         
+        childUpdates["TracesSent/" + _firebaseUser.UserId.ToString() +"/" + trace.id] = DateTime.UtcNow.ToString(); //change last updated
+        
         //Upload Content
         StorageReference traceReference = _firebaseStorageReference.Child("/Comments/" + trace.id + "/" + key);
         traceReference.PutFileAsync(fileLocation)
@@ -1843,12 +2141,12 @@ public partial class FbManager : MonoBehaviour
                     try 
                     {
                         //todo: un comment for production
-                        //SendCommentManager.instance.SendNotificationToUsersWhoRecivedTheComment();
+                        SendCommentManager.instance.SendNotificationToUsersWhoRecivedTheComment();
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e);
-                        throw;
+                        Debug.LogWarning("Faied To Send Comment Notification Trying Again");
+                        SendCommentManager.instance.SendNotificationToUsersWhoRecivedTheComment();
                     }
                 }
             });
