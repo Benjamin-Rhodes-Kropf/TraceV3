@@ -44,8 +44,7 @@ public class ContactView : MonoBehaviour
          contact.LoadImage((result, error) =>
          {
             var texture = result.GetTexture();
-            
-            if (texture.width>4)
+            if (texture)
             {
                var newTexture = PersistentStorageHandler.s_Instance.CropImage(texture);
                StartCoroutine(SaveToPersistentStorage(newTexture));
