@@ -10,7 +10,7 @@ public class AudioRecordButtonManager : MonoBehaviour, IPointerDownHandler, IPoi
     [Header(@"Settings"), Range(5f, 60f), Tooltip(@"Maximum duration that button can be pressed.")]
     public float maxDuration = 10f;
 
-    [SerializeField] private AudioRecordingManager audioRecordingManager;
+    [SerializeField] private CommentAudioManager _commentAudioManager;
     [Header(@"UI")] public Image countdown;
 
     [Header(@"Events")] 
@@ -90,7 +90,7 @@ public class AudioRecordButtonManager : MonoBehaviour, IPointerDownHandler, IPoi
         Debug.Log("Ratio: Break!");
         onRecordTouchUp?.Invoke();
         Reset();
-        audioRecordingManager.FinishedRecording();
+        _commentAudioManager.FinishedRecording();
     }
 
     void RecordAnimation()

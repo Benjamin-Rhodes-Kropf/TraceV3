@@ -13,7 +13,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [Header("External")] 
     [SerializeField] private HomeScreenManager _homeScreenManager;
     [SerializeField] private OnlineMapsLocationService _onlineMapsLocation;
-    [SerializeField] private AudioRecordingManager _audioRecordingManager;
+    [SerializeField] private CommentAudioManager _commentAudioManager;
     [SerializeField] private CommentDisplayManager _commentDisplayManager;
 
     [Header("Trace Stuff")]
@@ -250,12 +250,10 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         _commentDisplayManager.DisplayComments(trace.comments);
     }
 
-    public void ProcessAudioFiles(Dictionary<string,string> filelocations)
+    public void PutAudioFileLocation(string commentId, string location)
     {
-        foreach (var comment in trace.comments)
-        {
-            
-        }
+        Debug.Log("Putting Audio File:" +location);
+        _commentDisplayManager.comments[commentId].GetComponent<AudioView>().location = location;
     }
 
     public void RefreshTrace(TraceObject trace)
@@ -517,7 +515,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         var pos = m_transform.position;
         m_transform.position = new Vector3(pos.x, m_targetYVal, pos.z);
         HapticManager.instance.PlaySelectionHaptic();
-        _audioRecordingManager.StopPlayingRecording();
+        _commentAudioManager.StopPlayingRecording();
         UnMuteVideoAudio();
         
         TraceManager.instance.ClearTracesOnMap(); //todo: maybe do this more seamlessly it causes traces on map to dip for a second unitl it repaints

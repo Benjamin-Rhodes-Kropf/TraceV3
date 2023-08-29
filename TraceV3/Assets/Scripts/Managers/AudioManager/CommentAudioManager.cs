@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UIElements;
 
-public class AudioRecordingManager : MonoBehaviour
+public class CommentAudioManager : MonoBehaviour
 {
     private bool isRecording = false;
     private AudioSource audioSource;
@@ -44,6 +44,11 @@ public class AudioRecordingManager : MonoBehaviour
         startRecordingTime = Microphone.GetPosition(null); // Store the start position for accurate clip length later
     }
 
+    public void StopVideo()
+    {
+        openTraceManager.MuteVideoAudio();
+    }
+
     public void StopRecording()
     {
         if (!isRecording)
@@ -77,6 +82,12 @@ public class AudioRecordingManager : MonoBehaviour
         //     StartCoroutine(LoadAndPlayWav()); //this plays it from persistant data
         // }
         SendRecording();
+    }
+
+    public void PlayAudio(string location)
+    {
+        openTraceManager.
+        StartCoroutine(LoadAndPlayWav(location)); //this plays it from persistant data
     }
 
     public void SendRecording()
@@ -200,16 +211,18 @@ public class AudioRecordingManager : MonoBehaviour
         stream.WriteByte((byte)((value >> 8) & 0xFF));
     }
     
-    IEnumerator LoadAndPlayWav(string fileName = "Recording.wav")
+    IEnumerator LoadAndPlayWav(string fileName)
     {
-        string path = Path.Combine(Application.persistentDataPath, fileName).Replace("\\", "/");
-        #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
+        var path = Application.persistentDataPath + fileName;
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
         path = "file:///" + path;
-        #else
+#else
         path = "file://" + path;
-        #endif
+#endif
         
-        Debug.Log("Generated path: " + path);
+        Debug.Log("Final URL: " + path);
+
+        Debug.Log("Working   path: " + "file:///Users/benrhodes-kropf/Library/Application%20Support/Trace%20Co/Trace/Comments/-NcwoeD-ignTMNB45iNQ/-Ncx9QWsyF_PgXXQtd_B.wav");
 
 
         using (var request = UnityWebRequestMultimedia.GetAudioClip(path, AudioType.WAV))

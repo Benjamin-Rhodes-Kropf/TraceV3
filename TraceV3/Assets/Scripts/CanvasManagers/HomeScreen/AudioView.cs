@@ -10,6 +10,10 @@ public class AudioView : MonoBehaviour
     [SerializeField] private string traceID;
     [SerializeField] private string audioID;
     [SerializeField] private List<float> audioSample;
+    public CommentAudioManager CommentAudioManager;
+    public string location;
+    
+    
 
     [Header("Refrences")] [SerializeField] 
     private GameObject singleWave;
@@ -35,5 +39,7 @@ public class AudioView : MonoBehaviour
     public void PlayAudioRecording()
     {
         Debug.Log("Play Audio Recording:");
+        CommentAudioManager.StopVideo();
+        CommentAudioManager.PlayAudio(location);
     }
 }

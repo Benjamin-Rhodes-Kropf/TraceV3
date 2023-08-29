@@ -255,13 +255,13 @@ public class HomeScreenManager : MonoBehaviour
     {
         foreach (var comment in traceObject.comments)
         {
-            var filePath = Path.Combine(Application.persistentDataPath, "ReceivedTraces/Comments/"+traceObject.id+"/"+comment.Key+".wav");
+            var filePath = Path.Combine(Application.persistentDataPath, "/Comments/"+traceObject.id+"/"+comment.Key+".wav");
             if (File.Exists(filePath))
             {
                 openTraceManager.trace.comments[comment.Key].location = filePath;
             }
             else
-                StartCoroutine(FbManager.instance.GetTraceAudioByUrl(traceObject.id+"/"+comment.Value.id, commentPath => openTraceManager.trace.comments[comment.Key].location = filePath)); //get it from database now
+                StartCoroutine(FbManager.instance.GetTraceAudioByUrl(traceObject.id+"/"+comment.Value.id, commentPath => openTraceManager.PutAudioFileLocation(comment.Key, filePath))); //get it from database now
             yield return null;
         }
     }

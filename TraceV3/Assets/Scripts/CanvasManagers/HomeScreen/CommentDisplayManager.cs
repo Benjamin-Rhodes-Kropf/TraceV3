@@ -8,7 +8,8 @@ public class CommentDisplayManager : MonoBehaviour
 {
     [SerializeField] private GameObject commentViewPrefab;
     [SerializeField] private Transform verticalLayoutGroup;
-    [SerializeField] private List<GameObject> comments = new List<GameObject>();
+    [SerializeField] private CommentAudioManager _commentAudioManager;
+    public Dictionary<string, GameObject> comments = new Dictionary<string, GameObject>();
 
     public void DisplayComments(Dictionary<string,TraceCommentObject> traceCommentObjects)
     {
@@ -21,7 +22,7 @@ public class CommentDisplayManager : MonoBehaviour
         // Destroy old comments and clear the list
         foreach (var comment in comments)
         {
-            Destroy(comment);
+            Destroy(comment.Value);
         }
         comments.Clear();
 
@@ -35,9 +36,10 @@ public class CommentDisplayManager : MonoBehaviour
                 instantiatedComment.transform.SetSiblingIndex(2);
             }
 
-            instantiatedComment.GetComponent<AudioView>().UpdateDisplayedData(traceComment.Value.id, traceComment.Value.id, traceComment.Value.senderName, traceComment.Value.time, new List<float>());
-
-            comments.Add(instantiatedComment);
+            var audioView =  instantiatedComment.GetComponent<AudioView>();
+            audioView.UpdateDisplayedData(traceComment.Value.id, traceComment.Value.id,traceComment.Value.senderName, traceComment.Value.time, new List<float>());
+            audioView.CommentAudioManager = _commentAudioManager; //pass ref to play sound
+            comments.Add(traceComment.Key,instantiatedComment);
         }
     }
     
