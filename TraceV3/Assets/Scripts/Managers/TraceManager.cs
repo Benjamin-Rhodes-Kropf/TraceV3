@@ -520,6 +520,7 @@ public class TraceCommentObject
     public string time;
     public string senderName;
     public string senderID;
+    public string location;
     public TraceCommentObject(string id, string time, string senderID, string senderName)
     {
         this.id = id;
@@ -554,7 +555,7 @@ public class TraceObject
     public double lng;
     public float radius;
     public List<TraceReceiverObject> people; //replace this with recievers
-    public List<TraceCommentObject> comments;
+    public Dictionary<string, TraceCommentObject> comments;
     public double distanceToUser;
     public string mediaType;
     public string senderID;
@@ -579,7 +580,7 @@ public class TraceObject
         }
     }
     
-    public TraceObject(double longitude, double latitude, float radius, List<TraceReceiverObject> people, List<TraceCommentObject> comments, string senderID, string senderName, string sendTime, double endTimeStamp, string mediaType, string id, bool hasBeenOpened)
+    public TraceObject(double longitude, double latitude, float radius, List<TraceReceiverObject> people, Dictionary<string,TraceCommentObject> comments, string senderID, string senderName, string sendTime, double endTimeStamp, string mediaType, string id, bool hasBeenOpened)
     {
         lng = longitude;
         lat = latitude;

@@ -18,8 +18,7 @@ public class BackgroundDownloadManager: MonoBehaviour
         
         s_Instance = this;
     }
-
-
+    
     public void DownloadMediaInBackground(string traceId, string mediaType)
     {
         var downloadPath = "";
@@ -27,7 +26,6 @@ public class BackgroundDownloadManager: MonoBehaviour
             downloadPath = "ReceivedTraces/Photos/"+traceId+".png";
         else
             downloadPath = "ReceivedTraces/Videos/"+traceId+".mp4";
-
         
         var filePath = Path.Combine(Application.persistentDataPath, downloadPath);
 

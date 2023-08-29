@@ -250,10 +250,20 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         _commentDisplayManager.DisplayComments(trace.comments);
     }
 
+    public void ProcessAudioFiles(Dictionary<string,string> filelocations)
+    {
+        foreach (var comment in trace.comments)
+        {
+            
+        }
+    }
+
     public void RefreshTrace(TraceObject trace)
     {
-        if(trace.id == this.trace.id) //make sure we are refreshing the correct one
-            this.trace = trace;
+        if(trace.id != this.trace.id) //make sure we are refreshing the correct one
+            return;
+        this.trace = trace;
+        _commentDisplayManager.DisplayComments(trace.comments);
     }
 
     public void ScaleVideoAspectRatio()
@@ -370,8 +380,9 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
                     DoneOpeningCommentTransition();
                 break;
             case State.CommentView:
-                ApplyPhysics();
-                AnimateSecondaryMotions();
+                //ApplyPhysics();
+                // AnimateSecondaryMotions();
+                CommentViewPhyisics();
                 if (CloseComments())
                     CloseCommentViewTransition();
                 break;
@@ -575,6 +586,16 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         Dy *= frictionWeight;
         bobOffset = Mathf.Sin(Time.time * bobSpeed) * bobHeight; 
         changeInYVal =  m_transform.position.y-m_targetYVal;
+    }
+
+    public void CommentViewPhyisics()
+    {
+        changeInYVal =  m_transform.position.y-m_targetYVal;
+        Dy *= frictionWeight;
+        if (changeInYVal > trace.comments.Count * 180 + 200) //height of audio view
+        {
+            Debug.Log("Beyond Comment Limit");
+        }
     }
 
     public void AnimateSecondaryMotions()

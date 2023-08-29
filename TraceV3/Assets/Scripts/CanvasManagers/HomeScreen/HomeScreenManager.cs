@@ -17,10 +17,10 @@ public class HomeScreenManager : MonoBehaviour
     [SerializeField] private OnlineMaps _onlineMaps;
     [SerializeField] private TraceManager _traceManager;
     [SerializeField] private OnlineMapsControlBase onlineMapsControlBase;
-    
+    [SerializeField] private OpenTraceManager openTraceManager;
+
     [Header("Internal")]
     [SerializeField] private GameObject _tutorialCanvas;
-    [SerializeField] private OpenTraceManager openTraceManager;
     [SerializeField] private ViewTraceManager viewTraceManager;
     [SerializeField] private Animator _loadingAnimator;
     [SerializeField] private TMP_Text _locationNameDisplay;
@@ -219,14 +219,15 @@ public class HomeScreenManager : MonoBehaviour
                     Debug.Log("Open Trace View");
                     openTraceManager.videoPlayer.url = path;
                     StartCoroutine((openTraceManager.ActivateVideoFormat(trace)));
+                    StartCoroutine(GetAudioFiles(trace));
                 }
                 else
                 {
                     Debug.LogError("LoadTraceImage Failed");
                 }
             }));
-            return;
         }
+        //todo: get trace comments
     }
 
     public void RefreshTraceView(TraceObject traceObject)
@@ -246,9 +247,25 @@ public class HomeScreenManager : MonoBehaviour
         if (File.Exists(filePath))
             callback(filePath);
         else
-            StartCoroutine(FbManager.instance.GetTraceVideoByUrl(traceId, callback));
+            StartCoroutine(FbManager.instance.GetTraceVideoByUrl(traceId, callback)); //get it from database now
         yield return null;
     }
+    
+    private IEnumerator GetAudioFiles(TraceObject traceObject)
+    {
+        foreach (var comment in traceObject.comments)
+        {
+            var filePath = Path.Combine(Application.persistentDataPath, "ReceivedTraces/Comments/"+traceObject.id+"/"+comment.Key+".wav");
+            if (File.Exists(filePath))
+            {
+                openTraceManager.trace.comments[comment.Key].location = filePath;
+            }
+            else
+                StartCoroutine(FbManager.instance.GetTraceAudioByUrl(traceObject.id+"/"+comment.Value.id, commentPath => openTraceManager.trace.comments[comment.Key].location = filePath)); //get it from database now
+            yield return null;
+        }
+    }
+    
 
 
     private IEnumerator GetTraceTexture(string traceId, Action<Texture> callback)

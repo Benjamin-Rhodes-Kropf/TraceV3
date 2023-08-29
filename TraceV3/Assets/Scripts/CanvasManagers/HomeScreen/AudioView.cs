@@ -18,7 +18,7 @@ public class AudioView : MonoBehaviour
     {
         this.traceID = traceID;
         this.audioID = audioID;
-        this._displayNameAndTime.text = displayName + "|" + time;
+        this._displayNameAndTime.text = displayName + "|" + HelperMethods.ReformatDate(time);
         this.audioSample = audioSample;
     }
 

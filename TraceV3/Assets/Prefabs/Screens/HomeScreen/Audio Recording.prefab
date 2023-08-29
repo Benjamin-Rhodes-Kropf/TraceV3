@@ -168,7 +168,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ebf11ee5a15c44739cf663bbb93cd40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _displayNameAndTime: {fileID: 0}
+  _displayNameAndTime: {fileID: 982229966547502275}
+  traceID: 
+  audioID: 
+  audioSample: []
+  singleWave: {fileID: 0}
 --- !u!1 &982229966547502273
 GameObject:
   m_ObjectHideFlags: 0
@@ -298,7 +302,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0.7360459, w: 0}
+  m_margin: {x: 0, y: 0, z: -303.13596, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

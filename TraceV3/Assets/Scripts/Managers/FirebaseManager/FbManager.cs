@@ -1373,7 +1373,7 @@ public partial class FbManager : MonoBehaviour
             receiverObjects.Add(new TraceReceiverObject(user, false));
         }
         
-        _drawTraceOnMap.sendingTraceTraceLoadingObject = new TraceObject(location.x, location.y, radius, receiverObjects, new List<TraceCommentObject>(), "null",thisUserModel.name,  DateTime.UtcNow.ToString(), 24, mediaType.ToString(), "temp", true);
+        _drawTraceOnMap.sendingTraceTraceLoadingObject = new TraceObject(location.x, location.y, radius, receiverObjects, new Dictionary<string, TraceCommentObject>(), "null",thisUserModel.name,  DateTime.UtcNow.ToString(), 24, mediaType.ToString(), "temp", true);
         _drawTraceOnMap.DrawCircle(location.x, location.y, radius, DrawTraceOnMap.TraceType.SENDING, "null");
         
         //update global traces
@@ -1480,7 +1480,7 @@ public partial class FbManager : MonoBehaviour
             string sendTime = "";
             bool traceHasBeenOpenedByThisUser = false;
             List<TraceReceiverObject> receivers = new List<TraceReceiverObject>();
-            List<TraceCommentObject> comments = new List<TraceCommentObject>();
+            Dictionary<string, TraceCommentObject> comments = new Dictionary<string, TraceCommentObject>();
             float durationHours = 0;
 
             foreach (var thing in DBTask.Result.Children)
@@ -1570,7 +1570,7 @@ public partial class FbManager : MonoBehaviour
                             string sender = commentData["senderID"].ToString();
                             string name = commentData["senderName"].ToString();
                             Debug.Log("Adding Comment From:" + senderName);
-                            comments.Add(new TraceCommentObject(commentID, time, sender, name));
+                            comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name));
                         }
                         break;
                     }
@@ -1626,7 +1626,7 @@ public partial class FbManager : MonoBehaviour
             float radius = 0;
             string senderID = "";
             List<TraceReceiverObject> receivers = new List<TraceReceiverObject>();
-            List<TraceCommentObject> comments = new List<TraceCommentObject>();
+            Dictionary<string, TraceCommentObject> comments = new Dictionary<string, TraceCommentObject>();
             string senderName = "";
             string sendTime = "";
             string mediaType = "";
@@ -1713,7 +1713,7 @@ public partial class FbManager : MonoBehaviour
                             string time = commentData["time"].ToString();
                             string sender = commentData["senderID"].ToString();
                             string name = commentData["senderName"].ToString();
-                            comments.Add(new TraceCommentObject(commentID, time, sender, name));
+                            comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name));
                         }
                         break;
                     }
@@ -1770,7 +1770,7 @@ public partial class FbManager : MonoBehaviour
             string sendTime = "";
             bool traceHasBeenOpenedByThisUser = false;
             List<TraceReceiverObject> receivers = new List<TraceReceiverObject>();
-            List<TraceCommentObject> comments = new List<TraceCommentObject>();
+            Dictionary<string, TraceCommentObject> comments = new Dictionary<string, TraceCommentObject>();
             float durationHours = 0;
 
             foreach (var thing in DBTask.Result.Children)
@@ -1860,7 +1860,7 @@ public partial class FbManager : MonoBehaviour
                             string sender = commentData["senderID"].ToString();
                             string name = commentData["senderName"].ToString();
                             Debug.Log("Adding Comment From:" + senderName);
-                            comments.Add(new TraceCommentObject(commentID, time, sender, name));
+                            comments.Add(commentID, new TraceCommentObject(commentID, time, sender, name));
                         }
                         break;
                     }
@@ -1907,7 +1907,7 @@ public partial class FbManager : MonoBehaviour
             float radius = 0;
             string senderID = "";
             List<TraceReceiverObject> receivers = new List<TraceReceiverObject>();
-            List<TraceCommentObject> comments = new List<TraceCommentObject>();
+            Dictionary<string, TraceCommentObject> comments = new Dictionary<string, TraceCommentObject>();
             string senderName = "";
             string sendTime = "";
             string mediaType = "";
@@ -1994,7 +1994,7 @@ public partial class FbManager : MonoBehaviour
                             string time = commentData["time"].ToString();
                             string sender = commentData["senderID"].ToString();
                             string name = commentData["senderName"].ToString();
-                            comments.Add(new TraceCommentObject(commentID, time, sender, name));
+                            comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name));
                         }
                         break;
                     }
@@ -2104,6 +2104,96 @@ public partial class FbManager : MonoBehaviour
             callback(path);
         }
     }
+    // public IEnumerator GetTraceAudioByUrl(string _url, System.Action<string> callback)
+    // {
+    //     var request = new UnityWebRequest();
+    //     var url = "";
+    //
+    //     Debug.Log("test:");
+    //     StorageReference pathReference = _firebaseStorage.GetReference("Comments/" + _url);
+    //     Debug.Log("path refrence:" + pathReference);
+    //
+    //     var task = pathReference.GetDownloadUrlAsync();
+    //
+    //     while (task.IsCompleted is false)
+    //         yield return new WaitForEndOfFrame();
+    //
+    //     if (!task.IsFaulted && !task.IsCanceled)
+    //     {
+    //         Debug.Log("Download URL: " + task.Result);
+    //         Debug.Log("Actual  URL: " + url);
+    //         url = task.Result + "";
+    //     }
+    //     else
+    //     {
+    //         Debug.Log("task failed:" + task.Result);
+    //     }
+    //
+    //     //video stuff needs to go here
+    //     request = UnityWebRequest.Get(url);
+    //
+    //     yield return request.SendWebRequest(); //Wait for the request to complete
+    //
+    //     if (request.isNetworkError || request.isHttpError)
+    //     {
+    //         Debug.LogError("error:" + request.error);
+    //     }
+    //     else
+    //     {
+    //         Debug.Log("Correctly Got Audio From Database:" + _url);
+    //         var path = Application.persistentDataPath + "Comments/" + _url;
+    //         File.WriteAllBytes(path, request.downloadHandler.data);
+    //         Debug.Log("Downloaded Video!");
+    //         Debug.Log("Video Location:" + path);
+    //         callback(path);
+    //     }
+    // }
+
+    public IEnumerator GetTraceAudioByUrl(string _url, System.Action<string> callback)
+    {
+        StorageReference pathReference = _firebaseStorage.GetReference("Comments/" + _url);
+        Debug.Log("path refrence:" + pathReference);
+
+        var task = pathReference.GetDownloadUrlAsync();
+
+        while (!task.IsCompleted)
+            yield return new WaitForEndOfFrame();
+
+        if (task.IsFaulted || task.IsCanceled)
+        {
+            Debug.LogError("Task failed. Reason: " + task.Exception?.Message);
+            yield break;
+        }
+
+        string url = task.Result.ToString();
+        Debug.Log("Download URL: " + url);
+
+        UnityWebRequest request = UnityWebRequest.Get(url);
+        yield return request.SendWebRequest();
+
+        if (request.isNetworkError || request.isHttpError)
+        {
+            Debug.LogError("Request error: " + request.error);
+            yield break;
+        }
+
+        string pathWithoutExtension = Application.persistentDataPath + "/Comments/" + _url;
+        string directoryPath = Path.GetDirectoryName(pathWithoutExtension);
+        if (!Directory.Exists(directoryPath))
+        {
+            Directory.CreateDirectory(directoryPath); // This will create all subdirectories in the path that don't exist
+        }
+        
+        // Ensure the .wav extension
+        // Ensure the .wav extension
+        string finalPath = Path.ChangeExtension(pathWithoutExtension, ".wav");
+
+        File.WriteAllBytes(finalPath, request.downloadHandler.data);
+        Debug.Log("Downloaded Audio!");
+        Debug.Log("Audio Location:" + finalPath);
+        callback(finalPath);
+    }
+
     
     public void UploadComment(TraceObject trace, string fileLocation)
     {
@@ -2195,6 +2285,27 @@ public partial class FbManager : MonoBehaviour
         {
             // Debug.Log("Download URL: " + task.Result);
             // Debug.Log("Actual  URL: " + url);
+            url = task.Result + "";
+            onSuccess(url);
+        }
+        else
+        {
+            Debug.Log("task failed:" + task.Result);
+            onFailed();
+        }
+    }
+    public IEnumerator GetTraceCommentDownloadURL(string _url, System.Action<string> onSuccess, System.Action onFailed)
+    {
+        var url = "";
+        StorageReference pathReference = _firebaseStorage.GetReference("Comments/" + _url);
+
+        var task = pathReference.GetDownloadUrlAsync();
+
+        while (task.IsCompleted is false)
+            yield return new WaitForEndOfFrame();
+
+        if (!task.IsFaulted && !task.IsCanceled)
+        {
             url = task.Result + "";
             onSuccess(url);
         }
