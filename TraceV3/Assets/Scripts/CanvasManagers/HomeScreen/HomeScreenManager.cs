@@ -233,6 +233,7 @@ public class HomeScreenManager : MonoBehaviour
     public void RefreshTraceView(TraceObject traceObject)
     {
         openTraceManager.RefreshTrace(traceObject);
+        StartCoroutine(GetAudioFiles(traceObject));
     }
     
     public void UpdateMap()

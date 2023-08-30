@@ -2104,50 +2104,6 @@ public partial class FbManager : MonoBehaviour
             callback(path);
         }
     }
-    // public IEnumerator GetTraceAudioByUrl(string _url, System.Action<string> callback)
-    // {
-    //     var request = new UnityWebRequest();
-    //     var url = "";
-    //
-    //     Debug.Log("test:");
-    //     StorageReference pathReference = _firebaseStorage.GetReference("Comments/" + _url);
-    //     Debug.Log("path refrence:" + pathReference);
-    //
-    //     var task = pathReference.GetDownloadUrlAsync();
-    //
-    //     while (task.IsCompleted is false)
-    //         yield return new WaitForEndOfFrame();
-    //
-    //     if (!task.IsFaulted && !task.IsCanceled)
-    //     {
-    //         Debug.Log("Download URL: " + task.Result);
-    //         Debug.Log("Actual  URL: " + url);
-    //         url = task.Result + "";
-    //     }
-    //     else
-    //     {
-    //         Debug.Log("task failed:" + task.Result);
-    //     }
-    //
-    //     //video stuff needs to go here
-    //     request = UnityWebRequest.Get(url);
-    //
-    //     yield return request.SendWebRequest(); //Wait for the request to complete
-    //
-    //     if (request.isNetworkError || request.isHttpError)
-    //     {
-    //         Debug.LogError("error:" + request.error);
-    //     }
-    //     else
-    //     {
-    //         Debug.Log("Correctly Got Audio From Database:" + _url);
-    //         var path = Application.persistentDataPath + "Comments/" + _url;
-    //         File.WriteAllBytes(path, request.downloadHandler.data);
-    //         Debug.Log("Downloaded Video!");
-    //         Debug.Log("Video Location:" + path);
-    //         callback(path);
-    //     }
-    // }
 
     public IEnumerator GetTraceAudioByUrl(string _url, System.Action<string> callback)
     {

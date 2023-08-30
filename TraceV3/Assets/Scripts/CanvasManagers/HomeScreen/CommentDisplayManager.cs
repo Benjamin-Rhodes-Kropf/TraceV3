@@ -25,21 +25,44 @@ public class CommentDisplayManager : MonoBehaviour
             Destroy(comment.Value);
         }
         comments.Clear();
+        
+        // Convert dictionary to list and sort by DateTime in descending order
+        var sortedTraceComments = new List<KeyValuePair<string, TraceCommentObject>>(traceCommentObjects);
+        sortedTraceComments.Sort((pair1, pair2) =>
+        {
+            DateTime dateTime1;
+            DateTime dateTime2;
 
-        foreach (var traceComment in traceCommentObjects)
+            if (DateTime.TryParse(pair1.Value.time, out dateTime1) && DateTime.TryParse(pair2.Value.time, out dateTime2))
+            {
+                return -dateTime1.CompareTo(dateTime2); // '-' for descending order
+            }
+            return 0; // If the date format is not correct, we keep the original order
+        });
+
+        foreach (var traceComment in sortedTraceComments)
         {
             GameObject instantiatedComment = Instantiate(commentViewPrefab, verticalLayoutGroup);
 
+            var audioView = instantiatedComment.GetComponent<AudioView>();
+            
             if (verticalLayoutGroup.childCount > 2)
             {
                 // Set it to be the third child
                 instantiatedComment.transform.SetSiblingIndex(2);
             }
 
-            var audioView =  instantiatedComment.GetComponent<AudioView>();
-            audioView.UpdateDisplayedData(traceComment.Value.id, traceComment.Value.id,traceComment.Value.senderName, traceComment.Value.time, new List<float>());
-            audioView.CommentAudioManager = _commentAudioManager; //pass ref to play sound
-            comments.Add(traceComment.Key,instantiatedComment);
+            if(audioView != null) 
+            {
+                audioView.UpdateDisplayedData(traceComment.Value.id, traceComment.Value.id, traceComment.Value.senderName, traceComment.Value.time, new List<float>());
+                audioView.CommentAudioManager = _commentAudioManager; //pass ref to play sound
+                comments.Add(traceComment.Key, instantiatedComment);
+            }
+            else 
+            {
+                Debug.LogError("AudioView component not found in the instantiated comment prefab.");
+                Destroy(instantiatedComment);
+            }
         }
     }
     
