@@ -11,7 +11,7 @@ public class CommentDisplayManager : MonoBehaviour
     [SerializeField] private CommentAudioManager _commentAudioManager;
     public Dictionary<string, GameObject> comments = new Dictionary<string, GameObject>();
 
-    public void DisplayComments(Dictionary<string,TraceCommentObject> traceCommentObjects)
+    public void DisplayComments(Dictionary<string, TraceCommentObject> traceCommentObjects)
     {
         if (commentViewPrefab == null)
         {
@@ -24,8 +24,9 @@ public class CommentDisplayManager : MonoBehaviour
         {
             Destroy(comment.Value);
         }
+
         comments.Clear();
-        
+
         // Convert dictionary to list and sort by DateTime in descending order
         var sortedTraceComments = new List<KeyValuePair<string, TraceCommentObject>>(traceCommentObjects);
         sortedTraceComments.Sort((pair1, pair2) =>
@@ -33,10 +34,12 @@ public class CommentDisplayManager : MonoBehaviour
             DateTime dateTime1;
             DateTime dateTime2;
 
-            if (DateTime.TryParse(pair1.Value.time, out dateTime1) && DateTime.TryParse(pair2.Value.time, out dateTime2))
+            if (DateTime.TryParse(pair1.Value.time, out dateTime1) &&
+                DateTime.TryParse(pair2.Value.time, out dateTime2))
             {
                 return -dateTime1.CompareTo(dateTime2); // '-' for descending order
             }
+
             return 0; // If the date format is not correct, we keep the original order
         });
 
@@ -45,36 +48,26 @@ public class CommentDisplayManager : MonoBehaviour
             GameObject instantiatedComment = Instantiate(commentViewPrefab, verticalLayoutGroup);
 
             var audioView = instantiatedComment.GetComponent<AudioView>();
-            
+
             if (verticalLayoutGroup.childCount > 2)
             {
                 // Set it to be the third child
                 instantiatedComment.transform.SetSiblingIndex(2);
             }
 
-            if(audioView != null) 
+            if (audioView != null)
             {
-                audioView.UpdateDisplayedData(traceComment.Value.id, traceComment.Value.id, traceComment.Value.senderName, traceComment.Value.time, new List<float>());
+                audioView.UpdateDisplayedData(traceComment.Value.id, traceComment.Value.id,
+                    traceComment.Value.senderName, traceComment.Value.time, new List<float>());
                 audioView.CommentAudioManager = _commentAudioManager; //pass ref to play sound
                 comments.Add(traceComment.Key, instantiatedComment);
             }
-            else 
+            else
             {
                 Debug.LogError("AudioView component not found in the instantiated comment prefab.");
                 Destroy(instantiatedComment);
             }
         }
     }
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
+

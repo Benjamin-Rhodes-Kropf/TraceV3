@@ -52,7 +52,7 @@ public class BackgroundDownloadManager: MonoBehaviour
         //Debug.Log("Background Download Started For URL :: "+url);
         using var download = BackgroundDownload.Start(new Uri(url), filePath);
         yield return download;
-        Debug.Log(download.status == BackgroundDownloadStatus.Failed ? download.error : "Done Downloading ::"+filePath);
+        //Debug.Log(download.status == BackgroundDownloadStatus.Failed ? download.error : "Done Downloading ::"+filePath);
     }
     
 }

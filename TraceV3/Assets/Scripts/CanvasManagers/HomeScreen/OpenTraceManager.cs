@@ -102,6 +102,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     {
         SetScreenSize();
         Reset();
+        videoPlayer.loopPointReached += OnVideoEnded;
     }
     private void SetScreenSize()
     {
@@ -286,19 +287,13 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         currentState = State.Closing;
     }
 
+    void OnVideoEnded(VideoPlayer vp)
+    {
+        Debug.Log("Video finished!");
+        OpenCommentViewTransition();
+    }
     public void Update()
     {
-        //add action overrides to make more fluent or change state transition if statements
-        // if (Dy < -800 && currentState == State.OpeningMediaView)
-        // {
-        //     currentState = State.ClosingCommentView;
-        // }
-        // if (Dy > 800 && currentState == State.ClosingCommentView)
-        // {
-        //     currentState = State.ClosingCommentView;
-        // }
-
-
         switch (currentState)
         {
             case State.Closed:
@@ -516,28 +511,12 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         TraceManager.instance.ClearTracesOnMap(); //todo: maybe do this more seamlessly it causes traces on map to dip for a second unitl it repaints
 
         currentState = State.MediaView;
-        return;
         
-        //todo: fix this shit.... lmao
-        //Update Map and Database
         if (!trace.HasBeenOpened)
         {
             FbManager.instance.MarkTraceAsOpened(trace);
             Vector2 _location = _onlineMapsLocation.GetUserLocation();
-            try{//todo: no clue why it works the second time
-                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!", _location.y, _location.x));
-            }
-            catch (Exception e)
-            {
-                try
-                {
-                    StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!", _location.y, _location.x));
-                }
-                catch (Exception exception)
-                {
-                    Debug.LogWarning("Failed to Notify User");
-                }
-            }
+            StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!", _location.y, _location.x));
         }
     }
 

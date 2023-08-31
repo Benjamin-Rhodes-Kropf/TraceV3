@@ -8,11 +8,12 @@ using UnityEngine.UIElements;
 
 public class CommentAudioManager : MonoBehaviour
 {
-    private bool isRecording = false;
-    private AudioSource audioSource;
-    private List<float> currentRecording = new List<float>();
-    private int startRecordingTime;
-
+    [SerializeField] private bool isRecording = false;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private List<float> currentRecording = new List<float>();
+    [SerializeField] private int startRecordingTime; 
+    [SerializeField] private float[] extractedFloats;
+    
     [Header("External")] 
     [SerializeField] private OpenTraceManager openTraceManager;
     
@@ -59,19 +60,36 @@ public class CommentAudioManager : MonoBehaviour
         int endRecordingTime = Microphone.GetPosition(null);
         int length = endRecordingTime - startRecordingTime;
         float[] clipData = new float[length];
-        
+        Debug.Log("Clip: " + clipData.Length);
         audioSource.clip.GetData(clipData, startRecordingTime);
         currentRecording.AddRange(clipData);
 
         Microphone.End(null);
-        
         float[] fullClip = currentRecording.ToArray();
         audioSource.clip = AudioClip.Create("RecordedClip", fullClip.Length, 1, 44100, false);
         audioSource.clip.SetData(fullClip, 0);
         
+        // Extract 100 floats from clipData at equal intervals
+        extractedFloats = ExtractFloatsAtEqualIntervals(clipData, 40);
+
         // After stopping the recording, export the clip data to a WAV file
         ExportClipData(audioSource.clip);
     }
+
+    private float[] ExtractFloatsAtEqualIntervals(float[] data, int numSamples)
+    {
+        float[] extractedData = new float[numSamples];
+        int interval = data.Length / numSamples;
+    
+        for (int i = 0; i < numSamples; i++)
+        {
+            int index = i * interval;
+            extractedData[i] = data[index];
+        }
+    
+        return extractedData;
+    }
+
 
     public void FinishedRecording()
     {
@@ -102,7 +120,7 @@ public class CommentAudioManager : MonoBehaviour
 #endif
         Debug.Log("Generated path: " + path);
         
-        SendCommentManager.instance.SendComment(path, openTraceManager.trace);
+        SendCommentManager.instance.SendComment(path, openTraceManager.trace, extractedFloats);
     }
 
     public void StopPlayingRecording()
@@ -181,11 +199,6 @@ public class CommentAudioManager : MonoBehaviour
         }
     }
 
-    public void UploadAudioClipToDatabase()
-    {
-        
-    } 
-
     public void CancelSendingAudioClip()
     {
         audioSource.Stop();
@@ -244,3 +257,10 @@ public class CommentAudioManager : MonoBehaviour
         }
     }
 }
+
+[System.Serializable]
+public class SerializableFloatArray //for serializing the sound wave to upload to fb
+{
+    public float[] data;
+}
+

@@ -1569,8 +1569,16 @@ public partial class FbManager : MonoBehaviour
                             string time = commentData["time"].ToString();
                             string sender = commentData["senderID"].ToString();
                             string name = commentData["senderName"].ToString();
-                            Debug.Log("Adding Comment From:" + senderName);
-                            comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name));
+                            if (commentData.ContainsKey("soundWave"))
+                            {
+                                string extractedValuesJson = commentData["soundWave"].ToString();
+                                float[] extractedValues = JsonUtility.FromJson<float[]>(extractedValuesJson);
+                                comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name,extractedValues));
+                            }
+                            else
+                            {
+                                comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name,new float[]{}));
+                            }
                         }
                         break;
                     }
@@ -1713,7 +1721,16 @@ public partial class FbManager : MonoBehaviour
                             string time = commentData["time"].ToString();
                             string sender = commentData["senderID"].ToString();
                             string name = commentData["senderName"].ToString();
-                            comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name));
+                            if (commentData.ContainsKey("soundWave"))
+                            {
+                                string extractedValuesJson = commentData["soundWave"].ToString();
+                                float[] extractedValues = JsonUtility.FromJson<float[]>(extractedValuesJson);
+                                comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name,extractedValues));
+                            }
+                            else
+                            {
+                                comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name,new float[]{}));
+                            }
                         }
                         break;
                     }
@@ -1859,8 +1876,16 @@ public partial class FbManager : MonoBehaviour
                             string time = commentData["time"].ToString();
                             string sender = commentData["senderID"].ToString();
                             string name = commentData["senderName"].ToString();
-                            Debug.Log("Adding Comment From:" + senderName);
-                            comments.Add(commentID, new TraceCommentObject(commentID, time, sender, name));
+                            if (commentData.ContainsKey("soundWave"))
+                            {
+                                string extractedValuesJson = commentData["soundWave"].ToString();
+                                float[] extractedValues = JsonUtility.FromJson<float[]>(extractedValuesJson);
+                                comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name,extractedValues));
+                            }
+                            else
+                            {
+                                comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name,new float[]{}));
+                            }
                         }
                         break;
                     }
@@ -1994,7 +2019,16 @@ public partial class FbManager : MonoBehaviour
                             string time = commentData["time"].ToString();
                             string sender = commentData["senderID"].ToString();
                             string name = commentData["senderName"].ToString();
-                            comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name));
+                            if (commentData.ContainsKey("soundWave"))
+                            {
+                                string extractedValuesJson = commentData["soundWave"].ToString();
+                                float[] extractedValues = JsonUtility.FromJson<float[]>(extractedValuesJson);
+                                comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name,extractedValues));
+                            }
+                            else
+                            {
+                                comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name,new float[]{}));
+                            }
                         }
                         break;
                     }
@@ -2151,9 +2185,10 @@ public partial class FbManager : MonoBehaviour
     }
 
     
-    public void UploadComment(TraceObject trace, string fileLocation)
+    public void UploadComment(TraceObject trace, string fileLocation, float[] extractedValues)
     {
-        Debug.Log(" UploadComment(): File Location:" + fileLocation);
+        Debug.Log(" UploadComment(): File Location:" + fileLocation + "with sound wave length:" + extractedValues.Length);
+        Debug.Log("Sound wave:" + extractedValues[0] + ", " + extractedValues[1] + ", " + extractedValues[3] + "...");
         
         //PUSH DATA TO REAL TIME DB
         string key = _databaseReference.Child("Traces").Child(trace.id).Child("comments").Push().Key;
@@ -2163,7 +2198,13 @@ public partial class FbManager : MonoBehaviour
         childUpdates["Traces/" + trace.id + "/comments/" + key + "/senderName"] = thisUserModel.name;
         childUpdates["Traces/" + trace.id + "/comments/" + key + "/senderID"] = thisUserModel.userID;
         childUpdates["Traces/" + trace.id + "/comments/" + key + "/time"] = DateTime.UtcNow.ToString();
-
+        
+        //upload simple sound wave
+        SerializableFloatArray serializableFloatArray = new SerializableFloatArray { data = extractedValues };
+        string extractedValuesJson = JsonUtility.ToJson(serializableFloatArray);
+        childUpdates["Traces/" + trace.id + "/comments/" + key + "/extractedValues"] = extractedValuesJson;
+        Debug.Log("SoundWave:" + extractedValuesJson);
+        
         foreach (var user in trace.people)
         {
             childUpdates["TracesRecived/" + user.id +"/"+ trace.id + "/updated"] = DateTime.UtcNow.ToString();

@@ -20,12 +20,12 @@ public class SendCommentManager : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
     }
     
-    public void SendComment(string fileLocation, TraceObject traceObject)
+    public void SendComment(string fileLocation, TraceObject traceObject, float[] extractedValues)
     {
         Debug.Log("SEND TRACE!");
         SendLocalNotification("Sending Comment", "hang on while we upload it!", 1f);
         this.traceObject = traceObject;
-        FbManager.instance.UploadComment(traceObject, fileLocation);
+        FbManager.instance.UploadComment(traceObject, fileLocation, extractedValues);
     }
     
     public void SendNotificationToUsersWhoRecivedTheComment()

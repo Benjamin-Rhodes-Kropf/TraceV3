@@ -521,12 +521,14 @@ public class TraceCommentObject
     public string senderName;
     public string senderID;
     public string location;
-    public TraceCommentObject(string id, string time, string senderID, string senderName)
+    public float[] soundWave;
+    public TraceCommentObject(string id, string time, string senderID, string senderName, float[] soundWave)
     {
         this.id = id;
         this.time = time;
         this.senderName = senderName;
         this.senderID = senderID;
+        this.soundWave = soundWave;
     }
 }
 
