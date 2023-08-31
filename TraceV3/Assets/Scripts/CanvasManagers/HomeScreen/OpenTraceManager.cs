@@ -592,7 +592,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         Dy *= frictionWeight;
         if (!isDragging)
         {
-            if (changeInYVal > trace.comments.Count * 180 + 200)
+            if (changeInYVal > trace.comments.Count * 210 + 200)
             {
                 Dy -= 20;
                 m_transform.position = new Vector3(m_transform.position.x, m_transform.position.y + Dy);
