@@ -21674,6 +21674,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc6c4650711fe4456943d44df3f168f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isRecording: 0
+  audioSource: {fileID: 0}
+  currentRecording: []
+  startRecordingTime: 0
+  extractedFloats: []
   openTraceManager: {fileID: 5018903675241078126}
   doneOptions: {fileID: 402963722}
   recordAudio: {fileID: 1616442757}
@@ -30043,7 +30048,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 200
+  m_SortingOrder: 100
   m_TargetDisplay: 0
 --- !u!114 &7743663004084536189
 MonoBehaviour:
