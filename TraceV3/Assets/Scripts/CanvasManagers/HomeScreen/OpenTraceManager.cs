@@ -590,9 +590,13 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     {
         changeInYVal =  m_transform.position.y-m_targetYVal;
         Dy *= frictionWeight;
+        if (!isDragging)
+        {
+            m_transform.position = new Vector3(m_transform.position.x, m_transform.position.y + Dy);
+        }
         if (changeInYVal > trace.comments.Count * 180 + 200) //height of audio view
         {
-            Debug.Log("Beyond Comment Limit");
+            m_transform.position = new Vector3(m_transform.position.x, m_transform.position.y + Dy + slideRestitutionCurve.Evaluate(changeInYVal)*100f);
         }
     }
 
