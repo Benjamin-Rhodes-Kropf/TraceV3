@@ -71,26 +71,6 @@ public class AudioRecordButtonManager : MonoBehaviour, IPointerDownHandler, IPoi
         Reset();
         SendTraceManager.instance.videoLength = Time.time - startTime; //keep track of vid length for analytics
         onRecordTouchUp?.Invoke();
-        
-        
-        // while (touch)
-        // {
-        //     var ratio = (Time.time - startTime) / maxDuration;
-        //     if (ratio > 1)
-        //     {
-        //         onRecordTouchUp?.Invoke();
-        //         Reset();
-        //         audioRecordingManager.PlayRecording();
-        //         yield break;
-        //     }
-        //     countdown.fillAmount = ratio;
-        //     button.fillAmount = 1f - ratio;
-        //     yield return null;
-        // }
-        Debug.Log("Ratio: Break!");
-        onRecordTouchUp?.Invoke();
-        Reset();
-        _commentAudioManager.FinishedRecording();
     }
 
     void RecordAnimation()
