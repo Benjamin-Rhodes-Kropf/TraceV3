@@ -482,12 +482,8 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         Debug.Log("CloseCommentViewTransition");
         m_targetYVal = viewImageHeightTarget;
         currentState = State.ClosingCommentView;
-        
+        _commentAudioManager.StopPlayingRecording();
         //start playing video early
-        if (!isPhoto)
-        {
-            videoPlayer.Play();
-        }
     }
     
     void OpenCommentViewTransition()
@@ -515,8 +511,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         var pos = m_transform.position;
         m_transform.position = new Vector3(pos.x, m_targetYVal, pos.z);
         HapticManager.instance.PlaySelectionHaptic();
-        _commentAudioManager.StopPlayingRecording();
-        UnMuteVideoAudio();
+        PlayVideo();
         
         TraceManager.instance.ClearTracesOnMap(); //todo: maybe do this more seamlessly it causes traces on map to dip for a second unitl it repaints
 
@@ -549,13 +544,11 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     public void MuteVideoAudio()
     {
         videoPlayer.Pause();
-        //videoPlayer.SetDirectAudioMute(0,true);
     }
 
-    public void UnMuteVideoAudio()
+    public void PlayVideo()
     {
         videoPlayer.Play();
-        //videoPlayer.SetDirectAudioMute(0,false);
     }
 
     void DoneOpeningCommentTransition()
