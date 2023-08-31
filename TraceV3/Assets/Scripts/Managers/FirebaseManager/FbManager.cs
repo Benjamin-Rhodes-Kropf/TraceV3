@@ -1569,10 +1569,11 @@ public partial class FbManager : MonoBehaviour
                             string time = commentData["time"].ToString();
                             string sender = commentData["senderID"].ToString();
                             string name = commentData["senderName"].ToString();
-                            if (commentData.ContainsKey("soundWave"))
+                            if (commentData.ContainsKey("wave"))
                             {
-                                string extractedValuesJson = commentData["soundWave"].ToString();
-                                float[] extractedValues = JsonUtility.FromJson<float[]>(extractedValuesJson);
+                                string extractedValuesJson = commentData["wave"].ToString();
+                                SerializableFloatArray serializableFloatArray = JsonUtility.FromJson<SerializableFloatArray>(extractedValuesJson);
+                                float[] extractedValues = serializableFloatArray.data;
                                 comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name,extractedValues));
                             }
                             else
@@ -1721,10 +1722,13 @@ public partial class FbManager : MonoBehaviour
                             string time = commentData["time"].ToString();
                             string sender = commentData["senderID"].ToString();
                             string name = commentData["senderName"].ToString();
-                            if (commentData.ContainsKey("soundWave"))
+                            if (commentData.ContainsKey("wave"))
                             {
-                                string extractedValuesJson = commentData["soundWave"].ToString();
-                                float[] extractedValues = JsonUtility.FromJson<float[]>(extractedValuesJson);
+                                string extractedValuesJson = commentData["wave"].ToString();
+                                Debug.Log("extractedValuesJson:" + extractedValuesJson);
+                                SerializableFloatArray serializableFloatArray = JsonUtility.FromJson<SerializableFloatArray>(extractedValuesJson);
+                                float[] extractedValues = serializableFloatArray.data;
+                                Debug.Log("extracted soudWave values:" + extractedValues.Length);
                                 comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name,extractedValues));
                             }
                             else
@@ -1876,10 +1880,11 @@ public partial class FbManager : MonoBehaviour
                             string time = commentData["time"].ToString();
                             string sender = commentData["senderID"].ToString();
                             string name = commentData["senderName"].ToString();
-                            if (commentData.ContainsKey("soundWave"))
+                            if (commentData.ContainsKey("wave"))
                             {
-                                string extractedValuesJson = commentData["soundWave"].ToString();
-                                float[] extractedValues = JsonUtility.FromJson<float[]>(extractedValuesJson);
+                                string extractedValuesJson = commentData["wave"].ToString();
+                                SerializableFloatArray serializableFloatArray = JsonUtility.FromJson<SerializableFloatArray>(extractedValuesJson);
+                                float[] extractedValues = serializableFloatArray.data;
                                 comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name,extractedValues));
                             }
                             else
@@ -2019,10 +2024,11 @@ public partial class FbManager : MonoBehaviour
                             string time = commentData["time"].ToString();
                             string sender = commentData["senderID"].ToString();
                             string name = commentData["senderName"].ToString();
-                            if (commentData.ContainsKey("soundWave"))
+                            if (commentData.ContainsKey("wave"))
                             {
-                                string extractedValuesJson = commentData["soundWave"].ToString();
-                                float[] extractedValues = JsonUtility.FromJson<float[]>(extractedValuesJson);
+                                string extractedValuesJson = commentData["wave"].ToString();
+                                SerializableFloatArray serializableFloatArray = JsonUtility.FromJson<SerializableFloatArray>(extractedValuesJson);
+                                float[] extractedValues = serializableFloatArray.data;
                                 comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name,extractedValues));
                             }
                             else
@@ -2202,7 +2208,7 @@ public partial class FbManager : MonoBehaviour
         //upload simple sound wave
         SerializableFloatArray serializableFloatArray = new SerializableFloatArray { data = extractedValues };
         string extractedValuesJson = JsonUtility.ToJson(serializableFloatArray);
-        childUpdates["Traces/" + trace.id + "/comments/" + key + "/extractedValues"] = extractedValuesJson;
+        childUpdates["Traces/" + trace.id + "/comments/" + key + "/wave"] = extractedValuesJson;
         Debug.Log("SoundWave:" + extractedValuesJson);
         
         foreach (var user in trace.people)

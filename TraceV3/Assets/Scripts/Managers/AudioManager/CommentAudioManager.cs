@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UIElements;
+using Slider = UnityEngine.UI.Slider;
 
 public class CommentAudioManager : MonoBehaviour
 {
@@ -104,10 +105,9 @@ public class CommentAudioManager : MonoBehaviour
         SendRecording();
     }
 
-    public void PlayAudio(string location)
+    public void PlayAudio(string location, UnityEngine.UI.Slider slider)
     {
-        openTraceManager.
-        StartCoroutine(LoadAndPlayWav(location)); //this plays it from persistant data
+        StartCoroutine(LoadAndPlayWav(location, slider)); //this plays it from persistant data
     }
 
     public void SendRecording()
@@ -226,7 +226,7 @@ public class CommentAudioManager : MonoBehaviour
         stream.WriteByte((byte)((value >> 8) & 0xFF));
     }
     
-    IEnumerator LoadAndPlayWav(string fileName)
+    IEnumerator LoadAndPlayWav(string fileName, Slider slider)
     {
         var path = Application.persistentDataPath + fileName;
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
@@ -253,7 +253,16 @@ public class CommentAudioManager : MonoBehaviour
                 AudioClip clip = DownloadHandlerAudioClip.GetContent(request);
                 audioSource.clip = clip;
                 audioSource.Play();
+                StartCoroutine(UpdateSliderWhilePlaying(audioSource.clip.length, slider));
             }
+        }
+    }
+    IEnumerator UpdateSliderWhilePlaying(float audioLength, Slider slider)
+    {
+        while (audioSource.isPlaying)
+        {
+            slider.value = audioSource.time / audioLength;
+            yield return null;
         }
     }
 }

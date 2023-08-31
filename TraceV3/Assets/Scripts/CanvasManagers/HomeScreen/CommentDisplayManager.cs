@@ -58,7 +58,7 @@ public class CommentDisplayManager : MonoBehaviour
             if (audioView != null)
             {
                 audioView.UpdateDisplayedData(traceComment.Value.id, traceComment.Value.id,
-                    traceComment.Value.senderName, traceComment.Value.time, new List<float>());
+                    traceComment.Value.senderName, traceComment.Value.time, traceComment.Value.soundWave);
                 audioView.CommentAudioManager = _commentAudioManager; //pass ref to play sound
                 comments.Add(traceComment.Key, instantiatedComment);
             }
