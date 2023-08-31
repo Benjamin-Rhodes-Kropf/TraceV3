@@ -594,8 +594,8 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         {
             if (changeInYVal > trace.comments.Count * 210 + 200)
             {
-                Dy -= 20;
-                m_transform.position = new Vector3(m_transform.position.x, m_transform.position.y + Dy);
+                Dy -= 5;
+                m_transform.position = new Vector3(m_transform.position.x, m_transform.position.y + Dy - Math.Abs((changeInYVal- trace.comments.Count * 210 + 200)));
             }
             else
                 m_transform.position = new Vector3(m_transform.position.x, m_transform.position.y + Dy);
