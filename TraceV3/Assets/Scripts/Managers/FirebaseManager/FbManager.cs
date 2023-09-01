@@ -163,7 +163,7 @@ public partial class FbManager : MonoBehaviour
         String savedUsername = PlayerPrefs.GetString("Username");
         String savedPassword = PlayerPrefs.GetString("Password");
 
-        if (savedUsername != "null" && savedPassword != "null")
+        if (savedUsername != "null" && savedUsername != "" && savedPassword != "null" && savedPassword != "") //check if empty
         {
             Debug.Log("Auto Logging in with username:" + PlayerPrefs.GetString("Username"));
             Debug.Log("Auto Logging in with password:" + PlayerPrefs.GetString("Password"));
@@ -202,12 +202,12 @@ public partial class FbManager : MonoBehaviour
                 }
                 else
                 {
-                    if (myReturnValue.callbackEnum == CallbackEnum.CONNECTIONERROR)
+                    if (myReturnValue.callbackEnum == CallbackEnum.CONNECTIONERROR) //this never fires
                     {
                         ScreenManager.instance.ChangeScreenForwards("ConnectionError");
                         return;
                     }
-                    Debug.LogError("FbManager: failed to auto login");
+                    Debug.LogWarning("FbManager: failed to auto login");
                     Logout(LoginStatus.LoggedOut);
                 }
             }));

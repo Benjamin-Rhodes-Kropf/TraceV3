@@ -50,7 +50,10 @@ public class AudioRecordButtonManager : MonoBehaviour, IPointerDownHandler, IPoi
     
     public void ForceRec()
     {
-        StartCoroutine(ForceRecord());
+        if(FbManager.instance.IsFirebaseUserInitialised && FbManager.instance.IsFirebaseUserLoggedIn)
+            StartCoroutine(ForceRecord());
+        else
+            NotificationManager.Instance.SendLocalNotification("Hold Up!", "Wait For Us to Get Connected!", 1);
     }
 
     public IEnumerator ForceRecord()

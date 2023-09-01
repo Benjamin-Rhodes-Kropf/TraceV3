@@ -21,19 +21,29 @@ public class PlayerPrefsManager : MonoBehaviour
     {
         if(pauseStatus)
         {
-            Debug.Log("iOS app went to background");
-            Debug.Log("Saving Player Prefs");
-            if(TraceManager.instance.receivedTraceObjects.Count > 0)
+            bool worked = true;
+            if (TraceManager.instance.receivedTraceObjects.Count > 0)
                 SaveReceivedTracesToPlayerPrefs(TraceManager.instance.receivedTraceObjects);
+            else
+                worked = false;
             if(TraceManager.instance.receivedTraceObjects.Count > 0)
                 SaveSentTracesToPlayerPrefs(TraceManager.instance.sentTraceObjects);
+            else
+                worked = false;
             if(FbManager.instance._allFriends.Count > 0)
                 SaveFriendsToPlayerPrefs(FbManager.instance._allFriends);
+            else
+                worked = false;
             if(FbManager.instance.users.Count > 0)
                 SaveUsersToPlayerPrefs(FbManager.instance.users);
-            if(FbManager.instance.thisUserModel != null)
+            else
+                worked = false;
+            if(FbManager.instance.thisUserModel != null && FbManager.instance.IsFirebaseUserLoggedIn)
                 SaveThisUserToPlayerPrefs(FbManager.instance.thisUserModel);
-            PlayerPrefs.SetInt("DBDataCached", 1);
+            else
+                worked = false;
+            if(worked)
+                PlayerPrefs.SetInt("DBDataCached", 1);
         }
         else
         {
@@ -43,18 +53,29 @@ public class PlayerPrefsManager : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        Debug.Log("Saving Player Prefs");
-        if(TraceManager.instance.receivedTraceObjects.Count > 0)
+        bool worked = true;
+        if (TraceManager.instance.receivedTraceObjects.Count > 0)
             SaveReceivedTracesToPlayerPrefs(TraceManager.instance.receivedTraceObjects);
+        else
+            worked = false;
         if(TraceManager.instance.receivedTraceObjects.Count > 0)
             SaveSentTracesToPlayerPrefs(TraceManager.instance.sentTraceObjects);
+        else
+            worked = false;
         if(FbManager.instance._allFriends.Count > 0)
             SaveFriendsToPlayerPrefs(FbManager.instance._allFriends);
+        else
+            worked = false;
         if(FbManager.instance.users.Count > 0)
             SaveUsersToPlayerPrefs(FbManager.instance.users);
-        if(FbManager.instance.thisUserModel != null)
+        else
+            worked = false;
+        if(FbManager.instance.thisUserModel != null && FbManager.instance.IsFirebaseUserLoggedIn)
             SaveThisUserToPlayerPrefs(FbManager.instance.thisUserModel);
-        PlayerPrefs.SetInt("DBDataCached", 1);
+        else
+            worked = false;
+        if(worked)
+            PlayerPrefs.SetInt("DBDataCached", 1);
     }
     
     public void SaveReceivedTracesToPlayerPrefs(Dictionary<string,TraceObject> traces)

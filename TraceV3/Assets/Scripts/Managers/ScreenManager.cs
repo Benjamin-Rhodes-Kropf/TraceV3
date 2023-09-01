@@ -87,13 +87,8 @@ public class ScreenManager : MonoBehaviour
     //Call Custom Screen Display
     public void WelcomeScreen()
     {
-        // HideLoadingScreen();
         UIScreen newScreen = ScreenFromID("Welcome");
-        if (PlayerPrefs.GetInt("NumberOfTimesLoggedIn") == 1)
-        {
-            newScreen = ScreenFromID("BigWelcome");
-        }
-        
+
         if ( newScreen != null)
         {
             //startScreen leaves the view and endScreen slides into view

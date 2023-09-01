@@ -2354,6 +2354,12 @@ PlayerSettings:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 11400000, guid: 126b366f164554ebe8e7aa643f4411ff, type: 2}
+  - {fileID: 8456736684650657537, guid: 4cc24b4e70c6f49dbae02f68da29824a, type: 2}
+  - {fileID: 11400000, guid: a8ba1368d3fde43e7945b53fecdea1c1, type: 2}
+  - {fileID: 11400000, guid: 502c678c3699e4acea532e136f4fb0c6, type: 2}
+  - {fileID: 11400000, guid: 83604dab410a84f65b569a3ec60b9989, type: 2}
+  - {fileID: 11400000, guid: 931e3f450975d45a6900ee4fdbc41ddb, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
