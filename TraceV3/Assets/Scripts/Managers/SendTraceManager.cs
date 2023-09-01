@@ -62,7 +62,7 @@ public class SendTraceManager : MonoBehaviour
             Debug.Log("Selected Radius Set Wrong");
             selectedRadius = 0.4f;
         }
-        SendLocalNotification("Sending Trace", "hang on while we upload it!", 1f);
+        NotificationManager.Instance.SendLocalNotification("Sending Trace", "hang on while we upload it!", 1f);
         //todo: no need to get hash or phone number just seperate from get-go
         FbManager.instance.UploadTrace(usersToSendTrace, phonesToSendTrace, fileLocation, selectedRadius, location, mediaType);
         SendBulkSMS.Instance.SendTraceSMS(phonesToSendTrace, new Vector2(location.y, location.x));
@@ -84,27 +84,7 @@ public class SendTraceManager : MonoBehaviour
                 StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user, FbManager.instance.thisUserModel.name, "Sent You A Trace!", location.y,location.x));
             }
         }
-        SendLocalNotification("Trace Sent", "lets hope they find it!",1f);
-    }
-    
-    public void SendLocalNotification(string title, string message, float delayInSeconds)
-    {
-        Debug.Log("Sending Notification");
-        TimeSpan delay = TimeSpan.FromSeconds(delayInSeconds);
-
-        iOSNotification notification = new iOSNotification
-        {
-            Title = title,
-            Body = message,
-            ShowInForeground = true,
-            ForegroundPresentationOption = (PresentationOption.Alert | PresentationOption.Sound),
-            Trigger = new iOSNotificationTimeIntervalTrigger
-            {
-                TimeInterval = delay, // Use TimeSpan instead of double
-                Repeats = false
-            }
-        };
-        iOSNotificationCenter.ScheduleNotification(notification);
+        NotificationManager.Instance.SendLocalNotification("Trace Sent", "lets hope they find it!",1f);
     }
 }
 

@@ -14,6 +14,7 @@ public class CommentAudioManager : MonoBehaviour
     [SerializeField] private List<float> currentRecording = new List<float>();
     [SerializeField] private int startRecordingTime; 
     [SerializeField] private float[] extractedFloats;
+    [SerializeField] private IEnumerator audioSlider; 
     
     [Header("External")] 
     [SerializeField] private OpenTraceManager openTraceManager;
@@ -107,6 +108,7 @@ public class CommentAudioManager : MonoBehaviour
 
     public void PlayAudio(string location, UnityEngine.UI.Slider slider)
     {
+        audioSource.Stop();
         StartCoroutine(LoadAndPlayWav(location, slider)); //this plays it from persistant data
     }
 
@@ -228,6 +230,8 @@ public class CommentAudioManager : MonoBehaviour
     
     IEnumerator LoadAndPlayWav(string fileName, Slider slider)
     {
+        if(audioSlider != null)
+            StopCoroutine(audioSlider);
         var path = Application.persistentDataPath + fileName;
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
         path = "file:///" + path;
@@ -253,7 +257,8 @@ public class CommentAudioManager : MonoBehaviour
                 AudioClip clip = DownloadHandlerAudioClip.GetContent(request);
                 audioSource.clip = clip;
                 audioSource.Play();
-                StartCoroutine(UpdateSliderWhilePlaying(audioSource.clip.length, slider));
+                audioSlider = UpdateSliderWhilePlaying(audioSource.clip.length, slider);
+                StartCoroutine(audioSlider);
             }
         }
     }

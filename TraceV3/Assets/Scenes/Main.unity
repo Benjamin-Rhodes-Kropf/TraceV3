@@ -275,9 +275,9 @@ RectTransform:
   m_Father: {fileID: 1795611293}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 400, y: -145.1146}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &160942881
@@ -1355,9 +1355,9 @@ RectTransform:
   m_Father: {fileID: 1795611293}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 400, y: -432.7865}
   m_SizeDelta: {x: 694, y: 105.1146}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &402963724
@@ -2380,6 +2380,7 @@ Transform:
   - {fileID: 1183836683}
   - {fileID: 441187403}
   - {fileID: 178543601}
+  - {fileID: 904349836}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2518,6 +2519,50 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 028472b123b82d84581ce50c233c21b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &904349835
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 904349836}
+  - component: {fileID: 904349837}
+  m_Layer: 0
+  m_Name: Notification Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &904349836
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 904349835}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 763554916}
+  m_RootOrder: 17
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &904349837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 904349835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d1d1deec3fe641bf97c16473edbcf3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &906833077
@@ -4134,8 +4179,8 @@ MonoBehaviour:
   dependencyStatus: 6
   firebaseStorageReferenceUrl: gs://geosnapv1.appspot.com
   resetPlayerPrefs: 0
-  fakeLoginWaitTime: 0
-  lowConnectivitySmartLogin: 0
+  fakeLoginWaitTime: 5
+  lowConnectivitySmartLogin: 1
   _drawTraceOnMap: {fileID: 6068666308761308086}
   _dragAndZoomInertia: {fileID: 6068666308761308082}
   _map: {fileID: 6068666308761308066}
@@ -4196,9 +4241,9 @@ RectTransform:
   m_Father: {fileID: 1795611293}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 400, y: -215.1146}
   m_SizeDelta: {x: 694, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1260810754
@@ -7446,9 +7491,9 @@ RectTransform:
   m_Father: {fileID: 1795611293}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 400, y: -312.6719}
   m_SizeDelta: {x: 694, y: 105.1146}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1616442759
@@ -8146,7 +8191,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -120}
-  m_SizeDelta: {x: 800, y: 0}
+  m_SizeDelta: {x: 800, y: 485.34378}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1795611294
 MonoBehaviour:
@@ -9158,9 +9203,9 @@ RectTransform:
   m_Father: {fileID: 1795611293}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 400, y: -52.5573}
   m_SizeDelta: {x: 747, y: 105.1146}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2100565725
@@ -10800,7 +10845,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0.000061035156}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -11678,7 +11723,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0.000061035156}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -15443,7 +15488,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &4349171673872258806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15695,6 +15740,7 @@ GameObject:
   - component: {fileID: 4349171674450712982}
   - component: {fileID: 4349171674450712983}
   - component: {fileID: 249140091958819232}
+  - component: {fileID: 4349171674450712984}
   m_Layer: 5
   m_Name: Camera Button
   m_TagString: Untagged
@@ -15776,21 +15822,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1301840576}
-        m_TargetAssemblyTypeName: ScreenManager, Assembly-CSharp
-        m_MethodName: ChangeScreenNoAnim
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: Camera Screen
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1301840576}
-        m_TargetAssemblyTypeName: ScreenManager, Assembly-CSharp
-        m_MethodName: LoadArScene
+      - m_Target: {fileID: 4349171674450712984}
+        m_TargetAssemblyTypeName: CameraButton, Assembly-CSharp
+        m_MethodName: CameraButtonPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -15800,54 +15834,22 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 6068666308761308082}
-        m_TargetAssemblyTypeName: DragAndZoomInertia, Assembly-CSharp
-        m_MethodName: SetMapVelocityToZero
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 6068666308761308073}
-        m_TargetAssemblyTypeName: OnlineMapsLocationServiceBase, Assembly-CSharp
-        m_MethodName: UpdatePosition
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1196670846}
-        m_TargetAssemblyTypeName: FbManager, Assembly-CSharp
-        m_MethodName: AnalyticsOnCameraPressed
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 4349171673872258808}
-        m_TargetAssemblyTypeName: HomeScreenTutorial, Assembly-CSharp
-        m_MethodName: TutorialCameraButtonPressed
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+--- !u!114 &4349171674450712984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4349171674450712981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbcaf12b401d64c9caa39993e27de9d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _screenManager: {fileID: 1301840576}
+  _dragAndZoomInertia: {fileID: 6068666308761308082}
+  _onlineMapsLocationService: {fileID: 6068666308761308073}
+  _homeScreenTutorial: {fileID: 4349171673872258808}
 --- !u!1 &4349171674565762208
 GameObject:
   m_ObjectHideFlags: 0
@@ -20063,7 +20065,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6899231106522116393, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6899231107352376943, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
       propertyPath: m_RootOrder
@@ -25282,7 +25284,7 @@ MonoBehaviour:
   useProxy: 1
   useSoftwareJPEGDecoder: 0
   width: 4096
-  _activeTypeSettings: 07User ID21018benrk10006Map ID228225cle5v79j8000201k1lr5tl86v12Access
+  _activeTypeSettings: 07User ID21018benrk10006Map ID228225cljkem6q300e201qp76zfaaya12Access
     Token293290pk.eyJ1IjoiYmVucmsxMDAiLCJhIjoiY2xid3VqdWJjMDdodDNubjdpaTU2OWZiYSJ9.3ytRbwK51mPCf73LWaJjmA
   _zoom: 18
   latitude: 42
@@ -25841,7 +25843,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0.000061035156}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -30373,7 +30375,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0.000061035156}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}

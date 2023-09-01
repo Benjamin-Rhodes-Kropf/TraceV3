@@ -6,14 +6,23 @@ using Firebase.Messaging;
 using Helper;
 using UnityEngine;
 using UnityEngine.iOS;
-
+using Unity.Notifications.iOS;
 using UnityEngine.Networking;
 
-public class NotificationManager : UnitySingleton<NotificationManager>
+public class NotificationManager : MonoBehaviour
 {
+    [Header("Dont Destroy")]
+    public static NotificationManager Instance;
+    
     private static string url = "https://trace-notification-s5iopr6l5a-uc.a.run.app/sendNotification";
     private void Awake()
     {
+        //do not destroy
+        if (Instance != null)
+        {Destroy(gameObject);}
+        Instance = this;
+        DontDestroyOnLoad(this.gameObject);
+        
         Debug.Log("Setting Up Notifications");
         Application.runInBackground = true;
         FirebaseMessaging.TokenReceived += OnTokenReceived;
@@ -106,6 +115,30 @@ public class NotificationManager : UnitySingleton<NotificationManager>
         {
             Debug.Log("Notification sent successfully!");
         }
+    }
+    
+    public void SendLocalNotification(string title, string message, float delayInSeconds)
+    {
+        #if UNITY_EDITOR
+            Debug.Log("Sending Local Notification:" + title + "||" + message + "|| after" + delayInSeconds + "second(s)");
+            return;
+        #endif
+        
+        TimeSpan delay = TimeSpan.FromSeconds(delayInSeconds);
+
+        iOSNotification notification = new iOSNotification
+        {
+            Title = title,
+            Body = message,
+            ShowInForeground = true,
+            ForegroundPresentationOption = (PresentationOption.Alert | PresentationOption.Sound),
+            Trigger = new iOSNotificationTimeIntervalTrigger
+            {
+                TimeInterval = delay, // Use TimeSpan instead of double
+                Repeats = false
+            }
+        };
+        iOSNotificationCenter.ScheduleNotification(notification);
     }
 }
 
