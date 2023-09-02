@@ -8,11 +8,7 @@ public class CameraButton : MonoBehaviour
     [SerializeField] private DragAndZoomInertia _dragAndZoomInertia;
     [SerializeField] private OnlineMapsLocationService _onlineMapsLocationService;
     [SerializeField] private HomeScreenTutorial _homeScreenTutorial;
-
-    void Start()
-    {
-        NotificationManager.Instance.SendLocalNotification("Hold Up!, ","Give Us A Moment To Connect to the Internet", 1);
-    }
+    
     public void CameraButtonPressed()
     {
         if (FbManager.instance.IsFirebaseInitialised && FbManager.instance.IsFirebaseUserLoggedIn)

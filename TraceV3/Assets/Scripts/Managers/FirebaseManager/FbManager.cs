@@ -309,6 +309,7 @@ public partial class FbManager : MonoBehaviour
         if (fetchedUserStatus == UserStatus.Initialized)
         {
             // All is good, user data is initialized.
+            IsFirebaseUserLoggedIn = true;
             callbackObject.LoginStatus = global::LoginStatus.Success;
         }
         else if (fetchedUserStatus == UserStatus.MissingData)
