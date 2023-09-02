@@ -1,18 +1,19 @@
 public class CallbackObject
 {
-    public CallbackEnum callbackEnum;
+    public LoginStatus LoginStatus;
     public object ReturnValue;
     public string message;
     public CallbackObject()
     {
-        callbackEnum = CallbackEnum.FAILED;
+        LoginStatus = LoginStatus.Failed;
         message = "";
     }
 }
 
-public enum CallbackEnum
+public enum LoginStatus
 {
-    SUCCESS,
-    CONNECTIONERROR,
-    FAILED
+    Success,
+    ConnectionError,
+    Failed,
+    UnFinishedRegistration,
 }

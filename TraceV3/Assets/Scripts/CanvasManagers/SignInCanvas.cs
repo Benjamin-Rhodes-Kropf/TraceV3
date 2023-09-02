@@ -25,7 +25,7 @@ public class SignInCanvas : MonoBehaviour
         
         Debug.Log("Login Button Hit!");
         StartCoroutine(FbManager.instance.Login(username.text, password.text, (myReturnValue) => {
-            if (myReturnValue.callbackEnum == CallbackEnum.SUCCESS)
+            if (myReturnValue.LoginStatus == LoginStatus.Success)
             {
                 FbManager.instance.SetUserLoginSatus(true);
                 if (PlayerPrefs.GetInt("IsInvited") == 0)

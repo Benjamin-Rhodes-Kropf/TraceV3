@@ -169,7 +169,7 @@ public partial class FbManager : MonoBehaviour
             Debug.Log("Auto Logging in with password:" + PlayerPrefs.GetString("Password"));
 
             StartCoroutine(FbManager.instance.Login(savedUsername, savedPassword, (myReturnValue) => {
-                if (myReturnValue.callbackEnum == CallbackEnum.SUCCESS)
+                if (myReturnValue.LoginStatus == global::LoginStatus.Success)
                 {
                     Debug.Log("AutoLogin SUCCESS");
                     SetUserLoginSatus(true);
@@ -202,7 +202,7 @@ public partial class FbManager : MonoBehaviour
                 }
                 else
                 {
-                    if (myReturnValue.callbackEnum == CallbackEnum.CONNECTIONERROR) //this never fires
+                    if (myReturnValue.LoginStatus == global::LoginStatus.ConnectionError) //this never fires
                     {
                         ScreenManager.instance.ChangeScreenForwards("ConnectionError");
                         return;
@@ -218,58 +218,50 @@ public partial class FbManager : MonoBehaviour
         }
     }
     
-    public IEnumerator Login(string _email, string _password,  System.Action<CallbackObject> callback)
+    public IEnumerator Login(string _email, string _password, System.Action<CallbackObject> callback)
     {
-        //Fb Login
-        Debug.Log("logging in");
-        CallbackObject callbackObject = new CallbackObject();
+        Debug.Log("Logging in...");
         var LoginTask = _firebaseAuth.SignInWithEmailAndPasswordAsync(_email, _password);
         yield return new WaitUntil(predicate: () => LoginTask.IsCompleted);
-        
+
+        CallbackObject callbackObject = new CallbackObject();
+
         if (LoginTask.Exception != null)
         {
-            //If there are errors handle them
-            Debug.LogWarning(message: $"Failed to register task with {LoginTask.Exception}");
             FirebaseException firebaseEx = LoginTask.Exception.GetBaseException() as FirebaseException;
             AuthError errorCode = (AuthError)firebaseEx.ErrorCode;
             string message = "Login Failed!";
-            callbackObject.callbackEnum = CallbackEnum.FAILED;
+            
             switch (errorCode)
             {
                 case AuthError.MissingEmail:
                     message = "Missing Email";
-                    callbackObject.message = message;
-                    callbackObject.callbackEnum = CallbackEnum.FAILED;                    
                     break;
                 case AuthError.MissingPassword:
                     message = "Missing Password";
-                    callbackObject.message = message;
-                    callbackObject.callbackEnum = CallbackEnum.FAILED;
                     break;
                 case AuthError.WrongPassword:
                     message = "Wrong Password";
-                    callbackObject.message = message;
-                    callbackObject.callbackEnum = CallbackEnum.FAILED;
                     break;
                 case AuthError.InvalidEmail:
                     message = "Invalid Email";
-                    callbackObject.message = message;
-                    callbackObject.callbackEnum = CallbackEnum.FAILED;
                     break;
                 case AuthError.UserNotFound:
                     message = "Account does not exist";
-                    callbackObject.message = message;
-                    callbackObject.callbackEnum = CallbackEnum.FAILED;
                     break;
                 case AuthError.NetworkRequestFailed:
                     message = "ConnectionError";
-                    callbackObject.message = message;
                     Debug.Log("Trace Network Request Failed");
-                    callbackObject.callbackEnum = CallbackEnum.CONNECTIONERROR;
+                    callbackObject.LoginStatus = global::LoginStatus.ConnectionError;
+                    break;
+                // Add more error cases if necessary
+                default:
+                    message = "Unknown error: " + errorCode.ToString();
                     break;
             }
-            Debug.Log("FBManager: failed to log in because " + errorCode.ToString());
-            callbackObject.callbackEnum = CallbackEnum.FAILED;
+
+            Debug.LogWarning($"FBManager: failed to log in because {errorCode.ToString()}");
+            callbackObject.LoginStatus = global::LoginStatus.Failed;
             callbackObject.message = message;
             callback(callbackObject);
             yield break;
@@ -277,20 +269,59 @@ public partial class FbManager : MonoBehaviour
 
         _firebaseUser = LoginTask.Result;
         Debug.LogFormat("User signed in successfully: {0} ({1})", _firebaseUser.DisplayName, _firebaseUser.Email);
-        Debug.Log("logged In: user profile photo is: " + _firebaseUser.PhotoUrl);
 
-        //stay logged in
+        //Todo: Remove this for security reasons
         PlayerPrefs.SetString("Username", _email);
         PlayerPrefs.SetString("Password", _password);
         PlayerPrefs.Save();
 
         ContinuesListners();
         InitializeFCMService();
-        GetCurrentUserData(_password);
         
-        callbackObject.callbackEnum = CallbackEnum.SUCCESS;
-        callback(callbackObject); //end of login
+        //get user data (this does slow down the login a bit)
+        UserStatus fetchedUserStatus = UserStatus.Error;  // Initialize with a default value
+
+        yield return StartCoroutine(GetCurrentUserDataCoroutine((status) =>
+        {
+            fetchedUserStatus = status;  // Update the local variable with the status from the callback
+            switch (status)
+            {
+                case UserStatus.Initialized:
+                    // Handle successful initialization
+                    break;
+                case UserStatus.MissingData:
+                    Debug.LogWarning("User data is incomplete!");
+                    // Handle missing data scenario
+                    break;
+                case UserStatus.Error:
+                    Debug.LogError("Error fetching user data.");
+                    // Handle error scenario
+                    break;
+            }
+        }));
+        
+        // Now we use 'fetchedUserStatus' to decide how to proceed.
+        if (fetchedUserStatus == UserStatus.Initialized)
+        {
+            // All is good, user data is initialized.
+            callbackObject.LoginStatus = global::LoginStatus.Success;
+        }
+        else if (fetchedUserStatus == UserStatus.MissingData)
+        {
+            // Handle scenario when data is missing.
+            callbackObject.LoginStatus = global::LoginStatus.UnFinishedRegistration;
+            callbackObject.message = "User data is incomplete!";
+        }
+        else
+        {
+            // Handle general error scenario.
+            callbackObject.LoginStatus = global::LoginStatus.Failed;
+            callbackObject.message = "Error fetching user data.";
+        }
+
+        callback(callbackObject);
     }
+
     
     public void SetUserLoginSatus(bool status)
     {
@@ -341,52 +372,71 @@ public partial class FbManager : MonoBehaviour
         SubscribeOrUnsubscribeToSentTraces(false);
     }
     
-    private void GetCurrentUserData(string password)
+    public enum UserStatus
     {
-        //todo: dont do if cache exists
-        
-        // Get a reference to the "users" node in the database
-        DatabaseReference usersRef = _databaseReference.Child("users");
-        
-        // Attach a listener to the "users" node
-        usersRef.Child(_firebaseUser.UserId).GetValueAsync().ContinueWith(task =>
+        Initialized,
+        MissingData,
+        Error
+    }
+
+    public delegate void UserCallback(UserStatus status);
+    private IEnumerator GetCurrentUserDataCoroutine(UserCallback callback)
+    {
+        DatabaseReference userRef = _databaseReference.Child("users").Child(_firebaseUser.UserId);
+        var task = userRef.GetValueAsync();
+
+        // Wait for the task to complete
+        yield return new WaitUntil(() => task.IsCompleted || task.IsFaulted);
+
+        if (task.IsFaulted)
         {
-            
-            DataSnapshot snapshot = null;
-            if (task.IsCompleted)
+            Debug.LogError(task.Exception);
+            callback(UserStatus.Error);
+            yield break;
+        }
+
+        if (task.IsCompleted)
+        {
+            DataSnapshot snapshot = task.Result;
+
+            if (snapshot.Exists)
             {
-                // Iterate through the children of the "users" node and add each username to the list
-                snapshot = task.Result;
-
-
-                string batch = "";
-                if (snapshot.HasChild("batch"))
+                string email = GetChildValue(snapshot, "email");
+                string displayName = GetChildValue(snapshot, "name");
+                string username = GetChildValue(snapshot, "username");
+                string phone = GetChildValue(snapshot, "phone");
+                string photoURL = GetChildValue(snapshot, "photo");
+            
+                // Check for missing data
+                if (string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(username))
                 {
-                    batch = snapshot.Child("batch").Value.ToString();
-                    AnalyticsSetBatchNumber(batch);
+                    callback(UserStatus.MissingData);
+                    yield break;
                 }
-                else
-                {
-                    Debug.LogWarning("The 'batch' child does not exist in the snapshot.");
-                }
-                
-                string email = snapshot.Child("email").Value.ToString();
-                string displayName = snapshot.Child("name").Value.ToString();
-                string username = snapshot.Child("username").Value.ToString();
-                string phone = snapshot.Child("phone").Value.ToString();
-                string photoURL = snapshot.Child("photo").Value.ToString();
-                Debug.Log("Getting Curent User Data");
-                thisUserModel = new UserModel(_firebaseUser.UserId,email,displayName,username,phone,photoURL,password);
+
+                thisUserModel = new UserModel(_firebaseUser.UserId, email, displayName, username, phone, photoURL, "password");
+
                 IsFirebaseUserInitialised = true;
                 Debug.Log("User Initialized");
+                callback(UserStatus.Initialized);
             }
-            if (task.IsFaulted)
-            {
-                Debug.LogError(task.Exception);
-            }
-        });
-        
+        }
     }
+
+    private string GetChildValue(DataSnapshot snapshot, string key)
+    {
+        if (snapshot.HasChild(key))
+        {
+            return snapshot.Child(key).Value.ToString();
+        }
+        else
+        {
+            Debug.LogWarning($"The '{key}' child does not exist in the snapshot.");
+            return string.Empty;
+        }
+    }
+    
+    
     public void Logout(LoginStatus loginStatus)
     {
         Debug.Log("FBManager: logging out");
@@ -562,7 +612,23 @@ public partial class FbManager : MonoBehaviour
         }
         else
         {
-            GetCurrentUserData("**********");
+            StartCoroutine(GetCurrentUserDataCoroutine((status) =>
+            {
+                switch (status)
+                {
+                    case UserStatus.Initialized:
+                        // Handle successful initialization
+                        break;
+                    case UserStatus.MissingData:
+                        Debug.LogWarning("User data is incomplete!");
+                        // Handle missing data scenario
+                        break;
+                    case UserStatus.Error:
+                        Debug.LogError("Error fetching user data.");
+                        // Handle error scenario
+                        break;
+                }
+            }));
             callback(true);
         }
     }
