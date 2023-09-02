@@ -478,6 +478,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         m_targetYVal = viewImageHeightTarget;
         currentState = State.ClosingCommentView;
         _commentAudioManager.StopPlayingRecording();
+        TraceManager.instance.UpdateMap(new Vector2(0,0)); //vector don't matter just redraw
         //start playing video early
     }
     
@@ -509,7 +510,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         PlayVideo();
         
         TraceManager.instance.ClearTracesOnMap(); //todo: maybe do this more seamlessly it causes traces on map to dip for a second unitl it repaints
-
+        
         currentState = State.MediaView;
 
         if (!trace.HasBeenOpened && trace.senderID != FbManager.instance.thisUserModel.userID)

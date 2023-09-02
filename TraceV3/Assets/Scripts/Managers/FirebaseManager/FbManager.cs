@@ -2210,7 +2210,7 @@ public partial class FbManager : MonoBehaviour
             callback(((DownloadHandlerTexture)request.downloadHandler).texture);
         }
     }
-    public IEnumerator GetTraceVideoByUrl(string _url, bool received, System.Action<string> callback)
+    public IEnumerator GetTraceVideoByUrl(string _url, System.Action<string> callback)
     {
         Debug.Log("Trace Not Stored Locally RetrivingTraceFromDatabase");
         var request = new UnityWebRequest();

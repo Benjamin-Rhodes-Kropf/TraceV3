@@ -182,7 +182,7 @@ public class HomeScreenManager : MonoBehaviour
     }
     #endregion
     
-    public void OpenTrace(TraceObject trace, bool received) //Todo: Make mediaType an Enum
+    public void OpenTrace(TraceObject trace) //Todo: Make mediaType an Enum
     {
         
         CloseViewTrace();
@@ -215,7 +215,7 @@ public class HomeScreenManager : MonoBehaviour
         if (trace.mediaType == MediaType.VIDEO.ToString())
         {
             Debug.Log("Open Trace Video");
-            StartCoroutine(GetVideoPath(trace.id, received, (path) =>
+            StartCoroutine(GetVideoPath(trace.id, (path) =>
             {
                 if (path != null)
                 {
@@ -245,13 +245,13 @@ public class HomeScreenManager : MonoBehaviour
     }
     
 
-    private IEnumerator GetVideoPath(string traceId, bool traceReceived, Action<string> callback)
+    private IEnumerator GetVideoPath(string traceId, Action<string> callback)
     {
         var filePath = Path.Combine(Application.persistentDataPath, "Traces/Videos/"+traceId+".mp4");
         if (File.Exists(filePath))
             callback(filePath);
         else
-            StartCoroutine(FbManager.instance.GetTraceVideoByUrl(traceId, traceReceived, callback)); //get it from database now
+            StartCoroutine(FbManager.instance.GetTraceVideoByUrl(traceId, callback)); //get it from database now
         yield return null;
     }
     

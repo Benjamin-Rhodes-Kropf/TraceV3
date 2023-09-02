@@ -30,7 +30,7 @@ public class AudioView : MonoBehaviour
         this._displayNameAndTime.text = displayName + "|" + HelperMethods.ReformatDate(time);
         if (wave.Length > 1)
         {
-            this.wave = MapFloatArrayToInt(wave, 1,10);
+            this.wave = MapFloatArrayToInt(wave, 0,9);
             int counter = 0;
             foreach (var gameObject in audioWaves)
             {

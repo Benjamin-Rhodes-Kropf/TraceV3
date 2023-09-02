@@ -135,7 +135,7 @@ public class TraceManager : MonoBehaviour
             HapticManager.instance.PlaySelectionHaptic();
             FbManager.instance.AnalyticsOnTracePressed(traceToOpen.Item1.senderName, traceToOpen.Item1.sendTime, "open");
             StartCoroutine(_dragAndZoomInertia.ZoomToObject(new Vector2((float)traceToOpen.Item1.lng, (float)traceToOpen.Item1.lat), -traceToOpen.Item1.radius, 0.1f));
-            homeScreenManager.OpenTrace(traceToOpen.Item1, !HomeScreenManager.isInSendTraceView);
+            homeScreenManager.OpenTrace(traceToOpen.Item1);
             homeScreenManager.UpdateLocationText(17);
         }
         else if(viewableAbleTraces.Count > 0)

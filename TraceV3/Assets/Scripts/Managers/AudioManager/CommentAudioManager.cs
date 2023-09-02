@@ -14,8 +14,8 @@ public class CommentAudioManager : MonoBehaviour
     [SerializeField] private List<float> currentRecording = new List<float>();
     [SerializeField] private int startRecordingTime; 
     [SerializeField] private float[] extractedFloats;
-    [SerializeField] private IEnumerator audioSlider; 
-    
+    [SerializeField] private IEnumerator audioSlider;
+
     [Header("External")] 
     [SerializeField] private OpenTraceManager openTraceManager;
     
@@ -36,15 +36,24 @@ public class CommentAudioManager : MonoBehaviour
 
     public void StartRecording()
     {
-        recordAudio.SetActive(true);
-        doneOptions.SetActive(false);
-        openTraceManager.MuteVideoAudio();
-        isRecording = true;
-        currentRecording.Clear();
+        if (Application.HasUserAuthorization(UserAuthorization.Microphone))
+        {
+            // Permission granted, start recording
+            recordAudio.SetActive(true);
+            doneOptions.SetActive(false);
+            openTraceManager.MuteVideoAudio();
+            isRecording = true;
+            currentRecording.Clear();
         
-        Microphone.End(null); // Ensure the microphone is turned off
-        audioSource.clip = Microphone.Start(null, false, 300, 44100); // Max recording time set to 5 minutes (300 seconds) for safety
-        startRecordingTime = Microphone.GetPosition(null); // Store the start position for accurate clip length later
+            Microphone.End(null); // Ensure the microphone is turned off
+            audioSource.clip = Microphone.Start(null, false, 300, 44100); // Max recording time set to 5 minutes (300 seconds) for safety
+            startRecordingTime = Microphone.GetPosition(null); // Store the start position for accurate clip length later
+        }
+        else
+        {
+            // Request microphone access
+            Application.RequestUserAuthorization(UserAuthorization.Microphone);
+        }
     }
 
     public void StopVideo()
