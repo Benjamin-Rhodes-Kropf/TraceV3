@@ -51,9 +51,9 @@ public class FriendsModelManager
         }        
     }
 
-    public bool IsBestFriend(string id)
+    public Relationship GetRelationship(string id)
     {
-        return GetFriendModelByOtherFriendID(id).isBestFriend;
+        return GetFriendModelByOtherFriendID(id).relationship;
     }
 
     public void SetBestFriend(string id, bool isBestFriend)
@@ -63,8 +63,17 @@ public class FriendsModelManager
         {
             if (FbManager.instance._allFriends[i].friendID.Equals(id))
             {
-                FbManager.instance._allFriends[i].isBestFriend = isBestFriend;
-                break;
+                if (isBestFriend)
+                {
+                    FbManager.instance._allFriends[i].relationship = Relationship.BestFriend;
+                    break;
+                }
+                else
+                {
+                    FbManager.instance._allFriends[i].relationship = Relationship.Friend;
+                    break;
+                }
+                
             }
         }
     }
