@@ -15,6 +15,7 @@ public class UserModel
     public string phone;
     public string photo;
     public string password;
+    public bool super;
 
     public string ID => string.IsNullOrEmpty(userID) ? objectID : userID; //todo: we dont use this anymore but the workaround is bad see below
     

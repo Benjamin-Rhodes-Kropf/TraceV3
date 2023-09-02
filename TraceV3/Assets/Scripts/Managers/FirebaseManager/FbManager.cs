@@ -412,9 +412,15 @@ public partial class FbManager : MonoBehaviour
                 string username = GetChildValue(snapshot, "username");
                 string phone = GetChildValue(snapshot, "phone");
                 string photoURL = GetChildValue(snapshot, "photo");
-            
-                thisUserModel = new UserModel(_firebaseUser.UserId, email, displayName, username, phone, photoURL, "password");
 
+                thisUserModel = new UserModel(_firebaseUser.UserId, email, displayName, username, phone, photoURL, "password");
+                
+                string superValue = GetChildValue(snapshot, "super");
+                if (bool.TryParse(superValue, out bool result) && result)
+                {
+                    thisUserModel.super = true;
+                }
+                
                 // Check for missing data
                 if (string.IsNullOrEmpty(phone) || username == "null" || name == "null")
                 {
@@ -573,6 +579,7 @@ public partial class FbManager : MonoBehaviour
             {
                 Debug.Log("Logged In!");
                 SetUserLoginSatus(true);
+                IsFirebaseUserLoggedIn = true;
             }
         }));
         callback(null, errorCode);
@@ -1316,6 +1323,37 @@ public partial class FbManager : MonoBehaviour
             StartCoroutine(HandleReceivedTraceChanged(args.Snapshot.Key)); //todo: why pass key when args.Snapshot probraly has data
         }
     }
+    public void SubscribeOrUnSubscribeToTraceGroup(bool subscribe, string groupID)
+    {
+        var refrence = FirebaseDatabase.DefaultInstance.GetReference("TraceGroups").Child(groupID);
+        if (subscribe)
+        {
+            refrence.ChildAdded += HandleChildAdded;
+            refrence.ChildChanged += HandleChildChanged;
+        }
+        else
+        {
+            refrence.ChildAdded -= HandleChildAdded;
+            refrence.ChildChanged -= HandleChildChanged;
+        }
+        
+        void HandleChildAdded(object sender, ChildChangedEventArgs args) {
+            if (args.DatabaseError != null) {
+                Debug.Log("HandleChildAdded Error");
+                return;
+            }
+            StartCoroutine(GetReceivedTrace(args.Snapshot.Key));
+        }
+        
+        void HandleChildChanged(object sender, ChildChangedEventArgs args) {
+            if (args.DatabaseError != null) {
+                Debug.Log("HandleChildAdded Error");
+                return;
+            }
+            Debug.Log("HandleChildChanged");
+            StartCoroutine(HandleReceivedTraceChanged(args.Snapshot.Key)); //todo: why pass key when args.Snapshot probraly has data
+        }
+    }
     public void SubscribeOrUnsubscribeToSentTraces(bool subscribe)
     {
         var refrence = FirebaseDatabase.DefaultInstance.GetReference("TracesSent").Child(_firebaseUser.UserId);
@@ -1419,7 +1457,7 @@ public partial class FbManager : MonoBehaviour
     #endregion
     
     #region Sending and Recieving Traces and Comments
-    public void UploadTrace(List<string> usersToSendTo, List<string> phonesToSendTo, string fileLocation, float radius, Vector2 location, MediaType mediaType)
+    public void UploadTrace(List<string> usersToSendTo, List<string> phonesToSendTo, string fileLocation, float radius, Vector2 location, MediaType mediaType, bool sendToFollowers)
     {
         Debug.Log(" UploadTrace(): File Location:" + fileLocation);
         
@@ -1475,6 +1513,11 @@ public partial class FbManager : MonoBehaviour
             childUpdates["invited/" +  phone.Substring(phone.Length - 10) + "/users/" + thisUserModel.userID] = DateTime.UtcNow.ToString();
             childUpdates["invited/" +  phone.Substring(phone.Length - 10) + "/traces/" + key] = thisUserModel.userID;
         }
+
+        if (sendToFollowers)
+        {
+            childUpdates["TraceGroups/" + thisUserModel.userID + "/" + key] = DateTime.UtcNow.ToString();
+        }
         
         childUpdates["Traces/" + key + "/numPeopleSent"] = count;
         childUpdates["TracesSent/" + _firebaseUser.UserId.ToString() +"/" + key] = DateTime.UtcNow.ToString();
@@ -1505,6 +1548,8 @@ public partial class FbManager : MonoBehaviour
                 }
             });
     }
+    
+    
     public void MarkTraceAsOpened(TraceObject trace)
     {
         Dictionary<string, Object> childUpdates = new Dictionary<string, Object>();

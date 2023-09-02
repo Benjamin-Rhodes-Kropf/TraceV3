@@ -369,7 +369,7 @@ public class TraceManager : MonoBehaviour
                 {
                     //if they can open the trace draw trace opening color depending on friendship
                     traceObject.canBeOpened = true;
-                    if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).isBestFriend)
+                    if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).relationship == Relationship.BestFriend)
                     {
                         return DrawTraceOnMap.TraceType.OPENINGBESTFRIEND;
                     }
@@ -382,7 +382,7 @@ public class TraceManager : MonoBehaviour
                 {
                     //if they cant open the trace draw trace recieved color depending on friendship
                     traceObject.canBeOpened = false;
-                    if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).isBestFriend)
+                    if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).relationship == Relationship.BestFriend)
                     {
                         return DrawTraceOnMap.TraceType.RECEIVEDBESTFRIEND;
                     }
@@ -404,7 +404,7 @@ public class TraceManager : MonoBehaviour
                     //if they cant open the trace draw trace color depending on friendship
                     traceObject.canBeOpened = false;
                 }
-                if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).isBestFriend)
+                if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).relationship == Relationship.BestFriend)
                 {
                     return DrawTraceOnMap.TraceType.RECEIVEDBESTFRIEND;
                 }
@@ -417,7 +417,7 @@ public class TraceManager : MonoBehaviour
         else //trace object has been opened
         {
             traceObject.canBeOpened = true; //all trace that have been opened can be opened regardless of distance
-            if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).isBestFriend)
+            if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).relationship == Relationship.BestFriend)
             {
                 return DrawTraceOnMap.TraceType.OPENEDBESTFRIEND;
             }
