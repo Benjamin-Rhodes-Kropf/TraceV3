@@ -42,8 +42,11 @@ namespace CanvasManagers
                 var relationship = FriendsModelManager.Instance.GetRelationship(friend.userID);
                 if(relationship == Relationship.BestFriend)
                     view.UpdateFriendData(friend,Relationship.BestFriend);
-                else if(relationship == Relationship.Following)
+                else if (relationship == Relationship.Following)
+                {
+                    Debug.Log("Following!!!!!");
                     view.UpdateFriendData(friend,Relationship.Following);
+                }
                 else
                     view.UpdateFriendData(friend,Relationship.Friend);
                 searchList.Add(view.gameObject);

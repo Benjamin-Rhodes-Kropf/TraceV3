@@ -157,12 +157,10 @@ public partial class FbManager
                 }
                 else
                 {
-                    Debug.Log("Deal With Friend In New Way");
-                    switch (args.Snapshot.Value.ToString())
+                    if (args.Snapshot.Value.ToString() == "following")
                     {
-                        case "following":
-                            relationship = Relationship.Following;
-                            break;
+                        relationship = Relationship.Following;
+                        SubscribeOrUnSubscribeToTraceGroup(true, friendId); //get traces from him
                     }
                 }
 
@@ -248,10 +246,11 @@ public partial class FbManager
         }
     }
     
-    public IEnumerator FollowSuperUser(string friendId, Action<bool> callback)
+    public IEnumerator FollowSuperUser(string superUser, Action<bool> callback)
     {
-        var task = _databaseReference.Child("Friends").Child(_firebaseUser.UserId).Child(friendId).SetValueAsync("following");
-        // _databaseReference.Child("Friends").Child(senderId).Child(_firebaseUser.UserId).SetValueAsync(false); //it is one way
+        var task = _databaseReference.Child("Friends").Child(_firebaseUser.UserId).Child(superUser).SetValueAsync("following");
+        _databaseReference.Child("Friends").Child(superUser).Child("followers").Child(_firebaseUser.UserId).SetValueAsync(DateTime.UtcNow.ToString()); //it is one way
+        
         while (task.IsCompleted is false)
             yield return new WaitForEndOfFrame();
         
@@ -407,6 +406,12 @@ public partial class FbManager
         {
             Debug.LogError(task.Exception);
         }
+    }
+    public void RemoveSuperUser(string superUserID)
+    {
+        // Delete the friend request node
+        _databaseReference.Child("Friends").Child(_firebaseUser.UserId).Child(superUserID).RemoveValueAsync();
+        _databaseReference.Child("Friends").Child(superUserID).Child("followers").Child(_firebaseUser.UserId).RemoveValueAsync(); //it is one way
     }
     public void RemoveFriends(string friendID)
     {

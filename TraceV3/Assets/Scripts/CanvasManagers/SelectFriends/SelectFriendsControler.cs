@@ -107,6 +107,8 @@ public class SelectFriendsControler : MonoBehaviour
             {
                 Debug.LogWarning("user already added in dictionary");
             }
+            
+            
             #region Lists  Updates Data for Friends and Best Friends
             var data = new SendTraceCellViewData
             {
@@ -140,10 +142,25 @@ public class SelectFriendsControler : MonoBehaviour
             UpdateDataLists(data,isBestFriend,false);
             // UpdateFriendViewInfo(user, isBestFriend);
         }
-        if (users.Count < 1)
+        if (users.Count < 1 && !FbManager.instance.thisUserModel.super)
         {
             Debug.Log("No Friends Yet");
             _view.DisplayNoFriendsText();
+        }
+        
+        //display option for super user to send to everyone
+        if (FbManager.instance.thisUserModel.super)
+        {
+            whoToSendTo.Add("Followers", false);
+            var data = new SendTraceCellViewData
+            {
+                _textData = "My Followers",
+                _userId = "followers",
+                _isSelected = false,
+                _isBestFriend = false,
+                _isContact = false
+            };
+            UpdateDataLists(data,false,false);
         }
 
         #region Contacts Data Load
@@ -303,9 +320,17 @@ public class SelectFriendsControler : MonoBehaviour
         {
             if (user.Value) //is selected to send to
             {
-                usersToSendTo.Add(user.Key);
+                if (FbManager.instance.thisUserModel.super && user.Key == "followers")
+                {
+                    SendTraceManager.instance.sendToFollowers = true;
+                }
+                else
+                {
+                    usersToSendTo.Add(user.Key);
+                }
             }
         }
+        
         SendTraceManager.instance.usersToSendTrace = HelperMethods.GetUserHashesFromList(usersToSendTo);
         SendTraceManager.instance.phonesToSendTrace = HelperMethods.GetPhoneNumbersFromList(usersToSendTo);
         Debug.Log("UpdateFriendsSendTo: users:" + SendTraceManager.instance.usersToSendTrace.Count);

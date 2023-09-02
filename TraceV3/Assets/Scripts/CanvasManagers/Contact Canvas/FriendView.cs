@@ -62,6 +62,7 @@ public class FriendView : MonoBehaviour
 
     public void UpdateFriendData(UserModel user, Relationship relationship)
     {
+        //clear old listeners
         _bestFriendButton.onClick.RemoveAllListeners();
         _addRemoveButton.onClick.RemoveAllListeners();
         
@@ -84,7 +85,7 @@ public class FriendView : MonoBehaviour
                 isFriend = false;
                 isBestFriend = false;
                 buttonType = FriendButtonType.UnFollow;
-                _addRemoveButton.onClick.AddListener(RemoveFriends);
+                _addRemoveButton.onClick.AddListener(UnFollow);
                 break;
             case Relationship.SuperUser:
                 isBestFriend = false;
@@ -114,7 +115,7 @@ public class FriendView : MonoBehaviour
         
         //when clicked switch state 
         _bestFriendButton.onClick.AddListener(OnBestFriendButtonClick);
-        
+ 
         
         var persistentData = PersistentStorageHandler.s_Instance.GetTextureFromPersistentStorage("friends", _uid);
         if (persistentData.updateImage)
@@ -208,7 +209,7 @@ public class FriendView : MonoBehaviour
             case FriendButtonType.Follow:
                 return ("Follow", 3);
             case FriendButtonType.UnFollow:
-                return ("UnFollow", 1);
+                return ("Remove", 1);
             default:
                 return ("Add", 0);
         }
@@ -277,6 +278,14 @@ public class FriendView : MonoBehaviour
         }));
         
         FbManager.instance.AnalyticsOnSendFriendRequest(superUserID);
+    }
+    
+    private void UnFollow()
+    {
+        Debug.Log("Unfollow");
+        FbManager.instance.RemoveSuperUser(_uid);
+        gameObject.SetActive(false);
+        //FbManager.instance.AnalyticsOnRemoveFriend(friendUID);
     }
 
     private void RemoveFriends()
