@@ -511,8 +511,8 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         TraceManager.instance.ClearTracesOnMap(); //todo: maybe do this more seamlessly it causes traces on map to dip for a second unitl it repaints
 
         currentState = State.MediaView;
-        
-        if (!trace.HasBeenOpened)
+
+        if (!trace.HasBeenOpened && trace.senderID != FbManager.instance.thisUserModel.userID)
         {
             FbManager.instance.MarkTraceAsOpened(trace);
             Vector2 _location = _onlineMapsLocation.GetUserLocation();

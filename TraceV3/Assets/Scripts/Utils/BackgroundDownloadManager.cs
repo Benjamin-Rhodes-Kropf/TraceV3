@@ -23,9 +23,9 @@ public class BackgroundDownloadManager: MonoBehaviour
     {
         var downloadPath = "";
         if (mediaType == MediaType.PHOTO.ToString())
-            downloadPath = "ReceivedTraces/Photos/"+traceId+".png";
+            downloadPath = "Traces/Photos/"+traceId+".png";
         else
-            downloadPath = "ReceivedTraces/Videos/"+traceId+".mp4";
+            downloadPath = "Traces/Videos/"+traceId+".mp4";
         
         var filePath = Path.Combine(Application.persistentDataPath, downloadPath);
 
@@ -38,7 +38,6 @@ public class BackgroundDownloadManager: MonoBehaviour
         StartCoroutine(FbManager.instance.GetTraceMediaDownloadURL(traceId, 
             (downloadUrl) =>
             {
-                //Debug.Log("GetTraceMediaDownloadURL Download Path :: "+ downloadUrl);
                 StartCoroutine(StartDownload(downloadUrl, downloadPath));
             }, 
             () =>
@@ -49,10 +48,10 @@ public class BackgroundDownloadManager: MonoBehaviour
 
     private IEnumerator StartDownload(string url, string filePath)
     {
-        //Debug.Log("Background Download Started For URL :: "+url);
+        Debug.Log("Background Download Started For URL :: "+url);
         using var download = BackgroundDownload.Start(new Uri(url), filePath);
         yield return download;
-        //Debug.Log(download.status == BackgroundDownloadStatus.Failed ? download.error : "Done Downloading ::"+filePath);
+        Debug.Log(download.status == BackgroundDownloadStatus.Failed ? download.error : "Done Downloading ::"+filePath);
     }
     
 }

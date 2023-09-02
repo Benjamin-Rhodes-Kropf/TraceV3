@@ -1711,7 +1711,6 @@ public partial class FbManager : MonoBehaviour
             {
                 var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, 20, mediaType,traceID, traceHasBeenOpenedByThisUser);
                 TraceManager.instance.receivedTraceObjects.Add(trace.id,trace);
-                Debug.Log("Added:" + trace.id + " to dict");
                 BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
                 TraceManager.instance.UpdateMap(new Vector2());
                 FbManager.instance.AnalyticsSetTracesReceived(TraceManager.instance.receivedTraceObjects.Count.ToString());
@@ -1862,8 +1861,9 @@ public partial class FbManager : MonoBehaviour
             
             if (lat != 0 && lng != 0 && radius != 0)
             {
-                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID,senderName, sendTime, 20, mediaType,traceID, false);
+                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, 20, mediaType,traceID, false);
                 TraceManager.instance.sentTraceObjects.Add(trace.id,trace);
+                BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
                 TraceManager.instance.UpdateMap(new Vector2());
                 FbManager.instance.AnalyticsSetTracesSent(TraceManager.instance.sentTraceObjects.Count.ToString());
             }
@@ -2166,6 +2166,7 @@ public partial class FbManager : MonoBehaviour
                 Debug.Log("Trace Comments Update To:" + comments.Count);
                 TraceManager.instance.sentTraceObjects[trace.id] = trace; //update trace
                 TraceManager.instance.RefreshTrace(trace); //update if currently being displayed
+                BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
                 TraceManager.instance.UpdateMap(new Vector2());
                 FbManager.instance.AnalyticsSetTracesSent(TraceManager.instance.sentTraceObjects.Count.ToString());
             }
@@ -2209,17 +2210,18 @@ public partial class FbManager : MonoBehaviour
             callback(((DownloadHandlerTexture)request.downloadHandler).texture);
         }
     }
-    public IEnumerator GetTraceVideoByUrl(string _url, System.Action<string> callback)
+    public IEnumerator GetTraceVideoByUrl(string _url, bool received, System.Action<string> callback)
     {
+        Debug.Log("Trace Not Stored Locally RetrivingTraceFromDatabase");
         var request = new UnityWebRequest();
         var url = "";
 
-        Debug.Log("test:");
+        
         StorageReference pathReference = _firebaseStorage.GetReference("Traces/" + _url);
-        Debug.Log("path refrence:" + pathReference);
+        Debug.Log("Database Storgage Path:" + pathReference.ToString());
 
+        Debug.Log("Getting path from:" + "Traces/" + _url);
         var task = pathReference.GetDownloadUrlAsync();
-
         while (task.IsCompleted is false)
             yield return new WaitForEndOfFrame();
 
@@ -2237,6 +2239,7 @@ public partial class FbManager : MonoBehaviour
         //video stuff needs to go here
         request = UnityWebRequest.Get(url);
 
+        Debug.Log("Downloading Video" + url);
         yield return request.SendWebRequest(); //Wait for the request to complete
 
         if (request.isNetworkError || request.isHttpError)
@@ -2246,7 +2249,7 @@ public partial class FbManager : MonoBehaviour
         else
         {
             Debug.Log("Correctly Got Video From Database");
-            var path = Application.persistentDataPath + "/" + "ReceivedTraceVideo" + ".mp4";
+            var path = Application.persistentDataPath + "/" + "Video" + ".mp4";
             File.WriteAllBytes(path, request.downloadHandler.data);
             Debug.Log("Downloaded Video!");
             Debug.Log("Video Location:" + path);

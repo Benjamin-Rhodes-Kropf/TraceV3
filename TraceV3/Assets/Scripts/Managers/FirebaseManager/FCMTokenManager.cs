@@ -116,7 +116,6 @@ public partial class FbManager
     }
     public async Task<string> GetDeviceTokenForUser(string firebaseUserId)
     {
-        Debug.Log("Getting Device Token For:" + firebaseUserId);
         string deviceToken = null;
 
         await _databaseReference
