@@ -95,7 +95,7 @@ namespace CanvasManagers
         }
 
 
-        private void PopulateOtherUsers(List<UserModel> others,List<UserModel> friends,List<UserModel> requests,List<UserModel> requestsSent )
+        private void PopulateOtherUsers(List<UserModel> others,List<UserModel> friends,List<UserModel> requests,List<UserModel> requestsSent)
         {
             if (others.Count > 0)
             {

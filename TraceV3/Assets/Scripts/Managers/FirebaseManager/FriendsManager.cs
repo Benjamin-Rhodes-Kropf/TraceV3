@@ -179,7 +179,6 @@ public partial class FbManager
             Debug.Log("SOMTHING WENT WRONG");
         }
     }
-
     private void HandleRemovedFriends(object sender, ChildChangedEventArgs args)
     {
         try
