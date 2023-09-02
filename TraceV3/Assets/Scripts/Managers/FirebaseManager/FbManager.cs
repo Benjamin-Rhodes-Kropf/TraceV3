@@ -169,46 +169,54 @@ public partial class FbManager : MonoBehaviour
             Debug.Log("Auto Logging in with password:" + PlayerPrefs.GetString("Password"));
 
             StartCoroutine(FbManager.instance.Login(savedUsername, savedPassword, (myReturnValue) => {
-                if (myReturnValue.LoginStatus == global::LoginStatus.Success)
+                switch (myReturnValue.LoginStatus)
                 {
-                    Debug.Log("AutoLogin SUCCESS");
-                    SetUserLoginSatus(true);
-                    if (PlayerPrefs.GetInt("IsInvited") == 1) //if user already invited dont check queue again
-                    {
-                        if (lowConnectivitySmartLogin && PlayerPrefs.GetInt("DBDataCached") == 1) //user should already be in
-                            return;
-                        
-                        Debug.Log("user has been invited");
-                        ScreenManager.instance.ChangeScreenFade("HomeScreen");
-                    }
-                    else 
-                    {
-                        StartCoroutine(FbManager.instance.ManagerUserPermissions(callbackObject =>
+                    case global::LoginStatus.Success:
+                        Debug.Log("AutoLogin SUCCESS");
+                        SetUserLoginSatus(true);
+
+                        if (PlayerPrefs.GetInt("IsInvited") == 1) //if user already invited don't check queue again
                         {
-                            if (lowConnectivitySmartLogin && IsFirebaseUserLoggedIn) //user should already be in
+                            if (lowConnectivitySmartLogin && PlayerPrefs.GetInt("DBDataCached") == 1) //user should already be in
                                 return;
-                            
-                            if (callbackObject == true)
+                            ScreenManager.instance.ChangeScreenFade("HomeScreen");
+                            IsFirebaseUserLoggedIn = true;
+                        }
+                        else
+                        {
+                            Debug.LogWarning("ManagerUserPermissions");
+                            StartCoroutine(FbManager.instance.ManagerUserPermissions(callbackObject =>
                             {
-                                ScreenManager.instance.ChangeScreenFade("HomeScreen");
-                            }
-                            else
-                            {
-                                ScreenManager.instance.ChangeScreenFade("UserInQue");
-                            }
-                        }));
-                    }
-                    IsFirebaseUserLoggedIn = true;
-                }
-                else
-                {
-                    if (myReturnValue.LoginStatus == global::LoginStatus.ConnectionError) //this never fires
-                    {
+                                if (lowConnectivitySmartLogin && IsFirebaseUserLoggedIn) //user should already be in
+                                    return;
+                                else if (callbackObject == true)
+                                {
+                                    ScreenManager.instance.ChangeScreenFade("HomeScreen");
+                                    IsFirebaseUserLoggedIn = true;
+                                }
+                                else
+                                {
+                                    ScreenManager.instance.ChangeScreenFade("UserInQue");
+                                    IsFirebaseUserLoggedIn = true;
+                                }
+                            }));;
+                        }
+                        break;
+                    case global::LoginStatus.ConnectionError:
+                        Debug.LogError("CONNECTION ERROR!");
+                        //ScreenManager.instance.ChangeScreenForwards("ConnectionError");
+                        break;
+                    
+                    case global::LoginStatus.UnFinishedRegistration:
+                        Debug.LogWarning("Proccesing Unfinished Registration");
+                        if(thisUserModel.phone == "" || thisUserModel.phone == "null")
+                            ScreenManager.instance.ChangeScreenNoAnim("PhoneNumber");
+                        else if(thisUserModel.name == "null" || thisUserModel.name == "" || thisUserModel.username == "null" || thisUserModel.username == "")
+                            ScreenManager.instance.ChangeScreenNoAnim("Username");
+                        break;
+                    default:
                         ScreenManager.instance.ChangeScreenForwards("ConnectionError");
-                        return;
-                    }
-                    Debug.LogWarning("FbManager: failed to auto login");
-                    Logout(LoginStatus.LoggedOut);
+                        break;
                 }
             }));
         }
@@ -287,15 +295,12 @@ public partial class FbManager : MonoBehaviour
             switch (status)
             {
                 case UserStatus.Initialized:
-                    // Handle successful initialization
                     break;
                 case UserStatus.MissingData:
                     Debug.LogWarning("User data is incomplete!");
-                    // Handle missing data scenario
                     break;
                 case UserStatus.Error:
                     Debug.LogError("Error fetching user data.");
-                    // Handle error scenario
                     break;
             }
         }));
@@ -407,15 +412,15 @@ public partial class FbManager : MonoBehaviour
                 string phone = GetChildValue(snapshot, "phone");
                 string photoURL = GetChildValue(snapshot, "photo");
             
+                thisUserModel = new UserModel(_firebaseUser.UserId, email, displayName, username, phone, photoURL, "password");
+
                 // Check for missing data
-                if (string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(username))
+                if (string.IsNullOrEmpty(phone) || username == "null" || name == "null")
                 {
+                    Debug.LogWarning("User Profile Missing Data");
                     callback(UserStatus.MissingData);
                     yield break;
                 }
-
-                thisUserModel = new UserModel(_firebaseUser.UserId, email, displayName, username, phone, photoURL, "password");
-
                 IsFirebaseUserInitialised = true;
                 Debug.Log("User Initialized");
                 callback(UserStatus.Initialized);
@@ -649,6 +654,8 @@ public partial class FbManager : MonoBehaviour
         }
         else
         {
+            if (_firestoreData == null)
+                _firestoreData = new Dictionary<string, object>();
             _firestoreData.Add("name",_nickName);
             callback(true);
         }
@@ -667,7 +674,8 @@ public partial class FbManager : MonoBehaviour
         }
         else
         {
-            //prevent dict bug
+            if (_firestoreData == null)
+                _firestoreData = new Dictionary<string, object>();
             if (_firestoreData.ContainsKey("phone"))
             {
                 _firestoreData["phone"] = _phoneNumber;
@@ -744,7 +752,7 @@ public partial class FbManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Image Uploaded Successfully");
+            Debug.Log("Image Uploaded Successfully");
             var url = task.Result.Path + "";
             callback(true,url);
         }
@@ -1037,18 +1045,7 @@ public partial class FbManager : MonoBehaviour
         {
             yield return new WaitForEndOfFrame();
         }
-        
-        // //Todo:: Need To Discuss 
-        // if (thisUserModel.phone == null)
-        // {
-        //     canEnterApp(true);
-        //     Debug.LogError("Phone Number Is  ::  "+  thisUserModel.phone);
-        //     yield break;
-        // }
-#if  UNITY_EDITOR
-        canEnterApp(true); 
-        Debug.Log("Unity Editor"); 
-#elif UNITY_IPHONE
+
         StartCoroutine(IsUserListedInInvited(thisUserModel.phone, isUserInInvteList =>
         {
             if (!isUserInInvteList) //if invited welcome
@@ -1069,7 +1066,7 @@ public partial class FbManager : MonoBehaviour
                 canEnterApp(true);
             }
         }));
-#endif
+// #endif
     }
     
     public IEnumerator IsUserListedInInvited(string _phoneNumber, System.Action<bool> callback)

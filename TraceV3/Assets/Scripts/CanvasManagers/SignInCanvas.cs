@@ -36,7 +36,6 @@ public class SignInCanvas : MonoBehaviour
                         {
                             Debug.Log("user is allowed");
                             ScreenManager.instance.ChangeScreenNoAnim("HomeScreen");
-
                         }
                         else
                         {
