@@ -2342,11 +2342,15 @@ public partial class FbManager : MonoBehaviour
         
         foreach (var user in trace.people)
         {
-            childUpdates["TracesRecived/" + user.id +"/"+ trace.id + "/updated"] = DateTime.UtcNow.ToString();
-            childUpdates["TracesRecived/" + user.id +"/"+ trace.id + "/Sender"] = trace.senderID; //IDK why but it deletes if I dont push again
+            if(user.id == thisUserModel.userID)
+                continue;
+            
+            childUpdates["TracesRecived/" + user.id +"/"+ trace.id + "/updated"] = DateTime.UtcNow.ToString(); //change last updated
+            childUpdates["TracesRecived/" + user.id +"/"+ trace.id + "/Sender"] = trace.senderID;
         }
         
-        childUpdates["TracesSent/" + _firebaseUser.UserId.ToString() +"/" + trace.id] = DateTime.UtcNow.ToString(); //change last updated
+        if(trace.senderID == thisUserModel.userID)
+            childUpdates["TracesSent/" + thisUserModel.userID +"/" + trace.id] = DateTime.UtcNow.ToString(); //change last updated
         
         //Upload Content
         StorageReference traceReference = _firebaseStorageReference.Child("/Comments/" + trace.id + "/" + key);
