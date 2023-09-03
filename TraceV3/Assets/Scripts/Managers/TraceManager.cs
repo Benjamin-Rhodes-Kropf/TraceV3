@@ -341,7 +341,6 @@ public class TraceManager : MonoBehaviour
 
             if (SendTraceManager.instance.isSendingTrace)
             {
-                Debug.Log("Drawing Sending Trace Loading On Map");
                 var loadingTraceObject = drawTraceOnMap.sendingTraceTraceLoadingObject;
                 drawTraceOnMap.DrawCircle(loadingTraceObject.lat, loadingTraceObject.lng, loadingTraceObject.radius, DrawTraceOnMap.TraceType.SENDING, loadingTraceObject.id);
             }

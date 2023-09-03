@@ -1487,7 +1487,7 @@ public partial class FbManager : MonoBehaviour
         childUpdates["Traces/" + key + "/lat"] = location.x;
         childUpdates["Traces/" + key + "/long"] = location.y;
         childUpdates["Traces/" + key + "/radius"] = radius;
-        childUpdates["Traces/" + key + "/expiration"] = DateTime.UtcNow.AddHours(24);
+        childUpdates["Traces/" + key + "/expiration"] = DateTime.UtcNow.AddHours(24).ToString();
         
         if (PlayerPrefs.GetInt("LeaveTraceIsVisable") == 1)
         {
@@ -1523,6 +1523,8 @@ public partial class FbManager : MonoBehaviour
         childUpdates["Traces/" + key + "/numPeopleSent"] = count;
         childUpdates["TracesSent/" + _firebaseUser.UserId.ToString() +"/" + key] = DateTime.UtcNow.ToString();
         
+        Debug.Log("Pushing Video to Bucket");
+        
         //Upload Content
         StorageReference traceReference = _firebaseStorageReference.Child("/Traces/" + key);
         traceReference.PutFileAsync(fileLocation)
@@ -1534,9 +1536,10 @@ public partial class FbManager : MonoBehaviour
                 }
                 else if(task.IsCompleted)
                 {
-                    Debug.Log("FB: Finished uploading...");
                     _databaseReference.UpdateChildrenAsync(childUpdates); //update real time DB
                     SendTraceManager.instance.isSendingTrace = false; //done sendingTrace cant callback because its a void
+                    Debug.Log("FB: Finished uploading...");
+                    Debug.Log("uploaded to:" + "/Traces/" + key);
                     try 
                     {
                         SendTraceManager.instance.SendNotificationToUsersWhoRecivedTheTrace();
