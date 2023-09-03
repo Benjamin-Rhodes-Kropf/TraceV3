@@ -18,6 +18,7 @@ public class SettingUpAccount : MonoBehaviour
         PlayerPrefs.SetInt("ShowTutorial", 1); //reset tutorial for new user
         PlayerPrefs.SetInt("FirstTimeOnContacts", 1); //reset tutorial for new user
         ScreenManager.instance.ChangeScreenFade("HomeScreen");
+        FbManager.instance.IsFirebaseUserLoggedIn = true; //todo: get to root cause because this is a janky way of passing use camera test
     }
     IEnumerator WaitThenGoToQueScreen()
     {

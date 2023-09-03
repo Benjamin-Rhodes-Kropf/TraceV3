@@ -490,8 +490,13 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         m_targetYVal = commentImageHeightTarget;
         currentState = State.OpeningCommentView;
     }
-    
 
+    public void RemoveTraceFromMap()
+    {
+        FbManager.instance.RemoveTraceFromMap(trace);
+        CloseSlideUpToViewTransition();
+    }
+    
     void CloseSlideUpToViewTransition()
     {
         Debug.Log("ClosingSlideUpToView");
@@ -501,6 +506,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         // videoPlayer.Pause();
         videoPlayer.Stop();
         currentState = State.Closing;
+        _commentDisplayManager.ClearComments();
     }
 
     void DoneOpeningMediaTransition()

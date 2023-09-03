@@ -10,7 +10,7 @@ public class CommentDisplayManager : MonoBehaviour
     [SerializeField] private Transform verticalLayoutGroup;
     [SerializeField] private CommentAudioManager _commentAudioManager;
     public Dictionary<string, GameObject> comments = new Dictionary<string, GameObject>();
-
+    
     public void DisplayComments(Dictionary<string, TraceCommentObject> traceCommentObjects)
     {
         if (commentViewPrefab == null)

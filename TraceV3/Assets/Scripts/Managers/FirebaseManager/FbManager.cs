@@ -56,11 +56,9 @@ public partial class FbManager : MonoBehaviour
 
     private Dictionary<string, object> _firestoreData;
     
-    public bool IsFirebaseUserLoggedIn
-    {
-        get;
-        private set;
-    }
+    
+    public bool IsFirebaseUserLoggedIn;
+
     public bool IsFirebaseUserInitialised
     {
         get;
@@ -1507,12 +1505,20 @@ public partial class FbManager : MonoBehaviour
             childUpdates["TracesRecived/" + user +"/"+ key + "/Sender"] = thisUserModel.userID;
             childUpdates["TracesRecived/" + user+"/" + key + "/updated"] = DateTime.UtcNow.ToString();
         }
+        
         foreach (var phone in phonesToSendTo)
         {
             count++;
-            //invite and send trace
-            childUpdates["invited/" +  phone.Substring(phone.Length - 10) + "/users/" + thisUserModel.userID] = DateTime.UtcNow.ToString();
-            childUpdates["invited/" +  phone.Substring(phone.Length - 10) + "/traces/" + key] = thisUserModel.userID;
+            try //incase phone is formated weirdly
+            {
+                //invite and send trace
+                childUpdates["invited/" +  phone.Substring(phone.Length - 10) + "/users/" + thisUserModel.userID] = DateTime.UtcNow.ToString();
+                childUpdates["invited/" +  phone.Substring(phone.Length - 10) + "/traces/" + key] = thisUserModel.userID;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         if (sendToFollowers)
@@ -1552,8 +1558,6 @@ public partial class FbManager : MonoBehaviour
                 }
             });
     }
-    
-    
     public void MarkTraceAsOpened(TraceObject trace)
     {
         Dictionary<string, Object> childUpdates = new Dictionary<string, Object>();
@@ -1561,7 +1565,31 @@ public partial class FbManager : MonoBehaviour
         _databaseReference.UpdateChildrenAsync(childUpdates);
         trace.HasBeenOpened = true;
     }
-    
+
+    public void RemoveTraceFromMap(TraceObject trace)
+    {
+        Debug.Log("Removing Trace From Map");
+        var senderRelation = FriendsModelManager.GetFriendModelByOtherFriendID(trace.senderID).relationship;
+        if (senderRelation != Relationship.SuperUser && senderRelation != Relationship.Following && trace.senderID != thisUserModel.userID)
+        {
+            Debug.Log("Removing Received Trace From Map");
+            Dictionary<string, Object> childUpdates = new Dictionary<string, Object>();
+            childUpdates["TracesRecived/" + thisUserModel.userID + "/" + trace.id] = null;
+            _databaseReference.UpdateChildrenAsync(childUpdates);
+            TraceManager.instance.receivedTraceObjects[trace.id].marker.enabled = false;
+            TraceManager.instance.receivedTraceObjects.Remove(trace.id);
+            TraceManager.instance.UpdateMap(new Vector2(0,0));
+        }else if (trace.senderID == thisUserModel.userID)
+        {
+            Debug.Log("Removing Sent Trace From Map");
+            Dictionary<string, Object> childUpdates = new Dictionary<string, Object>();
+            childUpdates["TracesSent/" + thisUserModel.userID + "/" + trace.id] = null;
+            _databaseReference.UpdateChildrenAsync(childUpdates);
+            TraceManager.instance.sentTraceObjects[trace.id].marker.enabled = false;
+            TraceManager.instance.sentTraceObjects.Remove(trace.id);
+            TraceManager.instance.UpdateMap(new Vector2(0,0));
+        }
+    }
     public IEnumerator GetReceivedTrace(string traceID)
     {
         if (lowConnectivitySmartLogin)

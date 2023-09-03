@@ -22,6 +22,9 @@ public class CameraButton : MonoBehaviour
         }
         else
         {
+            Debug.Log("Problem 1:" + FbManager.instance.IsFirebaseInitialised.ToString());
+            Debug.Log("Problem 2:" + FbManager.instance.IsFirebaseUserLoggedIn.ToString());
+            Debug.Log("Problem 3:" + FbManager.instance.IsFirebaseUserInitialised.ToString());
             NotificationManager.Instance.SendLocalNotification("Hold Up!, ","Give Us A Moment To Connect to the Internet", 1);
         }
     }
