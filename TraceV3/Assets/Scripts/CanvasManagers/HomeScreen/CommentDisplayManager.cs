@@ -69,5 +69,15 @@ public class CommentDisplayManager : MonoBehaviour
             }
         }
     }
+
+    public void ClearComments()
+    {
+        foreach (var comment in comments)
+        {
+            Destroy(comment.Value);
+        }
+
+        comments.Clear();
+    }
 }
 

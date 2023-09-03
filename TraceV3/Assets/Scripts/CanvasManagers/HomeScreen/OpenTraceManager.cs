@@ -198,6 +198,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     }
     public void Reset()
     {
+        _commentDisplayManager.ClearComments();
         videoPlayer.enabled = false;
         displayTrace.texture = null;
         imageObject.SetActive(false);
@@ -544,6 +545,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     {
         Debug.Log("ClosedTransition");
         currentState = State.Closed;
+        _commentDisplayManager.ClearComments();
     }
     #endregion
     

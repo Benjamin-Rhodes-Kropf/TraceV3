@@ -11,7 +11,7 @@ public class CameraButton : MonoBehaviour
     
     public void CameraButtonPressed()
     {
-        if (FbManager.instance.IsFirebaseInitialised && FbManager.instance.IsFirebaseUserLoggedIn)
+        if (FbManager.instance.IsFirebaseInitialised && FbManager.instance.IsFirebaseUserLoggedIn && FbManager.instance.IsFirebaseUserInitialised)
         {
             _screenManager.ChangeScreenNoAnim("Camera Screen");
             _screenManager.LoadArScene();
