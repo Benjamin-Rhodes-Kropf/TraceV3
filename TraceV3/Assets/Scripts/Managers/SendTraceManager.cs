@@ -24,6 +24,7 @@ public class SendTraceManager : MonoBehaviour
     public MediaType mediaType;
     public List<String> usersToSendTrace;
     public List<String> phonesToSendTrace;
+    public bool sendToFollowers;
 
 
     [Header("Analytics Values")] 
@@ -36,6 +37,7 @@ public class SendTraceManager : MonoBehaviour
         {Destroy(gameObject);}
         instance = this;
         DontDestroyOnLoad(this.gameObject);
+        sendToFollowers = false;
     }
     
     public void SetRadius(float radius)
@@ -60,11 +62,11 @@ public class SendTraceManager : MonoBehaviour
         if (selectedRadius == 0)
         {
             Debug.Log("Selected Radius Set Wrong");
-            selectedRadius = 0.4f;
+            selectedRadius = 0.4f; //todo: this is jank
         }
-        SendLocalNotification("Sending Trace", "hang on while we upload it!", 1f);
-        //todo: no need to get hash or phone number just seperate from get-go
-        FbManager.instance.UploadTrace(usersToSendTrace, phonesToSendTrace, fileLocation, selectedRadius, location, mediaType);
+
+        NotificationManager.Instance.SendLocalNotification("Sending Trace", "hang on while we upload it!", 1f);
+        FbManager.instance.UploadTrace(usersToSendTrace, phonesToSendTrace, fileLocation, selectedRadius, location, mediaType, sendToFollowers);
         SendBulkSMS.Instance.SendTraceSMS(phonesToSendTrace, new Vector2(location.y, location.x));
         FbManager.instance.AnalyticsOnSendTrace(usersToSendTrace.Count, videoLength, camFlippedCount);
     }
@@ -84,27 +86,7 @@ public class SendTraceManager : MonoBehaviour
                 StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user, FbManager.instance.thisUserModel.name, "Sent You A Trace!", location.y,location.x));
             }
         }
-        SendLocalNotification("Trace Sent", "lets hope they find it!",1f);
-    }
-    
-    public void SendLocalNotification(string title, string message, float delayInSeconds)
-    {
-        Debug.Log("Sending Notification");
-        TimeSpan delay = TimeSpan.FromSeconds(delayInSeconds);
-
-        iOSNotification notification = new iOSNotification
-        {
-            Title = title,
-            Body = message,
-            ShowInForeground = true,
-            ForegroundPresentationOption = (PresentationOption.Alert | PresentationOption.Sound),
-            Trigger = new iOSNotificationTimeIntervalTrigger
-            {
-                TimeInterval = delay, // Use TimeSpan instead of double
-                Repeats = false
-            }
-        };
-        iOSNotificationCenter.ScheduleNotification(notification);
+        NotificationManager.Instance.SendLocalNotification("Trace Sent", "lets hope they find it!",1f);
     }
 }
 

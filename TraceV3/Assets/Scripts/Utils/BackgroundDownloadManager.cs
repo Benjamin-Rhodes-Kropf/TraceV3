@@ -18,16 +18,14 @@ public class BackgroundDownloadManager: MonoBehaviour
         
         s_Instance = this;
     }
-
-
+    
     public void DownloadMediaInBackground(string traceId, string mediaType)
     {
         var downloadPath = "";
         if (mediaType == MediaType.PHOTO.ToString())
-            downloadPath = "ReceivedTraces/Photos/"+traceId+".png";
+            downloadPath = "Traces/Photos/"+traceId+".png";
         else
-            downloadPath = "ReceivedTraces/Videos/"+traceId+".mp4";
-
+            downloadPath = "Traces/Videos/"+traceId+".mp4";
         
         var filePath = Path.Combine(Application.persistentDataPath, downloadPath);
 
@@ -40,7 +38,6 @@ public class BackgroundDownloadManager: MonoBehaviour
         StartCoroutine(FbManager.instance.GetTraceMediaDownloadURL(traceId, 
             (downloadUrl) =>
             {
-                Debug.Log("GetTraceMediaDownloadURL Download Path :: "+ downloadUrl);
                 StartCoroutine(StartDownload(downloadUrl, downloadPath));
             }, 
             () =>

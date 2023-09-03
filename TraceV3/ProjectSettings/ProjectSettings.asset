@@ -18,7 +18,7 @@ PlayerSettings:
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0, g: 0, b: 0, a: 1}
   m_ShowUnitySplashScreen: 1
-  m_ShowUnitySplashLogo: 1
+  m_ShowUnitySplashLogo: 0
   m_SplashScreenOverlayOpacity: 1
   m_SplashScreenAnimation: 1
   m_SplashScreenLogoStyle: 1
@@ -81,8 +81,8 @@ PlayerSettings:
   runInBackground: 1
   captureSingleScreen: 0
   muteOtherAudioSources: 0
-  Prepare IOS For Recording: 0
-  Force IOS Speakers When Recording: 0
+  Prepare IOS For Recording: 1
+  Force IOS Speakers When Recording: 1
   deferSystemGesturesMode: 0
   hideHomeButton: 1
   submitAnalytics: 1
@@ -2338,12 +2338,78 @@ PlayerSettings:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 11400000, guid: 9737234930b8b4905854ae2d5e2819b3, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 11400000, guid: ec82aa3e5fec045b2bf8420cae7637d7, type: 2}
   - {fileID: 8456736684650657537, guid: 4cc24b4e70c6f49dbae02f68da29824a, type: 2}
-  - {fileID: 11400000, guid: cfcd5543f2f24441fb80d2a79e535e49, type: 2}
-  - {fileID: 11400000, guid: 975b51caae2a242d78dc84237624f8e7, type: 2}
-  - {fileID: 11400000, guid: 7cb64bfd64def4f79ad2aff6e11639d9, type: 2}
-  - {fileID: 11400000, guid: 60ce644ac1aa742c9be8e0bf8acbdaf0, type: 2}
+  - {fileID: 11400000, guid: 9ecc9d408ba394e978bc01b4088296c8, type: 2}
+  - {fileID: 11400000, guid: c0beaefad65764b2b980e34d8f97028d, type: 2}
+  - {fileID: 11400000, guid: c050a6b4399c74a1b8c11778b721c183, type: 2}
+  - {fileID: 11400000, guid: 684e9d24d1d124e7daa71fb507405c01, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -3037,7 +3103,7 @@ PlayerSettings:
   allowUnsafeCode: 1
   useDeterministicCompilation: 1
   enableRoslynAnalyzers: 1
-  selectedPlatform: 2
+  selectedPlatform: 3
   additionalIl2CppArgs: 
   scriptingRuntimeVersion: 1
   gcIncremental: 1

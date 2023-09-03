@@ -163,52 +163,60 @@ public partial class FbManager : MonoBehaviour
         String savedUsername = PlayerPrefs.GetString("Username");
         String savedPassword = PlayerPrefs.GetString("Password");
 
-        if (savedUsername != "null" && savedPassword != "null")
+        if (savedUsername != "null" && savedUsername != "" && savedPassword != "null" && savedPassword != "") //check if empty
         {
             Debug.Log("Auto Logging in with username:" + PlayerPrefs.GetString("Username"));
             Debug.Log("Auto Logging in with password:" + PlayerPrefs.GetString("Password"));
 
             StartCoroutine(FbManager.instance.Login(savedUsername, savedPassword, (myReturnValue) => {
-                if (myReturnValue.callbackEnum == CallbackEnum.SUCCESS)
+                switch (myReturnValue.LoginStatus)
                 {
-                    Debug.Log("AutoLogin SUCCESS");
-                    SetUserLoginSatus(true);
-                    if (PlayerPrefs.GetInt("IsInvited") == 1) //if user already invited dont check queue again
-                    {
-                        if (lowConnectivitySmartLogin && PlayerPrefs.GetInt("DBDataCached") == 1) //user should already be in
-                            return;
-                        
-                        Debug.Log("user has been invited");
-                        ScreenManager.instance.ChangeScreenFade("HomeScreen");
-                    }
-                    else 
-                    {
-                        StartCoroutine(FbManager.instance.ManagerUserPermissions(callbackObject =>
+                    case global::LoginStatus.Success:
+                        Debug.Log("AutoLogin SUCCESS");
+                        SetUserLoginSatus(true);
+
+                        if (PlayerPrefs.GetInt("IsInvited") == 1) //if user already invited don't check queue again
                         {
-                            if (lowConnectivitySmartLogin && IsFirebaseUserLoggedIn) //user should already be in
+                            if (lowConnectivitySmartLogin && PlayerPrefs.GetInt("DBDataCached") == 1) //user should already be in
                                 return;
-                            
-                            if (callbackObject == true)
+                            ScreenManager.instance.ChangeScreenFade("HomeScreen");
+                            IsFirebaseUserLoggedIn = true;
+                        }
+                        else
+                        {
+                            Debug.LogWarning("ManagerUserPermissions");
+                            StartCoroutine(FbManager.instance.ManagerUserPermissions(callbackObject =>
                             {
-                                ScreenManager.instance.ChangeScreenFade("HomeScreen");
-                            }
-                            else
-                            {
-                                ScreenManager.instance.ChangeScreenFade("UserInQue");
-                            }
-                        }));
-                    }
-                    IsFirebaseUserLoggedIn = true;
-                }
-                else
-                {
-                    if (myReturnValue.callbackEnum == CallbackEnum.CONNECTIONERROR)
-                    {
+                                if (lowConnectivitySmartLogin && IsFirebaseUserLoggedIn) //user should already be in
+                                    return;
+                                else if (callbackObject == true)
+                                {
+                                    ScreenManager.instance.ChangeScreenFade("HomeScreen");
+                                    IsFirebaseUserLoggedIn = true;
+                                }
+                                else
+                                {
+                                    ScreenManager.instance.ChangeScreenFade("UserInQue");
+                                    IsFirebaseUserLoggedIn = true;
+                                }
+                            }));;
+                        }
+                        break;
+                    case global::LoginStatus.ConnectionError:
+                        Debug.LogError("CONNECTION ERROR!");
+                        //ScreenManager.instance.ChangeScreenForwards("ConnectionError");
+                        break;
+                    
+                    case global::LoginStatus.UnFinishedRegistration:
+                        Debug.LogWarning("Proccesing Unfinished Registration");
+                        if(thisUserModel.phone == "" || thisUserModel.phone == "null")
+                            ScreenManager.instance.ChangeScreenNoAnim("PhoneNumber");
+                        else if(thisUserModel.name == "null" || thisUserModel.name == "" || thisUserModel.username == "null" || thisUserModel.username == "")
+                            ScreenManager.instance.ChangeScreenNoAnim("Username");
+                        break;
+                    default:
                         ScreenManager.instance.ChangeScreenForwards("ConnectionError");
-                        return;
-                    }
-                    Debug.LogError("FbManager: failed to auto login");
-                    Logout(LoginStatus.LoggedOut);
+                        break;
                 }
             }));
         }
@@ -218,58 +226,50 @@ public partial class FbManager : MonoBehaviour
         }
     }
     
-    public IEnumerator Login(string _email, string _password,  System.Action<CallbackObject> callback)
+    public IEnumerator Login(string _email, string _password, System.Action<CallbackObject> callback)
     {
-        //Fb Login
-        Debug.Log("logging in");
-        CallbackObject callbackObject = new CallbackObject();
+        Debug.Log("Logging in...");
         var LoginTask = _firebaseAuth.SignInWithEmailAndPasswordAsync(_email, _password);
         yield return new WaitUntil(predicate: () => LoginTask.IsCompleted);
-        
+
+        CallbackObject callbackObject = new CallbackObject();
+
         if (LoginTask.Exception != null)
         {
-            //If there are errors handle them
-            Debug.LogWarning(message: $"Failed to register task with {LoginTask.Exception}");
             FirebaseException firebaseEx = LoginTask.Exception.GetBaseException() as FirebaseException;
             AuthError errorCode = (AuthError)firebaseEx.ErrorCode;
             string message = "Login Failed!";
-            callbackObject.callbackEnum = CallbackEnum.FAILED;
+            
             switch (errorCode)
             {
                 case AuthError.MissingEmail:
                     message = "Missing Email";
-                    callbackObject.message = message;
-                    callbackObject.callbackEnum = CallbackEnum.FAILED;                    
                     break;
                 case AuthError.MissingPassword:
                     message = "Missing Password";
-                    callbackObject.message = message;
-                    callbackObject.callbackEnum = CallbackEnum.FAILED;
                     break;
                 case AuthError.WrongPassword:
                     message = "Wrong Password";
-                    callbackObject.message = message;
-                    callbackObject.callbackEnum = CallbackEnum.FAILED;
                     break;
                 case AuthError.InvalidEmail:
                     message = "Invalid Email";
-                    callbackObject.message = message;
-                    callbackObject.callbackEnum = CallbackEnum.FAILED;
                     break;
                 case AuthError.UserNotFound:
                     message = "Account does not exist";
-                    callbackObject.message = message;
-                    callbackObject.callbackEnum = CallbackEnum.FAILED;
                     break;
                 case AuthError.NetworkRequestFailed:
                     message = "ConnectionError";
-                    callbackObject.message = message;
                     Debug.Log("Trace Network Request Failed");
-                    callbackObject.callbackEnum = CallbackEnum.CONNECTIONERROR;
+                    callbackObject.LoginStatus = global::LoginStatus.ConnectionError;
+                    break;
+                // Add more error cases if necessary
+                default:
+                    message = "Unknown error: " + errorCode.ToString();
                     break;
             }
-            Debug.Log("FBManager: failed to log in because " + errorCode.ToString());
-            callbackObject.callbackEnum = CallbackEnum.FAILED;
+
+            Debug.LogWarning($"FBManager: failed to log in because {errorCode.ToString()}");
+            callbackObject.LoginStatus = global::LoginStatus.Failed;
             callbackObject.message = message;
             callback(callbackObject);
             yield break;
@@ -277,20 +277,57 @@ public partial class FbManager : MonoBehaviour
 
         _firebaseUser = LoginTask.Result;
         Debug.LogFormat("User signed in successfully: {0} ({1})", _firebaseUser.DisplayName, _firebaseUser.Email);
-        Debug.Log("logged In: user profile photo is: " + _firebaseUser.PhotoUrl);
 
-        //stay logged in
+        //Todo: Remove this for security reasons
         PlayerPrefs.SetString("Username", _email);
         PlayerPrefs.SetString("Password", _password);
         PlayerPrefs.Save();
 
         ContinuesListners();
         InitializeFCMService();
-        GetCurrentUserData(_password);
         
-        callbackObject.callbackEnum = CallbackEnum.SUCCESS;
-        callback(callbackObject); //end of login
+        //get user data (this does slow down the login a bit)
+        UserStatus fetchedUserStatus = UserStatus.Error;  // Initialize with a default value
+
+        yield return StartCoroutine(GetCurrentUserDataCoroutine((status) =>
+        {
+            fetchedUserStatus = status;  // Update the local variable with the status from the callback
+            switch (status)
+            {
+                case UserStatus.Initialized:
+                    break;
+                case UserStatus.MissingData:
+                    Debug.LogWarning("User data is incomplete!");
+                    break;
+                case UserStatus.Error:
+                    Debug.LogError("Error fetching user data.");
+                    break;
+            }
+        }));
+        
+        // Now we use 'fetchedUserStatus' to decide how to proceed.
+        if (fetchedUserStatus == UserStatus.Initialized)
+        {
+            // All is good, user data is initialized.
+            IsFirebaseUserLoggedIn = true;
+            callbackObject.LoginStatus = global::LoginStatus.Success;
+        }
+        else if (fetchedUserStatus == UserStatus.MissingData)
+        {
+            // Handle scenario when data is missing.
+            callbackObject.LoginStatus = global::LoginStatus.UnFinishedRegistration;
+            callbackObject.message = "User data is incomplete!";
+        }
+        else
+        {
+            // Handle general error scenario.
+            callbackObject.LoginStatus = global::LoginStatus.Failed;
+            callbackObject.message = "Error fetching user data.";
+        }
+
+        callback(callbackObject);
     }
+
     
     public void SetUserLoginSatus(bool status)
     {
@@ -341,52 +378,77 @@ public partial class FbManager : MonoBehaviour
         SubscribeOrUnsubscribeToSentTraces(false);
     }
     
-    private void GetCurrentUserData(string password)
+    public enum UserStatus
     {
-        //todo: dont do if cache exists
-        
-        // Get a reference to the "users" node in the database
-        DatabaseReference usersRef = _databaseReference.Child("users");
-        
-        // Attach a listener to the "users" node
-        usersRef.Child(_firebaseUser.UserId).GetValueAsync().ContinueWith(task =>
+        Initialized,
+        MissingData,
+        Error
+    }
+
+    public delegate void UserCallback(UserStatus status);
+    private IEnumerator GetCurrentUserDataCoroutine(UserCallback callback)
+    {
+        DatabaseReference userRef = _databaseReference.Child("users").Child(_firebaseUser.UserId);
+        var task = userRef.GetValueAsync();
+
+        // Wait for the task to complete
+        yield return new WaitUntil(() => task.IsCompleted || task.IsFaulted);
+
+        if (task.IsFaulted)
         {
-            
-            DataSnapshot snapshot = null;
-            if (task.IsCompleted)
+            Debug.LogError(task.Exception);
+            callback(UserStatus.Error);
+            yield break;
+        }
+
+        if (task.IsCompleted)
+        {
+            DataSnapshot snapshot = task.Result;
+
+            if (snapshot.Exists)
             {
-                // Iterate through the children of the "users" node and add each username to the list
-                snapshot = task.Result;
+                string email = GetChildValue(snapshot, "email");
+                string displayName = GetChildValue(snapshot, "name");
+                string username = GetChildValue(snapshot, "username");
+                string phone = GetChildValue(snapshot, "phone");
+                string photoURL = GetChildValue(snapshot, "photo");
 
-
-                string batch = "";
-                if (snapshot.HasChild("batch"))
+                thisUserModel = new UserModel(_firebaseUser.UserId, email, displayName, username, phone, photoURL, "password");
+                
+                string superValue = GetChildValue(snapshot, "super");
+                if (bool.TryParse(superValue, out bool result) && result)
                 {
-                    batch = snapshot.Child("batch").Value.ToString();
-                    AnalyticsSetBatchNumber(batch);
-                }
-                else
-                {
-                    Debug.LogWarning("The 'batch' child does not exist in the snapshot.");
+                    thisUserModel.super = true;
                 }
                 
-                string email = snapshot.Child("email").Value.ToString();
-                string displayName = snapshot.Child("name").Value.ToString();
-                string username = snapshot.Child("username").Value.ToString();
-                string phone = snapshot.Child("phone").Value.ToString();
-                string photoURL = snapshot.Child("photo").Value.ToString();
-                Debug.Log("Getting Curent User Data");
-                thisUserModel = new UserModel(_firebaseUser.UserId,email,displayName,username,phone,photoURL,password);
+                // Check for missing data
+                if (string.IsNullOrEmpty(phone) || username == "null" || name == "null")
+                {
+                    Debug.LogWarning("User Profile Missing Data");
+                    callback(UserStatus.MissingData);
+                    yield break;
+                }
                 IsFirebaseUserInitialised = true;
                 Debug.Log("User Initialized");
+                callback(UserStatus.Initialized);
             }
-            if (task.IsFaulted)
-            {
-                Debug.LogError(task.Exception);
-            }
-        });
-        
+        }
     }
+
+    private string GetChildValue(DataSnapshot snapshot, string key)
+    {
+        if (snapshot.HasChild(key))
+        {
+            return snapshot.Child(key).Value.ToString();
+        }
+        else
+        {
+            Debug.LogWarning($"The '{key}' child does not exist in the snapshot.");
+            return string.Empty;
+        }
+    }
+    
+    
     public void Logout(LoginStatus loginStatus)
     {
         Debug.Log("FBManager: logging out");
@@ -517,6 +579,7 @@ public partial class FbManager : MonoBehaviour
             {
                 Debug.Log("Logged In!");
                 SetUserLoginSatus(true);
+                IsFirebaseUserLoggedIn = true;
             }
         }));
         callback(null, errorCode);
@@ -562,7 +625,23 @@ public partial class FbManager : MonoBehaviour
         }
         else
         {
-            GetCurrentUserData("**********");
+            StartCoroutine(GetCurrentUserDataCoroutine((status) =>
+            {
+                switch (status)
+                {
+                    case UserStatus.Initialized:
+                        // Handle successful initialization
+                        break;
+                    case UserStatus.MissingData:
+                        Debug.LogWarning("User data is incomplete!");
+                        // Handle missing data scenario
+                        break;
+                    case UserStatus.Error:
+                        Debug.LogError("Error fetching user data.");
+                        // Handle error scenario
+                        break;
+                }
+            }));
             callback(true);
         }
     }
@@ -583,6 +662,8 @@ public partial class FbManager : MonoBehaviour
         }
         else
         {
+            if (_firestoreData == null)
+                _firestoreData = new Dictionary<string, object>();
             _firestoreData.Add("name",_nickName);
             callback(true);
         }
@@ -601,7 +682,8 @@ public partial class FbManager : MonoBehaviour
         }
         else
         {
-            //prevent dict bug
+            if (_firestoreData == null)
+                _firestoreData = new Dictionary<string, object>();
             if (_firestoreData.ContainsKey("phone"))
             {
                 _firestoreData["phone"] = _phoneNumber;
@@ -678,7 +760,7 @@ public partial class FbManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Image Uploaded Successfully");
+            Debug.Log("Image Uploaded Successfully");
             var url = task.Result.Path + "";
             callback(true,url);
         }
@@ -971,18 +1053,7 @@ public partial class FbManager : MonoBehaviour
         {
             yield return new WaitForEndOfFrame();
         }
-        
-        // //Todo:: Need To Discuss 
-        // if (thisUserModel.phone == null)
-        // {
-        //     canEnterApp(true);
-        //     Debug.LogError("Phone Number Is  ::  "+  thisUserModel.phone);
-        //     yield break;
-        // }
-#if  UNITY_EDITOR
-        canEnterApp(true); 
-        Debug.Log("Unity Editor"); 
-#elif UNITY_IPHONE
+
         StartCoroutine(IsUserListedInInvited(thisUserModel.phone, isUserInInvteList =>
         {
             if (!isUserInInvteList) //if invited welcome
@@ -1003,7 +1074,7 @@ public partial class FbManager : MonoBehaviour
                 canEnterApp(true);
             }
         }));
-#endif
+// #endif
     }
     
     public IEnumerator IsUserListedInInvited(string _phoneNumber, System.Action<bool> callback)
@@ -1227,10 +1298,12 @@ public partial class FbManager : MonoBehaviour
         if (subscribe)
         {
             refrence.ChildAdded += HandleChildAdded;
+            refrence.ChildChanged += HandleChildChanged;
         }
         else
         {
             refrence.ChildAdded -= HandleChildAdded;
+            refrence.ChildChanged -= HandleChildChanged;
         }
         
         void HandleChildAdded(object sender, ChildChangedEventArgs args) {
@@ -1238,7 +1311,47 @@ public partial class FbManager : MonoBehaviour
                 Debug.Log("HandleChildAdded Error");
                 return;
             }
-            StartCoroutine(GetRecievedTrace(args.Snapshot.Key)); //todo: why pass key when args.Snapshot probraly has data
+            StartCoroutine(GetReceivedTrace(args.Snapshot.Key)); //todo: why pass key when args.Snapshot probraly has data
+        }
+        
+        void HandleChildChanged(object sender, ChildChangedEventArgs args) {
+            if (args.DatabaseError != null) {
+                Debug.Log("HandleChildAdded Error");
+                return;
+            }
+            Debug.Log("HandleChildChanged");
+            StartCoroutine(HandleReceivedTraceChanged(args.Snapshot.Key)); //todo: why pass key when args.Snapshot probraly has data
+        }
+    }
+    public void SubscribeOrUnSubscribeToTraceGroup(bool subscribe, string groupID)
+    {
+        var refrence = FirebaseDatabase.DefaultInstance.GetReference("TraceGroups").Child(groupID);
+        if (subscribe)
+        {
+            refrence.ChildAdded += HandleChildAdded;
+            refrence.ChildChanged += HandleChildChanged;
+        }
+        else
+        {
+            refrence.ChildAdded -= HandleChildAdded;
+            refrence.ChildChanged -= HandleChildChanged;
+        }
+        
+        void HandleChildAdded(object sender, ChildChangedEventArgs args) {
+            if (args.DatabaseError != null) {
+                Debug.Log("HandleChildAdded Error");
+                return;
+            }
+            StartCoroutine(GetReceivedTrace(args.Snapshot.Key));
+        }
+        
+        void HandleChildChanged(object sender, ChildChangedEventArgs args) {
+            if (args.DatabaseError != null) {
+                Debug.Log("HandleChildAdded Error");
+                return;
+            }
+            Debug.Log("HandleChildChanged");
+            StartCoroutine(HandleReceivedTraceChanged(args.Snapshot.Key)); //todo: why pass key when args.Snapshot probraly has data
         }
     }
     public void SubscribeOrUnsubscribeToSentTraces(bool subscribe)
@@ -1247,10 +1360,12 @@ public partial class FbManager : MonoBehaviour
         if (subscribe)
         {
             refrence.ChildAdded += HandleChildAdded;
+            refrence.ChildChanged += HandleChildChanged;
         }
         else
         {
             refrence.ChildAdded -= HandleChildAdded;
+            refrence.ChildChanged -= HandleChildChanged;
         }
 
         void HandleChildAdded(object sender, ChildChangedEventArgs args) {
@@ -1259,6 +1374,15 @@ public partial class FbManager : MonoBehaviour
                 return;
             }
             StartCoroutine(GetSentTrace(args.Snapshot.Key));
+        }
+        
+        void HandleChildChanged(object sender, ChildChangedEventArgs args) {
+            if (args.DatabaseError != null) {
+                Debug.Log("HandleChildAdded Error");
+                return;
+            }
+            Debug.Log("HandleChildChanged");
+            StartCoroutine(HandleSentTraceChanged(args.Snapshot.Key)); //todo: why pass key when args.Snapshot probraly has data
         }
     }
     public void SubscribeToFriendShipRequests()
@@ -1332,8 +1456,8 @@ public partial class FbManager : MonoBehaviour
     #endregion
     #endregion
     
-    #region Sending and Recieving Traces
-    public void UploadTrace(List<string> usersToSendTo, List<string> phonesToSendTo, string fileLocation, float radius, Vector2 location, MediaType mediaType)
+    #region Sending and Recieving Traces and Comments
+    public void UploadTrace(List<string> usersToSendTo, List<string> phonesToSendTo, string fileLocation, float radius, Vector2 location, MediaType mediaType, bool sendToFollowers)
     {
         Debug.Log(" UploadTrace(): File Location:" + fileLocation);
         
@@ -1351,7 +1475,7 @@ public partial class FbManager : MonoBehaviour
             receiverObjects.Add(new TraceReceiverObject(user, false));
         }
         
-        _drawTraceOnMap.sendingTraceTraceLoadingObject = new TraceObject(location.x, location.y, radius, receiverObjects, "null",thisUserModel.name,  DateTime.UtcNow.ToString(), 24, mediaType.ToString(), "temp", true);
+        _drawTraceOnMap.sendingTraceTraceLoadingObject = new TraceObject(location.x, location.y, radius, receiverObjects, new Dictionary<string, TraceCommentObject>(), "null",thisUserModel.name,  DateTime.UtcNow.ToString(), DateTime.UtcNow.AddHours(24), mediaType.ToString(), "temp", true);
         _drawTraceOnMap.DrawCircle(location.x, location.y, radius, DrawTraceOnMap.TraceType.SENDING, "null");
         
         //update global traces
@@ -1363,6 +1487,7 @@ public partial class FbManager : MonoBehaviour
         childUpdates["Traces/" + key + "/lat"] = location.x;
         childUpdates["Traces/" + key + "/long"] = location.y;
         childUpdates["Traces/" + key + "/radius"] = radius;
+        childUpdates["Traces/" + key + "/expiration"] = DateTime.UtcNow.AddHours(24);
         
         if (PlayerPrefs.GetInt("LeaveTraceIsVisable") == 1)
         {
@@ -1380,6 +1505,7 @@ public partial class FbManager : MonoBehaviour
             childUpdates["Traces/" + key + "/Reciver/" + user + "/HasViewed"] = false;
             childUpdates["Traces/" + key + "/Reciver/" + user + "/ProfilePhoto"] = "null";
             childUpdates["TracesRecived/" + user +"/"+ key + "/Sender"] = thisUserModel.userID;
+            childUpdates["TracesRecived/" + user+"/" + key + "/updated"] = DateTime.UtcNow.ToString();
         }
         foreach (var phone in phonesToSendTo)
         {
@@ -1387,6 +1513,11 @@ public partial class FbManager : MonoBehaviour
             //invite and send trace
             childUpdates["invited/" +  phone.Substring(phone.Length - 10) + "/users/" + thisUserModel.userID] = DateTime.UtcNow.ToString();
             childUpdates["invited/" +  phone.Substring(phone.Length - 10) + "/traces/" + key] = thisUserModel.userID;
+        }
+
+        if (sendToFollowers)
+        {
+            childUpdates["TraceGroups/" + thisUserModel.userID + "/" + key] = DateTime.UtcNow.ToString();
         }
         
         childUpdates["Traces/" + key + "/numPeopleSent"] = count;
@@ -1419,18 +1550,20 @@ public partial class FbManager : MonoBehaviour
             });
     }
     
+    
     public void MarkTraceAsOpened(TraceObject trace)
     {
         Dictionary<string, Object> childUpdates = new Dictionary<string, Object>();
         childUpdates["Traces/" + trace.id + "/Reciver/"+ _firebaseUser.UserId +"/HasViewed"] = true;
         _databaseReference.UpdateChildrenAsync(childUpdates);
-        trace.hasBeenOpened = true;
+        trace.HasBeenOpened = true;
     }
-    public IEnumerator GetRecievedTrace(string traceID)
+    
+    public IEnumerator GetReceivedTrace(string traceID)
     {
         if (lowConnectivitySmartLogin)
         {
-            var alreadyExistsLocally = TraceManager.instance.receivedTraceObjects.FirstOrDefault(traceObject => traceObject.id == traceID);
+            var alreadyExistsLocally = TraceManager.instance.receivedTraceObjects.FirstOrDefault(pair => pair.Value.id == traceID).Value;
             if (alreadyExistsLocally != null)
             {
                 Debug.Log("Trace already exists locally");
@@ -1455,8 +1588,10 @@ public partial class FbManager : MonoBehaviour
             string senderID = "";
             string senderName = "";
             string sendTime = "";
+            DateTime experation = new DateTime();
             bool traceHasBeenOpenedByThisUser = false;
             List<TraceReceiverObject> receivers = new List<TraceReceiverObject>();
+            Dictionary<string, TraceCommentObject> comments = new Dictionary<string, TraceCommentObject>();
             float durationHours = 0;
 
             foreach (var thing in DBTask.Result.Children)
@@ -1534,6 +1669,31 @@ public partial class FbManager : MonoBehaviour
                         }
                         break;
                     }
+                    case "comments":
+                    {
+                        Debug.Log("Getting Comments");
+                        Dictionary<string, object> _comments = thing.Value as Dictionary<string, object>;
+                        foreach (var comment in _comments)
+                        {
+                            var commentID = comment.Key;
+                            var commentData = comment.Value as Dictionary<string, object>;
+                            string time = commentData["time"].ToString();
+                            string sender = commentData["senderID"].ToString();
+                            string name = commentData["senderName"].ToString();
+                            if (commentData.ContainsKey("wave"))
+                            {
+                                string extractedValuesJson = commentData["wave"].ToString();
+                                SerializableFloatArray serializableFloatArray = JsonUtility.FromJson<SerializableFloatArray>(extractedValuesJson);
+                                float[] extractedValues = serializableFloatArray.data;
+                                comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name,extractedValues));
+                            }
+                            else
+                            {
+                                comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name,new float[]{}));
+                            }
+                        }
+                        break;
+                    }
                     case "numPeopleSent":
                         numPeopleSent = Int32.Parse(thing.Value.ToString());
                         break;
@@ -1547,12 +1707,15 @@ public partial class FbManager : MonoBehaviour
                         durationHours = (float)thing.Value;
                         break;
                     }
+                    case "expiration":
+                        DateTime.TryParseExact(thing.Value.ToString(), "yyyy-MM-ddTHH:mm:ssZ", null, System.Globalization.DateTimeStyles.AssumeUniversal, out experation); 
+                    break;
                 }
             }
             if (lat != 0 && lng != 0 && radius != 0) //check for malformed data entry
             {
-                var trace = new TraceObject(lng, lat, radius, receivers, senderID, senderName, sendTime, 20, mediaType,traceID, traceHasBeenOpenedByThisUser);
-                TraceManager.instance.receivedTraceObjects.Add(trace);
+                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, experation, mediaType,traceID, traceHasBeenOpenedByThisUser);
+                TraceManager.instance.receivedTraceObjects.Add(trace.id,trace);
                 BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
                 TraceManager.instance.UpdateMap(new Vector2());
                 FbManager.instance.AnalyticsSetTracesReceived(TraceManager.instance.receivedTraceObjects.Count.ToString());
@@ -1563,7 +1726,7 @@ public partial class FbManager : MonoBehaviour
     {
         if (lowConnectivitySmartLogin)
         {
-            var alreadyExistsLocally = TraceManager.instance.sentTraceObjects.FirstOrDefault(traceObject => traceObject.id == traceID);
+            var alreadyExistsLocally = TraceManager.instance.sentTraceObjects.FirstOrDefault(traceObject => traceObject.Value.id == traceID).Value;
             if (alreadyExistsLocally != null)
             {
                 Debug.Log("Trace already exists locally");
@@ -1585,10 +1748,12 @@ public partial class FbManager : MonoBehaviour
             float radius = 0;
             string senderID = "";
             List<TraceReceiverObject> receivers = new List<TraceReceiverObject>();
+            Dictionary<string, TraceCommentObject> comments = new Dictionary<string, TraceCommentObject>();
             string senderName = "";
             string sendTime = "";
             string mediaType = "";
             float durationHours = 0;
+            DateTime experation = new DateTime();
 
             foreach (var thing in DBTask.Result.Children)
             {
@@ -1661,6 +1826,32 @@ public partial class FbManager : MonoBehaviour
                         }
                         break;
                     }
+                    case "comments":
+                    {
+                        Dictionary<string, object> _comments = thing.Value as Dictionary<string, object>;
+                        foreach (var comment in _comments)
+                        {
+                            var commentID = comment.Key;
+                            var commentData = comment.Value as Dictionary<string, object>;
+                            string time = commentData["time"].ToString();
+                            string sender = commentData["senderID"].ToString();
+                            string name = commentData["senderName"].ToString();
+                            if (commentData.ContainsKey("wave"))
+                            {
+                                string extractedValuesJson = commentData["wave"].ToString();
+                                Debug.Log("extractedValuesJson:" + extractedValuesJson);
+                                SerializableFloatArray serializableFloatArray = JsonUtility.FromJson<SerializableFloatArray>(extractedValuesJson);
+                                float[] extractedValues = serializableFloatArray.data;
+                                Debug.Log("extracted soudWave values:" + extractedValues.Length);
+                                comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name,extractedValues));
+                            }
+                            else
+                            {
+                                comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name,new float[]{}));
+                            }
+                        }
+                        break;
+                    }
                     case "mediaType":
                     {
                         mediaType = thing.Value.ToString();
@@ -1671,13 +1862,328 @@ public partial class FbManager : MonoBehaviour
                         durationHours = (float)thing.Value;
                         break;
                     }
+                    case "expiration":
+                        DateTime.TryParseExact(thing.Value.ToString(), "yyyy-MM-ddTHH:mm:ssZ", null, System.Globalization.DateTimeStyles.AssumeUniversal, out experation); 
+                        break;
                 }
             }
             
             if (lat != 0 && lng != 0 && radius != 0)
             {
-                var trace = new TraceObject(lng, lat, radius, receivers, senderID,senderName, sendTime, 20, mediaType,traceID, false);
-                TraceManager.instance.sentTraceObjects.Add(trace);
+                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, experation, mediaType,traceID, false);
+                TraceManager.instance.sentTraceObjects.Add(trace.id,trace);
+                BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
+                TraceManager.instance.UpdateMap(new Vector2());
+                FbManager.instance.AnalyticsSetTracesSent(TraceManager.instance.sentTraceObjects.Count.ToString());
+            }
+        }
+    }
+    public IEnumerator HandleReceivedTraceChanged(string traceID)
+    {
+        if (lowConnectivitySmartLogin)
+        {
+            var alreadyExistsLocally = TraceManager.instance.receivedTraceObjects.FirstOrDefault(pair => pair.Value.id == traceID).Value;
+            if (alreadyExistsLocally != null)
+            {
+                Debug.Log("Trace already exists locally");
+                yield break;
+            }
+        }
+        
+        var DBTask = _databaseReference.Child("Traces").Child(traceID).GetValueAsync();
+        yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
+        
+        if (DBTask.IsFaulted)
+        {
+            Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+        }
+        else
+        {
+            double lat = 0;
+            double lng = 0;
+            float radius = 0;
+            int numPeopleSent = 0;
+            string mediaType = "";
+            string senderID = "";
+            string senderName = "";
+            string sendTime = "";
+            bool traceHasBeenOpenedByThisUser = false;
+            List<TraceReceiverObject> receivers = new List<TraceReceiverObject>();
+            Dictionary<string, TraceCommentObject> comments = new Dictionary<string, TraceCommentObject>();
+            float durationHours = 0;
+            DateTime experation = new DateTime();
+
+            foreach (var thing in DBTask.Result.Children)
+            {
+                switch (thing.Key.ToString())
+                {
+                    case "lat":
+                    {
+                        try
+                        {
+                            lat = (double)thing.Value;
+                        }
+                        catch (Exception e)
+                        {
+                            lat = 0;
+                        }
+                        break;
+                    }
+                    case "long":
+                    {
+                        try
+                        {
+                            lng = (double)thing.Value;
+                        }
+                        catch (Exception e)
+                        {
+                            lng = 0;
+                        }
+                        
+                        break;
+                    }
+                    case "radius":
+                    {
+                        try
+                        {
+                            radius = float.Parse(thing.Value.ToString());
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.LogError("failed to parse string to float");
+                        }
+                        break;
+                    }
+                    case "mediaType":
+                    { 
+                        mediaType = thing.Value.ToString();
+                        break;
+                    }
+                    case "senderID":
+                    { 
+                        senderID = thing.Value.ToString();
+                        break;
+                    }
+                    case "senderName":
+                    {
+                        senderName = thing.Value.ToString();
+                        break;
+                    }
+                    case "Reciver":
+                    {
+                        Dictionary<string, object> people = thing.Value as Dictionary<string, object>;
+                        foreach (var receiver in people)
+                        {
+                            var receiverID = receiver.Key;
+                            var receiverData = receiver.Value as Dictionary<string, object>;
+                            bool hasViewed = (bool)receiverData["HasViewed"];
+                            //string profilePhoto = receiverData["ProfilePhoto"].ToString(); //if we ever want profile photo
+                            receivers.Add(new TraceReceiverObject(receiverID, hasViewed));
+                            
+                            //check if this user opened it
+                            if (receiverID == FbManager.instance.thisUserModel.userID && hasViewed)
+                            {
+                                traceHasBeenOpenedByThisUser = true;
+                            }
+                        }
+                        break;
+                    }
+                    case "comments":
+                    {
+                        Debug.Log("Getting Comments");
+                        Dictionary<string, object> _comments = thing.Value as Dictionary<string, object>;
+                        foreach (var comment in _comments)
+                        {
+                            var commentID = comment.Key;
+                            var commentData = comment.Value as Dictionary<string, object>;
+                            string time = commentData["time"].ToString();
+                            string sender = commentData["senderID"].ToString();
+                            string name = commentData["senderName"].ToString();
+                            if (commentData.ContainsKey("wave"))
+                            {
+                                string extractedValuesJson = commentData["wave"].ToString();
+                                SerializableFloatArray serializableFloatArray = JsonUtility.FromJson<SerializableFloatArray>(extractedValuesJson);
+                                float[] extractedValues = serializableFloatArray.data;
+                                comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name,extractedValues));
+                            }
+                            else
+                            {
+                                comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name,new float[]{}));
+                            }
+                        }
+                        break;
+                    }
+                    case "numPeopleSent":
+                        numPeopleSent = Int32.Parse(thing.Value.ToString());
+                        break;
+                    case "sendTime":
+                    {
+                        sendTime = thing.Value.ToString();
+                        break;
+                    }
+                    case "durationHours":
+                    {
+                        durationHours = (float)thing.Value;
+                        break;
+                    }
+                    case "expiration":
+                        DateTime.TryParseExact(thing.Value.ToString(), "yyyy-MM-ddTHH:mm:ssZ", null, System.Globalization.DateTimeStyles.AssumeUniversal, out experation); 
+                        break;
+                }
+            }
+            if (lat != 0 && lng != 0 && radius != 0) //check for malformed data entry
+            {
+                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, experation, mediaType,traceID, traceHasBeenOpenedByThisUser);
+                Debug.Log("Changed:" + trace.id + " to dict");
+                TraceManager.instance.sentTraceObjects[trace.id] = trace; //update trace
+                TraceManager.instance.RefreshTrace(trace);
+                BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
+                TraceManager.instance.UpdateMap(new Vector2());
+                FbManager.instance.AnalyticsSetTracesReceived(TraceManager.instance.receivedTraceObjects.Count.ToString());
+            }
+        }
+    }
+    public IEnumerator HandleSentTraceChanged(string traceID)
+    {
+        var DBTask = _databaseReference.Child("Traces").Child(traceID).GetValueAsync();
+        yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
+        
+        if (DBTask.IsFaulted)
+        {
+            Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
+        }
+        else
+        {
+            double lat = 0;
+            double lng = 0;
+            float radius = 0;
+            string senderID = "";
+            List<TraceReceiverObject> receivers = new List<TraceReceiverObject>();
+            Dictionary<string, TraceCommentObject> comments = new Dictionary<string, TraceCommentObject>();
+            string senderName = "";
+            string sendTime = "";
+            string mediaType = "";
+            float durationHours = 0;
+            DateTime experation = new DateTime();
+
+            foreach (var thing in DBTask.Result.Children)
+            {
+                switch (thing.Key.ToString())
+                {
+                    case "lat":
+                    {
+                        // Debug.Log(traceID + "lat: " + thing.Value);
+                        // Debug.Log(thing.Value);
+                        try
+                        {
+                            lat = (double)thing.Value;
+                        }
+                        catch (Exception e)
+                        {
+                            lat = 0;
+                        }
+                        break;
+                    }
+                    case "long":
+                    {
+                        try
+                        {
+                            lng = (double)thing.Value;
+                        }
+                        catch (Exception e)
+                        {
+                            lng = 0;
+                        }
+                        
+                        break;
+                    }
+                    case "radius":
+                    {
+                        try
+                        {
+                            radius = float.Parse(thing.Value.ToString());
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.LogError("failed to parse string to float");
+                        }
+                        break;
+                    }
+                    case "senderID":
+                    {
+                        senderID = thing.Value.ToString();
+                        break;
+                    }
+                    case "senderName":
+                    {
+                        senderName = thing.Value.ToString();
+                        break;
+                    }
+                    case "sendTime":
+                    {
+                        sendTime = thing.Value.ToString();
+                        break;
+                    }
+                    case "Reciver":
+                    {
+                        Dictionary<string, object> people = thing.Value as Dictionary<string, object>;
+                        foreach (var receiver in people)
+                        {
+                            var receiverID = receiver.Key;
+                            var receiverData = receiver.Value as Dictionary<string, object>;
+                            bool hasViewed = (bool)receiverData["HasViewed"];
+                            //string profilePhoto = receiverData["ProfilePhoto"].ToString(); //if we ever want profile photo
+                            receivers.Add(new TraceReceiverObject(receiverID,hasViewed));
+                        }
+                        break;
+                    }
+                    case "comments":
+                    {
+                        Dictionary<string, object> _comments = thing.Value as Dictionary<string, object>;
+                        foreach (var comment in _comments)
+                        {
+                            var commentID = comment.Key;
+                            var commentData = comment.Value as Dictionary<string, object>;
+                            string time = commentData["time"].ToString();
+                            string sender = commentData["senderID"].ToString();
+                            string name = commentData["senderName"].ToString();
+                            if (commentData.ContainsKey("wave"))
+                            {
+                                string extractedValuesJson = commentData["wave"].ToString();
+                                SerializableFloatArray serializableFloatArray = JsonUtility.FromJson<SerializableFloatArray>(extractedValuesJson);
+                                float[] extractedValues = serializableFloatArray.data;
+                                comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name,extractedValues));
+                            }
+                            else
+                            {
+                                comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name,new float[]{}));
+                            }
+                        }
+                        break;
+                    }
+                    case "mediaType":
+                    {
+                        mediaType = thing.Value.ToString();
+                        break;
+                    }
+                    case "durationHours":
+                    {
+                        durationHours = (float)thing.Value;
+                        break;
+                    }
+                    case "expiration":
+                        DateTime.TryParseExact(thing.Value.ToString(), "yyyy-MM-ddTHH:mm:ssZ", null, System.Globalization.DateTimeStyles.AssumeUniversal, out experation); 
+                        break;
+                }
+            }
+            
+            if (lat != 0 && lng != 0 && radius != 0)
+            {
+                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID,senderName, sendTime, experation, mediaType,traceID, false);
+                Debug.Log("Trace Comments Update To:" + comments.Count);
+                TraceManager.instance.sentTraceObjects[trace.id] = trace; //update trace
+                TraceManager.instance.RefreshTrace(trace); //update if currently being displayed
+                BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
                 TraceManager.instance.UpdateMap(new Vector2());
                 FbManager.instance.AnalyticsSetTracesSent(TraceManager.instance.sentTraceObjects.Count.ToString());
             }
@@ -1723,15 +2229,16 @@ public partial class FbManager : MonoBehaviour
     }
     public IEnumerator GetTraceVideoByUrl(string _url, System.Action<string> callback)
     {
+        Debug.Log("Trace Not Stored Locally RetrivingTraceFromDatabase");
         var request = new UnityWebRequest();
         var url = "";
 
-        Debug.Log("test:");
+        
         StorageReference pathReference = _firebaseStorage.GetReference("Traces/" + _url);
-        Debug.Log("path refrence:" + pathReference);
+        Debug.Log("Database Storgage Path:" + pathReference.ToString());
 
+        Debug.Log("Getting path from:" + "Traces/" + _url);
         var task = pathReference.GetDownloadUrlAsync();
-
         while (task.IsCompleted is false)
             yield return new WaitForEndOfFrame();
 
@@ -1749,6 +2256,7 @@ public partial class FbManager : MonoBehaviour
         //video stuff needs to go here
         request = UnityWebRequest.Get(url);
 
+        Debug.Log("Downloading Video" + url);
         yield return request.SendWebRequest(); //Wait for the request to complete
 
         if (request.isNetworkError || request.isHttpError)
@@ -1758,12 +2266,116 @@ public partial class FbManager : MonoBehaviour
         else
         {
             Debug.Log("Correctly Got Video From Database");
-            var path = Application.persistentDataPath + "/" + "ReceivedTraceVideo" + ".mp4";
+            var path = Application.persistentDataPath + "/" + "Video" + ".mp4";
             File.WriteAllBytes(path, request.downloadHandler.data);
             Debug.Log("Downloaded Video!");
             Debug.Log("Video Location:" + path);
             callback(path);
         }
+    }
+
+    public IEnumerator GetTraceAudioByUrl(string _url, System.Action<string> callback)
+    {
+        StorageReference pathReference = _firebaseStorage.GetReference("Comments/" + _url);
+        Debug.Log("path refrence:" + pathReference);
+
+        var task = pathReference.GetDownloadUrlAsync();
+
+        while (!task.IsCompleted)
+            yield return new WaitForEndOfFrame();
+
+        if (task.IsFaulted || task.IsCanceled)
+        {
+            Debug.LogError("Task failed. Reason: " + task.Exception?.Message);
+            yield break;
+        }
+
+        string url = task.Result.ToString();
+        Debug.Log("Download URL: " + url);
+
+        UnityWebRequest request = UnityWebRequest.Get(url);
+        yield return request.SendWebRequest();
+
+        if (request.isNetworkError || request.isHttpError)
+        {
+            Debug.LogError("Request error: " + request.error);
+            yield break;
+        }
+
+        string pathWithoutExtension = Application.persistentDataPath + "/Comments/" + _url;
+        string directoryPath = Path.GetDirectoryName(pathWithoutExtension);
+        if (!Directory.Exists(directoryPath))
+        {
+            Directory.CreateDirectory(directoryPath); // This will create all subdirectories in the path that don't exist
+        }
+        
+        // Ensure the .wav extension
+        // Ensure the .wav extension
+        string finalPath = Path.ChangeExtension(pathWithoutExtension, ".wav");
+
+        File.WriteAllBytes(finalPath, request.downloadHandler.data);
+        Debug.Log("Downloaded Audio!");
+        Debug.Log("Audio Location:" + finalPath);
+        callback(finalPath);
+    }
+
+    
+    public void UploadComment(TraceObject trace, string fileLocation, float[] extractedValues)
+    {
+        Debug.Log(" UploadComment(): File Location:" + fileLocation + "with sound wave length:" + extractedValues.Length);
+        Debug.Log("Sound wave:" + extractedValues[0] + ", " + extractedValues[1] + ", " + extractedValues[3] + "...");
+        
+        //PUSH DATA TO REAL TIME DB
+        string key = _databaseReference.Child("Traces").Child(trace.id).Child("comments").Push().Key;
+        Dictionary<string, Object> childUpdates = new Dictionary<string, Object>();
+        
+        //update global traces
+        childUpdates["Traces/" + trace.id + "/comments/" + key + "/senderName"] = thisUserModel.name;
+        childUpdates["Traces/" + trace.id + "/comments/" + key + "/senderID"] = thisUserModel.userID;
+        childUpdates["Traces/" + trace.id + "/comments/" + key + "/time"] = DateTime.UtcNow.ToString();
+        
+        //upload simple sound wave
+        SerializableFloatArray serializableFloatArray = new SerializableFloatArray { data = extractedValues };
+        string extractedValuesJson = JsonUtility.ToJson(serializableFloatArray);
+        childUpdates["Traces/" + trace.id + "/comments/" + key + "/wave"] = extractedValuesJson;
+        Debug.Log("SoundWave:" + extractedValuesJson);
+        
+        if(trace.senderID == thisUserModel.userID)
+            childUpdates["TracesSent/" + thisUserModel.userID +"/" + trace.id] = DateTime.UtcNow.ToString(); //change last updated
+        
+        foreach (var user in trace.people)
+        {
+            if(user.id == thisUserModel.userID) //make sure we dont make a sent trace become received
+                continue;
+            
+            childUpdates["TracesRecived/" + user.id +"/"+ trace.id + "/updated"] = DateTime.UtcNow.ToString(); //change last updated
+            childUpdates["TracesRecived/" + user.id +"/"+ trace.id + "/Sender"] = trace.senderID;
+        }
+
+        //Upload Content
+        StorageReference traceReference = _firebaseStorageReference.Child("/Comments/" + trace.id + "/" + key);
+        traceReference.PutFileAsync(fileLocation)
+            .ContinueWith((Task<StorageMetadata> task) => {
+                if (task.IsFaulted || task.IsCanceled) {
+                    Debug.LogError("FB Error failed to upload with task.exception: " + task.Exception.ToString());
+                    return;
+                }
+                else if(task.IsCompleted)
+                {
+                    Debug.Log("FB: Finished uploading...");
+                    _databaseReference.UpdateChildrenAsync(childUpdates); //update real time DB
+                    try 
+                    {
+                        //todo: un comment for production
+                        SendCommentManager.instance.SendNotificationToUsersWhoRecivedTheComment();
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogWarning("Faied To Send Comment Notification Trying Again");
+                        SendCommentManager.instance.SendNotificationToUsersWhoRecivedTheComment();
+                    }
+                }
+            });
     }
     #endregion
     
@@ -1807,8 +2419,29 @@ public partial class FbManager : MonoBehaviour
 
         if (!task.IsFaulted && !task.IsCanceled)
         {
-            Debug.Log("Download URL: " + task.Result);
-            Debug.Log("Actual  URL: " + url);
+            // Debug.Log("Download URL: " + task.Result);
+            // Debug.Log("Actual  URL: " + url);
+            url = task.Result + "";
+            onSuccess(url);
+        }
+        else
+        {
+            Debug.Log("task failed:" + task.Result);
+            onFailed();
+        }
+    }
+    public IEnumerator GetTraceCommentDownloadURL(string _url, System.Action<string> onSuccess, System.Action onFailed)
+    {
+        var url = "";
+        StorageReference pathReference = _firebaseStorage.GetReference("Comments/" + _url);
+
+        var task = pathReference.GetDownloadUrlAsync();
+
+        while (task.IsCompleted is false)
+            yield return new WaitForEndOfFrame();
+
+        if (!task.IsFaulted && !task.IsCanceled)
+        {
             url = task.Result + "";
             onSuccess(url);
         }

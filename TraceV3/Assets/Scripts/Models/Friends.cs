@@ -3,10 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+
+[Serializable]
+public enum Relationship{
+    Other,
+    Friend,
+    BestFriend,
+    Following,
+    SuperUser,
+}
+
 [Serializable]
 public class FriendModel : IEquatable<FriendModel>
 {
-    public bool isBestFriend = false;
+    public Relationship relationship;
     public string friendID;
     public bool Equals(FriendModel other)
     {

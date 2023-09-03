@@ -13,13 +13,15 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [Header("External")] 
     [SerializeField] private HomeScreenManager _homeScreenManager;
     [SerializeField] private OnlineMapsLocationService _onlineMapsLocation;
-    
+    [SerializeField] private CommentAudioManager _commentAudioManager;
+    [SerializeField] private CommentDisplayManager _commentDisplayManager;
+
     [Header("Trace Stuff")]
+    public TraceObject trace;
     [SerializeField] private GameObject imageObject;
     [SerializeField] private GameObject videoObject;
     [SerializeField] private RectTransform _videoRectTransform;
     [SerializeField] private float videoScaleConstant;
-    [SerializeField] private TraceObject trace;
     [SerializeField] private string senderID;
     [SerializeField] private TMP_Text senderNameDisplay;
     [SerializeField] private TMP_Text senderDateDisplay;
@@ -48,11 +50,16 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] private float m_YResetLimit;
     [SerializeField] private float changeInYvalEnterCommentsLimit;
     [SerializeField] private float changeInYvalExitCommentsLimit;
-    [SerializeField] private float changeInYvalExitLimit;
+    [SerializeField] private float changeInYvalSlidUpExitLimit;
+    [SerializeField] private float changeInYvalMediaEnterLimit;
+    [SerializeField] private float changeInYvalMediaExitLimit;
+    [SerializeField] private float changeInYvalCommentEnterLimit;
     [SerializeField] private float changeInYvalCloseLimit;
     [SerializeField] private float dyForScreenSwitchLimit;
     [SerializeField] private float stopAtScreenTopLimit;
+    [SerializeField] private float hugeCloseLimit;
     [SerializeField] private int openUp_targetYVal = 0;
+    [SerializeField] private float openCommentViewWhileOpeningMiedaLimit = 6000;
     [SerializeField] private int viewImageHeightTarget;
     [SerializeField] private int commentImageHeightTarget;
 
@@ -70,6 +77,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         MediaView,
         OpeningCommentView,
         CommentView,
+        ClosingCommentView,
     }
     
     [Header("Swipe Physics Secondary")]
@@ -94,6 +102,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     {
         SetScreenSize();
         Reset();
+        videoPlayer.loopPointReached += OnVideoEnded;
     }
     private void SetScreenSize()
     {
@@ -204,7 +213,6 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         m_targetYVal = openUp_targetYVal;
         _homeScreenManager.RefreshMap();
     }
-
     
     public void ActivatePhotoFormat(TraceObject trace)
     {
@@ -239,8 +247,22 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         videoPlayer.Play();
         videoPlayer.Pause(); 
         ScaleVideoAspectRatio();
-        // _videoRectTransform.sizeDelta = new Vector2(videoPlayer.width, videoPlayer.height);
-        // Debug.Log("Video Height: " + videoPlayer.height + " Video Width: " + videoPlayer.width);
+        
+        _commentDisplayManager.DisplayComments(trace.comments);
+    }
+
+    public void PutAudioFileLocation(string commentId, string location)
+    {
+        Debug.Log("Putting Audio File:" +location);
+        _commentDisplayManager.comments[commentId].GetComponent<AudioView>().location = location;
+    }
+
+    public void RefreshTrace(TraceObject trace)
+    {
+        if(trace.id != this.trace.id) //make sure we are refreshing the correct one
+            return;
+        this.trace = trace;
+        _commentDisplayManager.DisplayComments(trace.comments);
     }
 
     public void ScaleVideoAspectRatio()
@@ -260,12 +282,17 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
 
     public void CloseView()
     {
-        // hasBegunCloseTrace = true;
-        // canCloseTrace = true;
-        // m_targetYVal = 0;
-        // videoPlayer.Pause();
+        m_targetYVal = -1000;
+        videoPlayer.Pause();
+        currentState = State.Closing;
     }
 
+    void OnVideoEnded(VideoPlayer vp) //slide the window up to show comments
+    {
+        if (currentState == State.MediaView) 
+            OpenCommentViewTransition();
+    }
+    
     public void Update()
     {
         switch (currentState)
@@ -304,12 +331,18 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
                 ApplyPhysics();
                 AnimateSecondaryMotions();
 
-                // if (changeInYVal < 0)
-                // {
-                //     Dy = 0;
-                // }
+                //if its over shot the target
+                if (changeInYVal > -50)
+                {
+                    Dy *= 0.98f;
+                    Debug.Log("Big Friction");
+                }
                 
                 //state junctions
+                if(HugeClose())
+                    CloseSlideUpToViewTransition();
+                if (OpenCommentViewWhileOpeningMedia())
+                    OpenCommentViewTransition();
                 if (DoneOpeningMediaView())
                     DoneOpeningMediaTransition();
                 break;
@@ -320,7 +353,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
                 
                 if(OpenCommentView())
                     OpenCommentViewTransition();
-                else if (CloseSlideUpToView())
+                else if (CloseMediaView())
                     CloseSlideUpToViewTransition();
                 break;
             case State.OpeningCommentView:
@@ -328,20 +361,42 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
                 ApplyPhysics();
                 AnimateSecondaryMotions();
                 
-                // if (changeInYVal > 0)
+                //if its over shot the target
+                // if (changeInYVal > -60 && changeInYVal < -50)
                 // {
-                //     Dy = 0;
+                //     Dy *= 0.8f;
+                //     Debug.Log("Big Friction");
                 // }
                 
                 //state junctions
+                
                 if(DoneOpeningCommentView())
-                    currentState = State.CommentView;
+                    DoneOpeningCommentTransition();
                 break;
             case State.CommentView:
+                //ApplyPhysics();
+                // AnimateSecondaryMotions();
+                CommentViewPhyisics();
+                if (CloseComments())
+                    CloseCommentViewTransition();
+                break;
+            case State.ClosingCommentView:
+                //state actions
                 ApplyPhysics();
                 AnimateSecondaryMotions();
-                if (CloseComments())
-                    OpenMediaViewTransition();
+                
+                if (changeInYVal > 10 && changeInYVal < 40)
+                {
+                    Dy *= 0.9f;
+                    Debug.Log("Big Friction");
+                }
+
+                Debug.Log("closing comment view: " + changeInYVal);
+                //state junctions
+                if (HugeCloseOutOfCommentView())
+                    CloseSlideUpToViewTransition();
+                if (DoneOpeningMediaView())
+                    DoneOpeningMediaTransition();
                 break;
         }
     }
@@ -349,20 +404,35 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     #region State Junctions
     bool DoneOpeningSlideUpToView()
     {
-        return (changeInYVal > changeInYvalExitLimit);
+        return (changeInYVal > changeInYvalSlidUpExitLimit);
     }
     bool DoneOpeningMediaView()
     {
-        return (changeInYVal > changeInYvalExitLimit && changeInYVal < changeInYvalEnterCommentsLimit);
+        return (changeInYVal > changeInYvalMediaEnterLimit && changeInYVal < changeInYvalEnterCommentsLimit && Mathf.Abs(changeInYVal) < 50);
     }
 
     bool DoneOpeningCommentView()
     {
-        return (changeInYVal > changeInYvalExitLimit);
+        return (changeInYVal > changeInYvalCommentEnterLimit);
     }
     bool OpenMediaView()
     {
         return (changeInYVal > changeInYvalGoLimit && !isDragging && Dy > dyForScreenSwitchLimit);
+    }
+
+    bool HugeClose()
+    {
+        return (changeInYVal < hugeCloseLimit && Dy < 0);
+    }
+    
+    bool HugeCloseOutOfCommentView()
+    {
+        return (changeInYVal < hugeCloseLimit && Dy < 0);
+    }
+    
+    bool OpenCommentViewWhileOpeningMedia()
+    {
+        return (m_transform.position.y > openCommentViewWhileOpeningMiedaLimit);
     }
 
     bool OpenCommentView()
@@ -371,7 +441,11 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     }
     bool CloseSlideUpToView()
     {
-        return (changeInYVal < changeInYvalExitLimit);
+        return (changeInYVal < changeInYvalSlidUpExitLimit);
+    }
+    bool CloseMediaView()
+    {
+        return (changeInYVal < changeInYvalMediaExitLimit);
     }
     
     bool CloseComments()
@@ -391,6 +465,22 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         Debug.Log("OpeningMediaView");
         m_targetYVal = viewImageHeightTarget;
         currentState = State.OpeningMediaView;
+        
+        //start playing video early
+        if (!isPhoto)
+        {
+            videoPlayer.Play();
+        }
+    }
+    
+    void CloseCommentViewTransition()
+    {
+        Debug.Log("CloseCommentViewTransition");
+        m_targetYVal = viewImageHeightTarget;
+        currentState = State.ClosingCommentView;
+        _commentAudioManager.StopPlayingRecording();
+        TraceManager.instance.UpdateMap(new Vector2(0,0)); //vector don't matter just redraw
+        //start playing video early
     }
     
     void OpenCommentViewTransition()
@@ -406,42 +496,48 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         Debug.Log("ClosingSlideUpToView");
         g_transform.position = new Vector3(g_transform.position.x, startLocation, g_transform.position.z);
         m_targetYVal = -1000; //close quickly!
-        Dy *= 10; //close quickly!
-        videoPlayer.Pause();
+        Dy *= 2; //close quickly!
+        // videoPlayer.Pause();
+        videoPlayer.Stop();
         currentState = State.Closing;
     }
 
     void DoneOpeningMediaTransition()
     {
-        if (!isPhoto)
-        {
-            videoPlayer.Play();
-        }
-
-        TraceManager.instance.ClearTracesOnMap(); //todo: maybe do this more seamlessly it causes traces on map to dip for a second unitl it repaints
-
+        Dy = 0;
+        var pos = m_transform.position;
+        m_transform.position = new Vector3(pos.x, m_targetYVal, pos.z);
+        HapticManager.instance.PlaySelectionHaptic();
+        PlayVideo();
+        
+        //TraceManager.instance.ClearTracesOnMap(); //todo: maybe do this more seamlessly it causes traces on map to dip for a second unitl it repaints
+        
         currentState = State.MediaView;
-        return;
-        //Update Map and Database
-        if (!trace.hasBeenOpened)
+
+        if (!trace.HasBeenOpened && trace.senderID != FbManager.instance.thisUserModel.userID)
         {
             FbManager.instance.MarkTraceAsOpened(trace);
             Vector2 _location = _onlineMapsLocation.GetUserLocation();
-            try{//todo: no clue why it works the second time
-                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!", _location.y, _location.x));
-            }
-            catch (Exception e)
-            {
-                try
-                {
-                    StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!", _location.y, _location.x));
-                }
-                catch (Exception exception)
-                {
-                    Debug.LogWarning("Failed to Notify User");
-                }
-            }
+            StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!", _location.y, _location.x));
         }
+    }
+
+    public void MuteVideoAudio()
+    {
+        videoPlayer.Pause();
+    }
+
+    public void PlayVideo()
+    {
+        videoPlayer.Play();
+    }
+
+    void DoneOpeningCommentTransition()
+    {
+        Dy = 0;
+        var pos = m_transform.position;
+        m_transform.position = new Vector3(pos.x, m_targetYVal, pos.z);
+        currentState = State.CommentView;
     }
     
     void ClosedTransition()
@@ -459,10 +555,30 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
             return;
         }
         m_transform.position = new Vector3(m_transform.position.x, m_transform.position.y + Dy + slideRestitutionCurve.Evaluate(changeInYVal)*100f);
-        //Debug.Log("Set Y to:" + (m_transform.position.y + Dy*frictionWeight + slideRestitutionCurve.Evaluate(changeInYVal)*100f));
         Dy *= frictionWeight;
         bobOffset = Mathf.Sin(Time.time * bobSpeed) * bobHeight; 
         changeInYVal =  m_transform.position.y-m_targetYVal;
+    }
+
+    public void CommentViewPhyisics()
+    {
+        changeInYVal =  m_transform.position.y-m_targetYVal;
+        Dy *= frictionWeight;
+        if (!isDragging)
+        {
+            if (changeInYVal > trace.comments.Count * 210 + 200)
+            {
+                Dy -= 5;
+                m_transform.position = new Vector3(m_transform.position.x, m_transform.position.y + Dy - Math.Abs((changeInYVal- trace.comments.Count * 210 + 200))*0.02f);
+                if (changeInYVal > trace.comments.Count * 210 + 250)
+                {
+                    Dy *= 0.8f;
+                    Dy -= 10;
+                }
+            }
+            else
+                m_transform.position = new Vector3(m_transform.position.x, m_transform.position.y + Dy);
+        }
     }
 
     public void AnimateSecondaryMotions()

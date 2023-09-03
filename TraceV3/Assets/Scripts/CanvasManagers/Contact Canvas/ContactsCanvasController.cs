@@ -302,7 +302,13 @@ namespace CanvasManagers
         private void UpdateFriendViewInfo(UserModel user)
         {
             FriendView view = GameObject.Instantiate(_view.friendViewPrefab, _view._displayFrindsParent);
-            view.UpdateFriendData(user,true, FriendsModelManager.Instance.IsBestFriend(user.userID));
+            var relationship = FriendsModelManager.Instance.GetRelationship(user.userID);
+            if(relationship == Relationship.BestFriend)
+                view.UpdateFriendData(user,Relationship.BestFriend);
+            else if(relationship == Relationship.Following)
+                view.UpdateFriendData(user, Relationship.Following);
+            else
+                view.UpdateFriendData(user,Relationship.Friend);
             _allFriendsView.Add(view);
         }
         private void ClearFriendsView()

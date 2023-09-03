@@ -137,7 +137,7 @@ public partial class FbManager
     
     private void HandleFriends(object sender, ChildChangedEventArgs args)
     {
-        Debug.Log("HandleFriends");
+        //Debug.Log("HandleFriends");
         if (args.Snapshot == null || args.Snapshot.Value == null) return;
 
         try
@@ -146,16 +146,29 @@ public partial class FbManager
             {
                 var friendId = args.Snapshot.Key.ToString();
                 if (string.IsNullOrEmpty(friendId)) return;
+
                 bool bestFriend = false;
-                
-                bestFriend = Convert.ToBoolean(args.Snapshot.Value);
+                Relationship relationship = Relationship.Friend; 
+                if (args.Snapshot.Value.ToString() == "True" || args.Snapshot.Value.ToString() == "False") //old method
+                {
+                    bestFriend = Convert.ToBoolean(args.Snapshot.Value);
+                    if (bestFriend)
+                        relationship = Relationship.BestFriend;
+                }
+                else
+                {
+                    if (args.Snapshot.Value.ToString() == "following")
+                    {
+                        relationship = Relationship.Following;
+                        SubscribeOrUnSubscribeToTraceGroup(true, friendId); //get traces from him
+                    }
+                }
+
                 var friend = new FriendModel
                 {
                     friendID = friendId,
-                    isBestFriend = bestFriend
+                    relationship = relationship
                 };
-                
-                Debug.Log("Add Friend:" + friend.friendID);
 
                 if (lowConnectivitySmartLogin)
                 {
@@ -179,7 +192,6 @@ public partial class FbManager
             Debug.Log("SOMTHING WENT WRONG");
         }
     }
-
     private void HandleRemovedFriends(object sender, ChildChangedEventArgs args)
     {
         try
@@ -230,6 +242,26 @@ public partial class FbManager
         {
             Debug.Log("SendFriendRequest FriendRequestManager ADD:" + requestId);
             FriendRequestManager.Instance._allSentRequests.Add(requestId,request);
+            callback(true);
+        }
+    }
+    
+    public IEnumerator FollowSuperUser(string superUser, Action<bool> callback)
+    {
+        var task = _databaseReference.Child("Friends").Child(_firebaseUser.UserId).Child(superUser).SetValueAsync("following");
+        _databaseReference.Child("Friends").Child(superUser).Child("followers").Child(_firebaseUser.UserId).SetValueAsync(DateTime.UtcNow.ToString()); //it is one way
+        
+        while (task.IsCompleted is false)
+            yield return new WaitForEndOfFrame();
+        
+        if (task.IsCanceled || task.IsFaulted)
+        {
+            print(task.Exception.Message);
+            callback(false);
+        }
+        else
+        {
+            // _allFriends.Add(friend);
             callback(true);
         }
     }
@@ -374,6 +406,12 @@ public partial class FbManager
         {
             Debug.LogError(task.Exception);
         }
+    }
+    public void RemoveSuperUser(string superUserID)
+    {
+        // Delete the friend request node
+        _databaseReference.Child("Friends").Child(_firebaseUser.UserId).Child(superUserID).RemoveValueAsync();
+        _databaseReference.Child("Friends").Child(superUserID).Child("followers").Child(_firebaseUser.UserId).RemoveValueAsync(); //it is one way
     }
     public void RemoveFriends(string friendID)
     {

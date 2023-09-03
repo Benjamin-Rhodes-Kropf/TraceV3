@@ -10,22 +10,25 @@ public class SignInCanvas : MonoBehaviour
     [SerializeField] private TMP_InputField username;
     [SerializeField] private TMP_InputField password;
     [SerializeField] private TMP_Text errorText;
+    [SerializeField] private GameObject loading;
     [SerializeField] private bool signInFromQueue;
     private void OnEnable()
     {
         Debug.Log("Sign In Canvas Enabled");
+        loading.SetActive(false);
     }
 
     public void LoginButtonHit()
     {
+        loading.SetActive(true);
         if (signInFromQueue)
         {
             FbManager.instance.Logout(FbManager.LoginStatus.LoggedOut);
         }
-        
+
         Debug.Log("Login Button Hit!");
         StartCoroutine(FbManager.instance.Login(username.text, password.text, (myReturnValue) => {
-            if (myReturnValue.callbackEnum == CallbackEnum.SUCCESS)
+            if (myReturnValue.LoginStatus == LoginStatus.Success)
             {
                 FbManager.instance.SetUserLoginSatus(true);
                 if (PlayerPrefs.GetInt("IsInvited") == 0)
@@ -36,7 +39,6 @@ public class SignInCanvas : MonoBehaviour
                         {
                             Debug.Log("user is allowed");
                             ScreenManager.instance.ChangeScreenNoAnim("HomeScreen");
-
                         }
                         else
                         {
@@ -57,6 +59,7 @@ public class SignInCanvas : MonoBehaviour
                 //     ScreenManager.instance.ChangeScreenForwards("ConnectionError");
                 //     return;
                 // }
+                loading.SetActive(false);
                 ShowMessage("Your Email or Password is incorrect!");
             }
             

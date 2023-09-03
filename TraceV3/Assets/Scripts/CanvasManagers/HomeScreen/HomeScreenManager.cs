@@ -17,10 +17,10 @@ public class HomeScreenManager : MonoBehaviour
     [SerializeField] private OnlineMaps _onlineMaps;
     [SerializeField] private TraceManager _traceManager;
     [SerializeField] private OnlineMapsControlBase onlineMapsControlBase;
-    
+    [SerializeField] private OpenTraceManager openTraceManager;
+
     [Header("Internal")]
     [SerializeField] private GameObject _tutorialCanvas;
-    [SerializeField] private OpenTraceManager openTraceManager;
     [SerializeField] private ViewTraceManager viewTraceManager;
     [SerializeField] private Animator _loadingAnimator;
     [SerializeField] private TMP_Text _locationNameDisplay;
@@ -184,11 +184,12 @@ public class HomeScreenManager : MonoBehaviour
     
     public void OpenTrace(TraceObject trace) //Todo: Make mediaType an Enum
     {
+        
         CloseViewTrace();
-        Debug.Log("Open Trace");
+        Debug.Log("Opening Trace:" + trace.ToString());
         if (trace.id == null)
         {
-            Debug.Log("Open Trace");
+            Debug.Log("TRACE ID IS NULL!");
             return;
         }
         Debug.Log("mediaType:" + trace.mediaType);
@@ -196,6 +197,7 @@ public class HomeScreenManager : MonoBehaviour
         //determine what type of trace it is
         if (trace.mediaType == MediaType.PHOTO.ToString())
         {
+            Debug.Log("Open Trace Picture");
             StartCoroutine(GetTraceTexture(trace.id, (texture) =>
             {
                 if (texture != null)
@@ -212,6 +214,7 @@ public class HomeScreenManager : MonoBehaviour
         }
         if (trace.mediaType == MediaType.VIDEO.ToString())
         {
+            Debug.Log("Open Trace Video");
             StartCoroutine(GetVideoPath(trace.id, (path) =>
             {
                 if (path != null)
@@ -219,15 +222,21 @@ public class HomeScreenManager : MonoBehaviour
                     Debug.Log("Open Trace View");
                     openTraceManager.videoPlayer.url = path;
                     StartCoroutine((openTraceManager.ActivateVideoFormat(trace)));
+                    StartCoroutine(GetAudioFiles(trace));
                 }
                 else
                 {
                     Debug.LogError("LoadTraceImage Failed");
                 }
             }));
-            return;
         }
-        
+        //todo: get trace comments
+    }
+
+    public void RefreshTraceView(TraceObject traceObject)
+    {
+        openTraceManager.RefreshTrace(traceObject);
+        StartCoroutine(GetAudioFiles(traceObject));
     }
     
     public void UpdateMap()
@@ -238,18 +247,34 @@ public class HomeScreenManager : MonoBehaviour
 
     private IEnumerator GetVideoPath(string traceId, Action<string> callback)
     {
-        var filePath = Path.Combine(Application.persistentDataPath, "ReceivedTraces/Videos/"+traceId+".mp4");
+        var filePath = Path.Combine(Application.persistentDataPath, "Traces/Videos/"+traceId+".mp4");
         if (File.Exists(filePath))
             callback(filePath);
         else
-            StartCoroutine(FbManager.instance.GetTraceVideoByUrl(traceId, callback));
+            StartCoroutine(FbManager.instance.GetTraceVideoByUrl(traceId, callback)); //get it from database now
         yield return null;
     }
+    
+    private IEnumerator GetAudioFiles(TraceObject traceObject)
+    {
+        foreach (var comment in traceObject.comments)
+        {
+            var filePath = Path.Combine(Application.persistentDataPath, "/Comments/"+traceObject.id+"/"+comment.Key+".wav");
+            if (File.Exists(filePath))
+            {
+                openTraceManager.trace.comments[comment.Key].location = filePath;
+            }
+            else
+                StartCoroutine(FbManager.instance.GetTraceAudioByUrl(traceObject.id+"/"+comment.Value.id, commentPath => openTraceManager.PutAudioFileLocation(comment.Key, filePath))); //get it from database now
+            yield return null;
+        }
+    }
+    
 
 
     private IEnumerator GetTraceTexture(string traceId, Action<Texture> callback)
     {
-        var filePath = Path.Combine(Application.persistentDataPath, "ReceivedTraces/Photos/"+traceId+".png");
+        var filePath = Path.Combine(Application.persistentDataPath, "Traces/Photos/"+traceId+".png");
         if (File.Exists(filePath))
         {
             byte[] textureData = File.ReadAllBytes(filePath);

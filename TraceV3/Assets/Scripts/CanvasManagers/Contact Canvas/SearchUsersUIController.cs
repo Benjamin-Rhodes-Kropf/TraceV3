@@ -27,8 +27,7 @@ namespace CanvasManagers
             //fb Analytics Log Search Bar Pressed And Type
             FbManager.instance.AnalyticsOnSearchBarPressed(_CurrentSelectedUserTab.ToString());
         }
-
-
+        
 
         private void PopulateFriendViews(List<UserModel> friends)
         {
@@ -40,7 +39,16 @@ namespace CanvasManagers
             foreach (var friend in friends)
             {
                 var view = GameObject.Instantiate(_view.friendViewPrefab, _view._searchscrollParent);
-                view.UpdateFriendData(friend,true, FriendsModelManager.Instance.IsBestFriend(friend.userID));
+                var relationship = FriendsModelManager.Instance.GetRelationship(friend.userID);
+                if(relationship == Relationship.BestFriend)
+                    view.UpdateFriendData(friend,Relationship.BestFriend);
+                else if (relationship == Relationship.Following)
+                {
+                    Debug.Log("Following!!!!!");
+                    view.UpdateFriendData(friend,Relationship.Following);
+                }
+                else
+                    view.UpdateFriendData(friend,Relationship.Friend);
                 searchList.Add(view.gameObject);
             }
         }
@@ -95,7 +103,25 @@ namespace CanvasManagers
         }
 
 
-        private void PopulateOtherUsers(List<UserModel> others,List<UserModel> friends,List<UserModel> requests,List<UserModel> requestsSent )
+        private void PopulateSuperUsers(List<UserModel> superUserModels, List<UserModel> friends)
+        {
+            if (superUserModels.Count > 0)
+            {
+                var text = GameObject.Instantiate(_view._searchTabTextPrefab, _view._searchscrollParent);
+                text.text = "Super Users";
+                searchList.Add(text.gameObject);
+                foreach (var superUser in superUserModels)
+                {
+                    if (friends.Contains(superUser)) continue;
+                    if (superUser.userID == FbManager.instance.thisUserModel.userID) continue;
+                    var view = GameObject.Instantiate(_view.friendViewPrefab, _view._searchscrollParent);
+                    view.UpdateFriendData(superUser, Relationship.SuperUser);
+                    searchList.Add(view.gameObject);
+                }
+            }
+        }
+        
+        private void PopulateOtherUsers(List<UserModel> others,List<UserModel> friends,List<UserModel> requests,List<UserModel> requestsSent)
         {
             if (others.Count > 0)
             {
@@ -109,7 +135,7 @@ namespace CanvasManagers
                     if (requests.Contains(other)) continue;
                     if (other.userID == FbManager.instance.thisUserModel.userID) continue;
                     var view = GameObject.Instantiate(_view.friendViewPrefab, _view._searchscrollParent);
-                    view.UpdateFriendData(other);
+                    view.UpdateFriendData(other, Relationship.Other);
                     searchList.Add(view.gameObject);
                 }
             }
@@ -133,6 +159,7 @@ namespace CanvasManagers
                     PopulateReceivedRequests(requests);
                     PopulateSentRequests(requestsSent);
                     PopulateContactViews(contacts);
+                    PopulateSuperUsers(superusers,friends);
                     PopulateOtherUsers(others,friends,requests,requestsSent);
                     break;
                 case UserTabs.Requests:
@@ -147,7 +174,7 @@ namespace CanvasManagers
             //Debug super users Later we will put into list
             foreach (var user in superusers)
             {
-                Debug.Log(user.name);
+                Debug.Log("Super User:" + user.name);
             }
         }
         
