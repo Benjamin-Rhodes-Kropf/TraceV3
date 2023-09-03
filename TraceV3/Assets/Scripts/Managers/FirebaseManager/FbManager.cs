@@ -2340,18 +2340,18 @@ public partial class FbManager : MonoBehaviour
         childUpdates["Traces/" + trace.id + "/comments/" + key + "/wave"] = extractedValuesJson;
         Debug.Log("SoundWave:" + extractedValuesJson);
         
+        if(trace.senderID == thisUserModel.userID)
+            childUpdates["TracesSent/" + thisUserModel.userID +"/" + trace.id] = DateTime.UtcNow.ToString(); //change last updated
+        
         foreach (var user in trace.people)
         {
-            if(user.id == thisUserModel.userID)
+            if(user.id == thisUserModel.userID) //make sure we dont make a sent trace become received
                 continue;
             
             childUpdates["TracesRecived/" + user.id +"/"+ trace.id + "/updated"] = DateTime.UtcNow.ToString(); //change last updated
             childUpdates["TracesRecived/" + user.id +"/"+ trace.id + "/Sender"] = trace.senderID;
         }
-        
-        if(trace.senderID == thisUserModel.userID)
-            childUpdates["TracesSent/" + thisUserModel.userID +"/" + trace.id] = DateTime.UtcNow.ToString(); //change last updated
-        
+
         //Upload Content
         StorageReference traceReference = _firebaseStorageReference.Child("/Comments/" + trace.id + "/" + key);
         traceReference.PutFileAsync(fileLocation)
