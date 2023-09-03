@@ -287,11 +287,12 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         currentState = State.Closing;
     }
 
-    void OnVideoEnded(VideoPlayer vp)
+    void OnVideoEnded(VideoPlayer vp) //slide the window up to show comments
     {
-        Debug.Log("Video finished!");
-        OpenCommentViewTransition();
+        if (currentState == State.MediaView) 
+            OpenCommentViewTransition();
     }
+    
     public void Update()
     {
         switch (currentState)
@@ -509,7 +510,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         HapticManager.instance.PlaySelectionHaptic();
         PlayVideo();
         
-        TraceManager.instance.ClearTracesOnMap(); //todo: maybe do this more seamlessly it causes traces on map to dip for a second unitl it repaints
+        //TraceManager.instance.ClearTracesOnMap(); //todo: maybe do this more seamlessly it causes traces on map to dip for a second unitl it repaints
         
         currentState = State.MediaView;
 

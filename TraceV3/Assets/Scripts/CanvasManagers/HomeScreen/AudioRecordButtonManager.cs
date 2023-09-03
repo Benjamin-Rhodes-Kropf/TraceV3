@@ -56,6 +56,11 @@ public class AudioRecordButtonManager : MonoBehaviour, IPointerDownHandler, IPoi
             NotificationManager.Instance.SendLocalNotification("Hold Up!", "Wait For Us to Get Connected!", 1);
     }
 
+    public void Haptic()
+    {
+        HapticManager.instance.PlaySelectionHaptic();
+    }
+
     public IEnumerator ForceRecord()
     {
         touch = true;

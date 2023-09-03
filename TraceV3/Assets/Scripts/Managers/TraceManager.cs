@@ -561,6 +561,7 @@ public class TraceObject
     private bool _hasBeenOpened = false;
     public string sendTime;
     public double endTimeStamp;
+    public DateTime expiration;
     
     // Getter and Setter for hasBeenOpened
     public bool HasBeenOpened
@@ -576,7 +577,7 @@ public class TraceObject
         }
     }
     
-    public TraceObject(double longitude, double latitude, float radius, List<TraceReceiverObject> people, Dictionary<string,TraceCommentObject> comments, string senderID, string senderName, string sendTime, double endTimeStamp, string mediaType, string id, bool hasBeenOpened)
+    public TraceObject(double longitude, double latitude, float radius, List<TraceReceiverObject> people, Dictionary<string,TraceCommentObject> comments, string senderID, string senderName, string sendTime, DateTime expiration, string mediaType, string id, bool hasBeenOpened)
     {
         lng = longitude;
         lat = latitude;
@@ -587,6 +588,7 @@ public class TraceObject
         this.senderName = senderName;
         this.sendTime = sendTime;
         this.endTimeStamp = endTimeStamp;
+        this.expiration = expiration;
         this.mediaType = mediaType;
         this.id = id;
         _hasBeenOpened = hasBeenOpened; //dont use setter because we dont want to destroy objects coming from memory

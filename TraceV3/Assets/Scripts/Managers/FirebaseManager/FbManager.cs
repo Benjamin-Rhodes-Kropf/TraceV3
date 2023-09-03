@@ -1475,7 +1475,7 @@ public partial class FbManager : MonoBehaviour
             receiverObjects.Add(new TraceReceiverObject(user, false));
         }
         
-        _drawTraceOnMap.sendingTraceTraceLoadingObject = new TraceObject(location.x, location.y, radius, receiverObjects, new Dictionary<string, TraceCommentObject>(), "null",thisUserModel.name,  DateTime.UtcNow.ToString(), 24, mediaType.ToString(), "temp", true);
+        _drawTraceOnMap.sendingTraceTraceLoadingObject = new TraceObject(location.x, location.y, radius, receiverObjects, new Dictionary<string, TraceCommentObject>(), "null",thisUserModel.name,  DateTime.UtcNow.ToString(), DateTime.UtcNow.AddHours(24), mediaType.ToString(), "temp", true);
         _drawTraceOnMap.DrawCircle(location.x, location.y, radius, DrawTraceOnMap.TraceType.SENDING, "null");
         
         //update global traces
@@ -1487,6 +1487,7 @@ public partial class FbManager : MonoBehaviour
         childUpdates["Traces/" + key + "/lat"] = location.x;
         childUpdates["Traces/" + key + "/long"] = location.y;
         childUpdates["Traces/" + key + "/radius"] = radius;
+        childUpdates["Traces/" + key + "/expiration"] = DateTime.UtcNow.AddHours(24);
         
         if (PlayerPrefs.GetInt("LeaveTraceIsVisable") == 1)
         {
@@ -1587,6 +1588,7 @@ public partial class FbManager : MonoBehaviour
             string senderID = "";
             string senderName = "";
             string sendTime = "";
+            DateTime experation = new DateTime();
             bool traceHasBeenOpenedByThisUser = false;
             List<TraceReceiverObject> receivers = new List<TraceReceiverObject>();
             Dictionary<string, TraceCommentObject> comments = new Dictionary<string, TraceCommentObject>();
@@ -1705,11 +1707,14 @@ public partial class FbManager : MonoBehaviour
                         durationHours = (float)thing.Value;
                         break;
                     }
+                    case "expiration":
+                        DateTime.TryParseExact(thing.Value.ToString(), "yyyy-MM-ddTHH:mm:ssZ", null, System.Globalization.DateTimeStyles.AssumeUniversal, out experation); 
+                    break;
                 }
             }
             if (lat != 0 && lng != 0 && radius != 0) //check for malformed data entry
             {
-                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, 20, mediaType,traceID, traceHasBeenOpenedByThisUser);
+                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, experation, mediaType,traceID, traceHasBeenOpenedByThisUser);
                 TraceManager.instance.receivedTraceObjects.Add(trace.id,trace);
                 BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
                 TraceManager.instance.UpdateMap(new Vector2());
@@ -1748,6 +1753,7 @@ public partial class FbManager : MonoBehaviour
             string sendTime = "";
             string mediaType = "";
             float durationHours = 0;
+            DateTime experation = new DateTime();
 
             foreach (var thing in DBTask.Result.Children)
             {
@@ -1856,12 +1862,15 @@ public partial class FbManager : MonoBehaviour
                         durationHours = (float)thing.Value;
                         break;
                     }
+                    case "expiration":
+                        DateTime.TryParseExact(thing.Value.ToString(), "yyyy-MM-ddTHH:mm:ssZ", null, System.Globalization.DateTimeStyles.AssumeUniversal, out experation); 
+                        break;
                 }
             }
             
             if (lat != 0 && lng != 0 && radius != 0)
             {
-                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, 20, mediaType,traceID, false);
+                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, experation, mediaType,traceID, false);
                 TraceManager.instance.sentTraceObjects.Add(trace.id,trace);
                 BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
                 TraceManager.instance.UpdateMap(new Vector2());
@@ -1902,6 +1911,7 @@ public partial class FbManager : MonoBehaviour
             List<TraceReceiverObject> receivers = new List<TraceReceiverObject>();
             Dictionary<string, TraceCommentObject> comments = new Dictionary<string, TraceCommentObject>();
             float durationHours = 0;
+            DateTime experation = new DateTime();
 
             foreach (var thing in DBTask.Result.Children)
             {
@@ -2016,11 +2026,14 @@ public partial class FbManager : MonoBehaviour
                         durationHours = (float)thing.Value;
                         break;
                     }
+                    case "expiration":
+                        DateTime.TryParseExact(thing.Value.ToString(), "yyyy-MM-ddTHH:mm:ssZ", null, System.Globalization.DateTimeStyles.AssumeUniversal, out experation); 
+                        break;
                 }
             }
             if (lat != 0 && lng != 0 && radius != 0) //check for malformed data entry
             {
-                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, 20, mediaType,traceID, traceHasBeenOpenedByThisUser);
+                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, experation, mediaType,traceID, traceHasBeenOpenedByThisUser);
                 Debug.Log("Changed:" + trace.id + " to dict");
                 TraceManager.instance.sentTraceObjects[trace.id] = trace; //update trace
                 TraceManager.instance.RefreshTrace(trace);
@@ -2051,6 +2064,7 @@ public partial class FbManager : MonoBehaviour
             string sendTime = "";
             string mediaType = "";
             float durationHours = 0;
+            DateTime experation = new DateTime();
 
             foreach (var thing in DBTask.Result.Children)
             {
@@ -2157,12 +2171,15 @@ public partial class FbManager : MonoBehaviour
                         durationHours = (float)thing.Value;
                         break;
                     }
+                    case "expiration":
+                        DateTime.TryParseExact(thing.Value.ToString(), "yyyy-MM-ddTHH:mm:ssZ", null, System.Globalization.DateTimeStyles.AssumeUniversal, out experation); 
+                        break;
                 }
             }
             
             if (lat != 0 && lng != 0 && radius != 0)
             {
-                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID,senderName, sendTime, 20, mediaType,traceID, false);
+                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID,senderName, sendTime, experation, mediaType,traceID, false);
                 Debug.Log("Trace Comments Update To:" + comments.Count);
                 TraceManager.instance.sentTraceObjects[trace.id] = trace; //update trace
                 TraceManager.instance.RefreshTrace(trace); //update if currently being displayed
