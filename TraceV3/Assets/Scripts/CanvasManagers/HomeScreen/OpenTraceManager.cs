@@ -255,7 +255,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     public void PutAudioFileLocation(string commentId, string location)
     {
         Debug.Log("Putting Audio File:" +location);
-        _commentDisplayManager.comments[commentId].GetComponent<AudioView>().location = location;
+        _commentDisplayManager.comments[commentId].GetComponent<AudioView>().SetFileLocationAndDisplayWaves(location);
     }
 
     public void RefreshTrace(TraceObject trace)
@@ -370,7 +370,8 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
                 // }
                 
                 //state junctions
-                
+                if (HugeCloseOutOfCommentView())
+                    CloseSlideUpToViewTransition();
                 if(DoneOpeningCommentView())
                     DoneOpeningCommentTransition();
                 break;

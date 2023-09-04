@@ -15,13 +15,12 @@ public class AudioView : MonoBehaviour
     [SerializeField] private List<Sprite> waveOptions;
     [SerializeField] private List<GameObject> audioWaves;
     [SerializeField] private Slider _slider;
+    [SerializeField] private Animator _animator;
     public CommentAudioManager CommentAudioManager;
     public string location;
     
-    
-
-    [Header("Refrences")] [SerializeField] 
-    private GameObject singleWave;
+    [Header("Refrences")] 
+    [SerializeField] private GameObject singleWave;
 
     public void UpdateDisplayedData(string traceID, string audioID, string displayName, string time, float[] wave)
     {
@@ -31,15 +30,24 @@ public class AudioView : MonoBehaviour
         if (wave.Length > 1)
         {
             this.wave = MapFloatArrayToInt(wave, 0,9);
-            int counter = 0;
-            foreach (var gameObject in audioWaves)
-            {
-                if(counter >= this.wave.Length)
-                    return;
-                
-                gameObject.GetComponent<Image>().sprite = waveOptions[this.wave[counter]];
-                counter++;
-            }
+        }
+    }
+
+    public void SetFileLocationAndDisplayWaves(string location)
+    {
+        this.location = location;
+        _animator.Play("Loaded");
+    }
+
+    public void DisplayWaves()
+    {
+        int counter = 0;
+        foreach (var gameObject in audioWaves)
+        {
+            if(counter >= this.wave.Length)
+                return;
+            gameObject.GetComponent<Image>().sprite = waveOptions[wave[counter]];
+            counter++;
         }
     }
     
