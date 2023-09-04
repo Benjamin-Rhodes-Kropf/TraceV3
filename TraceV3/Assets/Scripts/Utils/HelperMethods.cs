@@ -51,7 +51,7 @@ public static class HelperMethods
         for (int i = 0; i < layerTransforms.Length; i++)
             layerTransforms[i].gameObject.layer = layer;
     }
-    
+
     public static List<String> GetPhoneNumbersFromList(List<String> usersToSendTrace)
     {
         Regex regex = new Regex("^[^a-zA-Z]*$");
@@ -66,6 +66,12 @@ public static class HelperMethods
             }
         }
         return phoneNumbers;
+    }
+    
+    public static bool IsTraceExpired(DateTime expiration)
+    {
+        TimeSpan remaining = expiration - DateTime.UtcNow;
+        return (remaining > TimeSpan.Zero);
     }
     
     public static List<String> GetUserHashesFromList(List<String> usersToSendTrace)
