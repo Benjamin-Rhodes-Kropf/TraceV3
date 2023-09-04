@@ -25,7 +25,8 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] private string senderID;
     [SerializeField] private TMP_Text senderNameDisplay;
     [SerializeField] private TMP_Text senderDateDisplay;
-   
+    [SerializeField] private bool countdown;
+    
     public VideoPlayer videoPlayer;
     public  RawImage displayTrace;
 
@@ -221,18 +222,28 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         currentState = State.OpeningSlideUpToView;
         this.trace = trace;
         senderNameDisplay.text = trace.senderName;
-        senderDateDisplay.text = "Left " + HelperMethods.ReformatDate(trace.sendTime) + HelperMethods.ReformatRecipients(trace.people.Count);
+        if(countdown && trace.exirationExists)
+            UpdateCountdown();
+        else
+            senderDateDisplay.text = "Left " + HelperMethods.ReformatDate(trace.sendTime) + HelperMethods.ReformatRecipients(trace.people.Count);
         isPhoto = true;
         imageObject.SetActive(true);
         videoObject.SetActive(false);
     }
+    
+    
     public IEnumerator ActivateVideoFormat(TraceObject trace)
     {
         Reset();
         currentState = State.OpeningSlideUpToView;
         this.trace = trace;
         senderNameDisplay.text = trace.senderName;
-        senderDateDisplay.text = "Left " + HelperMethods.ReformatDate(trace.sendTime) + HelperMethods.ReformatRecipients(trace.people.Count);
+        
+        Debug.Log("expiration:" + trace.expiration);
+        if(countdown && trace.exirationExists)
+            UpdateCountdown();
+        else
+            senderDateDisplay.text = "Left " + HelperMethods.ReformatDate(trace.sendTime) + HelperMethods.ReformatRecipients(trace.people.Count);
 
         isPhoto = false;
         imageObject.SetActive(false);
@@ -313,6 +324,9 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
                 //state actions
                 ApplyPhysics();
                 AnimateSecondaryMotions();
+                if(countdown) //display numbers counting down
+                    UpdateCountdown();
+
                 //state junctions
                 if (DoneOpeningSlideUpToView())
                     currentState = State.SlideUpToView;
@@ -321,6 +335,9 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
                 //state actions
                 ApplyPhysics();
                 AnimateSecondaryMotions();
+                if(countdown) //display numbers counting down
+                    UpdateCountdown();
+                
                 //state junctions
                 if (OpenMediaView())
                     OpenMediaViewTransition();
@@ -557,6 +574,21 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     #endregion
     
     #region State Actions
+    
+    private void UpdateCountdown()
+    {
+        TimeSpan remaining = trace.expiration - DateTime.UtcNow;
+
+        if (remaining > TimeSpan.Zero)
+        {
+            senderDateDisplay.text = $"{remaining.Days}d {remaining.Hours}h {remaining.Minutes}m {remaining.Seconds}s";
+        }
+        else
+        {
+            senderDateDisplay.text = "Time's up!";
+        }
+    }
+    
     public void ApplyPhysics()
     {
         if (isDragging)
