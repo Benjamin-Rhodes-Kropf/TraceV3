@@ -574,7 +574,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.003921569}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -838,6 +838,7 @@ MonoBehaviour:
   _contactImage: {fileID: 444327436421670403}
   _addButton: {fileID: 493651075328481054}
   _removeButton: {fileID: 493651075104609636}
+  _contactImagePlaceHolder: {fileID: 2800000, guid: b56bb3fcb07e04fd3bb3504fb97f3878, type: 3}
 --- !u!1 &5514945915166063486
 GameObject:
   m_ObjectHideFlags: 0
@@ -904,7 +905,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 0}
+  m_Texture: {fileID: 2800000, guid: b56bb3fcb07e04fd3bb3504fb97f3878, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0

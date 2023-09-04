@@ -147,6 +147,11 @@ namespace CanvasManagers
                 }));
                 Debug.LogError("Valid Credentials");
             }
+            else
+            {
+                _view.loadingSign.SetActive(false);
+                Debug.LogError("Invalid Credentials");
+            }
         }
 
         private void ActiveValidationWindow(string number)
