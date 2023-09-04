@@ -10,6 +10,7 @@ public class DisplayNameCanvas : MonoBehaviour
     public TMP_InputField _username;
     public Button _submitButton;
     public TMP_Text errorText;
+    public GameObject _loadingSign;
 
     
     private DisplayNameCanvasController _controller;

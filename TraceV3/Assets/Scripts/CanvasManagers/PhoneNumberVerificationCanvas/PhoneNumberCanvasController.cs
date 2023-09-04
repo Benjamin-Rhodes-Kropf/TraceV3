@@ -78,16 +78,19 @@ namespace CanvasManagers
 
         public void Varify_OTP()
         {
+            _view.loadingSign.SetActive(true);
 #if UNITY_EDITOR
             Debug.Log("is in UnityEditor Force Next Screen");
             //set phonen number without Verification
             _view.StartCoroutine(FbManager.instance.SetUserPhoneNumber(phoneNumber, (isSuccess) =>
             {
+               
                 Debug.Log("Set phone number callback");
                 if (isSuccess)
                 {
                     _view.StartCoroutine(FbManager.instance.IsUserListedInInvited(phoneNumberwithoutareacode, (callbackIsSuccess) =>
                     {
+                        _view.loadingSign.SetActive(false);
                         if (callbackIsSuccess)
                         {
                             Debug.Log("User Invited: true");
@@ -103,6 +106,7 @@ namespace CanvasManagers
                 }
                 else
                 {
+                    _view.loadingSign.SetActive(false);
                     Debug.LogError("Failed to update phone");
                 }
             }));
@@ -123,6 +127,7 @@ namespace CanvasManagers
                     {
                         _view.StartCoroutine(FbManager.instance.IsUserListedInInvited(phoneNumberwithoutareacode, (callbackIsSuccess) =>
                         {
+                            _view.loadingSign.SetActive(false);
                             if (callbackIsSuccess)
                             {
                                 Debug.Log("User Invited: true");
@@ -135,7 +140,10 @@ namespace CanvasManagers
                         }));
                     }
                     else
+                    {
                         Debug.LogError("Failed to update phone");
+                        _view.loadingSign.SetActive(false);
+                    }
                 }));
                 Debug.LogError("Valid Credentials");
             }

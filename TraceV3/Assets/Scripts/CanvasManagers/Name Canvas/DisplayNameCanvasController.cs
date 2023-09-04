@@ -35,6 +35,8 @@ public class DisplayNameCanvasController
             _view.ShowMessage("Enter Display Message");
             return;
         }
+        
+        _view._loadingSign.SetActive(true);
 
         var name = _view._displayNameInputField.text;
         var username = _view._username.text.ToLower();
@@ -47,6 +49,7 @@ public class DisplayNameCanvasController
 
         _view.StartCoroutine(FbManager.instance.SetUsername(username, (isSuccess) =>
         {
+            _view._loadingSign.SetActive(false);
             if (isSuccess)
                 ScreenManager.instance.ChangeScreenForwards("TakePhoto");
             else
