@@ -39,7 +39,7 @@ public class AudioView : MonoBehaviour
         _animator.Play("Loaded");
     }
 
-    public void DisplayWaves()
+    public void DisplayWaves() //this is called from the animation
     {
         int counter = 0;
         foreach (var gameObject in audioWaves)
@@ -66,16 +66,6 @@ public class AudioView : MonoBehaviour
         }
 
         return mappedArray;
-    }
-
-    public void GenerateAudioWaveDisplay()
-    {
-        
-    }
-
-    public void GetAudioRecording()
-    {
-        
     }
 
     public void PlayAudioRecording()
