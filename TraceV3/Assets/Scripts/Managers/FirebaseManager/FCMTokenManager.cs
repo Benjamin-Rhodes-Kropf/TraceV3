@@ -44,8 +44,6 @@ public partial class FbManager
     }
     private void OnTokenReceived(object sender, Firebase.Messaging.TokenReceivedEventArgs token) {
         Debug.Log("Received Registration Token: " + token.Token);
-        // if (!IsApplicationFirstTimeOpened) 
-        //     return; //todo not sure if this is needed seems like its blocking fcm cloud registration
         StartCoroutine(SetFCMDeviceToken(token.Token));
         IsApplicationFirstTimeOpened = false;
     }
@@ -89,14 +87,13 @@ public partial class FbManager
     private IEnumerator MoveMap(Vector2 target)
     {
         yield return new WaitForSeconds(1.5f);
+        
         if (!_dragAndZoomInertia.isZooming)
         {
             Debug.LogFormat("Zooming to Point ({0}, {1})", target.x, target.y);
             Debug.Log("Zoom to User");
-            _map.zoom = 17;
+            _map.zoom = 18;
             _map.position = target;
-            // Note: You might need to modify the values in the ZoomToObject method as needed
-            //StartCoroutine(_dragAndZoomInertia.ZoomToObject(target, 10, 5f));
         }
     }
     

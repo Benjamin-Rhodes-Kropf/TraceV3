@@ -144,13 +144,12 @@ public class UIController : MonoBehaviour
 
             public void SaveVideoLocation()
             {
-#if UNITY_EDITOR
                 SendTraceManager.instance.mediaType = MediaType.VIDEO;
+                #if UNITY_EDITOR
                 SendTraceManager.instance.fileLocation = "file://" + path;
-#elif UNITY_IPHONE
-        SendTraceManager.instance.mediaType = MediaType.VIDEO;
-        SendTraceManager.instance.fileLocation = "file://" + path;
-#endif
+                #elif UNITY_IPHONE
+                SendTraceManager.instance.fileLocation = "file://" + path;
+                #endif
             }
 
 

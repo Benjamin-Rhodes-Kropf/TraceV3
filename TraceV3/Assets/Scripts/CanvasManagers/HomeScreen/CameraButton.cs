@@ -11,7 +11,7 @@ public class CameraButton : MonoBehaviour
     
     public void CameraButtonPressed()
     {
-        if (FbManager.instance.IsFirebaseInitialised && FbManager.instance.IsFirebaseUserLoggedIn)
+        if (FbManager.instance.IsFirebaseInitialised && FbManager.instance.IsFirebaseUserLoggedIn && FbManager.instance.IsFirebaseUserInitialised)
         {
             _screenManager.ChangeScreenNoAnim("Camera Screen");
             _screenManager.LoadArScene();
@@ -22,6 +22,9 @@ public class CameraButton : MonoBehaviour
         }
         else
         {
+            Debug.Log("Problem 1:" + FbManager.instance.IsFirebaseInitialised.ToString());
+            Debug.Log("Problem 2:" + FbManager.instance.IsFirebaseUserLoggedIn.ToString());
+            Debug.Log("Problem 3:" + FbManager.instance.IsFirebaseUserInitialised.ToString());
             NotificationManager.Instance.SendLocalNotification("Hold Up!, ","Give Us A Moment To Connect to the Internet", 1);
         }
     }

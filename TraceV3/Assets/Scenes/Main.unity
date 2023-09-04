@@ -3508,7 +3508,7 @@ MonoBehaviour:
     hasBeenAdded: 0
     canBeOpened: 0
     sendTime: 
-    endTimeStamp: 0
+    exirationExists: 0
 --- !u!1 &1102525246 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6454114607917092848, guid: e8f927e5e67e1423cb2ad88e4c1dd981, type: 3}
@@ -3728,7 +3728,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1130669498
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3873,7 +3873,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1148476267
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3939,10 +3939,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ScreenManager, Assembly-CSharp
-        m_MethodName: ChangeScreenBackwardsSlideOff
-        m_Mode: 5
+      - m_Target: {fileID: 5018903675241078126}
+        m_TargetAssemblyTypeName: OpenTraceManager, Assembly-CSharp
+        m_MethodName: RemoveTraceFromMap
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -4348,7 +4348,7 @@ MonoBehaviour:
   firebaseStorageReferenceUrl: gs://geosnapv1.appspot.com
   resetPlayerPrefs: 0
   fakeLoginWaitTime: 0
-  lowConnectivitySmartLogin: 1
+  lowConnectivitySmartLogin: 0
   _drawTraceOnMap: {fileID: 6068666308761308086}
   _dragAndZoomInertia: {fileID: 6068666308761308082}
   _map: {fileID: 6068666308761308066}
@@ -4364,6 +4364,7 @@ MonoBehaviour:
     password: 
     super: 0
   users: []
+  IsFirebaseUserLoggedIn: 0
   _allReceivedRequests: []
   _allSentRequests: []
   _allFriends: []
@@ -7221,6 +7222,18 @@ MonoBehaviour:
           m_StringArgument: StopRecordingAnimation
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1795611292}
+        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1569325016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7457,7 +7470,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 25dc249631491449c98db8cb232bb8b6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5c2484308b63d4d4388bed178364dd52, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7665,6 +7678,7 @@ GameObject:
   - component: {fileID: 1616442758}
   - component: {fileID: 1616442760}
   - component: {fileID: 1616442759}
+  - component: {fileID: 1616442761}
   m_Layer: 5
   m_Name: Record Audio
   m_TagString: Untagged
@@ -7731,6 +7745,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1616442757}
   m_CullTransparentMesh: 1
+--- !u!95 &1616442761
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1616442757}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 5983f889a16ea497b8e5009cccd0e06e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!1 &1656055763
 GameObject:
   m_ObjectHideFlags: 0
@@ -13153,6 +13187,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 116.8999
       objectReference: {fileID: 0}
+    - target: {fileID: 331883226822068020, guid: 50dc71afdd0a54d7bb78549ae8f1561c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 331883226905769567, guid: 50dc71afdd0a54d7bb78549ae8f1561c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -13193,6 +13231,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2609272448120225112, guid: 50dc71afdd0a54d7bb78549ae8f1561c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2609272448689032534, guid: 50dc71afdd0a54d7bb78549ae8f1561c, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 622
@@ -13231,7 +13273,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8610898302447624537, guid: 50dc71afdd0a54d7bb78549ae8f1561c, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8610898302447624537, guid: 50dc71afdd0a54d7bb78549ae8f1561c, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -13851,6 +13893,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8600517705359219806, guid: 833b541c13d454e5e95a103968c5ed53, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 5c2484308b63d4d4388bed178364dd52, type: 3}
     - target: {fileID: 8600517705389346333, guid: 833b541c13d454e5e95a103968c5ed53, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -20760,11 +20806,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9133073692678122603, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 9133073692678122603, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 9133073692678122603, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
       propertyPath: m_LocalPosition.x
@@ -20800,7 +20846,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9133073692678122603, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -2.5
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 9133073692678122603, guid: bc94b37cf3afc449f81c3ee156a4c390, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -21862,7 +21908,7 @@ MonoBehaviour:
     hasBeenAdded: 0
     canBeOpened: 0
     sendTime: 
-    endTimeStamp: 0
+    exirationExists: 0
   imageObject: {fileID: 737867114}
   videoObject: {fileID: 9176076432397620534}
   _videoRectTransform: {fileID: 1774053180721600769}
@@ -21870,6 +21916,7 @@ MonoBehaviour:
   senderID: 
   senderNameDisplay: {fileID: 5018903675248037330}
   senderDateDisplay: {fileID: 5018903675356861409}
+  countdown: 1
   videoPlayer: {fileID: 5831770248545064576}
   displayTrace: {fileID: 1384723143}
   startLocation: 0
@@ -25925,7 +25972,7 @@ MonoBehaviour:
   createMarkerInUserPosition: 1
   disableEmulatorInPublish: 1
   emulatorCompass: 0
-  emulatorPosition: {x: -71.22295, y: 43.20005}
+  emulatorPosition: {x: -71.22295, y: 42.87}
   findLocationByIP: 0
   lerpCompassValue: 0
   markerScale: 1
@@ -26369,7 +26416,7 @@ MonoBehaviour:
     hasBeenAdded: 0
     canBeOpened: 0
     sendTime: 
-    endTimeStamp: 0
+    exirationExists: 0
   _scaleMapElements: {fileID: 6068666308761308085}
   scaleAmount: 150
   markerManager: {fileID: 6068666308761308078}
