@@ -1456,7 +1456,7 @@ public partial class FbManager : MonoBehaviour
     #endregion
     
     #region Sending and Recieving Traces and Comments
-    public void UploadTrace(List<string> usersToSendTo, List<string> phonesToSendTo, string fileLocation, float radius, Vector2 location, MediaType mediaType, bool sendToFollowers)
+    public void UploadTrace(List<string> usersToSendTo, List<string> phonesToSendTo, string fileLocation, float radius, Vector2 location, MediaType mediaType, bool sendToFollowers, DateTime expiration)
     {
         Debug.Log(" UploadTrace(): File Location:" + fileLocation);
         
@@ -1485,7 +1485,7 @@ public partial class FbManager : MonoBehaviour
         childUpdates["Traces/" + key + "/lat"] = location.x;
         childUpdates["Traces/" + key + "/long"] = location.y;
         childUpdates["Traces/" + key + "/radius"] = radius;
-        childUpdates["Traces/" + key + "/expiration"] = DateTime.UtcNow.AddHours(24).ToString();
+        childUpdates["Traces/" + key + "/expiration"] = expiration;
         
         if (PlayerPrefs.GetInt("LeaveTraceIsVisable") == 1)
         {

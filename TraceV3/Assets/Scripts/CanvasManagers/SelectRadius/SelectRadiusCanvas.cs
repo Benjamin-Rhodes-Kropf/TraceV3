@@ -24,16 +24,11 @@ public class SelectRadiusCanvas : MonoBehaviour
     [SerializeField]private bool _isTraceVisable;
     [SerializeField]private GameObject traceIsVisable;
     [SerializeField]private GameObject traceIsHidden;
-    //[SerializeField]private bool firstTimeEnabled;
-   
+
     private void OnEnable()
     {
         MapboxGeocoding.Instance.GetUserLocationName(); //not a great time to call this
-        // if (!firstTimeEnabled)
-        // {
-        //     firstTimeEnabled = true;
-        //     return;
-        // }
+        SendTraceManager.instance.SetInitExpiration();
         
         _onlineMapsLocationService.updatePosition = true;
         
@@ -90,11 +85,16 @@ public class SelectRadiusCanvas : MonoBehaviour
         dragAndZoomInertia.setZoomMode(true);
         dragAndZoomInertia.setTargetZoom(zoomScaleValue.Evaluate(_radiusSlider.value));
     }
-
+    
     private void FixedUpdate()
     {
         var scale = scaler.Evaluate(map.floatZoom)*radiusSize.Evaluate(_radiusSlider.value);
         radius.rectTransform.localScale = new Vector3(scale,scale,scale);
+    }
+
+    public void SetExpiration(DateTime expiration)
+    {
+        SendTraceManager.instance.SetExpiration(expiration);
     }
 
 
