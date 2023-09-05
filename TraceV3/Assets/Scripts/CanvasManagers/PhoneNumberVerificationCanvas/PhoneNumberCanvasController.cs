@@ -56,9 +56,10 @@ namespace CanvasManagers
                     // `error` contains a human readable explanation of the problem.
                 },
                 codeSent: (id, token) => {
+                    _verficationId = id;
                     Debug.LogError("ID ::"+id);
                     Debug.LogError("Token :: "+token);
-                    _verficationId = id;
+                    Debug.LogError("OTP ID :"+_verficationId);
                     // Verification code was successfully sent via SMS.
                     // `id` contains the verification id that will need to passed in with
                     // the code from the user when calling GetCredential().
@@ -110,14 +111,12 @@ namespace CanvasManagers
                     Debug.LogError("Failed to update phone");
                 }
             }));
-            
             return;
 #endif
             Debug.LogError("Verify_OTP Called");
 
             Credential credential =
                 provider.GetCredential(_verficationId, _view._numberValidationView._verificationCode.text);
-
             var isValid = credential.IsValid();
             if (isValid)
             {
@@ -127,7 +126,6 @@ namespace CanvasManagers
                     {
                         _view.StartCoroutine(FbManager.instance.IsUserListedInInvited(phoneNumberwithoutareacode, (callbackIsSuccess) =>
                         {
-                            _view.loadingSign.SetActive(false);
                             if (callbackIsSuccess)
                             {
                                 Debug.Log("User Invited: true");
@@ -136,6 +134,7 @@ namespace CanvasManagers
                             }
                             else
                                 Debug.LogError("Failed to update phone");
+                            _view.loadingSign.SetActive(false);
                             ScreenManager.instance.ChangeScreenForwards("Username");
                         }));
                     }

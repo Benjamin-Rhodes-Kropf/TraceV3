@@ -23,7 +23,7 @@ public class SignInCanvas : MonoBehaviour
         loading.SetActive(true);
         if (signInFromQueue)
         {
-            FbManager.instance.Logout(FbManager.LoginStatus.LoggedOut);
+            FbManager.instance.Logout(FbManager.LoginStatus.LoggedOut, true);
         }
 
         Debug.Log("Login Button Hit!");

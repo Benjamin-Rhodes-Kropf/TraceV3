@@ -448,7 +448,7 @@ public partial class FbManager : MonoBehaviour
     }
     
     
-    public void Logout(LoginStatus loginStatus)
+    public void Logout(LoginStatus loginStatus, bool isBackgroundLogout = false)
     {
         Debug.Log("FBManager: logging out");
        
@@ -479,7 +479,9 @@ public partial class FbManager : MonoBehaviour
         PlayerPrefs.SetString("Username", "null"); //todo: just make this truly null
         PlayerPrefs.SetString("Password", "null");
         PlayerPrefs.SetInt("IsInvited", 0);
-        ScreenManager.instance.ChangeScreenForwards("Welcome");
+        
+        if (!isBackgroundLogout)
+            ScreenManager.instance.ChangeScreenForwards("Welcome");
     }
     #endregion
     
