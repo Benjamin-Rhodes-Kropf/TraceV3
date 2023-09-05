@@ -117,7 +117,7 @@ namespace InfinityCode.OnlineMapsExamples
             {
                 markers = new List<OnlineMapsMarker>();
                 this.zoom = zoom;
-                instance = OnlineMapsMarkerManager.CreateItem(Vector2.zero, texture);
+                instance = OnlineMapsMarkerManager.CreateItem(Vector2.zero, texture, "");
                 instance.align = OnlineMapsAlign.Center;
                 instance.range = new OnlineMapsRange(zoom, zoom);
             }

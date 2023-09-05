@@ -105,6 +105,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         Reset();
         videoPlayer.loopPointReached += OnVideoEnded;
     }
+    
     private void SetScreenSize()
     {
         switch(ScreenSizeManager.instance.currentModel)
@@ -324,7 +325,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
                 //state actions
                 ApplyPhysics();
                 AnimateSecondaryMotions();
-                if(countdown) //display numbers counting down
+                if(countdown && trace.exirationExists) //display numbers counting down
                     UpdateCountdown();
 
                 //state junctions
@@ -335,7 +336,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
                 //state actions
                 ApplyPhysics();
                 AnimateSecondaryMotions();
-                if(countdown) //display numbers counting down
+                if(countdown && trace.exirationExists) //display numbers counting down
                     UpdateCountdown();
                 
                 //state junctions

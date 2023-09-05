@@ -44,6 +44,9 @@ public class SelectRadiusCanvas : MonoBehaviour
             _radiusSlider.value = 0.5f;
             SetRadius();
         }
+        
+        SetExpiration(DateTime.UtcNow.AddHours(SendTraceManager.instance.TraceExpirationOptions[0].hoursFromNow));
+        
         if (PlayerPrefs.GetInt("LeaveTraceIsVisable") != 0)
         {
             if (PlayerPrefs.GetInt("LeaveTraceIsVisable") == 1)

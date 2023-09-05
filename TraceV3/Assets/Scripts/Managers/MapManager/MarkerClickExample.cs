@@ -15,7 +15,7 @@ public class MarkerClickExample : MonoBehaviour
         }
 
         // Add OnClick events to dynamic markers
-        OnlineMapsMarker dynamicMarker = OnlineMapsMarkerManager.CreateItem(Vector2.zero, null, "Dynamic marker");
+        OnlineMapsMarker dynamicMarker = OnlineMapsMarkerManager.CreateItem(Vector2.zero, "Dynamic marker");
         dynamicMarker.OnClick += OnMarkerClick;
     }
 

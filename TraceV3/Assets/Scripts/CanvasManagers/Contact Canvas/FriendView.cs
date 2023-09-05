@@ -47,7 +47,6 @@ public class FriendView : MonoBehaviour
     {
         if (_userCoroutine != null)
             StopCoroutine(_userCoroutine);
-        // Release object references
         _profilePic.texture = null;
         _nickName = null;
         _userName = null;

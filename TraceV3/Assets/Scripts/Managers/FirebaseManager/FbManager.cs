@@ -1458,9 +1458,9 @@ public partial class FbManager : MonoBehaviour
     #region Sending and Recieving Traces and Comments
     public void UploadTrace(List<string> usersToSendTo, List<string> phonesToSendTo, string fileLocation, float radius, Vector2 location, MediaType mediaType, bool sendToFollowers, DateTime expiration)
     {
-        Debug.Log(" UploadTrace(): File Location:" + fileLocation);
+        Debug.Log("UploadTrace(): File Location:" + fileLocation);
         
-        //PUSH DATA TO REAL TIME DB
+        //Push data to real time database
         string key = _databaseReference.Child("Traces").Push().Key;
         Dictionary<string, Object> childUpdates = new Dictionary<string, Object>();
         

@@ -25,6 +25,7 @@ public class DrawTraceOnMap : MonoBehaviour
     [SerializeField] private Texture2D primarySendingTextureHollow;
     [SerializeField] private Texture2D secondarySentTexture;
     
+    [SerializeField] private Texture2D expiredTexture;
 
     public OnlineMapsMarker DrawCircle(double lat, double lng, float radius, TraceType traceType, string markerID)
     {
@@ -75,28 +76,28 @@ public class DrawTraceOnMap : MonoBehaviour
         switch (traceType)
         {
             case TraceType.SENT:
-                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primarySentTexture, secondarySentTexture, primarySendingTextureHollow, markerID);
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primarySentTexture, secondarySentTexture, primarySendingTextureHollow, expiredTexture, markerID);
                 return _onlineMapsMarker;
             case TraceType.SENDING:
-                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primarySendingTextureHollow, secondarySentTexture, primarySendingTextureHollow, markerID);
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primarySendingTextureHollow, secondarySentTexture, primarySendingTextureHollow, expiredTexture, markerID);
                 return _onlineMapsMarker;
             case TraceType.RECEIVED:
-                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, markerID);
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, expiredTexture, markerID);
                 return _onlineMapsMarker;
             case TraceType.RECEIVEDBESTFRIEND:
-                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverTextureBF, secondaryReceiverTextureBF, primaryReceivingHollowTextureBF, markerID);
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverTextureBF, secondaryReceiverTextureBF, primaryReceivingHollowTextureBF, expiredTexture, markerID);
                 return _onlineMapsMarker;
             case TraceType.OPENING:
-                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, markerID);
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, expiredTexture, markerID);
                 return _onlineMapsMarker;
             case TraceType.OPENINGBESTFRIEND:
-                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTextureBF, secondaryReceiverTextureBF, primaryReceivingHollowTextureBF, markerID);
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTextureBF, secondaryReceiverTextureBF, primaryReceivingHollowTextureBF, expiredTexture, markerID);
                 return _onlineMapsMarker;
             case TraceType.OPENED:
-                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, markerID);
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, expiredTexture, markerID);
                 return _onlineMapsMarker;
             case TraceType.OPENEDBESTFRIEND:
-                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTextureBF, secondaryReceiverTextureBF, primaryReceivingHollowTextureBF, markerID);
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTextureBF, secondaryReceiverTextureBF, primaryReceivingHollowTextureBF, expiredTexture, markerID);
                 return _onlineMapsMarker;
         }
         return null;
