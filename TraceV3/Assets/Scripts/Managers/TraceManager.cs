@@ -560,6 +560,7 @@ public class TraceObject
     private bool _hasBeenOpened = false;
     public string sendTime;
     public DateTime expiration;
+    public string debugExpiration; //dont use
     public bool exirationExists;
     
     // Getter and Setter for hasBeenOpened
@@ -588,6 +589,7 @@ public class TraceObject
         this.sendTime = sendTime;
         this.expiration = expiration;
         this.exirationExists = exirationExists;
+        this.debugExpiration = expiration.ToString(); //debug
         this.mediaType = mediaType;
         this.id = id;
         _hasBeenOpened = hasBeenOpened; //dont use setter because we dont want to destroy objects coming from memory
