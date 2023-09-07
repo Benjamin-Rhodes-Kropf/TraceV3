@@ -27,8 +27,12 @@ public class DrawTraceOnMap : MonoBehaviour
     
     [SerializeField] private Texture2D expiredTexture;
 
-    public OnlineMapsMarker DrawCircle(double lat, double lng, float radius, TraceType traceType, string markerID)
+    public OnlineMapsMarker DrawCircle(double lat, double lng, float radius, TraceType traceType, string markerID, bool isExpiered)
     {
+        //overide texture
+        if (isExpiered)
+            traceType = TraceType.EXPIRED;
+        
         OnlineMapsMarker _onlineMapsMarker = PlaceTrace(lat, lng, radius, traceType, markerID);
         _onlineMapsMarker.displayedTexture = _onlineMapsMarker.secondaryZoomedOutTexture;
         _scaleMapElements.ScaleTrace(_onlineMapsMarker);
@@ -99,6 +103,9 @@ public class DrawTraceOnMap : MonoBehaviour
             case TraceType.OPENEDBESTFRIEND:
                 _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTextureBF, secondaryReceiverTextureBF, primaryReceivingHollowTextureBF, expiredTexture, markerID);
                 return _onlineMapsMarker;
+            case TraceType.EXPIRED:
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, expiredTexture, secondaryReceiverTextureBF, primaryReceivingHollowTextureBF, expiredTexture, markerID); //todo: replace with grey pins aswell
+                return _onlineMapsMarker;
         }
         return null;
     }
@@ -117,10 +124,10 @@ public class DrawTraceOnMap : MonoBehaviour
         //draw loading trace
         if (SendTraceManager.instance.isSendingTrace)
         {
-            DrawCircle(SendTraceManager.instance.location.x, SendTraceManager.instance.location.y, SendTraceManager.instance.selectedRadius, TraceType.SENDING, "loading");
+            DrawCircle(SendTraceManager.instance.location.x, SendTraceManager.instance.location.y, SendTraceManager.instance.selectedRadius, TraceType.SENDING, "loading", false);
         }
     }
     
-    public enum TraceType {RECEIVED, RECEIVEDBESTFRIEND, SENT, SENDING, OPENING, OPENINGBESTFRIEND, OPENED, OPENEDBESTFRIEND};
+    public enum TraceType {RECEIVED, RECEIVEDBESTFRIEND, SENT, SENDING, OPENING, OPENINGBESTFRIEND, OPENED, OPENEDBESTFRIEND, EXPIRED};
 }
 

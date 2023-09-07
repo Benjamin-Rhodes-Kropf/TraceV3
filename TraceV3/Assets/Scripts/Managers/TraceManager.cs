@@ -84,7 +84,7 @@ public class TraceManager : MonoBehaviour
                     distanceFromMouse = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.Value.lat, (float)trace.Value.lng, _clickRadiusAnimationCurve.Evaluate(onlineMaps.floatZoom)*pinModeMultiplyer);
                 }
                 
-                if (distanceFromMouse < 0 && (trace.Value.HasBeenOpened || trace.Value.canBeOpened))
+                if (distanceFromMouse < 0 && (trace.Value.HasBeenOpened || trace.Value.canBeOpened) && !trace.Value.isExpired)
                 {
                     accessibleTraces.Add((trace.Value, distanceFromMouse));
                 }
@@ -325,24 +325,24 @@ public class TraceManager : MonoBehaviour
             {
                 var dist = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates((float)traceObject.Value.lat, (float)traceObject.Value.lng, currentLatitude, currentLongitude, (float)(traceObject.Value.radius*1000));
                 if (!traceObject.Value.hasBeenAdded)
-                    traceObject.Value.marker = drawTraceOnMap.DrawCircle(traceObject.Value.lat, traceObject.Value.lng, (traceObject.Value.radius), GetTraceType(dist, traceObject.Value), traceObject.Value.id);
+                    traceObject.Value.marker = drawTraceOnMap.DrawCircle(traceObject.Value.lat, traceObject.Value.lng, (traceObject.Value.radius), GetTraceType(dist, traceObject.Value), traceObject.Value.id, traceObject.Value.isExpired);
             }
         }
         else
         {
-            foreach (var traceobject in sentTraceObjects)
+            foreach (var traceObject in sentTraceObjects)
             {
-                if (!traceobject.Value.hasBeenAdded)
+                if (!traceObject.Value.hasBeenAdded)
                 {
-                    traceobject.Value.marker = drawTraceOnMap.DrawCircle(traceobject.Value.lat, traceobject.Value.lng, (traceobject.Value.radius), DrawTraceOnMap.TraceType.SENT, traceobject.Value.id);
-                    traceobject.Value.hasBeenAdded = true;
+                    traceObject.Value.marker = drawTraceOnMap.DrawCircle(traceObject.Value.lat, traceObject.Value.lng, (traceObject.Value.radius), DrawTraceOnMap.TraceType.SENT, traceObject.Value.id, traceObject.Value.isExpired);
+                    traceObject.Value.hasBeenAdded = true;
                 }
             }
 
             if (SendTraceManager.instance.isSendingTrace)
             {
                 var loadingTraceObject = drawTraceOnMap.sendingTraceTraceLoadingObject;
-                drawTraceOnMap.DrawCircle(loadingTraceObject.lat, loadingTraceObject.lng, loadingTraceObject.radius, DrawTraceOnMap.TraceType.SENDING, loadingTraceObject.id);
+                drawTraceOnMap.DrawCircle(loadingTraceObject.lat, loadingTraceObject.lng, loadingTraceObject.radius, DrawTraceOnMap.TraceType.SENDING, loadingTraceObject.id, false);
             }
         }
     }
@@ -562,6 +562,7 @@ public class TraceObject
     public DateTime expiration;
     public string debugExpiration; //dont use
     public bool exirationExists;
+    public bool isExpired;
     
     // Getter and Setter for hasBeenOpened
     public bool HasBeenOpened
@@ -577,7 +578,7 @@ public class TraceObject
         }
     }
     
-    public TraceObject(double longitude, double latitude, float radius, List<TraceReceiverObject> people, Dictionary<string,TraceCommentObject> comments, string senderID, string senderName, string sendTime, DateTime expiration, bool exirationExists, string mediaType, string id, bool hasBeenOpened)
+    public TraceObject(double longitude, double latitude, float radius, List<TraceReceiverObject> people, Dictionary<string,TraceCommentObject> comments, string senderID, string senderName, string sendTime, DateTime expiration, bool exirationExists, string mediaType, string id, bool hasBeenOpened, bool isExpired)
     {
         lng = longitude;
         lat = latitude;
@@ -592,6 +593,7 @@ public class TraceObject
         this.debugExpiration = expiration.ToString(); //debug
         this.mediaType = mediaType;
         this.id = id;
+        this.isExpired = isExpired;
         _hasBeenOpened = hasBeenOpened; //dont use setter because we dont want to destroy objects coming from memory
     }
 }

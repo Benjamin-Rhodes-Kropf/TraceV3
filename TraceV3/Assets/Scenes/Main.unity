@@ -3919,6 +3919,7 @@ MonoBehaviour:
       _primaryZoomedInTexture: {fileID: 0}
       _primaryHollowInTexture: {fileID: 0}
       _secondaryZoomedOutTexture: {fileID: 0}
+      _expiredTexture: {fileID: 0}
       isShowingPrimaryTexture: 0
     id: 
     lat: 0
@@ -3934,6 +3935,7 @@ MonoBehaviour:
     sendTime: 
     debugExpiration: 
     exirationExists: 0
+    isExpired: 0
 --- !u!1 &1102525246 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6454114607917092848, guid: e8f927e5e67e1423cb2ad88e4c1dd981, type: 3}
@@ -22260,6 +22262,7 @@ MonoBehaviour:
       _primaryZoomedInTexture: {fileID: 0}
       _primaryHollowInTexture: {fileID: 0}
       _secondaryZoomedOutTexture: {fileID: 0}
+      _expiredTexture: {fileID: 0}
       isShowingPrimaryTexture: 0
     id: 
     lat: 0
@@ -22275,6 +22278,7 @@ MonoBehaviour:
     sendTime: 
     debugExpiration: 
     exirationExists: 0
+    isExpired: 0
   imageObject: {fileID: 737867114}
   videoObject: {fileID: 9176076432397620534}
   _videoRectTransform: {fileID: 1774053180721600769}
@@ -26815,6 +26819,7 @@ MonoBehaviour:
       _primaryZoomedInTexture: {fileID: 0}
       _primaryHollowInTexture: {fileID: 0}
       _secondaryZoomedOutTexture: {fileID: 0}
+      _expiredTexture: {fileID: 0}
       isShowingPrimaryTexture: 0
     id: 
     lat: 0
@@ -26830,6 +26835,7 @@ MonoBehaviour:
     sendTime: 
     debugExpiration: 
     exirationExists: 0
+    isExpired: 0
   _scaleMapElements: {fileID: 6068666308761308085}
   scaleAmount: 150
   markerManager: {fileID: 6068666308761308078}
@@ -26843,6 +26849,7 @@ MonoBehaviour:
   primarySentTexture: {fileID: 2800000, guid: 376c3c79a8a484acfa2c25b50680b2b6, type: 3}
   primarySendingTextureHollow: {fileID: 2800000, guid: eec53750067d14ff897dcb3a1bdbdb1a, type: 3}
   secondarySentTexture: {fileID: 2800000, guid: 1b1282ba964874ad29fe4a229cdffa16, type: 3}
+  expiredTexture: {fileID: 2800000, guid: 5abdbefbf3d3e47dfbbdb107e880115f, type: 3}
 --- !u!114 &6068666308761308087
 MonoBehaviour:
   m_ObjectHideFlags: 0
