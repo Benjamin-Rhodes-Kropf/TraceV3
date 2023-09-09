@@ -4,9 +4,8 @@ using UnityEngine;
 
 public enum iPhoneModel
 {
-
-    iPhone7_8,
-    iPhone7Plus_8Plus,
+    iPhone6s_7_8,
+    iPhone6sPlus_6Plus_7Plus_8Plus,
     iPhoneX_XS,
     iPhoneXR,
     iPhoneXSMax,
@@ -53,13 +52,16 @@ public class ScreenSizeManager : MonoBehaviour
         Debug.Log("Device Model:" + deviceModel);
         switch (deviceModel)
         {
+            case "iPhone8,1":
             case "iPhone9,1":
             case "iPhone10,1":
-                return iPhoneModel.iPhone7_8;
+                return iPhoneModel.iPhone6s_7_8;
             
+            case "iPhone8,2":
+            case "iPhone7,1":
             case "iPhone9,2":
             case "iPhone10,5":
-                return iPhoneModel.iPhone7Plus_8Plus;
+                return iPhoneModel.iPhone6sPlus_6Plus_7Plus_8Plus;
 
             case "iPhone10,6":
             case "iPhone11,2":

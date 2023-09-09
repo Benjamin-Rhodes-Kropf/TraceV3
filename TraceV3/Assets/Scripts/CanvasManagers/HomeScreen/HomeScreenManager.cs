@@ -235,8 +235,15 @@ public class HomeScreenManager : MonoBehaviour
 
     public void RefreshTraceView(TraceObject traceObject)
     {
-        openTraceManager.RefreshTrace(traceObject);
-        StartCoroutine(GetAudioFiles(traceObject));
+        if (traceObject.id == openTraceManager.trace.id)
+        {
+            openTraceManager.RefreshTrace(traceObject);
+            StartCoroutine(GetAudioFiles(traceObject));
+        }
+        else
+        {
+            Debug.LogWarning("Refreshed Trace Is Not Being Displayed");
+        }
     }
     
     public void UpdateMap()

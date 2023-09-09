@@ -110,12 +110,12 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         switch(ScreenSizeManager.instance.currentModel)
         {
             //g_offset is just openUp_targetYVal * 0.75
-            case iPhoneModel.iPhone7_8: //working
+            case iPhoneModel.iPhone6s_7_8: //working
                 openUp_targetYVal = 780;
                 g_offset = -585;
                 viewImageHeightTarget = 3800;
                 return;
-            case iPhoneModel.iPhone7Plus_8Plus: //working
+            case iPhoneModel.iPhone6sPlus_6Plus_7Plus_8Plus: //working
                 openUp_targetYVal = 1100;
                 g_offset = -825;
                 viewImageHeightTarget = 3800;

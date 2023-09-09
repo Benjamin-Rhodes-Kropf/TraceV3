@@ -1320,8 +1320,9 @@ public partial class FbManager : MonoBehaviour
                 Debug.Log("HandleChildAdded Error");
                 return;
             }
-            if(this != null)
-                StartCoroutine(FbManager.instance.HandleReceivedTraceChanged(args.Snapshot.Reference.Key));
+
+            Debug.Log("Handle Child Changed");
+            StartCoroutine(FbManager.instance.HandleReceivedTraceChanged(args.Snapshot.Reference.Key));
         }
     }
     public void SubscribeOrUnSubscribeToTraceGroup(bool subscribe, string groupID)
@@ -2393,12 +2394,11 @@ public partial class FbManager : MonoBehaviour
         
         Debug.Log(" UploadComment(): 3");
 
-        if(trace.senderID == thisUserModel.userID)
-            childUpdates["TracesSent/" + thisUserModel.userID +"/" + trace.id] = DateTime.UtcNow.ToString(); //change last updated
+        childUpdates["TracesSent/" + trace.senderID +"/" + trace.id] = DateTime.UtcNow.ToString(); //change last updated
         
         foreach (var user in trace.people)
         {
-            if(user.id == thisUserModel.userID) //make sure we dont make a sent trace become received
+            if(user.id == trace.senderID) //make sure we dont make a sent trace become received
                 continue;
             
             childUpdates["TracesRecived/" + user.id +"/"+ trace.id + "/updated"] = DateTime.UtcNow.ToString(); //change last updated
