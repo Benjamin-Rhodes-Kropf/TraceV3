@@ -110,90 +110,111 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         switch(ScreenSizeManager.instance.currentModel)
         {
             //g_offset is just openUp_targetYVal * 0.75
-            case iPhoneModel.iPhone6s_7_8: //working
+            case iPhoneModel.iPhone6s_7_8: //working w comments
                 openUp_targetYVal = 780;
                 g_offset = -585;
-                viewImageHeightTarget = 3800;
+                viewImageHeightTarget = 2250;
+                videoScaleConstant = 1.15f;
+                commentImageHeightTarget = 3040;
                 return;
-            case iPhoneModel.iPhone6sPlus_6Plus_7Plus_8Plus: //working
+            case iPhoneModel.iPhone6sPlus_6Plus_7Plus_8Plus: //working w comments
                 openUp_targetYVal = 1100;
                 g_offset = -825;
-                viewImageHeightTarget = 3800;
+                viewImageHeightTarget = 3460;
+                videoScaleConstant = 0.85f;
+                commentImageHeightTarget = 5350;
                 return;
-            case iPhoneModel.iPhoneX_XS: //working
-                openUp_targetYVal = 1150;
-                g_offset = -862;
-                viewImageHeightTarget = 3650;
+            case iPhoneModel.iPhoneX_XS: //working w comments
+                openUp_targetYVal = 1120;
+                g_offset = -830;
+                viewImageHeightTarget = 3520;
+                commentImageHeightTarget = 4500;
                 videoScaleConstant = 0.84f;
                 return;
-            case iPhoneModel.iPhoneXR: //working
-                openUp_targetYVal = 850;
-                g_offset = -610;
-                viewImageHeightTarget = 2710;
+            case iPhoneModel.iPhoneXR: //working w comments
+                openUp_targetYVal = 840;
+                g_offset = -615;
+                viewImageHeightTarget = 2680;
+                videoScaleConstant = 1.13f;
+                commentImageHeightTarget = 3500;
                 return;
-            case iPhoneModel.iPhoneXSMax: //working
+            case iPhoneModel.iPhoneXSMax: //working w comments
                 openUp_targetYVal = 1250;
                 g_offset = -937;
                 viewImageHeightTarget = 4000;
                 videoScaleConstant = 0.76f;
+                commentImageHeightTarget = 5000;
                 return;
-            case iPhoneModel.iPhone11: //working
+            case iPhoneModel.iPhone11: //working w comments
                 openUp_targetYVal = 835;
                 g_offset = -615;
                 viewImageHeightTarget = 2680;
                 videoScaleConstant = 1.13f;
+                commentImageHeightTarget = 3500;
                 return;
-            case iPhoneModel.iPhone11Pro: //working
-                openUp_targetYVal = 1150;
-                g_offset = -862;
-                viewImageHeightTarget = 3650;
+            case iPhoneModel.iPhone11Pro: //working w comments
+                openUp_targetYVal = 1120;
+                g_offset = -830;
+                viewImageHeightTarget = 3520;
+                commentImageHeightTarget = 4500;
                 videoScaleConstant = 0.84f;
                 return;
-            case iPhoneModel.iPhone11ProMax: //working
+            case iPhoneModel.iPhone11ProMax: //working w comments
                 openUp_targetYVal = 1250;
                 g_offset = -937;
                 viewImageHeightTarget = 4000;
+                videoScaleConstant = 0.76f;
+                commentImageHeightTarget = 5000;
                 return;
-            case iPhoneModel.iPhoneSE2: //not working at all????????
-                openUp_targetYVal = 2000;
-                g_offset = -1500;
-                viewImageHeightTarget = 3800;
+            case iPhoneModel.iPhoneSE2: // Working w commments
+                openUp_targetYVal = 800;
+                g_offset = -570;
+                viewImageHeightTarget = 2200;
+                commentImageHeightTarget = 3300;
+                videoScaleConstant = 1.2f;
                 return;
-            case iPhoneModel.iPhone12Mini: //Working
+            case iPhoneModel.iPhone12Mini: //Working w comments
                 openUp_targetYVal = 1120;
                 g_offset = -830;
                 viewImageHeightTarget = 3490;
                 videoScaleConstant = 0.86f;
+                commentImageHeightTarget = 4500;
+                videoScaleConstant = 0.84f;
                 return;
-            case iPhoneModel.iPhone12_12Pro: //Working
+            case iPhoneModel.iPhone12_12Pro: //Working w comments
                 openUp_targetYVal = 1200;
                 g_offset = -900;
                 viewImageHeightTarget = 3800;
+                commentImageHeightTarget = 5400;
                 videoScaleConstant = 0.84f;
                 return;
-            case iPhoneModel.iPhone12ProMax: //working
+            case iPhoneModel.iPhone12ProMax: //working w comments
                 openUp_targetYVal = 1350;
                 g_offset = -991;
                 viewImageHeightTarget = 4160;
-                videoScaleConstant = 0.80f;
+                videoScaleConstant = 0.74f;
+                commentImageHeightTarget = 5600;
                 return;
-            case iPhoneModel.iPhone14ProMax_14Plus_13ProMax_: //working
+            case iPhoneModel.iPhone14ProMax_14Plus_13ProMax_: //working w comments
                 openUp_targetYVal = 1350;
                 g_offset = -991;
                 viewImageHeightTarget = 4160;
-                videoScaleConstant = 0.82f;
+                videoScaleConstant = 0.72f;
+                commentImageHeightTarget = 5200;
                 return;
-            case iPhoneModel.iPhone13_13Pro_14_14Pro: //working
+            case iPhoneModel.iPhone13_13Pro_14_14Pro: //working w comments
                 openUp_targetYVal = 1200;
-                g_offset = -906;
+                g_offset = -860;
                 viewImageHeightTarget = 3800;
-                videoScaleConstant = 0.84f;
+                videoScaleConstant = 0.80f;
+                commentImageHeightTarget = 4800;
                 return;
-            case iPhoneModel.iPhone13Mini:
+            case iPhoneModel.iPhone13Mini: //working w comments
                 openUp_targetYVal = 1120;
                 g_offset = -830;
-                viewImageHeightTarget = 3500;
-                videoScaleConstant = 0.86f;
+                viewImageHeightTarget = 3510;
+                commentImageHeightTarget = 4500;
+                videoScaleConstant = 0.84f;
                 return;
         }
     }
