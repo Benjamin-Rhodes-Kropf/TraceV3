@@ -22328,7 +22328,6 @@ MonoBehaviour:
   videoObject: {fileID: 9176076432397620534}
   _videoRectTransform: {fileID: 1774053180721600769}
   videoScaleConstant: 0.84
-  senderID: 
   senderNameDisplay: {fileID: 5018903675248037330}
   senderDateDisplay: {fileID: 5018903675356861409}
   countdown: 1
@@ -26433,7 +26432,7 @@ MonoBehaviour:
   createMarkerInUserPosition: 1
   disableEmulatorInPublish: 1
   emulatorCompass: 0
-  emulatorPosition: {x: -71.22295, y: 42.87}
+  emulatorPosition: {x: -71.22295, y: 42.31989}
   findLocationByIP: 0
   lerpCompassValue: 0
   markerScale: 1
@@ -26445,10 +26444,10 @@ MonoBehaviour:
   marker3DSizeType: 0
   maxPositionCount: 3
   position: {x: 0, y: 0}
-  restoreAfter: 15
+  restoreAfter: 0
   rotateCameraByCompass: 0
   trueHeading: 0
-  updatePosition: 1
+  updatePosition: 0
   useCompassForMarker: 0
   useGPSEmulator: 1
   desiredAccuracy: 0

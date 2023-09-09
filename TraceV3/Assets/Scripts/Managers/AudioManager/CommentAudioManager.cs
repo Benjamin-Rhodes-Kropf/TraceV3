@@ -104,12 +104,6 @@ public class CommentAudioManager : MonoBehaviour
 
     public void FinishedRecording()
     {
-        // if (!isRecording)
-        // {
-        //     recordAudio.SetActive(false);
-        //     doneOptions.SetActive(true);
-        //     StartCoroutine(LoadAndPlayWav()); //this plays it from persistant data
-        // }
         Debug.Log("Finnished Recording");
         StopRecording();
         SendRecording();

@@ -22,7 +22,6 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] private GameObject videoObject;
     [SerializeField] private RectTransform _videoRectTransform;
     [SerializeField] private float videoScaleConstant;
-    [SerializeField] private string senderID;
     [SerializeField] private TMP_Text senderNameDisplay;
     [SerializeField] private TMP_Text senderDateDisplay;
     [SerializeField] private bool countdown;
@@ -384,14 +383,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
                 //state actions
                 ApplyPhysics();
                 AnimateSecondaryMotions();
-                
-                //if its over shot the target
-                // if (changeInYVal > -60 && changeInYVal < -50)
-                // {
-                //     Dy *= 0.8f;
-                //     Debug.Log("Big Friction");
-                // }
-                
+
                 //state junctions
                 if (HugeCloseOutOfCommentView())
                     CloseSlideUpToViewTransition();

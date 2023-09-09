@@ -104,7 +104,7 @@ public class DrawTraceOnMap : MonoBehaviour
                 _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTextureBF, secondaryReceiverTextureBF, primaryReceivingHollowTextureBF, expiredTexture, markerID);
                 return _onlineMapsMarker;
             case TraceType.EXPIRED:
-                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, expiredTexture, secondaryReceiverTextureBF, primaryReceivingHollowTextureBF, expiredTexture, markerID); //todo: replace with grey pins aswell
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, expiredTexture, expiredTexture, expiredTexture, expiredTexture, markerID); //todo: replace with grey pins aswell
                 return _onlineMapsMarker;
         }
         return null;

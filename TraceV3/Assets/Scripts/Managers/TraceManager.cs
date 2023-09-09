@@ -88,7 +88,7 @@ public class TraceManager : MonoBehaviour
                 {
                     accessibleTraces.Add((trace.Value, distanceFromMouse));
                 }
-                else if (distanceFromMouse < 0 && !trace.Value.HasBeenOpened && !trace.Value.canBeOpened) 
+                else if (distanceFromMouse < 0 && !trace.Value.HasBeenOpened && !trace.Value.canBeOpened && !trace.Value.isExpired) 
                 {
                     viewableAbleTraces.Add((trace.Value, distanceFromMouse));
                 }

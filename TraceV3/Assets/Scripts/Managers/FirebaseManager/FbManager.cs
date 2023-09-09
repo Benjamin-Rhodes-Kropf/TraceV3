@@ -1320,8 +1320,8 @@ public partial class FbManager : MonoBehaviour
                 Debug.Log("HandleChildAdded Error");
                 return;
             }
-            Debug.Log("HandleChildChanged");
-            StartCoroutine(HandleReceivedTraceChanged(args.Snapshot.Key)); //todo: why pass key when args.Snapshot probraly has data
+            Debug.Log("HandleChildChanged For Recived Trace:" + args.Snapshot.Reference.Parent.Key);
+            StartCoroutine(HandleReceivedTraceChanged(args.Snapshot.Reference.Parent.Key)); //todo: why pass key when args.Snapshot probraly has data
         }
     }
     public void SubscribeOrUnSubscribeToTraceGroup(bool subscribe, string groupID)
@@ -1923,6 +1923,8 @@ public partial class FbManager : MonoBehaviour
     }
     public IEnumerator HandleReceivedTraceChanged(string traceID)
     {
+        Debug.Log("HandleReceivedTraceChanged:" + traceID);
+        
         if (lowConnectivitySmartLogin)
         {
             var alreadyExistsLocally = TraceManager.instance.receivedTraceObjects.FirstOrDefault(pair => pair.Value.id == traceID).Value;
@@ -2078,7 +2080,7 @@ public partial class FbManager : MonoBehaviour
                 bool isExpired = experationExisits && HelperMethods.IsTraceExpired(experation);
                 var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, experation, experationExisits, mediaType,traceID, traceHasBeenOpenedByThisUser, isExpired);
                 Debug.Log("Changed:" + trace.id + " to dict");
-                TraceManager.instance.sentTraceObjects[trace.id] = trace; //update trace
+                TraceManager.instance.receivedTraceObjects[trace.id] = trace; //update trace
                 TraceManager.instance.RefreshTrace(trace);
                 BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
                 TraceManager.instance.UpdateMap(new Vector2());
@@ -2368,6 +2370,8 @@ public partial class FbManager : MonoBehaviour
         Debug.Log(" UploadComment(): File Location:" + fileLocation + "with sound wave length:" + extractedValues.Length);
         Debug.Log("Sound wave:" + extractedValues[0] + ", " + extractedValues[1] + ", " + extractedValues[3] + "...");
         
+        Debug.Log(" UploadComment(): 1");
+
         //PUSH DATA TO REAL TIME DB
         string key = _databaseReference.Child("Traces").Child(trace.id).Child("comments").Push().Key;
         Dictionary<string, Object> childUpdates = new Dictionary<string, Object>();
@@ -2377,12 +2381,16 @@ public partial class FbManager : MonoBehaviour
         childUpdates["Traces/" + trace.id + "/comments/" + key + "/senderID"] = thisUserModel.userID;
         childUpdates["Traces/" + trace.id + "/comments/" + key + "/time"] = DateTime.UtcNow.ToString();
         
+        Debug.Log(" UploadComment(): 2");
+
         //upload simple sound wave
         SerializableFloatArray serializableFloatArray = new SerializableFloatArray { data = extractedValues };
         string extractedValuesJson = JsonUtility.ToJson(serializableFloatArray);
         childUpdates["Traces/" + trace.id + "/comments/" + key + "/wave"] = extractedValuesJson;
         Debug.Log("SoundWave:" + extractedValuesJson);
         
+        Debug.Log(" UploadComment(): 3");
+
         if(trace.senderID == thisUserModel.userID)
             childUpdates["TracesSent/" + thisUserModel.userID +"/" + trace.id] = DateTime.UtcNow.ToString(); //change last updated
         
@@ -2395,6 +2403,8 @@ public partial class FbManager : MonoBehaviour
             childUpdates["TracesRecived/" + user.id +"/"+ trace.id + "/Sender"] = trace.senderID;
         }
 
+        Debug.Log(" UploadComment(): 4");
+
         //Upload Content
         StorageReference traceReference = _firebaseStorageReference.Child("/Comments/" + trace.id + "/" + key);
         traceReference.PutFileAsync(fileLocation)
@@ -2405,8 +2415,10 @@ public partial class FbManager : MonoBehaviour
                 }
                 else if(task.IsCompleted)
                 {
-                    Debug.Log("FB: Finished uploading...");
+                    Debug.Log("FB: Finishing uploading...");
                     _databaseReference.UpdateChildrenAsync(childUpdates); //update real time DB
+                    Debug.Log("FB: Finished uploading...");
+                    
                     try 
                     {
                         //todo: un comment for production
