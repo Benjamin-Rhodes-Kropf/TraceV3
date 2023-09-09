@@ -23,6 +23,10 @@ public class SettingsCanvas : MonoBehaviour
       if (ScreenSizeManager.instance.currentModel == iPhoneModel.iPhone6s_7_8)_verticalLayoutGroup.spacing = -73;
       else if (ScreenSizeManager.instance.currentModel == iPhoneModel.iPhoneSE2 || ScreenSizeManager.instance.currentModel == iPhoneModel.iPhoneSE3)_verticalLayoutGroup.spacing = -73;
       else if (ScreenSizeManager.instance.currentModel == iPhoneModel.iPhone6sPlus_6Plus_7Plus_8Plus)_verticalLayoutGroup.spacing = -73;
+      else if (ScreenSizeManager.instance.currentModel == iPhoneModel.iPhoneSE2)_verticalLayoutGroup.spacing = -73;
+      else if (ScreenSizeManager.instance.currentModel == iPhoneModel.iPhoneSE3)_verticalLayoutGroup.spacing = -73;
+
+
 
       if (_controller == null)
          _controller = new SettingCanvasController();
