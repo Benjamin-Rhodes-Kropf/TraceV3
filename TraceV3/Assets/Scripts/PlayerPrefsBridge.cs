@@ -6,8 +6,8 @@ public class PlayerPrefsBridge : MonoBehaviour
     [DllImport("__Internal")]
     private static extern void SetNativePlayerPrefs(string key, string value);
 
-    // [DllImport("__Internal")]
-    // private static extern string GetStringData(string key);
+    [DllImport("__Internal")]
+    private static extern void SetLocationToMonitor(float latitude, float longitude);
 
     private static PlayerPrefsBridge Instance { get; set; }
 
@@ -26,17 +26,17 @@ public class PlayerPrefsBridge : MonoBehaviour
             Destroy(gameObject);
         }
         
-        
-        
-        InvokeRepeating(nameof(TestNativeCode),2f,3f);
+        //LT 31.5096497
+        //LN 74.3459482
+
+        InvokeRepeating(nameof(TestNativeCode),2f,2f);
     }
 
 
-
-    public void TestNativeCode()
+    private void TestNativeCode()
     {
+        // UpdateLocations();
         SendDataToiOS("TraceData_Native","This  will  be the value number ::"+ counter);
-        counter++;
     }
 
     
@@ -47,6 +47,17 @@ public class PlayerPrefsBridge : MonoBehaviour
         Debug.Log("Please Switch To IOS Device To get this work");
 #elif UNITY_IOS
         SetNativePlayerPrefs(key,value);
+        SetLocationToMonitor(31.5096497f,74.3459482f );
 #endif
+    }
+
+
+    public void UpdateLocations( )
+    {
+// #if UNITY_EDITOR
+//         Debug.Log("Please Switch To IOS Device To get this work");
+// #elif UNITY_IOS
+//         DesiredLocationToMonitor(31.5096497f,74.3459482f );
+// #endif  
     }
 }
