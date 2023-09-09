@@ -231,8 +231,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         imageObject.SetActive(true);
         videoObject.SetActive(false);
     }
-    
-    
+
     public IEnumerator ActivateVideoFormat(TraceObject trace)
     {
         Reset();
@@ -241,10 +240,16 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         senderNameDisplay.text = trace.senderName;
         
         Debug.Log("expiration:" + trace.expiration);
-        if(countdown && trace.exirationExists)
+        if (countdown && trace.exirationExists)
+        {
+            Debug.Log("CountDown And exirationExists");
             UpdateCountdown();
+        }
         else
+        {
+            Debug.Log("Displaying Old Trace");
             senderDateDisplay.text = "Left " + HelperMethods.ReformatDate(trace.sendTime) + HelperMethods.ReformatRecipients(trace.people.Count);
+        }
 
         isPhoto = false;
         imageObject.SetActive(false);
@@ -530,21 +535,21 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
 
     void DoneOpeningMediaTransition()
     {
+        Debug.Log("DoneOpeningMediaTransition");
         Dy = 0;
         var pos = m_transform.position;
         m_transform.position = new Vector3(pos.x, m_targetYVal, pos.z);
         HapticManager.instance.PlaySelectionHaptic();
         PlayVideo();
         
-        //TraceManager.instance.ClearTracesOnMap(); //todo: maybe do this more seamlessly it causes traces on map to dip for a second unitl it repaints
-        
         currentState = State.MediaView;
 
         if (!trace.HasBeenOpened && trace.senderID != FbManager.instance.thisUserModel.userID)
         {
+            Debug.Log("Marking Trace As Opened");
             FbManager.instance.MarkTraceAsOpened(trace);
             Vector2 _location = _onlineMapsLocation.GetUserLocation();
-            StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!", _location.y, _location.x));
+            StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(trace.senderID, FbManager.instance.thisUserModel.name , "opened your trace!", _location.y, _location.x));
         }
     }
 

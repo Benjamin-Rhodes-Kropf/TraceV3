@@ -6,13 +6,12 @@ public class PlayerPrefsBridge : MonoBehaviour
     [DllImport("__Internal")]
     private static extern void SetNativePlayerPrefs(string key, string value);
 
-    [DllImport("__Internal")]
-    private static extern void SetLocationToMonitor(float latitude, float longitude);
+    // [DllImport("__Internal")] //todo: GET SALMAN TO SEND OVER PLUGIN
+    // private static extern void SetLocationToMonitor(float latitude, float longitude);
 
     private static PlayerPrefsBridge Instance { get; set; }
 
-
-
+    
     private int counter = 0;
     private void Awake()
     {
@@ -47,17 +46,15 @@ public class PlayerPrefsBridge : MonoBehaviour
         Debug.Log("Please Switch To IOS Device To get this work");
 #elif UNITY_IOS
         SetNativePlayerPrefs(key,value);
-        SetLocationToMonitor(31.5096497f,74.3459482f );
+        //SetLocationToMonitor(31.5096497f,74.3459482f ); //todo: get plugin code from salman
 #endif
     }
-
-
     public void UpdateLocations( )
     {
 // #if UNITY_EDITOR
 //         Debug.Log("Please Switch To IOS Device To get this work");
 // #elif UNITY_IOS
-//         DesiredLocationToMonitor(31.5096497f,74.3459482f );
+//         //DesiredLocationToMonitor(31.5096497f,74.3459482f ); //todo: get plugin code from salman
 // #endif  
     }
 }

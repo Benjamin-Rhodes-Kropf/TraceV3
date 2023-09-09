@@ -26894,7 +26894,7 @@ MonoBehaviour:
   primarySentTexture: {fileID: 2800000, guid: 376c3c79a8a484acfa2c25b50680b2b6, type: 3}
   primarySendingTextureHollow: {fileID: 2800000, guid: eec53750067d14ff897dcb3a1bdbdb1a, type: 3}
   secondarySentTexture: {fileID: 2800000, guid: 1b1282ba964874ad29fe4a229cdffa16, type: 3}
-  expiredTexture: {fileID: 2800000, guid: 5abdbefbf3d3e47dfbbdb107e880115f, type: 3}
+  expiredTexture: {fileID: 2800000, guid: 120b5a5b49b3d4ec5a92c4fab3c7368a, type: 3}
 --- !u!114 &6068666308761308087
 MonoBehaviour:
   m_ObjectHideFlags: 0

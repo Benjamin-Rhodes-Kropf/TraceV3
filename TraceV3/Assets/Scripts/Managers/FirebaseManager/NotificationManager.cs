@@ -68,6 +68,11 @@ public class NotificationManager : MonoBehaviour
     public IEnumerator SendNotificationUsingFirebaseUserId(string firebaseUserId, string title = "", string message = "", float lng = 0, float lat = 0)
     {
         Debug.Log("Getting Device token from:" + firebaseUserId);
+        if (String.IsNullOrEmpty(firebaseUserId))
+        {
+            Debug.LogWarning("firebaseUserId is Null! Aborting Sending Notification");
+            yield break;
+        }
         var task = FbManager.instance.GetDeviceTokenForUser(firebaseUserId);
         yield return new WaitUntil(() => task.IsCompleted);
         var fcmToken = task.Result;

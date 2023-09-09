@@ -1757,7 +1757,7 @@ public partial class FbManager : MonoBehaviour
             if (lat != 0 && lng != 0 && radius != 0) //check for malformed data entry
             {
                 //todo: Take Action Based On If Trace Is Expired
-                bool isExpired = experationExisits && HelperMethods.IsTraceExpired(experation);
+                bool isExpired = (experationExisits && HelperMethods.IsTraceExpired(experation));
                 var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, experation, experationExisits, mediaType,traceID, traceHasBeenOpenedByThisUser, isExpired);
                 TraceManager.instance.receivedTraceObjects.Add(trace.id,trace);
                 BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);

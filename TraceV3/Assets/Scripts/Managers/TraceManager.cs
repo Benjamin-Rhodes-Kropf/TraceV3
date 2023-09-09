@@ -207,7 +207,7 @@ public class TraceManager : MonoBehaviour
         filtered.Sort((i1, i2) => i1.Item2.CompareTo(i2.Item2));
         return filtered.Select(i => i.Item1).ToList();
     }
-    private void UpdateNotificationsForNext50Traces()
+    private void UpdateNotificationsForNext20Traces()
     {
         if (receivedTraceObjects.Count < 1)
         {
@@ -217,17 +217,18 @@ public class TraceManager : MonoBehaviour
 
         List<TraceObject> distanceFilterTraces = ApplyDistanceFilterTraces(_previousLatitude, _previousLongitude);
 
-        for (var i = 0; i < distanceFilterTraces.Count && i < 50; i++)
+        for (var i = 0; i < distanceFilterTraces.Count && i < 20; i++)
         {
             var trace = distanceFilterTraces[i];
             if (!trace.HasBeenOpened)
             {
-                ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng,trace.radius, " ", trace.senderName);
+                ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng, trace.radius, " ", trace.senderName);
             }
         }
         
         //Schedule prompt to tell user to send a trace
-        ScheduleNotificationOnExitInARadius(onlineMapsLocationService.position.x, onlineMapsLocationService.position.y, 1000);
+        Debug.Log("Placed Exit Trace: lat:" + onlineMapsLocationService.position.x + " long:" + onlineMapsLocationService.position.y);
+        ScheduleNotificationOnExitInARadius(onlineMapsLocationService.position.x, onlineMapsLocationService.position.y, 100000);
     }
     private static void ScheduleNotificationOnEnterInARadius(float latitude, float longitude, float radius, string message, string SenderName)
     {
@@ -238,8 +239,6 @@ public class TraceManager : MonoBehaviour
             NotifyOnEntry = true,
             NotifyOnExit = false
         };
-        // Debug.Log("Push Notification is set for a radius of " + enterLocationTrigger.Radius + "Meters"
-        //           + " When user enters in " + "Latitude = " + latitude + "===" + "Longitude = " + longitude);
 
         var entryBasedNotification = new iOSNotification
         {
@@ -304,20 +303,6 @@ public class TraceManager : MonoBehaviour
 
         // Showing current updated coordinates
         _distance = ApproximateDistanceBetweenTwoLatLongsInM(_previousLatitude, _previousLongitude, currentLatitude, currentLongitude);
-
-        // Detecting the Significant Location Change //todo: figure out if background location notification is working
-        // if (_distance > maxDist)
-        // {
-        //     // Remove All Pending Notifications
-        //     iOSNotificationCenter.RemoveAllScheduledNotifications();
-        //
-        //     // Set current player's location
-        //     _previousLatitude = currentLatitude;
-        //     _previousLongitude = currentLongitude;
-        //
-        //     // Add Notifications for the Next 10 Distance Filtered Traces
-        //     UpdateNotificationsForNext50Traces();
-        // }
 
         if (!HomeScreenManager.isInSendTraceView)
         {
@@ -438,10 +423,11 @@ public class TraceManager : MonoBehaviour
             }
         }
         UpdateTracesOnMap();
+        _scaleMapElements.UpdateAllTraceScale();
     }
     public void UpdateMap(Vector2 vector2)
     {
-        // Debug.Log("Map Update");
+        // ]\Debug.Log("Map Update");
         ClearTracesOnMap();
         UpdateTracesOnMap();
         _scaleMapElements.UpdateAllTraceScale();
@@ -458,16 +444,18 @@ public class TraceManager : MonoBehaviour
             traceobject.Value.hasBeenAdded = false;
         }
     }
+    
     void OnApplicationQuit()
     {
         Debug.Log("Application ending after " + Time.time + " seconds");
-        ScheduleNotifications();
+        ScheduleNotifications(); //todo: determine if background trace notifications are working
     }
     private void OnApplicationPaused()
     {
         Debug.Log("Application Paused after " + Time.time + " seconds");
-        //ScheduleNotifications(); //todo: determine if background trace notifications are working
+        ScheduleNotifications(); //todo: determine if background trace notifications are working
     }
+    
     private void ScheduleNotifications()
     {
         Vector2 previousUserLocation = userLocation;
@@ -501,7 +489,7 @@ public class TraceManager : MonoBehaviour
             _previousLongitude = currentLongitude;
 
             // Add Notifications for the Next 10 Distance Filtered Traces
-            UpdateNotificationsForNext50Traces();
+            UpdateNotificationsForNext20Traces();
         }
     }
 }
