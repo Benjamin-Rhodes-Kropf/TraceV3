@@ -305,19 +305,19 @@ public class TraceManager : MonoBehaviour
         // Showing current updated coordinates
         _distance = ApproximateDistanceBetweenTwoLatLongsInM(_previousLatitude, _previousLongitude, currentLatitude, currentLongitude);
 
-        // Detecting the Significant Location Change
-        if (_distance > maxDist)
-        {
-            // Remove All Pending Notifications
-            iOSNotificationCenter.RemoveAllScheduledNotifications();
-
-            // Set current player's location
-            _previousLatitude = currentLatitude;
-            _previousLongitude = currentLongitude;
-
-            // Add Notifications for the Next 10 Distance Filtered Traces
-            UpdateNotificationsForNext50Traces();
-        }
+        // Detecting the Significant Location Change //todo: figure out if background location notification is working
+        // if (_distance > maxDist)
+        // {
+        //     // Remove All Pending Notifications
+        //     iOSNotificationCenter.RemoveAllScheduledNotifications();
+        //
+        //     // Set current player's location
+        //     _previousLatitude = currentLatitude;
+        //     _previousLongitude = currentLongitude;
+        //
+        //     // Add Notifications for the Next 10 Distance Filtered Traces
+        //     UpdateNotificationsForNext50Traces();
+        // }
 
         if (!HomeScreenManager.isInSendTraceView)
         {
@@ -466,7 +466,7 @@ public class TraceManager : MonoBehaviour
     private void OnApplicationPaused()
     {
         Debug.Log("Application Paused after " + Time.time + " seconds");
-        ScheduleNotifications();
+        //ScheduleNotifications(); //todo: determine if background trace notifications are working
     }
     private void ScheduleNotifications()
     {
