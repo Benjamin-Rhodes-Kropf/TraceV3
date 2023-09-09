@@ -43,7 +43,7 @@ public class PlayerPrefsBridge : MonoBehaviour
     {
         PlayerPrefs.SetString(key, value);
 #if UNITY_EDITOR
-        Debug.Log("Please Switch To IOS Device To get this work");
+        //Debug.Log("Please Switch To IOS Device To get this work");
 #elif UNITY_IOS
         SetNativePlayerPrefs(key,value);
         //SetLocationToMonitor(31.5096497f,74.3459482f ); //todo: get plugin code from salman

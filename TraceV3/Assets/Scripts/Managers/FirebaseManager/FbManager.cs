@@ -1320,8 +1320,8 @@ public partial class FbManager : MonoBehaviour
                 Debug.Log("HandleChildAdded Error");
                 return;
             }
-            Debug.Log("HandleChildChanged For Recived Trace:" + args.Snapshot.Reference.Parent.Key);
-            StartCoroutine(HandleReceivedTraceChanged(args.Snapshot.Reference.Parent.Key)); //todo: why pass key when args.Snapshot probraly has data
+            if(this != null)
+                StartCoroutine(FbManager.instance.HandleReceivedTraceChanged(args.Snapshot.Reference.Key));
         }
     }
     public void SubscribeOrUnSubscribeToTraceGroup(bool subscribe, string groupID)
@@ -1934,10 +1934,10 @@ public partial class FbManager : MonoBehaviour
                 yield break;
             }
         }
-        
+
         var DBTask = _databaseReference.Child("Traces").Child(traceID).GetValueAsync();
         yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
-        
+
         if (DBTask.IsFaulted)
         {
             Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
@@ -2035,7 +2035,6 @@ public partial class FbManager : MonoBehaviour
                     }
                     case "comments":
                     {
-                        Debug.Log("Getting Comments");
                         Dictionary<string, object> _comments = thing.Value as Dictionary<string, object>;
                         foreach (var comment in _comments)
                         {
@@ -2056,6 +2055,8 @@ public partial class FbManager : MonoBehaviour
                                 comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name,new float[]{}));
                             }
                         }
+                        
+                        Debug.Log(("Comments count:" + comments.Count));
                         break;
                     }
                     case "numPeopleSent":
@@ -2075,6 +2076,7 @@ public partial class FbManager : MonoBehaviour
                         break;
                 }
             }
+
             if (lat != 0 && lng != 0 && radius != 0) //check for malformed data entry
             {
                 bool isExpired = experationExisits && HelperMethods.IsTraceExpired(experation);

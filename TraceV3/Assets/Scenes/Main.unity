@@ -26432,7 +26432,7 @@ MonoBehaviour:
   createMarkerInUserPosition: 1
   disableEmulatorInPublish: 1
   emulatorCompass: 0
-  emulatorPosition: {x: -71.22295, y: 42.31989}
+  emulatorPosition: {x: -71.216, y: 42.319}
   findLocationByIP: 0
   lerpCompassValue: 0
   markerScale: 1
