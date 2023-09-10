@@ -86,15 +86,11 @@ public partial class FbManager
     
     private IEnumerator MoveMap(Vector2 target)
     {
-        yield return new WaitForSeconds(1.5f);
-        
-        if (!_dragAndZoomInertia.isZooming)
-        {
-            Debug.LogFormat("Zooming to Point ({0}, {1})", target.x, target.y);
-            Debug.Log("Zoom to User");
-            _map.zoom = 18;
-            _map.position = target;
-        }
+        yield return new WaitForSeconds(2f);
+        Debug.LogFormat("Zooming to Point ({0}, {1})", target.x, target.y);
+        Debug.Log("Zoom to User");
+        _map.zoom = 18;
+        _map.position = target;
     }
     
     IEnumerator SetFCMDeviceToken(string token)

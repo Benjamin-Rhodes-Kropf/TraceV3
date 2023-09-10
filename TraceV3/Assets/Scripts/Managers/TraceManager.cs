@@ -534,6 +534,7 @@ public class TraceObject
     public OnlineMapsMarker marker;
     
     public string id;
+    public string groupID;
     public double lat;
     public double lng;
     public float radius;
@@ -566,12 +567,13 @@ public class TraceObject
         }
     }
     
-    public TraceObject(double longitude, double latitude, float radius, List<TraceReceiverObject> people, Dictionary<string,TraceCommentObject> comments, string senderID, string senderName, string sendTime, DateTime expiration, bool exirationExists, string mediaType, string id, bool hasBeenOpened, bool isExpired)
+    public TraceObject(double longitude, double latitude, float radius, List<TraceReceiverObject> people, Dictionary<string,TraceCommentObject> comments, string senderID, string senderName, string sendTime, DateTime expiration, bool exirationExists, string mediaType, string id, bool hasBeenOpened, bool isExpired, string groupID)
     {
         lng = longitude;
         lat = latitude;
         this.radius = radius;
         this.senderID = senderID;
+        this.groupID = groupID;
         this.people = people;
         this.comments = comments;
         this.senderName = senderName;

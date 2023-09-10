@@ -140,7 +140,7 @@ public class NotificationManager : MonoBehaviour
             Trigger = new iOSNotificationTimeIntervalTrigger
             {
                 TimeInterval = delay, // Use TimeSpan instead of double
-                Repeats = false
+                Repeats = false,
             }
         };
         iOSNotificationCenter.ScheduleNotification(notification);
