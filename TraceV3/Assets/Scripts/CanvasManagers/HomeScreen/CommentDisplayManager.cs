@@ -80,8 +80,8 @@ public class CommentDisplayManager : MonoBehaviour
 
         if (verticalLayoutGroup.childCount > 2)
         {
-            // Set it to be the third child
-            instantiatedComment.transform.SetSiblingIndex(2);
+            // Set it to be the last in line
+            instantiatedComment.transform.SetSiblingIndex(2+comments.Count);
         }
 
         if (audioView != null)

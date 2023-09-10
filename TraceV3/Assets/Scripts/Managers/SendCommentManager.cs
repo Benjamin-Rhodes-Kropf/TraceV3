@@ -43,7 +43,15 @@ public class SendCommentManager : MonoBehaviour
                 StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user.id, FbManager.instance.thisUserModel.name, "Commented on a Trace!", (float)traceObject.lng,(float)traceObject.lat));
             }
         }
-        SendLocalNotification("Comment Sent", "lets hope they find it!",1f);
+        try //no clue why this makes it work
+        {
+            StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(traceObject.senderID, FbManager.instance.thisUserModel.name, "Commented on a Trace!", (float)traceObject.lng,(float)traceObject.lat));
+        }
+        catch (Exception e)
+        {
+            Debug.Log("Notification failed... trying again");
+            StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(traceObject.senderID, FbManager.instance.thisUserModel.name, "Commented on a Trace!", (float)traceObject.lng,(float)traceObject.lat));
+        }
     }
     
     public void SendLocalNotification(string title, string message, float delayInSeconds)

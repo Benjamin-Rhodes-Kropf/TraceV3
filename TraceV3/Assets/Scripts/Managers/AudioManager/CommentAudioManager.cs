@@ -18,6 +18,7 @@ public class CommentAudioManager : MonoBehaviour
 
     [Header("External")] 
     [SerializeField] private OpenTraceManager openTraceManager;
+    [SerializeField] private Animator _audioRecordButtonAnimator;
     
     [Header("UI")]
     public GameObject doneOptions;
@@ -39,6 +40,7 @@ public class CommentAudioManager : MonoBehaviour
         if (Application.HasUserAuthorization(UserAuthorization.Microphone))
         {
             // Permission granted, start recording
+            _audioRecordButtonAnimator.Play("StartRecordingAnimation");
             recordAudio.SetActive(true);
             doneOptions.SetActive(false);
             openTraceManager.MuteVideoAudio();

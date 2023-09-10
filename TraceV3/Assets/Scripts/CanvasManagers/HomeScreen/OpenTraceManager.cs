@@ -15,6 +15,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] private OnlineMapsLocationService _onlineMapsLocation;
     [SerializeField] private CommentAudioManager _commentAudioManager;
     [SerializeField] private CommentDisplayManager _commentDisplayManager;
+    
 
     [Header("Trace Stuff")]
     public TraceObject trace;
