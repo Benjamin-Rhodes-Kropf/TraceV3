@@ -2409,6 +2409,11 @@ public partial class FbManager : MonoBehaviour
             childUpdates["TracesRecived/" + user.id +"/"+ trace.id + "/Sender"] = trace.senderID;
         }
 
+        if (trace.groupID != "null") //update for trace group
+        {
+            childUpdates["TraceGroups/" + trace.people[0].id +"/"+ trace.id] = DateTime.UtcNow.ToString(); //change last updated
+        }
+
         Debug.Log(" UploadComment(): 4");
 
         //Upload Content

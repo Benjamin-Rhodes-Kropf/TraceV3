@@ -265,6 +265,11 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         currentState = State.OpeningSlideUpToView;
         this.trace = trace;
         senderNameDisplay.text = trace.senderName;
+
+        if (trace.groupID != "null")
+        {
+            senderNameDisplay.text = trace.senderName + " (Group)"; //todo: display which group it is
+        }
         
         Debug.Log("expiration:" + trace.expiration);
         if (countdown && trace.exirationExists)
@@ -612,6 +617,13 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         else
         {
             senderDateDisplay.text = "Time's up!";
+            
+            //check if trace is too old //todo: check all traces periodically
+            if (trace.exirationExists)
+            {
+                trace.marker.displayedTexture = trace.marker.expieredTexture;
+                CloseView();
+            }
         }
     }
     

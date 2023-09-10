@@ -32,26 +32,27 @@ public class SendCommentManager : MonoBehaviour
     {
         string displayName = FbManager.instance.thisUserModel.name;
         //users
+        string message = "Commented on " + traceObject.senderName + "'s " + "trace!";
         foreach (var user in traceObject.people)
         {
             try //no clue why this makes it work
             {
-                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user.id, displayName, "Commented on a Trace!", (float)traceObject.lng,(float)traceObject.lat));
+                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user.id, displayName, message, (float)traceObject.lng,(float)traceObject.lat));
             }
             catch (Exception e)
             {
                 Debug.Log("Notification failed... trying again");
-                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user.id, displayName, "Commented on a Trace!", (float)traceObject.lng,(float)traceObject.lat));
+                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user.id, displayName, message, (float)traceObject.lng,(float)traceObject.lat));
             }
         }
         try //no clue why this makes it work
         {
-            StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(traceObject.senderID, displayName, "Commented on a Trace!", (float)traceObject.lng,(float)traceObject.lat));
+            StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(traceObject.senderID, displayName, "Commented on your Trace!", (float)traceObject.lng,(float)traceObject.lat));
         }
         catch (Exception e)
         {
             Debug.Log("Notification failed... trying again");
-            StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(traceObject.senderID, displayName, "Commented on a Trace!", (float)traceObject.lng,(float)traceObject.lat));
+            StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(traceObject.senderID, displayName, "Commented on your Trace!", (float)traceObject.lng,(float)traceObject.lat));
         }
     }
     
