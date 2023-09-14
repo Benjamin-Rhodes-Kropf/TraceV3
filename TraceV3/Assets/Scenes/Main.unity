@@ -4003,6 +4003,7 @@ MonoBehaviour:
       _expiredTexture: {fileID: 0}
       isShowingPrimaryTexture: 0
     id: 
+    groupID: 
     lat: 0
     lng: 0
     radius: 0
@@ -29780,6 +29781,7 @@ MonoBehaviour:
       _expiredTexture: {fileID: 0}
       isShowingPrimaryTexture: 0
     id: 
+    groupID: 
     lat: 0
     lng: 0
     radius: 0
@@ -35425,7 +35427,7 @@ MonoBehaviour:
   restoreAfter: 0
   rotateCameraByCompass: 0
   trueHeading: 0
-  updatePosition: 0
+  updatePosition: 1
   useCompassForMarker: 0
   useGPSEmulator: 1
   desiredAccuracy: 0
@@ -35844,6 +35846,7 @@ MonoBehaviour:
       _expiredTexture: {fileID: 0}
       isShowingPrimaryTexture: 0
     id: 
+    groupID: 
     lat: 0
     lng: 0
     radius: 0

@@ -92,7 +92,7 @@ public class SendTraceManager : MonoBehaviour
             selectedRadius = 0.4f; //todo: this is jank
         }
 
-        NotificationManager.Instance.SendLocalNotification("Sending Trace", "hang on while we upload it!", 1f);
+        //NotificationManager.Instance.SendLocalNotification("Sending Trace", "hang on while we upload it!", 1f);
         FbManager.instance.UploadTrace(usersToSendTrace, phonesToSendTrace, fileLocation, selectedRadius, location, mediaType, sendToFollowers, expiration);
         SendBulkSMS.Instance.SendTraceSMS(phonesToSendTrace, new Vector2(location.y, location.x));
         FbManager.instance.AnalyticsOnSendTrace(usersToSendTrace.Count, videoLength, camFlippedCount);
@@ -113,7 +113,7 @@ public class SendTraceManager : MonoBehaviour
                 StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user, FbManager.instance.thisUserModel.name, "Left You A Trace!", location.y,location.x));
             }
         }
-        NotificationManager.Instance.SendLocalNotification("Trace Sent", "lets hope they find it!",1f);
+        //NotificationManager.Instance.SendLocalNotification("Trace Sent", "lets hope they find it!",1f);
     }
 }
 

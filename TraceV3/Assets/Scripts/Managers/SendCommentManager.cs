@@ -23,7 +23,7 @@ public class SendCommentManager : MonoBehaviour
     public void SendComment(string fileLocation, TraceObject traceObject, float[] extractedValues)
     {
         Debug.Log("Sending Comment!");
-        SendLocalNotification("Sending Comment", "hang on while we upload it!", 1f);
+        //SendLocalNotification("Sending Comment", "hang on while we upload it!", 1f);
         this.traceObject = traceObject;
         FbManager.instance.UploadComment(traceObject, fileLocation, extractedValues);
     }

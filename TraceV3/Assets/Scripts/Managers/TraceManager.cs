@@ -194,14 +194,18 @@ public class TraceManager : MonoBehaviour
         var traceObjectsInOrderOfDistance = receivedTraceObjects.Values.OrderBy(f => f.distanceToUser);
         return traceObjectsInOrderOfDistance;
     }
-    private List<TraceObject> ApplyDistanceFilterTraces(float userLat, float userLon)
+    private List<TraceObject> ApplyTraceFilter(float userLat, float userLon)
     {
         var filtered = new List<(TraceObject, double)>();
         foreach (var trace in receivedTraceObjects)
         {
             var distance = ApproximateDistanceBetweenTwoLatLongsInM(userLat, userLon, trace.Value.lat,
                 trace.Value.lng);
-            filtered.Add((trace.Value, distance));
+            
+            if (!trace.Value.HasBeenOpened && !trace.Value.isExpired)
+            {
+                filtered.Add((trace.Value, distance));
+            }
         }
 
         filtered.Sort((i1, i2) => i1.Item2.CompareTo(i2.Item2));
@@ -215,15 +219,14 @@ public class TraceManager : MonoBehaviour
             return;
         }
 
-        List<TraceObject> distanceFilterTraces = ApplyDistanceFilterTraces(_previousLatitude, _previousLongitude);
+        List<TraceObject> filteredTraces = ApplyTraceFilter(_previousLatitude, _previousLongitude);
 
-        for (var i = 0; i < distanceFilterTraces.Count && i < 20; i++)
+        
+        for (var i = 0; i < filteredTraces.Count && i < 20; i++)
         {
-            var trace = distanceFilterTraces[i];
-            if (!trace.HasBeenOpened)
-            {
+            var trace = filteredTraces[i];
+            if (!trace.HasBeenOpened && !trace.isExpired)
                 ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng, trace.radius, " ", trace.senderName);
-            }
         }
         
         //Schedule prompt to tell user to send a trace
