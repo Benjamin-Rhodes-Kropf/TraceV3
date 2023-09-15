@@ -231,7 +231,9 @@ public class TraceManager : MonoBehaviour
         
         //Schedule prompt to tell user to send a trace
         Debug.Log("Placed Exit Trace: lat:" + onlineMapsLocationService.position.x + " long:" + onlineMapsLocationService.position.y);
-        ScheduleNotificationOnExitInARadius(onlineMapsLocationService.position.x, onlineMapsLocationService.position.y, 100000);
+        
+        //if you move a significant distance
+        ScheduleNotificationOnExitInARadius(onlineMapsLocationService.position.x, onlineMapsLocationService.position.y, 10000);
     }
     private static void ScheduleNotificationOnEnterInARadius(float latitude, float longitude, float radius, string message, string SenderName)
     {
@@ -240,7 +242,8 @@ public class TraceManager : MonoBehaviour
             Center = new Vector2(latitude, longitude),
             Radius = radius,
             NotifyOnEntry = true,
-            NotifyOnExit = false
+            NotifyOnExit = false,
+            Repeats = true,
         };
 
         var entryBasedNotification = new iOSNotification
@@ -269,9 +272,10 @@ public class TraceManager : MonoBehaviour
         
         var entryBasedNotification = new iOSNotification
         {
+            
             Title = "Cool Spot?",
             Subtitle =  "Leave a Trace!",
-            Body = "",
+            Body = "This might be a good spot to leave a trace",
             ShowInForeground = true,
             ForegroundPresentationOption = PresentationOption.Alert | PresentationOption.Sound,
             Trigger = exitLocationTrigger
