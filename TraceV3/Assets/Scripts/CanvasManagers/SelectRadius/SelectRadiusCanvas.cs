@@ -32,6 +32,7 @@ public class SelectRadiusCanvas : MonoBehaviour
         
         _onlineMapsLocationService.updatePosition = true;
         
+        //set radius based on past trace radius
         if (PlayerPrefs.GetFloat("LeaveTraceSliderRadiusValue") != 0)
         {
             Debug.Log("Playerpref is NOT 0");
@@ -45,6 +46,9 @@ public class SelectRadiusCanvas : MonoBehaviour
             SetRadius();
         }
         
+        //set the radius to be the "good value"
+        //_radiusSlider.value = 0.5f;
+        //set the expiration to be the first option in the list
         SetExpiration(DateTime.UtcNow.AddHours(SendTraceManager.instance.TraceExpirationOptions[0].hoursFromNow));
         
         if (PlayerPrefs.GetInt("LeaveTraceIsVisable") != 0)
