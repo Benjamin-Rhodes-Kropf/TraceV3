@@ -2722,10 +2722,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _onlineMapsLocationService: {fileID: 6068666308761308073}
   TraceExpirationOptions:
-  - text: 1h
-    hoursFromNow: 1
-  - text: 3h
-    hoursFromNow: 3
+  - text: 6h
+    hoursFromNow: 6
   - text: 9h
     hoursFromNow: 9
   - text: 1d
@@ -2738,6 +2736,10 @@ MonoBehaviour:
     hoursFromNow: 8760
   - text: "\u221E"
     hoursFromNow: 10000000
+  - text: 1h
+    hoursFromNow: 1
+  - text: 3h
+    hoursFromNow: 3
   selectedRadius: 0
   isSendingTrace: 0
   location: {x: 0, y: 0}

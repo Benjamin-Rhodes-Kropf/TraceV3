@@ -132,6 +132,7 @@ public class DragAndZoomInertia : MonoBehaviour
 
         // Is marked, that is the interaction with the map.
         isInteract = true;
+        _locationService.updatePosition = false;
     }
 
     /// <summary>
@@ -203,6 +204,7 @@ public class DragAndZoomInertia : MonoBehaviour
             {
                 isZooming = false;
                 Debug.Log("Break Zoom To Because Of Zoom");
+                _locationService.updatePosition = true;
                 break;
             }
         }
