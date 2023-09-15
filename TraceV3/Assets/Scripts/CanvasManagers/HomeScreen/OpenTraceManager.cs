@@ -530,13 +530,13 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         currentState = State.ClosingCommentView;
         _commentAudioManager.StopPlayingRecording();
         TraceManager.instance.UpdateMap(new Vector2(0,0)); //vector don't matter just redraw
-        //start playing video early
     }
     
     void OpenCommentViewTransition()
     {
         Debug.Log("OpenCommentViewTransition");
-        m_targetYVal = commentImageHeightTarget;
+        m_targetYVal = commentImageHeightTarget+_commentDisplayManager.comments.Count*195f + 50; //offset by number of comments and there width so it scrolls to the bottom
+        changeInYvalExitCommentsLimit -= _commentDisplayManager.comments.Count*195f + 50;
         currentState = State.OpeningCommentView;
     }
 
@@ -552,7 +552,6 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         g_transform.position = new Vector3(g_transform.position.x, startLocation, g_transform.position.z);
         m_targetYVal = -1000; //close quickly!
         Dy *= 2; //close quickly!
-        // videoPlayer.Pause();
         videoPlayer.Stop();
         currentState = State.Closing;
         _commentDisplayManager.ClearComments();
