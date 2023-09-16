@@ -9012,7 +9012,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cc9b3fac631f4da49acc810a28e80b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentModel: 5
+  currentModel: 10
 --- !u!4 &1770422150
 Transform:
   m_ObjectHideFlags: 0

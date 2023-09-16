@@ -500,7 +500,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     
     bool CloseComments()
     {
-        return (changeInYVal < changeInYvalExitCommentsLimit);
+        return (changeInYVal < changeInYvalExitCommentsLimit - _commentDisplayManager.comments.Count*250 - 50);
     }
     
     bool ClosedView()
@@ -535,8 +535,8 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     void OpenCommentViewTransition()
     {
         Debug.Log("OpenCommentViewTransition");
-        m_targetYVal = commentImageHeightTarget+_commentDisplayManager.comments.Count*195f + 50; //offset by number of comments and there width so it scrolls to the bottom
-        changeInYvalExitCommentsLimit -= _commentDisplayManager.comments.Count*195f + 50;
+        m_targetYVal = commentImageHeightTarget+_commentDisplayManager.comments.Count*250 + 50; //offset by number of comments and there width so it scrolls to the bottom
+        //changeInYvalExitCommentsLimit -= _commentDisplayManager.comments.Count*200;
         currentState = State.OpeningCommentView;
     }
 
@@ -573,7 +573,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
             Debug.Log("Marking Trace As Opened");
             FbManager.instance.MarkTraceAsOpened(trace);
             Vector2 _location = _onlineMapsLocation.GetUserLocation();
-            StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(trace.senderID, FbManager.instance.thisUserModel.name , "opened your trace!", _location.y, _location.x));
+            NotificationManager.Instance.StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(trace.senderID, FbManager.instance.thisUserModel.name , "opened your trace!", _location.y, _location.x));
         }
     }
 

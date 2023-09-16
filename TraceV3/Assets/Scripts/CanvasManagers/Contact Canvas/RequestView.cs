@@ -109,7 +109,7 @@ public class RequestView : MonoBehaviour
                 this.gameObject.SetActive(false);
             }
         })));
-        NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderId, FbManager.instance.thisUserModel.name , "accepted your friend request!");
+        NotificationManager.Instance.StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderId, FbManager.instance.thisUserModel.name , "accepted your friend request!"));
         FbManager.instance.AnalyticsOnAcceptFriend(senderId);
     }
 
