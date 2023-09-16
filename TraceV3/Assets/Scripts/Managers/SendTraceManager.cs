@@ -103,9 +103,9 @@ public class SendTraceManager : MonoBehaviour
         //users
         foreach (var user in usersToSendTrace)
         {
-            NotificationManager.Instance.StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user, FbManager.instance.thisUserModel.name, "Left You A Trace!", location.y,location.x));
+            if(FriendsModelManager.Instance.GetRelationship(user) != Relationship.SuperUser)
+                NotificationManager.Instance.StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user, FbManager.instance.thisUserModel.name, "Left You A Trace!", location.y,location.x));
         }
-        //NotificationManager.Instance.SendLocalNotification("Trace Sent", "lets hope they find it!",1f);
     }
 }
 

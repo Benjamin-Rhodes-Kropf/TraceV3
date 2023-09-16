@@ -95,8 +95,9 @@ public class HomeScreenManager : MonoBehaviour
     }
     public void UpdateLocationText(float zoom)
     {
-        StartCoroutine(ChangeLocationTextReduceApiCallSpeed(zoom));
-        StartCoroutine(IsChangingLocation());
+        Debug.Log("Update Location Text: (Disabled)");
+        //StartCoroutine(ChangeLocationTextReduceApiCallSpeed(zoom));
+        //StartCoroutine(IsChangingLocation());
     }
 
     public void PlayChangingLocationAnim()

@@ -37,7 +37,9 @@ public class SendCommentManager : MonoBehaviour
         {
             NotificationManager.Instance.StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user.id, displayName, message, (float)traceObject.lng,(float)traceObject.lat));
         }
-        NotificationManager.Instance.StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(traceObject.senderID, displayName, "Commented on your Trace!", (float)traceObject.lng,(float)traceObject.lat));
+        
+        if(FriendsModelManager.Instance.GetRelationship(traceObject.senderID) != Relationship.SuperUser)
+            NotificationManager.Instance.StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(traceObject.senderID, displayName, "Commented on your Trace!", (float)traceObject.lng,(float)traceObject.lat));
     }
     
     public void SendLocalNotification(string title, string message, float delayInSeconds)
