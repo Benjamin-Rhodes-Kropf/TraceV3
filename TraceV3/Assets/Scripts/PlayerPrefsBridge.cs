@@ -35,7 +35,7 @@ public class PlayerPrefsBridge : MonoBehaviour
     private void TestNativeCode()
     {
         // UpdateLocations();
-        SendDataToiOS("TraceData_Native","This  will  be the value number ::"+ counter);
+        //SendDataToiOS("TraceData_Native","This  will  be the value number ::"+ counter);
     }
 
     

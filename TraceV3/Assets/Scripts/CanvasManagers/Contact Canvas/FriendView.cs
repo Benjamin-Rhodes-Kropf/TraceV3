@@ -248,7 +248,17 @@ public class FriendView : MonoBehaviour
             _addRemoveButton.interactable = true;
             Debug.Log("friend requested at:" + friendUID);
             Debug.Log("from:" + FbManager.instance.thisUserModel.name);
-            NotificationManager.Instance.StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(friendUID, FbManager.instance.thisUserModel.name , "sent you friend request"));
+            
+            try
+            {
+                NotificationManager.Instance.StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(friendUID, FbManager.instance.thisUserModel.name , "sent you friend request"));
+            }
+            catch (Exception e)
+            {
+                NotificationManager.Instance.StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(friendUID, FbManager.instance.thisUserModel.name , "sent you friend request"));
+                Console.WriteLine(e);
+                throw;
+            }
         }));
         
         FbManager.instance.AnalyticsOnSendFriendRequest(friendUID);
