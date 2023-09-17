@@ -72,7 +72,7 @@ public class MapboxGeocoding : MonoBehaviour
             {
                 // Parse the response data
                 string responseData = www.downloadHandler.text;
-                Debug.Log("Geocoding API Response: " + responseData);
+                //Debug.Log("Geocoding API Response: " + responseData);
                 
                 
                 // Deserialize the JSON response into a custom data structure

@@ -160,13 +160,14 @@ public class DragAndZoomInertia : MonoBehaviour
 
     private void OnMapZoom()
     {
-        Debug.Log("Map Zooming");
         if (map.floatZoom > switchToSpaceLimit)
         {
+            Debug.Log("Set Map To Map to Satellite Mode");
             map.mapType = "Satellite";
         }
         else
         {
+            Debug.Log("Set Map To Map Mode");
             map.mapType = "Map";
         }
     }
