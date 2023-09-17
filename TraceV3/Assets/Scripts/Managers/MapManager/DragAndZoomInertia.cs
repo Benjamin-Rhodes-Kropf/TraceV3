@@ -127,6 +127,10 @@ public class DragAndZoomInertia : MonoBehaviour
     /// </summary>
     private void OnMapPress()
     {
+        #if UNITY_EDITOR
+        OnMapZoom();
+        #endif
+                
         // Get tile coordinates of map
         map.GetTilePosition(out ptx, out pty, 20);
         pz = map.floatZoom;
@@ -160,15 +164,19 @@ public class DragAndZoomInertia : MonoBehaviour
 
     private void OnMapZoom()
     {
+        Debug.Log("Map Zoom:" + map.floatZoom);
+        Debug.Log("MapType:" + map.mapType);
         if (map.floatZoom > switchToSpaceLimit)
         {
             Debug.Log("Set Map To Map to Satellite Mode");
             map.mapType = "Satellite";
+            //map.activeType.index = 0;
         }
         else
         {
             Debug.Log("Set Map To Map Mode");
-            map.mapType = "Map";
+            map.mapType = "mapbox.map";
+            //map.activeType.index = 1;
         }
     }
     
