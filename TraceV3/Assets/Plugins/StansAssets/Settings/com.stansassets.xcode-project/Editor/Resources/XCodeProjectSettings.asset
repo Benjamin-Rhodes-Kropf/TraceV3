@@ -35,15 +35,14 @@ MonoBehaviour:
     - 9cCe4mrEKYof3ZPIM1Wx
   - Name: NSContactsUsageDescription
     Type: 0
-    StringValue: Please change 'Contacts Usage Description' with IOS Native Contacts
-      Editor Settings
+    StringValue: Traces uses your contacts to help you find friends
     IntegerValue: 0
     FloatValue: 0
     BooleanValue: 1
     ChildrenIds: []
   - Name: NSCameraUsageDescription
     Type: 0
-    StringValue: Trace uses your camera to allow you to take videos and leave traces
+    StringValue: Traces uses your camera to help you leave traces
     IntegerValue: 0
     FloatValue: 0
     BooleanValue: 1
@@ -300,6 +299,42 @@ MonoBehaviour:
       BooleanValue: 1
       ChildrenIds: []
     uniqueIdKey: BN33rDVWJH6YQsCTFR0u
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: instagram
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: OFOPvGpbDr15AW0IxBcK
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: whatsapp
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: 9o1qNGCGT8d7qvjf6K1k
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: instagram
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: CMf6RM3SpTFfshCR81hN
+  - VariableValue:
+      Name: 
+      Type: 0
+      StringValue: whatsapp
+      IntegerValue: 0
+      FloatValue: 0
+      BooleanValue: 1
+      ChildrenIds: []
+    uniqueIdKey: 9ThEO43BbsqvjKcg6mXq
   Languages: []
   ShellScripts: []
   m_BuildProperties:

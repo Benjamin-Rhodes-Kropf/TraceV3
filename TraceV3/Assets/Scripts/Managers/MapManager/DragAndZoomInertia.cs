@@ -18,6 +18,7 @@ public class DragAndZoomInertia : MonoBehaviour
     [SerializeField]private OnlineMapsLocationService _locationService;
     [SerializeField] private AnimationCurve zoomCurveOnZoomTo;
     [SerializeField] private HomeScreenManager _homeScreenManager;
+    [SerializeField] private float switchToSpaceLimit;
     
     [Header("Select Radius Mode")]
     [SerializeField]private bool targetZoomMode;
@@ -135,6 +136,8 @@ public class DragAndZoomInertia : MonoBehaviour
         _locationService.updatePosition = false;
     }
 
+    
+    
     /// <summary>
     /// This method is called when you release on the map.
     /// </summary>
@@ -154,6 +157,19 @@ public class DragAndZoomInertia : MonoBehaviour
         speedY.Clear();
         speedZ.Clear();
     }
+
+    private void OnMapZoom()
+    {
+        Debug.Log("Map Zooming");
+        if (map.floatZoom > switchToSpaceLimit)
+        {
+            map.mapType = "Satellite";
+        }
+        else
+        {
+            map.mapType = "Map";
+        }
+    }
     
     //TODO: Add function which zooms camera back to user instead of snapping
     public void SetMapVelocityToZero()
@@ -171,7 +187,8 @@ public class DragAndZoomInertia : MonoBehaviour
         // Subscribe to map events
         control.OnMapPress += OnMapPress;
         control.OnMapRelease += OnMapRelease;
-
+        control.OnMapZoom += OnMapZoom;
+        
         // Initialize arrays of speed
         speedX = new List<double>(maxSamples);
         speedY = new List<double>(maxSamples);
@@ -208,6 +225,9 @@ public class DragAndZoomInertia : MonoBehaviour
                 break;
             }
         }
+
+        OnMapZoom(); //upadte zoom
+        _locationService.updatePosition = true;
         isZooming = false;
     }
 }
