@@ -6,8 +6,11 @@ public class PlayerPrefsBridge : MonoBehaviour
     [DllImport("__Internal")]
     private static extern void SetNativePlayerPrefs(string key, string value);
 
-    // [DllImport("__Internal")] //todo: GET SALMAN TO SEND OVER PLUGIN
-    // private static extern void SetLocationToMonitor(float latitude, float longitude);
+    [DllImport("__Internal")] 
+    private static extern void SetLocationToMonitor(float latitude, float longitude);
+    
+    [DllImport("__Internal")] 
+    private static extern void DesiredLocationToMonitor(float latitude, float longitude);
 
     private static PlayerPrefsBridge Instance { get; set; }
 
@@ -25,17 +28,14 @@ public class PlayerPrefsBridge : MonoBehaviour
             Destroy(gameObject);
         }
         
-        //LT 31.5096497
-        //LN 74.3459482
-
         InvokeRepeating(nameof(TestNativeCode),2f,2f);
     }
 
 
     private void TestNativeCode()
     {
-        // UpdateLocations();
-        //SendDataToiOS("TraceData_Native","This  will  be the value number ::"+ counter);
+        UpdateLocations();
+        SendDataToiOS("TraceData_Native","This  will  be the value number ::"+ counter);
     }
 
     
@@ -43,18 +43,18 @@ public class PlayerPrefsBridge : MonoBehaviour
     {
         PlayerPrefs.SetString(key, value);
 #if UNITY_EDITOR
-        //Debug.Log("Please Switch To IOS Device To get this work");
+        Debug.Log("Please Switch To IOS Device To get this work");
 #elif UNITY_IOS
         SetNativePlayerPrefs(key,value);
-        //SetLocationToMonitor(31.5096497f,74.3459482f ); //todo: get plugin code from salman
+        SetLocationToMonitor(31.5096497f,74.3459482f ); //todo: get plugin code from salman
 #endif
     }
-    public void UpdateLocations( )
+    public void UpdateLocations()
     {
-// #if UNITY_EDITOR
-//         Debug.Log("Please Switch To IOS Device To get this work");
-// #elif UNITY_IOS
-//         //DesiredLocationToMonitor(31.5096497f,74.3459482f ); //todo: get plugin code from salman
-// #endif  
+#if UNITY_EDITOR
+        Debug.Log("Please Switch To IOS Device To get this work");
+#elif UNITY_IOS
+        DesiredLocationToMonitor(31.5096497f,74.3459482f ); //todo: get plugin code from salman
+#endif  
     }
 }
