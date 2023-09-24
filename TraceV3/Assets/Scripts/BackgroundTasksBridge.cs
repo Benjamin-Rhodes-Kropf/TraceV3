@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-public class PlayerPrefsBridge : MonoBehaviour
+public class BackgroundTasksBridge : MonoBehaviour
 {
     [DllImport("__Internal")]
     private static extern void SetNativePlayerPrefs(string key, string value);
@@ -9,7 +9,7 @@ public class PlayerPrefsBridge : MonoBehaviour
     [DllImport("__Internal")]
     private static extern void SetLocationToMonitor(float latitude, float longitude);
 
-    private static PlayerPrefsBridge Instance { get; set; }
+    public static BackgroundTasksBridge Instance { get; set; }
 
 
 
@@ -29,7 +29,7 @@ public class PlayerPrefsBridge : MonoBehaviour
         //LT 31.5096497
         //LN 74.3459482
 
-        InvokeRepeating(nameof(TestNativeCode),2f,2f);
+        // InvokeRepeating(nameof(TestNativeCode),2f,2f);
     }
 
 
@@ -39,8 +39,17 @@ public class PlayerPrefsBridge : MonoBehaviour
         SendDataToiOS("TraceData_Native","This  will  be the value number ::"+ counter);
     }
 
+    public void SendLocationToMonitor(float latitude, float longitude)
+    {
+#if UNITY_EDITOR
+        Debug.Log("Please Switch To IOS Device To get this work");
+#elif UNITY_IOS
+        SetLocationToMonitor(latitude,longitude);
+#endif
+    }
     
-    public void SendDataToiOS(string key, string value)
+    
+    private void SendDataToiOS(string key, string value)
     {
         PlayerPrefs.SetString(key, value);
 #if UNITY_EDITOR

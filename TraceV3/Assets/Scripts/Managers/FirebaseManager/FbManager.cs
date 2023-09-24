@@ -1751,6 +1751,7 @@ public partial class FbManager : MonoBehaviour
                 
                 var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, experation, experationExisits, mediaType,traceID, traceHasBeenOpenedByThisUser);
                 TraceManager.instance.receivedTraceObjects.Add(trace.id,trace);
+                BackgroundTasksBridge.Instance.SendLocationToMonitor((float)lat,(float)lng);
                 BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
                 TraceManager.instance.UpdateMap(new Vector2());
                 FbManager.instance.AnalyticsSetTracesReceived(TraceManager.instance.receivedTraceObjects.Count.ToString());
