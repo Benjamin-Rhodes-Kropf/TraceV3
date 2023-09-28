@@ -95,8 +95,9 @@ public class HomeScreenManager : MonoBehaviour
     }
     public void UpdateLocationText(float zoom)
     {
-        StartCoroutine(ChangeLocationTextReduceApiCallSpeed(zoom));
-        StartCoroutine(IsChangingLocation());
+        Debug.Log("Update Location Text: (Disabled)");
+        //StartCoroutine(ChangeLocationTextReduceApiCallSpeed(zoom));
+        //StartCoroutine(IsChangingLocation());
     }
 
     public void PlayChangingLocationAnim()
@@ -235,8 +236,15 @@ public class HomeScreenManager : MonoBehaviour
 
     public void RefreshTraceView(TraceObject traceObject)
     {
-        openTraceManager.RefreshTrace(traceObject);
-        StartCoroutine(GetAudioFiles(traceObject));
+        if (traceObject.id == openTraceManager.trace.id)
+        {
+            openTraceManager.RefreshTrace(traceObject);
+            StartCoroutine(GetAudioFiles(traceObject));
+        }
+        else
+        {
+            Debug.LogWarning("Refreshed Trace Is Not Being Displayed");
+        }
     }
     
     public void UpdateMap()

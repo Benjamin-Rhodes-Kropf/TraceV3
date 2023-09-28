@@ -1320,8 +1320,9 @@ public partial class FbManager : MonoBehaviour
                 Debug.Log("HandleChildAdded Error");
                 return;
             }
-            Debug.Log("HandleChildChanged");
-            StartCoroutine(HandleReceivedTraceChanged(args.Snapshot.Key)); //todo: why pass key when args.Snapshot probraly has data
+
+            Debug.Log("Handle Child Changed");
+            StartCoroutine(FbManager.instance.HandleReceivedTraceChanged(args.Snapshot.Reference.Key));
         }
     }
     public void SubscribeOrUnSubscribeToTraceGroup(bool subscribe, string groupID)
@@ -1343,7 +1344,8 @@ public partial class FbManager : MonoBehaviour
                 Debug.Log("HandleChildAdded Error");
                 return;
             }
-            StartCoroutine(GetReceivedTrace(args.Snapshot.Key));
+            Debug.Log("HandleChildAdded:" + args.Snapshot.Key);
+            StartCoroutine(GetReceivedTrace(args.Snapshot.Key, args.Snapshot.Reference.Parent.Key));
         }
         
         void HandleChildChanged(object sender, ChildChangedEventArgs args) {
@@ -1351,8 +1353,8 @@ public partial class FbManager : MonoBehaviour
                 Debug.Log("HandleChildAdded Error");
                 return;
             }
-            Debug.Log("HandleChildChanged");
-            StartCoroutine(HandleReceivedTraceChanged(args.Snapshot.Key)); //todo: why pass key when args.Snapshot probraly has data
+            Debug.Log("HandleChildChanged:" + args.Snapshot.Reference.Key);
+            StartCoroutine(HandleReceivedTraceChanged(args.Snapshot.Reference.Key, args.Snapshot.Reference.Parent.Key));
         }
     }
     public void SubscribeOrUnsubscribeToSentTraces(bool subscribe)
@@ -1458,26 +1460,31 @@ public partial class FbManager : MonoBehaviour
     #endregion
     
     #region Sending and Recieving Traces and Comments
-    public void UploadTrace(List<string> usersToSendTo, List<string> phonesToSendTo, string fileLocation, float radius, Vector2 location, MediaType mediaType, bool sendToFollowers)
+    public void UploadTrace(List<string> usersToSendTo, List<string> phonesToSendTo, string fileLocation, float radius, Vector2 location, MediaType mediaType, bool sendToFollowers, DateTime expiration)
     {
-        Debug.Log(" UploadTrace(): File Location:" + fileLocation);
+        Debug.Log("UploadTrace(): File Location:" + fileLocation);
         
-        //PUSH DATA TO REAL TIME DB
+        //Push data to real time database
         string key = _databaseReference.Child("Traces").Push().Key;
         Dictionary<string, Object> childUpdates = new Dictionary<string, Object>();
         
         //draw temp circle until it uploads and the map is cleared on update
         SendTraceManager.instance.isSendingTrace = true;
 
+        //todo: can I remove this?
         //covert users to send to into receiver objects
         List<TraceReceiverObject> receiverObjects = new List<TraceReceiverObject>();
         foreach (var user in usersToSendTo)
         {
+            var relationship = FriendsModelManager.Instance.GetRelationship(user);
+            if(relationship == Relationship.SuperUser || relationship == Relationship.Following)
+                continue;
+            
             receiverObjects.Add(new TraceReceiverObject(user, false));
         }
         
-        _drawTraceOnMap.sendingTraceTraceLoadingObject = new TraceObject(location.x, location.y, radius, receiverObjects, new Dictionary<string, TraceCommentObject>(), "null",thisUserModel.name,  DateTime.UtcNow.ToString(), DateTime.UtcNow.AddHours(24), false, mediaType.ToString(), "temp", true);
-        _drawTraceOnMap.DrawCircle(location.x, location.y, radius, DrawTraceOnMap.TraceType.SENDING, "null");
+        _drawTraceOnMap.sendingTraceTraceLoadingObject = new TraceObject(location.x, location.y, radius, receiverObjects, new Dictionary<string, TraceCommentObject>(), "null",thisUserModel.name,  DateTime.UtcNow.ToString(), DateTime.UtcNow.AddHours(24), false, mediaType.ToString(), "temp", true, false, "null");
+        _drawTraceOnMap.DrawCircle(location.x, location.y, radius, DrawTraceOnMap.TraceType.SENDING, "null", false);
         
         //update global traces
         childUpdates["Traces/" + key + "/senderID"] = _firebaseUser.UserId;
@@ -1487,7 +1494,7 @@ public partial class FbManager : MonoBehaviour
         childUpdates["Traces/" + key + "/lat"] = location.x;
         childUpdates["Traces/" + key + "/long"] = location.y;
         childUpdates["Traces/" + key + "/radius"] = radius;
-        childUpdates["Traces/" + key + "/expiration"] = DateTime.UtcNow.AddHours(24).ToString();
+        childUpdates["Traces/" + key + "/expiration"] = expiration.ToString();
         
         if (PlayerPrefs.GetInt("LeaveTraceIsVisable") == 1)
         {
@@ -1502,6 +1509,12 @@ public partial class FbManager : MonoBehaviour
         foreach (var user in usersToSendTo) //each of the users in usersToSendToList is a UID
         {
             count++;
+            var relationship = FriendsModelManager.Instance.GetRelationship(user);
+            if (relationship == Relationship.SuperUser || relationship == Relationship.Following)
+            {
+                childUpdates["TraceGroups/" + user + "/" + key] = DateTime.UtcNow.ToString();
+            }
+            
             childUpdates["Traces/" + key + "/Reciver/" + user + "/HasViewed"] = false;
             childUpdates["Traces/" + key + "/Reciver/" + user + "/ProfilePhoto"] = "null";
             childUpdates["TracesRecived/" + user +"/"+ key + "/Sender"] = thisUserModel.userID;
@@ -1590,8 +1603,10 @@ public partial class FbManager : MonoBehaviour
             TraceManager.instance.UpdateMap(new Vector2(0,0));
         }
     }
-    public IEnumerator GetReceivedTrace(string traceID)
+    public IEnumerator GetReceivedTrace(string traceID, string groupID = "null")
     {
+        Debug.Log("GetReceivedTrace: TraceGroup:" + groupID);
+        
         if (lowConnectivitySmartLogin)
         {
             var alreadyExistsLocally = TraceManager.instance.receivedTraceObjects.FirstOrDefault(pair => pair.Value.id == traceID).Value;
@@ -1746,10 +1761,8 @@ public partial class FbManager : MonoBehaviour
             if (lat != 0 && lng != 0 && radius != 0) //check for malformed data entry
             {
                 //todo: Take Action Based On If Trace Is Expired
-                if (experationExisits && HelperMethods.IsTraceExpired(experation))
-                    Debug.LogWarning("Trace Is Expired");
-                
-                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, experation, experationExisits, mediaType,traceID, traceHasBeenOpenedByThisUser);
+                bool isExpired = (experationExisits && HelperMethods.IsTraceExpired(experation));
+                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, experation, experationExisits, mediaType,traceID, traceHasBeenOpenedByThisUser, isExpired, groupID);
                 TraceManager.instance.receivedTraceObjects.Add(trace.id,trace);
                 BackgroundTasksBridge.Instance.SendLocationToMonitor((float)lat,(float)lng);
                 BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
@@ -1904,11 +1917,8 @@ public partial class FbManager : MonoBehaviour
             
             if (lat != 0 && lng != 0 && radius != 0)
             {
-                //todo: Take Action Based On If Trace Is Expired
-                if (experationExisits && HelperMethods.IsTraceExpired(experation))
-                    Debug.LogWarning("Trace Is Expired");
-                
-                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, experation, experationExisits, mediaType,traceID, false);
+                bool isExpired = experationExisits && HelperMethods.IsTraceExpired(experation);
+                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, experation, experationExisits, mediaType,traceID, false, isExpired, "null");
                 TraceManager.instance.sentTraceObjects.Add(trace.id,trace);
                 BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
                 TraceManager.instance.UpdateMap(new Vector2());
@@ -1916,8 +1926,11 @@ public partial class FbManager : MonoBehaviour
             }
         }
     }
-    public IEnumerator HandleReceivedTraceChanged(string traceID)
+    public IEnumerator HandleReceivedTraceChanged(string traceID, string groupID = "null")
     {
+        Debug.Log("HandleReceivedTraceChanged:" + traceID);
+        Debug.Log("HandleReceivedTraceChanged GroupID:" + groupID);
+        
         if (lowConnectivitySmartLogin)
         {
             var alreadyExistsLocally = TraceManager.instance.receivedTraceObjects.FirstOrDefault(pair => pair.Value.id == traceID).Value;
@@ -1927,10 +1940,10 @@ public partial class FbManager : MonoBehaviour
                 yield break;
             }
         }
-        
+
         var DBTask = _databaseReference.Child("Traces").Child(traceID).GetValueAsync();
         yield return new WaitUntil(predicate: () => DBTask.IsCompleted);
-        
+
         if (DBTask.IsFaulted)
         {
             Debug.LogWarning(message: $"Failed to register task with {DBTask.Exception}");
@@ -1949,7 +1962,7 @@ public partial class FbManager : MonoBehaviour
             List<TraceReceiverObject> receivers = new List<TraceReceiverObject>();
             Dictionary<string, TraceCommentObject> comments = new Dictionary<string, TraceCommentObject>();
             DateTime experation = new DateTime();
-            bool exerationExists = false;
+            bool experationExisits = false;
 
             foreach (var thing in DBTask.Result.Children)
             {
@@ -2028,7 +2041,6 @@ public partial class FbManager : MonoBehaviour
                     }
                     case "comments":
                     {
-                        Debug.Log("Getting Comments");
                         Dictionary<string, object> _comments = thing.Value as Dictionary<string, object>;
                         foreach (var comment in _comments)
                         {
@@ -2049,6 +2061,8 @@ public partial class FbManager : MonoBehaviour
                                 comments.Add(commentID,new TraceCommentObject(commentID, time, sender, name,new float[]{}));
                             }
                         }
+                        
+                        Debug.Log(("Comments count:" + comments.Count));
                         break;
                     }
                     case "numPeopleSent":
@@ -2064,19 +2078,17 @@ public partial class FbManager : MonoBehaviour
                             CultureInfo.InvariantCulture, DateTimeStyles.None, out experation);
 
                         if (parsedSuccessfully)
-                            exerationExists = true;
+                            experationExisits = true;
                         break;
                 }
             }
+
             if (lat != 0 && lng != 0 && radius != 0) //check for malformed data entry
             {
-                //todo: Take Action Based On If Trace Is Expired
-                if (exerationExists && HelperMethods.IsTraceExpired(experation))
-                    Debug.LogWarning("Trace Is Expired");
-                
-                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, experation, exerationExists, mediaType,traceID, traceHasBeenOpenedByThisUser);
+                bool isExpired = experationExisits && HelperMethods.IsTraceExpired(experation);
+                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, experation, experationExisits, mediaType,traceID, traceHasBeenOpenedByThisUser, isExpired, groupID);
                 Debug.Log("Changed:" + trace.id + " to dict");
-                TraceManager.instance.sentTraceObjects[trace.id] = trace; //update trace
+                TraceManager.instance.receivedTraceObjects[trace.id] = trace; //update trace
                 TraceManager.instance.RefreshTrace(trace);
                 BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
                 TraceManager.instance.UpdateMap(new Vector2());
@@ -2218,17 +2230,15 @@ public partial class FbManager : MonoBehaviour
             
             if (lat != 0 && lng != 0 && radius != 0)
             {
-                //todo: Take Action Based On If Trace Is Expired
-                if (experationExisits && HelperMethods.IsTraceExpired(experation))
-                    Debug.LogWarning("Trace Is Expired");
-                
-                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID,senderName, sendTime, experation, experationExisits, mediaType,traceID, false);
+                bool isExpired = experationExisits && HelperMethods.IsTraceExpired(experation);
+                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID,senderName, sendTime, experation, experationExisits, mediaType,traceID, false, isExpired, "null");
                 Debug.Log("Trace Comments Update To:" + comments.Count);
                 TraceManager.instance.sentTraceObjects[trace.id] = trace; //update trace
                 TraceManager.instance.RefreshTrace(trace); //update if currently being displayed
                 BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
                 TraceManager.instance.UpdateMap(new Vector2());
                 FbManager.instance.AnalyticsSetTracesSent(TraceManager.instance.sentTraceObjects.Count.ToString());
+                
             }
         }
     }
@@ -2368,6 +2378,8 @@ public partial class FbManager : MonoBehaviour
         Debug.Log(" UploadComment(): File Location:" + fileLocation + "with sound wave length:" + extractedValues.Length);
         Debug.Log("Sound wave:" + extractedValues[0] + ", " + extractedValues[1] + ", " + extractedValues[3] + "...");
         
+        Debug.Log(" UploadComment(): 1");
+
         //PUSH DATA TO REAL TIME DB
         string key = _databaseReference.Child("Traces").Child(trace.id).Child("comments").Push().Key;
         Dictionary<string, Object> childUpdates = new Dictionary<string, Object>();
@@ -2377,23 +2389,33 @@ public partial class FbManager : MonoBehaviour
         childUpdates["Traces/" + trace.id + "/comments/" + key + "/senderID"] = thisUserModel.userID;
         childUpdates["Traces/" + trace.id + "/comments/" + key + "/time"] = DateTime.UtcNow.ToString();
         
+        Debug.Log(" UploadComment(): 2");
+
         //upload simple sound wave
         SerializableFloatArray serializableFloatArray = new SerializableFloatArray { data = extractedValues };
         string extractedValuesJson = JsonUtility.ToJson(serializableFloatArray);
         childUpdates["Traces/" + trace.id + "/comments/" + key + "/wave"] = extractedValuesJson;
         Debug.Log("SoundWave:" + extractedValuesJson);
         
-        if(trace.senderID == thisUserModel.userID)
-            childUpdates["TracesSent/" + thisUserModel.userID +"/" + trace.id] = DateTime.UtcNow.ToString(); //change last updated
-        
+        Debug.Log(" UploadComment(): 3");
+
+        childUpdates["TracesSent/" + trace.senderID +"/" + trace.id] = DateTime.UtcNow.ToString(); //change last updated
+   
         foreach (var user in trace.people)
         {
-            if(user.id == thisUserModel.userID) //make sure we dont make a sent trace become received
+            if(user.id == trace.senderID) //make sure we dont make a sent trace become received
                 continue;
             
             childUpdates["TracesRecived/" + user.id +"/"+ trace.id + "/updated"] = DateTime.UtcNow.ToString(); //change last updated
             childUpdates["TracesRecived/" + user.id +"/"+ trace.id + "/Sender"] = trace.senderID;
         }
+
+        if (trace.groupID != "null") //update for trace group
+        {
+            childUpdates["TraceGroups/" + trace.people[0].id +"/"+ trace.id] = DateTime.UtcNow.ToString(); //change last updated
+        }
+
+        Debug.Log(" UploadComment(): 4");
 
         //Upload Content
         StorageReference traceReference = _firebaseStorageReference.Child("/Comments/" + trace.id + "/" + key);
@@ -2405,8 +2427,10 @@ public partial class FbManager : MonoBehaviour
                 }
                 else if(task.IsCompleted)
                 {
-                    Debug.Log("FB: Finished uploading...");
+                    Debug.Log("FB: Finishing uploading...");
                     _databaseReference.UpdateChildrenAsync(childUpdates); //update real time DB
+                    Debug.Log("FB: Finished uploading...");
+                    
                     try 
                     {
                         //todo: un comment for production

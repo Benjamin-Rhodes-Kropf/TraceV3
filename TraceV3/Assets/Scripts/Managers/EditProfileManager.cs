@@ -17,8 +17,11 @@ public class EditProfileManager : MonoBehaviour
 
     private void OnEnable()
     {
-        if (ScreenSizeManager.instance.currentModel == iPhoneModel.iPhone7_8)_verticalLayoutGroup.spacing = -45;
-        if (ScreenSizeManager.instance.currentModel == iPhoneModel.iPhone7Plus_8Plus)_verticalLayoutGroup.spacing = -45;
+        if (ScreenSizeManager.instance.currentModel == iPhoneModel.iPhone6s_7_8)_verticalLayoutGroup.spacing = -45;
+        if (ScreenSizeManager.instance.currentModel == iPhoneModel.iPhone6sPlus_6Plus_7Plus_8Plus)_verticalLayoutGroup.spacing = -45;
+        if (ScreenSizeManager.instance.currentModel == iPhoneModel.iPhoneSE2)_verticalLayoutGroup.spacing = -45;
+        if (ScreenSizeManager.instance.currentModel == iPhoneModel.iPhoneSE3)_verticalLayoutGroup.spacing = -45;
+
     }
 
     void Start()

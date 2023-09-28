@@ -22,28 +22,24 @@ public class SendCommentManager : MonoBehaviour
     
     public void SendComment(string fileLocation, TraceObject traceObject, float[] extractedValues)
     {
-        Debug.Log("SEND TRACE!");
-        SendLocalNotification("Sending Comment", "hang on while we upload it!", 1f);
+        Debug.Log("Sending Comment!");
+        //SendLocalNotification("Sending Comment", "hang on while we upload it!", 1f);
         this.traceObject = traceObject;
         FbManager.instance.UploadComment(traceObject, fileLocation, extractedValues);
     }
     
     public void SendNotificationToUsersWhoRecivedTheComment()
     {
+        string displayName = FbManager.instance.thisUserModel.name;
         //users
+        string message = "Commented on " + traceObject.senderName + "'s " + "trace!";
         foreach (var user in traceObject.people)
         {
-            try //no clue why this makes it work
-            {
-                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user.id, FbManager.instance.thisUserModel.name, "Commented on a Trace!", (float)traceObject.lng,(float)traceObject.lat));
-            }
-            catch (Exception e)
-            {
-                Debug.Log("Notification failed... trying again");
-                StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user.id, FbManager.instance.thisUserModel.name, "Commented on a Trace!", (float)traceObject.lng,(float)traceObject.lat));
-            }
+            NotificationManager.Instance.StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user.id, displayName, message, (float)traceObject.lng,(float)traceObject.lat));
         }
-        SendLocalNotification("Comment Sent", "lets hope they find it!",1f);
+        
+        if(FriendsModelManager.Instance.GetRelationship(traceObject.senderID) != Relationship.SuperUser)
+            NotificationManager.Instance.StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(traceObject.senderID, displayName, "Commented on your Trace!", (float)traceObject.lng,(float)traceObject.lat));
     }
     
     public void SendLocalNotification(string title, string message, float delayInSeconds)

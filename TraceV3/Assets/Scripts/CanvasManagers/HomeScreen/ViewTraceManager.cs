@@ -38,11 +38,11 @@ public class ViewTraceManager :  MonoBehaviour, IDragHandler, IEndDragHandler
     {
         switch(ScreenSizeManager.instance.currentModel)
         {
-            case iPhoneModel.iPhone7_8:
+            case iPhoneModel.iPhone6s_7_8:
                 up_targetYVal = 900;
                 down_targetYVal = -1000;
                 return;
-            case iPhoneModel.iPhone7Plus_8Plus:
+            case iPhoneModel.iPhone6sPlus_6Plus_7Plus_8Plus:
                 up_targetYVal = 1300;
                 down_targetYVal = -1000;
                 return;

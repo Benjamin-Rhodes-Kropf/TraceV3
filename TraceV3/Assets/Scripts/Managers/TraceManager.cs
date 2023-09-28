@@ -84,11 +84,11 @@ public class TraceManager : MonoBehaviour
                     distanceFromMouse = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.Value.lat, (float)trace.Value.lng, _clickRadiusAnimationCurve.Evaluate(onlineMaps.floatZoom)*pinModeMultiplyer);
                 }
                 
-                if (distanceFromMouse < 0 && (trace.Value.HasBeenOpened || trace.Value.canBeOpened))
+                if (distanceFromMouse < 0 && (trace.Value.HasBeenOpened || trace.Value.canBeOpened) && !trace.Value.isExpired)
                 {
                     accessibleTraces.Add((trace.Value, distanceFromMouse));
                 }
-                else if (distanceFromMouse < 0 && !trace.Value.HasBeenOpened && !trace.Value.canBeOpened) 
+                else if (distanceFromMouse < 0 && !trace.Value.HasBeenOpened && !trace.Value.canBeOpened && !trace.Value.isExpired) 
                 {
                     viewableAbleTraces.Add((trace.Value, distanceFromMouse));
                 }
@@ -194,20 +194,24 @@ public class TraceManager : MonoBehaviour
         var traceObjectsInOrderOfDistance = receivedTraceObjects.Values.OrderBy(f => f.distanceToUser);
         return traceObjectsInOrderOfDistance;
     }
-    private List<TraceObject> ApplyDistanceFilterTraces(float userLat, float userLon)
+    private List<TraceObject> ApplyTraceFilter(float userLat, float userLon)
     {
         var filtered = new List<(TraceObject, double)>();
         foreach (var trace in receivedTraceObjects)
         {
             var distance = ApproximateDistanceBetweenTwoLatLongsInM(userLat, userLon, trace.Value.lat,
                 trace.Value.lng);
-            filtered.Add((trace.Value, distance));
+            
+            if (!trace.Value.HasBeenOpened && !trace.Value.isExpired)
+            {
+                filtered.Add((trace.Value, distance));
+            }
         }
 
         filtered.Sort((i1, i2) => i1.Item2.CompareTo(i2.Item2));
         return filtered.Select(i => i.Item1).ToList();
     }
-    private void UpdateNotificationsForNext50Traces()
+    private void UpdateNotificationsForNext20Traces()
     {
         if (receivedTraceObjects.Count < 1)
         {
@@ -215,19 +219,21 @@ public class TraceManager : MonoBehaviour
             return;
         }
 
-        List<TraceObject> distanceFilterTraces = ApplyDistanceFilterTraces(_previousLatitude, _previousLongitude);
+        List<TraceObject> filteredTraces = ApplyTraceFilter(_previousLatitude, _previousLongitude);
 
-        for (var i = 0; i < distanceFilterTraces.Count && i < 50; i++)
+        
+        for (var i = 0; i < filteredTraces.Count && i < 20; i++)
         {
-            var trace = distanceFilterTraces[i];
-            if (!trace.HasBeenOpened)
-            {
-                ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng,trace.radius, " ", trace.senderName);
-            }
+            var trace = filteredTraces[i];
+            if (!trace.HasBeenOpened && !trace.isExpired)
+                ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng, trace.radius, " ", trace.senderName);
         }
         
         //Schedule prompt to tell user to send a trace
-        ScheduleNotificationOnExitInARadius(onlineMapsLocationService.position.x, onlineMapsLocationService.position.y, 1000);
+        Debug.Log("Placed Exit Trace: lat:" + onlineMapsLocationService.position.x + " long:" + onlineMapsLocationService.position.y);
+        
+        //if you move a significant distance
+        ScheduleNotificationOnExitInARadius(onlineMapsLocationService.position.x, onlineMapsLocationService.position.y, 10000);
     }
     private static void ScheduleNotificationOnEnterInARadius(float latitude, float longitude, float radius, string message, string SenderName)
     {
@@ -236,10 +242,9 @@ public class TraceManager : MonoBehaviour
             Center = new Vector2(latitude, longitude),
             Radius = radius,
             NotifyOnEntry = true,
-            NotifyOnExit = false
+            NotifyOnExit = false,
+            Repeats = true,
         };
-        // Debug.Log("Push Notification is set for a radius of " + enterLocationTrigger.Radius + "Meters"
-        //           + " When user enters in " + "Latitude = " + latitude + "===" + "Longitude = " + longitude);
 
         var entryBasedNotification = new iOSNotification
         {
@@ -267,9 +272,10 @@ public class TraceManager : MonoBehaviour
         
         var entryBasedNotification = new iOSNotification
         {
+            
             Title = "Cool Spot?",
             Subtitle =  "Leave a Trace!",
-            Body = "",
+            Body = "This might be a good spot to leave a trace",
             ShowInForeground = true,
             ForegroundPresentationOption = PresentationOption.Alert | PresentationOption.Sound,
             Trigger = exitLocationTrigger
@@ -305,44 +311,30 @@ public class TraceManager : MonoBehaviour
         // Showing current updated coordinates
         _distance = ApproximateDistanceBetweenTwoLatLongsInM(_previousLatitude, _previousLongitude, currentLatitude, currentLongitude);
 
-        // Detecting the Significant Location Change
-        if (_distance > maxDist)
-        {
-            // Remove All Pending Notifications
-            iOSNotificationCenter.RemoveAllScheduledNotifications();
-
-            // Set current player's location
-            _previousLatitude = currentLatitude;
-            _previousLongitude = currentLongitude;
-
-            // Add Notifications for the Next 10 Distance Filtered Traces
-            UpdateNotificationsForNext50Traces();
-        }
-
         if (!HomeScreenManager.isInSendTraceView)
         {
             foreach (var traceObject in receivedTraceObjects)
             {
                 var dist = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates((float)traceObject.Value.lat, (float)traceObject.Value.lng, currentLatitude, currentLongitude, (float)(traceObject.Value.radius*1000));
                 if (!traceObject.Value.hasBeenAdded)
-                    traceObject.Value.marker = drawTraceOnMap.DrawCircle(traceObject.Value.lat, traceObject.Value.lng, (traceObject.Value.radius), GetTraceType(dist, traceObject.Value), traceObject.Value.id);
+                    traceObject.Value.marker = drawTraceOnMap.DrawCircle(traceObject.Value.lat, traceObject.Value.lng, (traceObject.Value.radius), GetTraceType(dist, traceObject.Value), traceObject.Value.id, traceObject.Value.isExpired);
             }
         }
         else
         {
-            foreach (var traceobject in sentTraceObjects)
+            foreach (var traceObject in sentTraceObjects)
             {
-                if (!traceobject.Value.hasBeenAdded)
+                if (!traceObject.Value.hasBeenAdded)
                 {
-                    traceobject.Value.marker = drawTraceOnMap.DrawCircle(traceobject.Value.lat, traceobject.Value.lng, (traceobject.Value.radius), DrawTraceOnMap.TraceType.SENT, traceobject.Value.id);
-                    traceobject.Value.hasBeenAdded = true;
+                    traceObject.Value.marker = drawTraceOnMap.DrawCircle(traceObject.Value.lat, traceObject.Value.lng, (traceObject.Value.radius), DrawTraceOnMap.TraceType.SENT, traceObject.Value.id, traceObject.Value.isExpired);
+                    traceObject.Value.hasBeenAdded = true;
                 }
             }
 
             if (SendTraceManager.instance.isSendingTrace)
             {
                 var loadingTraceObject = drawTraceOnMap.sendingTraceTraceLoadingObject;
-                drawTraceOnMap.DrawCircle(loadingTraceObject.lat, loadingTraceObject.lng, loadingTraceObject.radius, DrawTraceOnMap.TraceType.SENDING, loadingTraceObject.id);
+                drawTraceOnMap.DrawCircle(loadingTraceObject.lat, loadingTraceObject.lng, loadingTraceObject.radius, DrawTraceOnMap.TraceType.SENDING, loadingTraceObject.id, false);
             }
         }
     }
@@ -438,10 +430,11 @@ public class TraceManager : MonoBehaviour
             }
         }
         UpdateTracesOnMap();
+        _scaleMapElements.UpdateAllTraceScale();
     }
     public void UpdateMap(Vector2 vector2)
     {
-        // Debug.Log("Map Update");
+        // ]\Debug.Log("Map Update");
         ClearTracesOnMap();
         UpdateTracesOnMap();
         _scaleMapElements.UpdateAllTraceScale();
@@ -458,16 +451,18 @@ public class TraceManager : MonoBehaviour
             traceobject.Value.hasBeenAdded = false;
         }
     }
+    
     void OnApplicationQuit()
     {
         Debug.Log("Application ending after " + Time.time + " seconds");
-        ScheduleNotifications();
+        ScheduleNotifications(); //todo: determine if background trace notifications are working
     }
     private void OnApplicationPaused()
     {
         Debug.Log("Application Paused after " + Time.time + " seconds");
-        ScheduleNotifications();
+        ScheduleNotifications(); //todo: determine if background trace notifications are working
     }
+    
     private void ScheduleNotifications()
     {
         Vector2 previousUserLocation = userLocation;
@@ -501,7 +496,7 @@ public class TraceManager : MonoBehaviour
             _previousLongitude = currentLongitude;
 
             // Add Notifications for the Next 10 Distance Filtered Traces
-            UpdateNotificationsForNext50Traces();
+            UpdateNotificationsForNext20Traces();
         }
     }
 }
@@ -546,6 +541,7 @@ public class TraceObject
     public OnlineMapsMarker marker;
     
     public string id;
+    public string groupID;
     public double lat;
     public double lng;
     public float radius;
@@ -560,7 +556,9 @@ public class TraceObject
     private bool _hasBeenOpened = false;
     public string sendTime;
     public DateTime expiration;
+    public string debugExpiration; //dont use
     public bool exirationExists;
+    public bool isExpired;
     
     // Getter and Setter for hasBeenOpened
     public bool HasBeenOpened
@@ -576,20 +574,23 @@ public class TraceObject
         }
     }
     
-    public TraceObject(double longitude, double latitude, float radius, List<TraceReceiverObject> people, Dictionary<string,TraceCommentObject> comments, string senderID, string senderName, string sendTime, DateTime expiration, bool exirationExists, string mediaType, string id, bool hasBeenOpened)
+    public TraceObject(double longitude, double latitude, float radius, List<TraceReceiverObject> people, Dictionary<string,TraceCommentObject> comments, string senderID, string senderName, string sendTime, DateTime expiration, bool exirationExists, string mediaType, string id, bool hasBeenOpened, bool isExpired, string groupID)
     {
         lng = longitude;
         lat = latitude;
         this.radius = radius;
         this.senderID = senderID;
+        this.groupID = groupID;
         this.people = people;
         this.comments = comments;
         this.senderName = senderName;
         this.sendTime = sendTime;
         this.expiration = expiration;
         this.exirationExists = exirationExists;
+        this.debugExpiration = expiration.ToString(); //debug
         this.mediaType = mediaType;
         this.id = id;
+        this.isExpired = isExpired;
         _hasBeenOpened = hasBeenOpened; //dont use setter because we dont want to destroy objects coming from memory
     }
 }

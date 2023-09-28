@@ -71,7 +71,7 @@ public static class HelperMethods
     public static bool IsTraceExpired(DateTime expiration)
     {
         TimeSpan remaining = expiration - DateTime.UtcNow;
-        return (remaining > TimeSpan.Zero);
+        return (remaining <= TimeSpan.Zero);
     }
     
     public static List<String> GetUserHashesFromList(List<String> usersToSendTrace)

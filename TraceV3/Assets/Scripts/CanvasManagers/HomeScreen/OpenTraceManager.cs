@@ -15,6 +15,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] private OnlineMapsLocationService _onlineMapsLocation;
     [SerializeField] private CommentAudioManager _commentAudioManager;
     [SerializeField] private CommentDisplayManager _commentDisplayManager;
+    
 
     [Header("Trace Stuff")]
     public TraceObject trace;
@@ -22,7 +23,6 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] private GameObject videoObject;
     [SerializeField] private RectTransform _videoRectTransform;
     [SerializeField] private float videoScaleConstant;
-    [SerializeField] private string senderID;
     [SerializeField] private TMP_Text senderNameDisplay;
     [SerializeField] private TMP_Text senderDateDisplay;
     [SerializeField] private bool countdown;
@@ -105,95 +105,123 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         Reset();
         videoPlayer.loopPointReached += OnVideoEnded;
     }
+    
     private void SetScreenSize()
     {
         switch(ScreenSizeManager.instance.currentModel)
         {
             //g_offset is just openUp_targetYVal * 0.75
-            case iPhoneModel.iPhone7_8: //working
+            case iPhoneModel.iPhone6s_7_8: // Perfect
                 openUp_targetYVal = 780;
                 g_offset = -585;
-                viewImageHeightTarget = 3800;
+                viewImageHeightTarget = 2250;
+                videoScaleConstant = 1.15f;
+                commentImageHeightTarget = 3040;
                 return;
-            case iPhoneModel.iPhone7Plus_8Plus: //working
+            case iPhoneModel.iPhone6sPlus_6Plus_7Plus_8Plus: //Perfect
                 openUp_targetYVal = 1100;
                 g_offset = -825;
-                viewImageHeightTarget = 3800;
+                viewImageHeightTarget = 3460;
+                videoScaleConstant = 0.85f;
+                commentImageHeightTarget = 4350;
                 return;
-            case iPhoneModel.iPhoneX_XS: //working
-                openUp_targetYVal = 1150;
-                g_offset = -862;
-                viewImageHeightTarget = 3650;
+            case iPhoneModel.iPhoneX_XS: //Perfect
+                openUp_targetYVal = 1120;
+                g_offset = -830;
+                viewImageHeightTarget = 3640;
+                commentImageHeightTarget = 4500;
                 videoScaleConstant = 0.84f;
                 return;
-            case iPhoneModel.iPhoneXR: //working
-                openUp_targetYVal = 850;
-                g_offset = -610;
-                viewImageHeightTarget = 2710;
+            case iPhoneModel.iPhoneXR: //Perfect
+                openUp_targetYVal = 840;
+                g_offset = -615;
+                viewImageHeightTarget = 2680;
+                videoScaleConstant = 1.13f;
+                commentImageHeightTarget = 3500;
                 return;
-            case iPhoneModel.iPhoneXSMax: //working
+            case iPhoneModel.iPhoneXSMax: //Perfect
                 openUp_targetYVal = 1250;
                 g_offset = -937;
                 viewImageHeightTarget = 4000;
                 videoScaleConstant = 0.76f;
+                commentImageHeightTarget = 5000;
                 return;
-            case iPhoneModel.iPhone11: //working
+            case iPhoneModel.iPhone11: //Perfect
                 openUp_targetYVal = 835;
                 g_offset = -615;
                 viewImageHeightTarget = 2680;
                 videoScaleConstant = 1.13f;
+                commentImageHeightTarget = 3500;
                 return;
-            case iPhoneModel.iPhone11Pro: //working
-                openUp_targetYVal = 1150;
-                g_offset = -862;
-                viewImageHeightTarget = 3650;
+            case iPhoneModel.iPhone11Pro: //Perfect
+                openUp_targetYVal = 1120;
+                g_offset = -830;
+                viewImageHeightTarget = 3640;
+                commentImageHeightTarget = 4500;
                 videoScaleConstant = 0.84f;
                 return;
-            case iPhoneModel.iPhone11ProMax: //working
+            case iPhoneModel.iPhone11ProMax: //Perfect
                 openUp_targetYVal = 1250;
                 g_offset = -937;
                 viewImageHeightTarget = 4000;
+                videoScaleConstant = 0.76f;
+                commentImageHeightTarget = 5000;
                 return;
-            case iPhoneModel.iPhoneSE2: //not working at all????????
-                openUp_targetYVal = 2000;
-                g_offset = -1500;
-                viewImageHeightTarget = 3800;
+            case iPhoneModel.iPhoneSE2: // Perfect
+                openUp_targetYVal = 800;
+                g_offset = -570;
+                viewImageHeightTarget = 2200;
+                commentImageHeightTarget = 3300;
+                videoScaleConstant = 1.2f;
                 return;
-            case iPhoneModel.iPhone12Mini: //Working
-                openUp_targetYVal = 1120;
-                g_offset = -830;
-                viewImageHeightTarget = 3490;
-                videoScaleConstant = 0.86f;
-                return;
-            case iPhoneModel.iPhone12_12Pro: //Working
-                openUp_targetYVal = 1200;
-                g_offset = -900;
-                viewImageHeightTarget = 3800;
-                videoScaleConstant = 0.84f;
-                return;
-            case iPhoneModel.iPhone12ProMax: //working
-                openUp_targetYVal = 1350;
-                g_offset = -991;
-                viewImageHeightTarget = 4160;
-                videoScaleConstant = 0.80f;
-                return;
-            case iPhoneModel.iPhone14ProMax_14Plus_13ProMax_: //working
-                openUp_targetYVal = 1350;
-                g_offset = -991;
-                viewImageHeightTarget = 4160;
-                videoScaleConstant = 0.82f;
-                return;
-            case iPhoneModel.iPhone13_13Pro_14_14Pro: //working
-                openUp_targetYVal = 1200;
-                g_offset = -906;
-                viewImageHeightTarget = 3800;
-                videoScaleConstant = 0.84f;
-                return;
-            case iPhoneModel.iPhone13Mini:
+            case iPhoneModel.iPhone12Mini: //Perfect
                 openUp_targetYVal = 1120;
                 g_offset = -830;
                 viewImageHeightTarget = 3500;
+                commentImageHeightTarget = 4500;
                 videoScaleConstant = 0.86f;
+                return;
+            case iPhoneModel.iPhone12_12Pro: // Perfect
+                openUp_targetYVal = 1200;
+                g_offset = -900;
+                viewImageHeightTarget = 3800;
+                commentImageHeightTarget = 4800;
+                videoScaleConstant = 0.84f;
+                return;
+            case iPhoneModel.iPhone12ProMax: // Perfect
+                openUp_targetYVal = 1350;
+                g_offset = -991;
+                viewImageHeightTarget = 4160;
+                videoScaleConstant = 0.74f;
+                commentImageHeightTarget = 5600;
+                return;
+            case iPhoneModel.iPhone14ProMax_14Plus_13ProMax_: // Perfect
+                openUp_targetYVal = 1350;
+                g_offset = -991;
+                viewImageHeightTarget = 4170;
+                videoScaleConstant = 0.73f;
+                commentImageHeightTarget = 5200;
+                return;
+            case iPhoneModel.iPhone13_13Pro_14_14Pro: // Perfect
+                openUp_targetYVal = 1200;
+                g_offset = -860;
+                viewImageHeightTarget = 3800;
+                videoScaleConstant = 0.80f;
+                commentImageHeightTarget = 4800;
+                return;
+            case iPhoneModel.iPhone13Mini: // Perfect
+                openUp_targetYVal = 1120;
+                g_offset = -830;
+                viewImageHeightTarget = 3530;
+                commentImageHeightTarget = 4500;
+                videoScaleConstant = 0.86f;
+                return;
+            case iPhoneModel.iPhoneSE3: // Perfect
+                openUp_targetYVal = 800;
+                g_offset = -570;
+                viewImageHeightTarget = 2200;
+                commentImageHeightTarget = 3300;
+                videoScaleConstant = 1.2f;
                 return;
         }
     }
@@ -230,20 +258,30 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         imageObject.SetActive(true);
         videoObject.SetActive(false);
     }
-    
-    
+
     public IEnumerator ActivateVideoFormat(TraceObject trace)
     {
         Reset();
         currentState = State.OpeningSlideUpToView;
         this.trace = trace;
         senderNameDisplay.text = trace.senderName;
+
+        if (trace.groupID != "null")
+        {
+            senderNameDisplay.text = trace.senderName + " (Group)"; //todo: display which group it is
+        }
         
         Debug.Log("expiration:" + trace.expiration);
-        if(countdown && trace.exirationExists)
+        if (countdown && trace.exirationExists)
+        {
+            Debug.Log("CountDown And exirationExists");
             UpdateCountdown();
+        }
         else
+        {
+            Debug.Log("Displaying Old Trace");
             senderDateDisplay.text = "Left " + HelperMethods.ReformatDate(trace.sendTime) + HelperMethods.ReformatRecipients(trace.people.Count);
+        }
 
         isPhoto = false;
         imageObject.SetActive(false);
@@ -324,7 +362,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
                 //state actions
                 ApplyPhysics();
                 AnimateSecondaryMotions();
-                if(countdown) //display numbers counting down
+                if(countdown && trace.exirationExists) //display numbers counting down
                     UpdateCountdown();
 
                 //state junctions
@@ -335,7 +373,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
                 //state actions
                 ApplyPhysics();
                 AnimateSecondaryMotions();
-                if(countdown) //display numbers counting down
+                if(countdown && trace.exirationExists) //display numbers counting down
                     UpdateCountdown();
                 
                 //state junctions
@@ -378,14 +416,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
                 //state actions
                 ApplyPhysics();
                 AnimateSecondaryMotions();
-                
-                //if its over shot the target
-                // if (changeInYVal > -60 && changeInYVal < -50)
-                // {
-                //     Dy *= 0.8f;
-                //     Debug.Log("Big Friction");
-                // }
-                
+
                 //state junctions
                 if (HugeCloseOutOfCommentView())
                     CloseSlideUpToViewTransition();
@@ -469,7 +500,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     
     bool CloseComments()
     {
-        return (changeInYVal < changeInYvalExitCommentsLimit);
+        return (changeInYVal < changeInYvalExitCommentsLimit - _commentDisplayManager.comments.Count*250 - 50);
     }
     
     bool ClosedView()
@@ -499,13 +530,13 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         currentState = State.ClosingCommentView;
         _commentAudioManager.StopPlayingRecording();
         TraceManager.instance.UpdateMap(new Vector2(0,0)); //vector don't matter just redraw
-        //start playing video early
     }
     
     void OpenCommentViewTransition()
     {
         Debug.Log("OpenCommentViewTransition");
-        m_targetYVal = commentImageHeightTarget;
+        m_targetYVal = commentImageHeightTarget+_commentDisplayManager.comments.Count*250 + 50; //offset by number of comments and there width so it scrolls to the bottom
+        //changeInYvalExitCommentsLimit -= _commentDisplayManager.comments.Count*200;
         currentState = State.OpeningCommentView;
     }
 
@@ -521,7 +552,6 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         g_transform.position = new Vector3(g_transform.position.x, startLocation, g_transform.position.z);
         m_targetYVal = -1000; //close quickly!
         Dy *= 2; //close quickly!
-        // videoPlayer.Pause();
         videoPlayer.Stop();
         currentState = State.Closing;
         _commentDisplayManager.ClearComments();
@@ -529,21 +559,21 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
 
     void DoneOpeningMediaTransition()
     {
+        Debug.Log("DoneOpeningMediaTransition");
         Dy = 0;
         var pos = m_transform.position;
         m_transform.position = new Vector3(pos.x, m_targetYVal, pos.z);
         HapticManager.instance.PlaySelectionHaptic();
         PlayVideo();
         
-        //TraceManager.instance.ClearTracesOnMap(); //todo: maybe do this more seamlessly it causes traces on map to dip for a second unitl it repaints
-        
         currentState = State.MediaView;
 
         if (!trace.HasBeenOpened && trace.senderID != FbManager.instance.thisUserModel.userID)
         {
+            Debug.Log("Marking Trace As Opened");
             FbManager.instance.MarkTraceAsOpened(trace);
             Vector2 _location = _onlineMapsLocation.GetUserLocation();
-            StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(senderID, FbManager.instance.thisUserModel.name , "opened your trace!", _location.y, _location.x));
+            NotificationManager.Instance.StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(trace.senderID, FbManager.instance.thisUserModel.name , "opened your trace!", _location.y, _location.x));
         }
     }
 
@@ -586,6 +616,13 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         else
         {
             senderDateDisplay.text = "Time's up!";
+            
+            //check if trace is too old //todo: check all traces periodically
+            if (trace.exirationExists)
+            {
+                trace.marker.displayedTexture = trace.marker.expieredTexture;
+                CloseView();
+            }
         }
     }
     
@@ -607,11 +644,11 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         Dy *= frictionWeight;
         if (!isDragging)
         {
-            if (changeInYVal > trace.comments.Count * 210 + 200)
+            if (changeInYVal > trace.comments.Count * 250 + 200)
             {
                 Dy -= 5;
                 m_transform.position = new Vector3(m_transform.position.x, m_transform.position.y + Dy - Math.Abs((changeInYVal- trace.comments.Count * 210 + 200))*0.02f);
-                if (changeInYVal > trace.comments.Count * 210 + 250)
+                if (changeInYVal > trace.comments.Count * 230 + 250)
                 {
                     Dy *= 0.8f;
                     Dy -= 10;

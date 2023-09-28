@@ -47,7 +47,6 @@ public class FriendView : MonoBehaviour
     {
         if (_userCoroutine != null)
             StopCoroutine(_userCoroutine);
-        // Release object references
         _profilePic.texture = null;
         _nickName = null;
         _userName = null;
@@ -249,7 +248,17 @@ public class FriendView : MonoBehaviour
             _addRemoveButton.interactable = true;
             Debug.Log("friend requested at:" + friendUID);
             Debug.Log("from:" + FbManager.instance.thisUserModel.name);
-            NotificationManager.Instance.SendNotificationUsingFirebaseUserId(friendUID, FbManager.instance.thisUserModel.name , "sent you friend request");
+            
+            try
+            {
+                NotificationManager.Instance.StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(friendUID, FbManager.instance.thisUserModel.name , "sent you friend request"));
+            }
+            catch (Exception e)
+            {
+                NotificationManager.Instance.StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(friendUID, FbManager.instance.thisUserModel.name , "sent you friend request"));
+                Console.WriteLine(e);
+                throw;
+            }
         }));
         
         FbManager.instance.AnalyticsOnSendFriendRequest(friendUID);

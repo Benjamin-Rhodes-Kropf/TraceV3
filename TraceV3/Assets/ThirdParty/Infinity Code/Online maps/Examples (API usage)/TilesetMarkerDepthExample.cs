@@ -31,8 +31,8 @@ namespace InfinityCode.OnlineMapsExamples
             OnlineMaps map = OnlineMaps.instance;
 
             // Create markers.
-            OnlineMapsMarkerManager.CreateItem(new Vector2(0, 0));
-            OnlineMapsMarkerManager.CreateItem(new Vector2(0, 0.01f));
+            OnlineMapsMarkerManager.CreateItem(new Vector2(0, 0), null);
+            OnlineMapsMarkerManager.CreateItem(new Vector2(0, 0.01f), null);
             OnlineMapsMarkerManager.CreateItem(new Vector2(0, -0.01f));
 
             // Sets a new comparer.

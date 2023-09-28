@@ -24,19 +24,15 @@ public class SelectRadiusCanvas : MonoBehaviour
     [SerializeField]private bool _isTraceVisable;
     [SerializeField]private GameObject traceIsVisable;
     [SerializeField]private GameObject traceIsHidden;
-    //[SerializeField]private bool firstTimeEnabled;
-   
+
     private void OnEnable()
     {
         MapboxGeocoding.Instance.GetUserLocationName(); //not a great time to call this
-        // if (!firstTimeEnabled)
-        // {
-        //     firstTimeEnabled = true;
-        //     return;
-        // }
+        SendTraceManager.instance.SetInitExpiration();
         
         _onlineMapsLocationService.updatePosition = true;
         
+        //set radius based on past trace radius
         if (PlayerPrefs.GetFloat("LeaveTraceSliderRadiusValue") != 0)
         {
             Debug.Log("Playerpref is NOT 0");
@@ -49,6 +45,12 @@ public class SelectRadiusCanvas : MonoBehaviour
             _radiusSlider.value = 0.5f;
             SetRadius();
         }
+        
+        //set the radius to be the "good value"
+        //_radiusSlider.value = 0.5f;
+        //set the expiration to be the first option in the list
+        SetExpiration(DateTime.UtcNow.AddHours(SendTraceManager.instance.TraceExpirationOptions[0].hoursFromNow));
+        
         if (PlayerPrefs.GetInt("LeaveTraceIsVisable") != 0)
         {
             if (PlayerPrefs.GetInt("LeaveTraceIsVisable") == 1)
@@ -90,11 +92,16 @@ public class SelectRadiusCanvas : MonoBehaviour
         dragAndZoomInertia.setZoomMode(true);
         dragAndZoomInertia.setTargetZoom(zoomScaleValue.Evaluate(_radiusSlider.value));
     }
-
+    
     private void FixedUpdate()
     {
         var scale = scaler.Evaluate(map.floatZoom)*radiusSize.Evaluate(_radiusSlider.value);
         radius.rectTransform.localScale = new Vector3(scale,scale,scale);
+    }
+
+    public void SetExpiration(DateTime expiration)
+    {
+        SendTraceManager.instance.SetExpiration(expiration);
     }
 
 

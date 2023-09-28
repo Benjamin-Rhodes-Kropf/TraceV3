@@ -16,8 +16,8 @@ namespace InfinityCode.OnlineMapsExamples
             OnlineMaps map = OnlineMaps.instance;
 
             // Create a new markers.
-            OnlineMapsMarker marker1 = OnlineMapsMarkerManager.CreateItem(new Vector2(0, 0), null, "Marker 1");
-            OnlineMapsMarker marker2 = OnlineMapsMarkerManager.CreateItem(new Vector2(10, 0), null, "Marker 2");
+            OnlineMapsMarker marker1 = OnlineMapsMarkerManager.CreateItem(new Vector2(0, 0),  "Marker 1");
+            OnlineMapsMarker marker2 = OnlineMapsMarkerManager.CreateItem(new Vector2(10, 0),  "Marker 2");
 
             // Store data about labels.
             marker1["data"] = new ShowMarkerLabelsByZoomItem(marker1.label, new OnlineMapsRange(3, 10));

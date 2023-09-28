@@ -46,6 +46,8 @@ public class OnlineMapsMarker : OnlineMapsMarkerBase
     private Texture2D _primaryHollowInTexture;
     [SerializeField]
     private Texture2D _secondaryZoomedOutTexture;
+    [SerializeField]
+    private Texture2D _expiredTexture;
 
     public bool isShowingPrimaryTexture; //todo: make private and use getter
 
@@ -284,6 +286,26 @@ public class OnlineMapsMarker : OnlineMapsMarkerBase
             {
                 //Todo: make custom width and height for secondary and primary map texture
                 Init(_width,_height,_secondaryZoomedOutTexture);
+                map.Redraw();
+            }
+        }
+    }
+    
+    /// <summary>
+    /// Texture marker. <br/>
+    /// Texture format: ARGB32.<br/>
+    /// <strong>Must enable "Read / Write enabled".</strong><br/>
+    /// After changing the texture you need to call OnlineMapsMarker.Init.
+    /// </summary>
+    public Texture2D expieredTexture
+    {
+        get { return _expiredTexture; }
+        set
+        {
+            _expiredTexture = value;
+            if (map != null)
+            {
+                Init(_width,_height,_expiredTexture);
                 map.Redraw();
             }
         }

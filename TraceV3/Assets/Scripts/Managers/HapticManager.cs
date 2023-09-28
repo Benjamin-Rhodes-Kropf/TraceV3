@@ -24,6 +24,11 @@ public class HapticManager : MonoBehaviour
     {
         MMVibrationManager.Haptic(HapticTypes.LightImpact);
     }
+    
+    public void SelectionHaptic() //so I dont need to re-write all buttons
+    {
+        MMVibrationManager.Haptic(HapticTypes.LightImpact);
+    }
 
     public void PlayHeavyImpactHaptic()
     {

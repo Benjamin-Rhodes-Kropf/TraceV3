@@ -25,9 +25,14 @@ public class DrawTraceOnMap : MonoBehaviour
     [SerializeField] private Texture2D primarySendingTextureHollow;
     [SerializeField] private Texture2D secondarySentTexture;
     
+    [SerializeField] private Texture2D expiredTexture;
 
-    public OnlineMapsMarker DrawCircle(double lat, double lng, float radius, TraceType traceType, string markerID)
+    public OnlineMapsMarker DrawCircle(double lat, double lng, float radius, TraceType traceType, string markerID, bool isExpiered)
     {
+        //overide texture
+        if (isExpiered)
+            traceType = TraceType.EXPIRED;
+        
         OnlineMapsMarker _onlineMapsMarker = PlaceTrace(lat, lng, radius, traceType, markerID);
         _onlineMapsMarker.displayedTexture = _onlineMapsMarker.secondaryZoomedOutTexture;
         _scaleMapElements.ScaleTrace(_onlineMapsMarker);
@@ -75,28 +80,31 @@ public class DrawTraceOnMap : MonoBehaviour
         switch (traceType)
         {
             case TraceType.SENT:
-                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primarySentTexture, secondarySentTexture, primarySendingTextureHollow, markerID);
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primarySentTexture, secondarySentTexture, primarySendingTextureHollow, expiredTexture, markerID);
                 return _onlineMapsMarker;
             case TraceType.SENDING:
-                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primarySendingTextureHollow, secondarySentTexture, primarySendingTextureHollow, markerID);
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primarySendingTextureHollow, secondarySentTexture, primarySendingTextureHollow, expiredTexture, markerID);
                 return _onlineMapsMarker;
             case TraceType.RECEIVED:
-                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, markerID);
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, expiredTexture, markerID);
                 return _onlineMapsMarker;
             case TraceType.RECEIVEDBESTFRIEND:
-                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverTextureBF, secondaryReceiverTextureBF, primaryReceivingHollowTextureBF, markerID);
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverTextureBF, secondaryReceiverTextureBF, primaryReceivingHollowTextureBF, expiredTexture, markerID);
                 return _onlineMapsMarker;
             case TraceType.OPENING:
-                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, markerID);
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, expiredTexture, markerID);
                 return _onlineMapsMarker;
             case TraceType.OPENINGBESTFRIEND:
-                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTextureBF, secondaryReceiverTextureBF, primaryReceivingHollowTextureBF, markerID);
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTextureBF, secondaryReceiverTextureBF, primaryReceivingHollowTextureBF, expiredTexture, markerID);
                 return _onlineMapsMarker;
             case TraceType.OPENED:
-                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, markerID);
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, expiredTexture, markerID);
                 return _onlineMapsMarker;
             case TraceType.OPENEDBESTFRIEND:
-                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTextureBF, secondaryReceiverTextureBF, primaryReceivingHollowTextureBF, markerID);
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingHollowTextureBF, secondaryReceiverTextureBF, primaryReceivingHollowTextureBF, expiredTexture, markerID);
+                return _onlineMapsMarker;
+            case TraceType.EXPIRED:
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, expiredTexture, expiredTexture, expiredTexture, expiredTexture, markerID); //todo: replace with grey pins aswell
                 return _onlineMapsMarker;
         }
         return null;
@@ -116,10 +124,10 @@ public class DrawTraceOnMap : MonoBehaviour
         //draw loading trace
         if (SendTraceManager.instance.isSendingTrace)
         {
-            DrawCircle(SendTraceManager.instance.location.x, SendTraceManager.instance.location.y, SendTraceManager.instance.selectedRadius, TraceType.SENDING, "loading");
+            DrawCircle(SendTraceManager.instance.location.x, SendTraceManager.instance.location.y, SendTraceManager.instance.selectedRadius, TraceType.SENDING, "loading", false);
         }
     }
     
-    public enum TraceType {RECEIVED, RECEIVEDBESTFRIEND, SENT, SENDING, OPENING, OPENINGBESTFRIEND, OPENED, OPENEDBESTFRIEND};
+    public enum TraceType {RECEIVED, RECEIVEDBESTFRIEND, SENT, SENDING, OPENING, OPENINGBESTFRIEND, OPENED, OPENEDBESTFRIEND, EXPIRED};
 }
 
