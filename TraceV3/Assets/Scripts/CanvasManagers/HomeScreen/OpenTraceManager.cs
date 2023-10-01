@@ -555,6 +555,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         videoPlayer.Stop();
         currentState = State.Closing;
         _commentDisplayManager.ClearComments();
+        TraceManager.instance.currentlyClickingTraceID = "";
     }
 
     void DoneOpeningMediaTransition()
@@ -585,6 +586,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
     public void PlayVideo()
     {
         videoPlayer.Play();
+        TraceManager.instance.currentlyClickingTraceID = "";
     }
 
     void DoneOpeningCommentTransition()
@@ -600,6 +602,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         Debug.Log("ClosedTransition");
         currentState = State.Closed;
         _commentDisplayManager.ClearComments();
+        TraceManager.instance.currentlyClickingTraceID = "";
     }
     #endregion
     

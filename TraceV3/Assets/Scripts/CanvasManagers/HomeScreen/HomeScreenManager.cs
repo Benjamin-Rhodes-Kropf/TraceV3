@@ -186,7 +186,12 @@ public class HomeScreenManager : MonoBehaviour
     
     public void OpenTrace(TraceObject trace) //Todo: Make mediaType an Enum
     {
-        
+        if (TraceManager.instance.currentlyClickingTraceID == trace.id)
+        {
+            Debug.LogWarning("Already Clicking Trace");
+            return;
+        }
+
         CloseViewTrace();
         Debug.Log("Opening Trace:" + trace.ToString());
         if (trace.id == null)
@@ -206,6 +211,7 @@ public class HomeScreenManager : MonoBehaviour
                 {
                     openTraceManager.ActivatePhotoFormat(trace);
                     openTraceManager.displayTrace.texture = texture;
+                    TraceManager.instance.currentlyClickingTraceID = "";
                 }
                 else
                 {

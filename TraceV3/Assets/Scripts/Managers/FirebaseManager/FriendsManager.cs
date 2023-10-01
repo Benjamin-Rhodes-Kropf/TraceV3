@@ -17,7 +17,7 @@ public partial class FbManager
     #region Continues Listners
     private void HandleReceivedFriendRequest(object sender, ChildChangedEventArgs args)
     {
-        Debug.Log("HandleFriendRequest");
+        Debug.Log("HandleReceivedFriendRequest");
         try
         {
             if (args.Snapshot != null && args.Snapshot.Value != null)
@@ -54,7 +54,8 @@ public partial class FbManager
         }
         catch (Exception e)
         {
-            Debug.Log("Exception From HandleFriendRequest");
+            Debug.Log("Exception From HandleFriendRequest:");
+            Console.WriteLine(e);
         }
     }
     private void HandleReceivedRemovedRequests(object sender, ChildChangedEventArgs args)
@@ -76,7 +77,7 @@ public partial class FbManager
     
     private void HandleSentFriendRequest(object sender, ChildChangedEventArgs args)
     {
-        Debug.Log("HandleFriendRequest");
+        Debug.Log("HandleSentFriendRequest");
         try
         {
             if (args.Snapshot != null && args.Snapshot.Value != null)
@@ -84,8 +85,8 @@ public partial class FbManager
                 string senderId = args.Snapshot.Child("senderId").Value.ToString();
                 string receiverId = args.Snapshot.Child("receiverId").Value.ToString();
                 
-                // print("Receiver ID : "+ receiverId);
-                // print("Sender ID : "+ senderId);
+                print("Receiver ID : "+ receiverId);
+                print("Sender ID : "+ senderId);
                 
                 // Get the friend request data
                 string requestId = args.Snapshot.Key;
@@ -114,8 +115,8 @@ public partial class FbManager
         }
         catch (Exception e)
         {
-            _databaseReference.Child("allFriendRequests").ChildAdded -= HandleReceivedFriendRequest;
-            Debug.Log("Exception From HandleFriendRequest");
+            Debug.Log("Exception From HandleFriendRequest:");
+            Console.WriteLine(e);
         }
     }
     private void HandleSentRemovedRequests(object sender, ChildChangedEventArgs args)
@@ -419,11 +420,19 @@ public partial class FbManager
         _databaseReference.Child("Friends").Child(_firebaseUser.UserId).Child(friendID).RemoveValueAsync();
         _databaseReference.Child("Friends").Child(friendID).Child(_firebaseUser.UserId).RemoveValueAsync();
     }
-    public void CancelFriendRequest(string senderId)
+    public void CancelFriendRequest(string senderId, bool isReceiveRequest)
     {
         // Delete the friend request node
-        _databaseReference.Child("FriendsReceive").Child(senderId).Child(_firebaseUser.UserId).RemoveValueAsync();
-        _databaseReference.Child("FriendsSent").Child(_firebaseUser.UserId).Child(senderId).RemoveValueAsync();
+        if (isReceiveRequest)
+        {
+            _databaseReference.Child("FriendsReceive").Child(_firebaseUser.UserId).Child(senderId).RemoveValueAsync();
+            _databaseReference.Child("FriendsSent").Child(senderId).Child(_firebaseUser.UserId).RemoveValueAsync();
+        }
+        else
+        {
+            _databaseReference.Child("FriendsReceive").Child(senderId).Child(_firebaseUser.UserId).RemoveValueAsync();
+            _databaseReference.Child("FriendsSent").Child(_firebaseUser.UserId).Child(senderId).RemoveValueAsync();
+        }
     }
     private void HandleFriendsManagerClearData()
     {

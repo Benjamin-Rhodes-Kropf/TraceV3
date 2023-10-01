@@ -126,8 +126,10 @@ public class TraceManager : MonoBehaviour
             Debug.Log("OPEN TRACE: can be opened:" + traceToOpen.Item1.canBeOpened);
             Debug.Log("OPEN TRACE: has been opened:" + traceToOpen.Item1.HasBeenOpened);
             
-            //keep track of which trace should be hollow for if we redraw the map after action taken
-            currentlyClickingTraceID = traceToOpen.Item1.id;
+            
+            
+            //if(currentlyClickingTraceID == traceToOpen.Item1.id) 
+            
             
             //convert trace image to hollow if clicked
             traceToOpen.Item1.marker.displayedTexture =  traceToOpen.Item1.marker.primaryHollowInTexture;
@@ -136,6 +138,7 @@ public class TraceManager : MonoBehaviour
             FbManager.instance.AnalyticsOnTracePressed(traceToOpen.Item1.senderName, traceToOpen.Item1.sendTime, "open");
             StartCoroutine(_dragAndZoomInertia.ZoomToObject(new Vector2((float)traceToOpen.Item1.lng, (float)traceToOpen.Item1.lat), -traceToOpen.Item1.radius, 0.1f));
             homeScreenManager.OpenTrace(traceToOpen.Item1);
+            currentlyClickingTraceID = traceToOpen.Item1.id;
             homeScreenManager.UpdateLocationText(17);
         }
         else if(viewableAbleTraces.Count > 0)
