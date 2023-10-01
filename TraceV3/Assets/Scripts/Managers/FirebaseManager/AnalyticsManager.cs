@@ -16,8 +16,8 @@ public partial class FbManager
     private string screenName = "null";
     public void AnalyticsStartTimer(string screenName)
     {
-        Debug.Log("Analytics: AnalyticsStartTimer");
-        Debug.Log("Analytics: screenName:" + screenName);
+        // Debug.Log("Analytics: AnalyticsStartTimer");
+        // Debug.Log("Analytics: screenName:" + screenName);
 
         this.screenName = screenName;
         startTime = Time.time;

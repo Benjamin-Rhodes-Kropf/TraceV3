@@ -138,7 +138,6 @@ public partial class FbManager
     
     private void HandleFriends(object sender, ChildChangedEventArgs args)
     {
-        //Debug.Log("HandleFriends");
         if (args.Snapshot == null || args.Snapshot.Value == null) return;
 
         try
@@ -190,7 +189,7 @@ public partial class FbManager
         }
         catch (Exception e)
         {
-            Debug.Log("SOMTHING WENT WRONG");
+            Debug.Log("Something WENT WRONG");
         }
     }
     private void HandleRemovedFriends(object sender, ChildChangedEventArgs args)

@@ -64,15 +64,15 @@ public partial class FbManager
             // Handle custom data here
             if (key == "lat" && double.TryParse(value, out double latValue))
             {
-                Debug.Log("Notification Lat: " + value);
+                // Debug.Log("Notification Lat: " + value);
                 target.y = (float)latValue;
-                Debug.Log("SetTargetY");
+                // Debug.Log("SetTargetY");
             }
             else if (key == "lng" && double.TryParse(value, out double lngValue))
             {
-                Debug.Log("Notification Lng: " + value);
+                // Debug.Log("Notification Lng: " + value);
                 target.x = (float)lngValue;
-                Debug.Log("SetTargetX");
+                // Debug.Log("SetTargetX");
             }
         }
         

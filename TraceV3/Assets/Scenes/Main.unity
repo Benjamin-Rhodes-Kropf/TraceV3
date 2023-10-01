@@ -35510,7 +35510,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   _homeScreenManager: {fileID: 878571056}
-  switchToSatiliteViewSpaceZoomLimit: 0
+  switchToSatiliteViewSpaceZoomLimit: 20
   targetZoomMode: 0
   targetZoom: 0
   isInteract: 0

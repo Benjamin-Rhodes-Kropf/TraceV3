@@ -112,7 +112,6 @@ public partial class FbManager : MonoBehaviour
    
    private void InitializeFirebase()
     {
-        Debug.Log("initializing firebase");
         _firebaseAuth = FirebaseAuth.DefaultInstance;
         _databaseReference = FirebaseDatabase.DefaultInstance.RootReference;
         _allReceivedRequests = new List<FriendRequests>();
@@ -165,8 +164,8 @@ public partial class FbManager : MonoBehaviour
 
         if (savedUsername != "null" && savedUsername != "" && savedPassword != "null" && savedPassword != "") //check if empty
         {
-            Debug.Log("Auto Logging in with username:" + PlayerPrefs.GetString("Username"));
-            Debug.Log("Auto Logging in with password:" + PlayerPrefs.GetString("Password"));
+            // Debug.Log("Auto Logging in with username:" + PlayerPrefs.GetString("Username"));
+            // Debug.Log("Auto Logging in with password:" + PlayerPrefs.GetString("Password"));
 
             StartCoroutine(FbManager.instance.Login(savedUsername, savedPassword, (myReturnValue) => {
                 switch (myReturnValue.LoginStatus)
