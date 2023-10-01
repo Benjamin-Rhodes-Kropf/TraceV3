@@ -25,17 +25,17 @@ public partial class FbManager
 
     public void AnalyticsStopTimer()
     {
-        Debug.Log("Analytics: AnalyticsStopTimer");
+        //Debug.Log("Analytics: AnalyticsStopTimer");
         ElapsedTime = Time.time - startTime;
-        Debug.Log("Analytics: timeSpentOnScreen " + screenName +":" + ElapsedTime);
+        //Debug.Log("Analytics: timeSpentOnScreen " + screenName +":" + ElapsedTime);
         AnalyticsTimeSpentOnScreen();
     }
 
     public void AnalyticsTimeSpentOnScreen()
     {
-        Debug.Log("Analytics: TimeSpentOnScreen");
-        Debug.Log("screen_name:" + screenName);
-        Debug.Log("time_spent_on_screen:" + ElapsedTime);
+        //Debug.Log("Analytics: TimeSpentOnScreen");
+        //Debug.Log("screen_name:" + screenName);
+        //Debug.Log("time_spent_on_screen:" + ElapsedTime);
         FirebaseAnalytics.LogEvent("time_spent_on_screen", new Parameter[] {
             new Parameter("this_user_username", thisUserModel.username),
             new Parameter("screen_name", screenName),
@@ -47,7 +47,7 @@ public partial class FbManager
     public void AnalyticsOnLocationChanged(double lat, double lng)
     {
         if(!IsFirebaseUserInitialised) return; //make sure fb user exists
-        Debug.Log("Analytics: AnalyticsOnLocationChanged");
+        //Debug.Log("Analytics: AnalyticsOnLocationChanged");
         FirebaseAnalytics.LogEvent("location_changed", new Parameter[] {
             new Parameter("this_user_username", thisUserModel.username),
             new Parameter("date_of_location", DateTime.UtcNow.ToString()),
@@ -78,7 +78,7 @@ public partial class FbManager
     public void AnalyticsOnCameraPressed()
     {
         if(!IsFirebaseUserInitialised) return; //make sure fb user exists
-        Debug.Log("Analytics: OnCameraPressed");
+        //Debug.Log("Analytics: OnCameraPressed");
         FirebaseAnalytics.LogEvent("home_camera_pressed", new Parameter[] {
             new Parameter("this_user_username", thisUserModel.username),
         });
@@ -86,7 +86,7 @@ public partial class FbManager
     public void AnalyticsOnFriendsPressed()
     {
         if(!IsFirebaseUserInitialised) return; //make sure fb user exists
-        Debug.Log("Analytics: OnFriendsPressed");
+        //Debug.Log("Analytics: OnFriendsPressed");
         FirebaseAnalytics.LogEvent("home_friends_pressed", new Parameter[] {
             new Parameter("this_user_username", thisUserModel.username),
         });
@@ -94,7 +94,7 @@ public partial class FbManager
     public void AnalyticsOnUserSettingsPressed()
     {
         if(!IsFirebaseUserInitialised) return; //make sure fb user exists
-        Debug.Log("Analytics: OnUserSettingsPressed");
+        //Debug.Log("Analytics: OnUserSettingsPressed");
         FirebaseAnalytics.LogEvent("home_settings_pressed", new Parameter[] {
             new Parameter("this_user_username", thisUserModel.username),
         });
@@ -102,7 +102,7 @@ public partial class FbManager
     public void AnalyticsOnSwitchViewSelectionPressed()
     {
         if(!IsFirebaseUserInitialised) return; //make sure fb user exists
-        Debug.Log("Analytics: OnSwitchViewSelectionPressed");
+        //Debug.Log("Analytics: OnSwitchViewSelectionPressed");
         FirebaseAnalytics.LogEvent("home_switch_view_pressed", new Parameter[] {
             new Parameter("this_user_username", thisUserModel.username),
         });
@@ -112,10 +112,10 @@ public partial class FbManager
     public void AnalyticsOnSendTrace(int numberOfPeopleSelected, float lengthOfVideo, int camFlippedCount)
     {
         if(!IsFirebaseUserInitialised) return; //make sure fb user exists
-        Debug.Log("Analytics: OnSendTrace");
-        Debug.Log("length_of_video:" + lengthOfVideo);
-        Debug.Log("camera_flipped_count:" + camFlippedCount);
-        Debug.Log("number_of_people_sent_to:" + numberOfPeopleSelected);
+        //Debug.Log("Analytics: OnSendTrace");
+        //Debug.Log("length_of_video:" + lengthOfVideo);
+        //Debug.Log("camera_flipped_count:" + camFlippedCount);
+        //Debug.Log("number_of_people_sent_to:" + numberOfPeopleSelected);
         FirebaseAnalytics.LogEvent("trace_sent", new Parameter[] {
             new Parameter("this_user_username", thisUserModel.username),
             new Parameter("date_of_video", DateTime.UtcNow.ToString()),
@@ -127,9 +127,9 @@ public partial class FbManager
     public void AnalyticsOnTracePressed(string usernameOfTraceSender, string timeSinceTraceLeft, string traceType) //todo: add functionality here
     {
         if(!IsFirebaseUserInitialised) return; //make sure fb user exists
-        Debug.Log("Analytics: OnTracePressed");
-        Debug.Log("username_of_trace_sender:" + usernameOfTraceSender);
-        Debug.Log("time_since_trace_left:" + timeSinceTraceLeft);
+        //Debug.Log("Analytics: OnTracePressed");
+        //Debug.Log("username_of_trace_sender:" + usernameOfTraceSender);
+        //Debug.Log("time_since_trace_left:" + timeSinceTraceLeft);
         FirebaseAnalytics.LogEvent("trace_pressed", new Parameter[] {
             new Parameter("this_user_username", thisUserModel.username),
             new Parameter("trace_type", traceType),
