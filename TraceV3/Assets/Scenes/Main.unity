@@ -486,7 +486,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &80923839 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8610898301709165914, guid: 50dc71afdd0a54d7bb78549ae8f1561c, type: 3}
@@ -2979,7 +2978,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &864861247
 GameObject:
   m_ObjectHideFlags: 0
@@ -7822,7 +7820,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1569325011
 GameObject:
   m_ObjectHideFlags: 0
@@ -7888,7 +7885,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &1569325015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8252,7 +8248,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1610271248
 GameObject:
   m_ObjectHideFlags: 0
@@ -8485,7 +8480,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1656055763
 GameObject:
   m_ObjectHideFlags: 0
@@ -35354,7 +35348,7 @@ MonoBehaviour:
   useProxy: 1
   useSoftwareJPEGDecoder: 0
   width: 4096
-  _activeTypeSettings: 07User ID21018benrk10006Map ID228225cljkem6q300e201qp76zfaaya12Access
+  _activeTypeSettings: 07User ID21018benrk10006Map ID228225cle5v79j8000201k1lr5tl86v12Access
     Token293290pk.eyJ1IjoiYmVucmsxMDAiLCJhIjoiY2xid3VqdWJjMDdodDNubjdpaTU2OWZiYSJ9.3ytRbwK51mPCf73LWaJjmA
   _zoom: 18
   latitude: 42
@@ -35884,7 +35878,9 @@ MonoBehaviour:
   primarySentTexture: {fileID: 2800000, guid: 376c3c79a8a484acfa2c25b50680b2b6, type: 3}
   primarySendingTextureHollow: {fileID: 2800000, guid: eec53750067d14ff897dcb3a1bdbdb1a, type: 3}
   secondarySentTexture: {fileID: 2800000, guid: 1b1282ba964874ad29fe4a229cdffa16, type: 3}
-  expiredTexture: {fileID: 2800000, guid: add751bfaa4864c088eca87e8842e7f2, type: 3}
+  expiredTextureMostRecent: {fileID: 2800000, guid: 4b23c93a436ce4baaa3f91479b565371, type: 3}
+  expiredTextureRecent: {fileID: 2800000, guid: 818ca056bdf83496e93430c6835b436b, type: 3}
+  expiredTextureLeastRecent: {fileID: 2800000, guid: e300e158fa83a41c8b00e79b1240e04d, type: 3}
 --- !u!114 &6068666308761308087
 MonoBehaviour:
   m_ObjectHideFlags: 0
