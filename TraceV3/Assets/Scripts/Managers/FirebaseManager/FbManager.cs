@@ -41,9 +41,10 @@ public partial class FbManager : MonoBehaviour
     [SerializeField] private FirebaseFirestore _firebaseFirestore;
 
     [Header("Developer Settings")]
-    [SerializeField] private bool resetPlayerPrefs;
     [SerializeField] private int fakeLoginWaitTime;
     public bool lowConnectivitySmartLogin;
+    public bool useBackgroundLocationTasks;
+    public bool resetPlayerPrefs;
     
     [Header("Maps References")]
     [SerializeField] private DrawTraceOnMap _drawTraceOnMap;
@@ -1764,10 +1765,14 @@ public partial class FbManager : MonoBehaviour
                 bool isExpired = (experationExisits && HelperMethods.IsTraceExpired(experation));
                 var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, experation, experationExisits, mediaType,traceID, traceHasBeenOpenedByThisUser, isExpired, groupID);
                 TraceManager.instance.receivedTraceObjects.Add(trace.id,trace);
-                BackgroundTasksBridge.Instance.SendLocationToMonitor((float)lat,(float)lng);
-                BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
+                if (!isExpired)
+                {
+                    if(useBackgroundLocationTasks)
+                        BackgroundTasksBridge.Instance.SendLocationToMonitor((float)lat,(float)lng);
+                    BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
+                }
                 TraceManager.instance.UpdateMap(new Vector2());
-                FbManager.instance.AnalyticsSetTracesReceived(TraceManager.instance.receivedTraceObjects.Count.ToString());
+               AnalyticsSetTracesReceived(TraceManager.instance.receivedTraceObjects.Count.ToString()); //TODO: fix anylitcs
             }
         }
     }
@@ -2090,7 +2095,10 @@ public partial class FbManager : MonoBehaviour
                 Debug.Log("Changed:" + trace.id + " to dict");
                 TraceManager.instance.receivedTraceObjects[trace.id] = trace; //update trace
                 TraceManager.instance.RefreshTrace(trace);
-                BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
+                if (!isExpired)
+                {
+                    BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
+                }
                 TraceManager.instance.UpdateMap(new Vector2());
                 FbManager.instance.AnalyticsSetTracesReceived(TraceManager.instance.receivedTraceObjects.Count.ToString());
             }
@@ -2238,7 +2246,6 @@ public partial class FbManager : MonoBehaviour
                 BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
                 TraceManager.instance.UpdateMap(new Vector2());
                 FbManager.instance.AnalyticsSetTracesSent(TraceManager.instance.sentTraceObjects.Count.ToString());
-                
             }
         }
     }
@@ -2326,7 +2333,6 @@ public partial class FbManager : MonoBehaviour
             callback(path);
         }
     }
-
     public IEnumerator GetTraceAudioByUrl(string _url, System.Action<string> callback)
     {
         StorageReference pathReference = _firebaseStorage.GetReference("Comments/" + _url);
@@ -2371,8 +2377,6 @@ public partial class FbManager : MonoBehaviour
         Debug.Log("Audio Location:" + finalPath);
         callback(finalPath);
     }
-
-    
     public void UploadComment(TraceObject trace, string fileLocation, float[] extractedValues)
     {
         Debug.Log(" UploadComment(): File Location:" + fileLocation + "with sound wave length:" + extractedValues.Length);
@@ -2486,8 +2490,6 @@ public partial class FbManager : MonoBehaviour
 
         if (!task.IsFaulted && !task.IsCanceled)
         {
-            // Debug.Log("Download URL: " + task.Result);
-            // Debug.Log("Actual  URL: " + url);
             url = task.Result + "";
             onSuccess(url);
         }

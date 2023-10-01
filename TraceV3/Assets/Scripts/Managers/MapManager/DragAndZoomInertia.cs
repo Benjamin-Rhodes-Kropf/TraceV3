@@ -18,7 +18,7 @@ public class DragAndZoomInertia : MonoBehaviour
     [SerializeField]private OnlineMapsLocationService _locationService;
     [SerializeField] private AnimationCurve zoomCurveOnZoomTo;
     [SerializeField] private HomeScreenManager _homeScreenManager;
-    [SerializeField] private float switchToSpaceLimit;
+    [SerializeField] private float switchToSatiliteViewSpaceZoomLimit;
     
     [Header("Select Radius Mode")]
     [SerializeField]private bool targetZoomMode;
@@ -128,7 +128,7 @@ public class DragAndZoomInertia : MonoBehaviour
     private void OnMapPress()
     {
         #if UNITY_EDITOR
-        OnMapZoom();
+            OnMapZoom(); //because unity editor does not have simulated finger zoom
         #endif
                 
         // Get tile coordinates of map
@@ -166,7 +166,7 @@ public class DragAndZoomInertia : MonoBehaviour
     {
         Debug.Log("Map Zoom:" + map.floatZoom);
         Debug.Log("MapType:" + map.mapType);
-        if (map.floatZoom > switchToSpaceLimit)
+        if (map.floatZoom > switchToSatiliteViewSpaceZoomLimit)
         {
             Debug.Log("Set Map To Map to Satellite Mode");
             map.mapType = "Satellite";

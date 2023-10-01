@@ -36,7 +36,7 @@ public class BackgroundTasksBridge : MonoBehaviour
     private void TestNativeCode()
     {
         // UpdateLocations();
-        SendDataToiOS("TraceData_Native","This  will  be the value number ::"+ counter);
+        //SendDataToiOS("TraceData_Native","This  will  be the value number ::"+ counter);
     }
 
     public void SendLocationToMonitor(float latitude, float longitude)

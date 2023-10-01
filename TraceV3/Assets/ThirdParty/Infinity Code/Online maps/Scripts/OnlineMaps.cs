@@ -1,6 +1,8 @@
 /*         INFINITY CODE         */
 /*   https://infinity-code.com   */
 
+//Map Style: cljkem6q300e201qp76zfaaya
+
 using System;
 using System.Collections;
 using System.Collections.Generic;

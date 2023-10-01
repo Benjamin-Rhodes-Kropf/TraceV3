@@ -4846,9 +4846,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dependencyStatus: 6
   firebaseStorageReferenceUrl: gs://geosnapv1.appspot.com
-  resetPlayerPrefs: 0
   fakeLoginWaitTime: 0
   lowConnectivitySmartLogin: 0
+  useBackgroundLocationTasks: 0
+  resetPlayerPrefs: 0
   _drawTraceOnMap: {fileID: 6068666308761308086}
   _dragAndZoomInertia: {fileID: 6068666308761308082}
   _map: {fileID: 6068666308761308066}
@@ -35348,7 +35349,7 @@ MonoBehaviour:
   useProxy: 1
   useSoftwareJPEGDecoder: 0
   width: 4096
-  _activeTypeSettings: 07User ID21018benrk10006Map ID228225cle5v79j8000201k1lr5tl86v12Access
+  _activeTypeSettings: 07User ID21018benrk10006Map ID228225cljkem6q300e201qp76zfaaya12Access
     Token293290pk.eyJ1IjoiYmVucmsxMDAiLCJhIjoiY2xid3VqdWJjMDdodDNubjdpaTU2OWZiYSJ9.3ytRbwK51mPCf73LWaJjmA
   _zoom: 18
   latitude: 42
@@ -35509,7 +35510,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   _homeScreenManager: {fileID: 878571056}
-  switchToSpaceLimit: 18
+  switchToSatiliteViewSpaceZoomLimit: 0
   targetZoomMode: 0
   targetZoom: 0
   isInteract: 0

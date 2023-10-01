@@ -90,8 +90,9 @@ public class HomeScreenManager : MonoBehaviour
 
     public void ChangeLocationText()
     {
-        StartCoroutine(ChangeLocationTextReduceApiCallSpeed(_onlineMaps.floatZoom));
-        StartCoroutine(IsChangingLocation());
+        //Todo:Make location text api work
+        //StartCoroutine(ChangeLocationTextReduceApiCallSpeed(_onlineMaps.floatZoom));
+        //StartCoroutine(IsChangingLocation());
     }
     public void UpdateLocationText(float zoom)
     {

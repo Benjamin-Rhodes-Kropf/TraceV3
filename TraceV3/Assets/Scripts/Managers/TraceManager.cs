@@ -317,7 +317,7 @@ public class TraceManager : MonoBehaviour
             {
                 var dist = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates((float)traceObject.Value.lat, (float)traceObject.Value.lng, currentLatitude, currentLongitude, (float)(traceObject.Value.radius*1000));
                 if (!traceObject.Value.hasBeenAdded)
-                    traceObject.Value.marker = drawTraceOnMap.DrawCircle(traceObject.Value.lat, traceObject.Value.lng, (traceObject.Value.radius), GetTraceType(dist, traceObject.Value), traceObject.Value.id, traceObject.Value.isExpired);
+                    traceObject.Value.marker = drawTraceOnMap.DrawCircle(traceObject.Value.lat, traceObject.Value.lng, (traceObject.Value.radius), GetTraceType(dist, traceObject.Value), traceObject.Value.id);
             }
         }
         else
@@ -326,7 +326,7 @@ public class TraceManager : MonoBehaviour
             {
                 if (!traceObject.Value.hasBeenAdded)
                 {
-                    traceObject.Value.marker = drawTraceOnMap.DrawCircle(traceObject.Value.lat, traceObject.Value.lng, (traceObject.Value.radius), DrawTraceOnMap.TraceType.SENT, traceObject.Value.id, traceObject.Value.isExpired);
+                    traceObject.Value.marker = drawTraceOnMap.DrawCircle(traceObject.Value.lat, traceObject.Value.lng, (traceObject.Value.radius), DrawTraceOnMap.TraceType.SENT, traceObject.Value.id);
                     traceObject.Value.hasBeenAdded = true;
                 }
             }
@@ -334,7 +334,7 @@ public class TraceManager : MonoBehaviour
             if (SendTraceManager.instance.isSendingTrace)
             {
                 var loadingTraceObject = drawTraceOnMap.sendingTraceTraceLoadingObject;
-                drawTraceOnMap.DrawCircle(loadingTraceObject.lat, loadingTraceObject.lng, loadingTraceObject.radius, DrawTraceOnMap.TraceType.SENDING, loadingTraceObject.id, false);
+                drawTraceOnMap.DrawCircle(loadingTraceObject.lat, loadingTraceObject.lng, loadingTraceObject.radius, DrawTraceOnMap.TraceType.SENDING, loadingTraceObject.id);
             }
         }
     }
@@ -346,6 +346,9 @@ public class TraceManager : MonoBehaviour
     
     private DrawTraceOnMap.TraceType GetTraceType(double dist, TraceObject traceObject)
     {
+        if (traceObject.isExpired)
+            return DrawTraceOnMap.TraceType.EXPIREDMOSTRECENT;
+        
         if (!traceObject.HasBeenOpened)
         {
             if (currentlyClickingTraceID == traceObject.id)
