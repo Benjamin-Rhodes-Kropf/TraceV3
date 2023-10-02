@@ -342,7 +342,6 @@ public partial class FbManager : MonoBehaviour
     
     private void ContinuesListners()
     {
-        //this is bad... this is called any time any friend request occurs globally in the database
         _databaseReference.Child("FriendsReceive").Child(_firebaseUser.UserId).ChildAdded += HandleReceivedFriendRequest;
         _databaseReference.Child("FriendsReceive").Child(_firebaseUser.UserId).ChildRemoved += HandleReceivedRemovedRequests;
         
@@ -352,6 +351,7 @@ public partial class FbManager : MonoBehaviour
         _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildAdded += HandleFriends;
         _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildRemoved += HandleRemovedFriends;
         
+        //todo: why do we listen to all of the databases users?
         _databaseReference.Child("users").ChildChanged += HandleUserChanged;
         _databaseReference.Child("users").ChildRemoved += HandleRemoveUser;
         
@@ -371,7 +371,7 @@ public partial class FbManager : MonoBehaviour
         
         _databaseReference.Child("users").Child(_firebaseUser.UserId).ChildAdded -= HandleUserAdded;
         _databaseReference.Child("users").Child(_firebaseUser.UserId).ChildRemoved -= HandleRemoveUser;
-        _databaseReference.Child("users").ChildChanged += HandleUserChanged;
+        _databaseReference.Child("users").ChildChanged -= HandleUserChanged;
         
         SubscribeOrUnSubscribeToReceivingTraces(false);
         SubscribeOrUnsubscribeToSentTraces(false);

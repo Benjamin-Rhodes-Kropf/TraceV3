@@ -54,16 +54,21 @@ public class UserDataManager
         List<UserModel> users = new List<UserModel>();
         foreach (var request in FbManager.instance._allReceivedRequests)
         {
+            bool foundUser = false;
             Debug.Log("GetFriendRequested from:" + request.SenderID);
-            
-                foreach (var user in FbManager.instance.users)
+            foreach (var user in FbManager.instance.users)
+            {
+                if (string.Equals(user.userID, request.SenderID))
                 {
-                    if (string.Equals(user.userID, request.SenderID))
-                    {
-                        Debug.Log("ADDED USER:" + user.userID);
-                        users.Add(user);
-                    };
-                }
+                    Debug.Log("ADDED USER:" + user.userID);
+                    users.Add(user);
+                    foundUser = true;
+                };
+            }
+            if (!foundUser)
+            {
+                Debug.LogWarning("Could Not Find User In FbManager.instance.users List");
+            }
         }
         return users;
     }

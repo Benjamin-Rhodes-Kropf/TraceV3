@@ -48,8 +48,6 @@ public partial class FbManager
 
                 if (ContactsCanvas.UpdateRequestView != null)
                     ContactsCanvas.UpdateRequestView?.Invoke();
-                
-                // Display friend request UI here...
             }
         }
         catch (Exception e)
@@ -307,74 +305,83 @@ public partial class FbManager
             callback(true);
         }
     }
-    private IEnumerator RetrieveReceivedFriendRequests()
-    {
-        Debug.Log("RetrieveReceivedFriendRequests");
-        // Get the current user's ID
-        var userId = _firebaseUser.UserId;
-        var friendRequestsRef = _databaseReference.Child("FriendsReceive").Child(_firebaseUser.UserId);
-        var task = friendRequestsRef.GetValueAsync();
-        
-        while (task.IsCompleted is false) yield return new WaitForEndOfFrame();
-
-        if (task.IsCanceled || task.IsFaulted)
-        {
-            print(task.Exception.Message);
-        }
-        else
-        {
-            DataSnapshot snapshot = task.Result;
-            foreach (var request in snapshot.Children)
-            {
-                var senderId = request.Child("senderId").Value.ToString();
-                if (FriendRequestManager.Instance.IsRequestAllReadyInList(senderId, false) is false)
-                {
-                    FriendRequests req = new FriendRequests();
-                    req.SenderID = senderId;
-                    req.ReceiverId = request.Child("receiverId").Value.ToString();
-                    req.RequestID = request.Key;
-                    print("Request ID :: "+ req.RequestID);
-                    print("Sender ID :: "+ req.SenderID);
-                    print("Receiver ID :: "+ req.ReceiverId);
-                    Debug.Log("ADDED friend request:" + req.SenderID);
-                    _allReceivedRequests.Add(req);
-                }
-            }
-        }
-    }
-    private IEnumerator RetrieveSentFriendRequests()
-    {
-        // Get the current user's ID
-        string userId = _firebaseUser.UserId;
-        DatabaseReference friendRequestsRef = _databaseReference.Child("FriendsSent");
-        var task = friendRequestsRef.Child(userId).GetValueAsync();
-        
-        while (task.IsCompleted is false)
-            yield return new WaitForEndOfFrame();
-
-        if (task.IsCanceled || task.IsFaulted)
-        {
-            print(task.Exception.Message);
-        }
-        else
-        {
-            DataSnapshot snapshot = task.Result;
-            foreach (var request in snapshot.Children)
-            {
-                string receiverId = request.Child("receiverId").Value.ToString();
-                if (FriendRequestManager.Instance.IsRequestAllReadyInList(receiverId) is false)
-                {
-                    FriendRequests req = new FriendRequests();
-                    req.SenderID = request.Child("senderId").Value.ToString();;
-                    req.ReceiverId = receiverId;
-                    req.RequestID = request.Key;
-                    
-                    Debug.Log("RetrieveSentFriendRequests FriendRequestManager ADD:" + req.RequestID);
-                    FriendRequestManager.Instance._allSentRequests.Add(req.RequestID,req);
-                }
-            }
-        }
-    }
+    
+    //this is no longer called? why? (Because we use listeners instead?)
+    //OLD CODE... DELETE todo
+    // private IEnumerator RetrieveReceivedFriendRequests()
+    // {
+    //     Debug.Log("RetrieveReceivedFriendRequests");
+    //     // Get the current user's ID
+    //     var userId = _firebaseUser.UserId;
+    //     var friendRequestsRef = _databaseReference.Child("FriendsReceive").Child(_firebaseUser.UserId);
+    //     var task = friendRequestsRef.GetValueAsync();
+    //     
+    //     while (task.IsCompleted is false) yield return new WaitForEndOfFrame();
+    //
+    //     if (task.IsCanceled || task.IsFaulted)
+    //     {
+    //         print(task.Exception.Message);
+    //     }
+    //     else
+    //     {
+    //         DataSnapshot snapshot = task.Result;
+    //         foreach (var request in snapshot.Children)
+    //         {
+    //             var senderId = request.Child("senderId").Value.ToString();
+    //             if (FriendRequestManager.Instance.IsRequestAllReadyInList(senderId, true) is false)
+    //             {
+    //                 FriendRequests req = new FriendRequests();
+    //                 req.SenderID = senderId;
+    //                 req.ReceiverId = request.Child("receiverId").Value.ToString();
+    //                 req.RequestID = request.Key;
+    //                 print("Request ID :: "+ req.RequestID);
+    //                 print("Sender ID :: "+ req.SenderID);
+    //                 print("Receiver ID :: "+ req.ReceiverId);
+    //                 Debug.Log("ADDED friend request:" + req.SenderID);
+    //                 _allReceivedRequests.Add(req);
+    //             }
+    //         }
+    //     }
+    // }
+    
+    //this is no longer called? why? (Because we use listeners instead?)
+    //OLD CODE... DELETE todo
+    // private IEnumerator RetrieveSentFriendRequests()
+    // {
+    //     // Get the current user's ID
+    //     string userId = _firebaseUser.UserId;
+    //     DatabaseReference friendRequestsRef = _databaseReference.Child("FriendsSent");
+    //     var task = friendRequestsRef.Child(userId).GetValueAsync();
+    //     
+    //     while (task.IsCompleted is false)
+    //         yield return new WaitForEndOfFrame();
+    //
+    //     if (task.IsCanceled || task.IsFaulted)
+    //     {
+    //         print(task.Exception.Message);
+    //     }
+    //     else
+    //     {
+    //         DataSnapshot snapshot = task.Result;
+    //         foreach (var request in snapshot.Children)
+    //         {
+    //             string receiverId = request.Child("receiverId").Value.ToString();
+    //             if (FriendRequestManager.Instance.IsRequestAllReadyInList(receiverId, false) is false)
+    //             {
+    //                 FriendRequests req = new FriendRequests();
+    //                 req.SenderID = request.Child("senderId").Value.ToString();;
+    //                 req.ReceiverId = receiverId;
+    //                 req.RequestID = request.Key;
+    //                 
+    //                 Debug.Log("RetrieveSentFriendRequests FriendRequestManager ADD:" + req.RequestID);
+    //                 FriendRequestManager.Instance._allSentRequests.Add(req.RequestID,req);
+    //             }
+    //         }
+    //     }
+    // }
+    
+    
+    //TODO: OLD CODE NOT USED?
     public void GetSpecificUserData(string userId, Action<UserModel> callBack)
     {
         StartCoroutine(GetSpecificUserDataCoroutine(userId, callBack));
