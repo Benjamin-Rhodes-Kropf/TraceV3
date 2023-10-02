@@ -33,18 +33,19 @@ public class SelectRadiusCanvas : MonoBehaviour
         _onlineMapsLocationService.updatePosition = true;
         
         //set radius based on past trace radius
-        if (PlayerPrefs.GetFloat("LeaveTraceSliderRadiusValue") != 0)
-        {
-            Debug.Log("Playerpref is NOT 0");
-            _radiusSlider.value = PlayerPrefs.GetFloat("LeaveTraceSliderRadiusValue");
-        }
-        else
-        {
-            Debug.Log("Playerpref is 0 setting to half");
-            PlayerPrefs.SetFloat("LeaveTraceSliderRadiusValue", 0.5f);
-            _radiusSlider.value = 0.5f;
-            SetRadius();
-        }
+        // if (PlayerPrefs.GetFloat("LeaveTraceSliderRadiusValue") != 0)
+        // {
+        //     Debug.Log("Playerpref is NOT 0");
+        //     _radiusSlider.value = PlayerPrefs.GetFloat("LeaveTraceSliderRadiusValue");
+        // }
+        // else
+        // {
+        //     Debug.Log("Playerpref is 0 setting to half");
+        //     PlayerPrefs.SetFloat("LeaveTraceSliderRadiusValue", 0.5f);
+        //     _radiusSlider.value = 0.5f;
+        //     SetRadius();
+        // }
+        _radiusSlider.value = 0.01614065f; //preset dont do player prefs^
         
         //set the radius to be the "good value"
         //_radiusSlider.value = 0.5f;
