@@ -1791,7 +1791,7 @@ public partial class FbManager : MonoBehaviour
                 if (!isExpired)
                 {
                     if(useBackgroundLocationTasks)
-                        BackgroundTasksBridge.Instance.SendLocationToMonitor((float)lat,(float)lng);
+                        BackgroundTasksBridge.Instance.SendLocationToMonitor((float)lat,(float)lng, (float)radius);
                     BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
                 }
                 TraceManager.instance.UpdateMap(new Vector2());

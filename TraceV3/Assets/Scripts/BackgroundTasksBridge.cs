@@ -39,16 +39,18 @@ public class BackgroundTasksBridge : MonoBehaviour
         //SendDataToiOS("TraceData_Native","This  will  be the value number ::"+ counter);
     }
 
-    public void SendLocationToMonitor(float latitude, float longitude)
+    public void SendLocationToMonitor(float latitude, float longitude, float radius)
     {
 #if UNITY_EDITOR
         Debug.Log("Please Switch To IOS Device To get this work");
 #elif UNITY_IOS
+        //todo add radius
         SetLocationToMonitor(latitude,longitude);
 #endif
     }
     
     
+    //test code
     private void SendDataToiOS(string key, string value)
     {
         PlayerPrefs.SetString(key, value);
@@ -61,6 +63,7 @@ public class BackgroundTasksBridge : MonoBehaviour
     }
 
 
+    //uhh not sure
     public void UpdateLocations( )
     {
 // #if UNITY_EDITOR
