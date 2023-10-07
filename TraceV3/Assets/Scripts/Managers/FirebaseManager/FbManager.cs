@@ -212,6 +212,20 @@ public partial class FbManager : MonoBehaviour
                             ScreenManager.instance.ChangeScreenNoAnim("PhoneNumber");
                         else if(thisUserModel.name == "null" || thisUserModel.name == "" || thisUserModel.username == "null" || thisUserModel.username == "")
                             ScreenManager.instance.ChangeScreenNoAnim("Username");
+                        else if (thisUserModel.photo == "null")
+                        {
+                            Debug.LogWarning("Photo is Null going to set photo");
+                            ScreenManager.instance.ChangeScreenNoAnim("TakePhoto");
+                            //set new firestore document
+                            _firestoreData = new Dictionary<string, object>
+                            {
+                                {"email",FbManager.instance.thisUserModel.email},
+                                {"name",FbManager.instance.thisUserModel.name},
+                                {"phone",FbManager.instance.thisUserModel.phone},
+                                {"username",FbManager.instance.thisUserModel.username},
+                                {"photo","ProfilePhoto/" + thisUserModel.userID + ".png"},
+                            };
+                        }
                         break;
                     default:
                         ScreenManager.instance.ChangeScreenForwards("ConnectionError");
@@ -352,6 +366,7 @@ public partial class FbManager : MonoBehaviour
         _databaseReference.Child("Friends").Child(_firebaseUser.UserId).ChildRemoved += HandleRemovedFriends;
         
         //todo: why do we listen to all of the databases users?
+        //we should not do this.
         _databaseReference.Child("users").ChildChanged += HandleUserChanged;
         _databaseReference.Child("users").ChildRemoved += HandleRemoveUser;
         
@@ -371,7 +386,11 @@ public partial class FbManager : MonoBehaviour
         
         _databaseReference.Child("users").Child(_firebaseUser.UserId).ChildAdded -= HandleUserAdded;
         _databaseReference.Child("users").Child(_firebaseUser.UserId).ChildRemoved -= HandleRemoveUser;
+        
+        //todo: why do we listen to all of the databases users?
+        //we should not do this.
         _databaseReference.Child("users").ChildChanged -= HandleUserChanged;
+        _databaseReference.Child("users").ChildRemoved -= HandleRemoveUser;
         
         SubscribeOrUnSubscribeToReceivingTraces(false);
         SubscribeOrUnsubscribeToSentTraces(false);
@@ -412,21 +431,23 @@ public partial class FbManager : MonoBehaviour
                 string phone = GetChildValue(snapshot, "phone");
                 string photoURL = GetChildValue(snapshot, "photo");
 
-                thisUserModel = new UserModel(_firebaseUser.UserId, email, displayName, username, phone, photoURL, "password");
-                
+                thisUserModel = new UserModel(_firebaseUser.UserId, email, displayName, username, phone, photoURL,
+                    "password");
+
                 string superValue = GetChildValue(snapshot, "super");
                 if (bool.TryParse(superValue, out bool result) && result)
                 {
                     thisUserModel.super = true;
                 }
-                
+
                 // Check for missing data
-                if (string.IsNullOrEmpty(phone) || username == "null" || name == "null")
+                if (string.IsNullOrEmpty(phone) || username == "null" || name == "null" || photoURL == "null")
                 {
                     Debug.LogWarning("User Profile Missing Data");
                     callback(UserStatus.MissingData);
                     yield break;
                 }
+                
                 IsFirebaseUserInitialised = true;
                 Debug.Log("User Initialized");
                 callback(UserStatus.Initialized);
@@ -874,7 +895,6 @@ public partial class FbManager : MonoBehaviour
     }
     private void HandleUserChanged(object sender, ChildChangedEventArgs args)
     {
-        Debug.Log("HandleUserChanged");
         try
         {
             if (args.Snapshot == null || args.Snapshot.Value == null) return;
@@ -951,31 +971,32 @@ public partial class FbManager : MonoBehaviour
     }
     public void AddUserToLocalDbByID(string userToGetID)
     {
-        //Debug.Log("Adding:" + userToGetID);
+        Debug.Log("AddUserToLocalDbByID:" + userToGetID);
 
         if (userToGetID == "Don't Delete This Child")
+        {
+            Debug.LogWarning("User ID Is Null or Malformed");
             return;
+        }
+        
         //check if user already in local DB
         foreach (var obj in users)
         {
             if (obj.userID == userToGetID)
             {
-                Debug.Log("users already added:" + obj.username);
+                Debug.LogWarning("user to add already added:" + obj.username);
                 return;
             }
         }
         
-        //if not retrive the user from the database
+        //if not already in local DB add the user from the database
         UserModel user = new UserModel();
         user.userID = userToGetID;
         
-        //Debug.Log("creating document refrence");
-
-        // Reference to the specific document you want to read from
+        //Reference to the specific document you want to read from
         DocumentReference docRef = _firebaseFirestore.Collection("users").Document(userToGetID);
         
-        //Debug.Log("GetSnapshotAsync");
-        // Read the document
+        //get the document
         docRef.GetSnapshotAsync().ContinueWithOnMainThread(task =>
         {
             if (task.Exception != null)
@@ -983,8 +1004,6 @@ public partial class FbManager : MonoBehaviour
                 Debug.LogError($"Failed to read data from Firestore: {task.Exception}");
                 return;
             }
-
-            //Debug.Log("adding snapshot" + user.userID);
             
             // Get the document snapshot
             DocumentSnapshot snapshot = task.Result;
@@ -1038,6 +1057,7 @@ public partial class FbManager : MonoBehaviour
     {
         //todo: handle remove user
     }
+    
     #endregion
     #region -User Permissioning
     public IEnumerator SendInvite(string _phoneNumber)
@@ -1440,14 +1460,18 @@ public partial class FbManager : MonoBehaviour
 
     #region FirestoreData
 
-    public void CreateDocumentInFireStore()
+    public void CreateUserDocumentInFireStore()
     {
+        Debug.Log("Create User Document In Firestore object internals:");
+        foreach (var obj in _firestoreData)
+        {
+            Debug.Log(obj.Key + ":" + obj.Value);
+        }
         _firebaseFirestore.Collection("users").Document(_firebaseUser.UserId).SetAsync(_firestoreData).ContinueWithOnMainThread(task =>
         {
             if (task.IsCompleted)
             {
                 Debug.Log("Data created successfully in Firestore.");
-                ScreenManager.instance.ChangeScreenForwards("SettingUpAccount");
             }
             else
             {

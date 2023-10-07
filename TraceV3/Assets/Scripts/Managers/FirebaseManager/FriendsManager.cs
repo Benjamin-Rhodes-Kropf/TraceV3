@@ -41,7 +41,6 @@ public partial class FbManager
                 };
                 Debug.Log("HandleReceivedFriendRequest ADD:" + requestId);
                 AddUserToLocalDbByID(requestId);
-                
                 _allReceivedRequests.Add(request); //Todo: this ain't workin it causes double requests
                 HelperMethods.PlayHeptics();
                 ContactsCanvas.UpdateRedMarks?.Invoke();
