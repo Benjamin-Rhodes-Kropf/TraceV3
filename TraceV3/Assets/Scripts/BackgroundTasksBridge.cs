@@ -41,6 +41,7 @@ public class BackgroundTasksBridge : MonoBehaviour
 
     public void SendLocationToMonitor(float latitude, float longitude, float radius)
     {
+        Debug.Log("Monitor Location!");
 #if UNITY_EDITOR
         Debug.Log("Please Switch To IOS Device To get this work");
 #elif UNITY_IOS

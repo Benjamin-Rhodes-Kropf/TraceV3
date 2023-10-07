@@ -236,7 +236,7 @@ public class TraceManager : MonoBehaviour
         Debug.Log("Placed Exit Trace: lat:" + onlineMapsLocationService.position.x + " long:" + onlineMapsLocationService.position.y);
         
         //if you move a significant distance
-        ScheduleNotificationOnExitInARadius(onlineMapsLocationService.position.x, onlineMapsLocationService.position.y, 10000);
+        ScheduleNotificationOnExitInARadius(onlineMapsLocationService.position.x, onlineMapsLocationService.position.y, 1000);
     }
     private static void ScheduleNotificationOnEnterInARadius(float latitude, float longitude, float radius, string message, string SenderName)
     {
@@ -260,6 +260,14 @@ public class TraceManager : MonoBehaviour
             Trigger = enterLocationTrigger
         };
         
+        // Add custom data to the notification
+        // var customData = new Dictionary<string, object>
+        // {
+        //     {"content-available", 1},
+        //     {"CustomMessage", "hello wolrd!"} // You can add more custom data if needed
+        // };
+        // entryBasedNotification.Data = JsonUtility.ToJson(customData);
+        
         // Schedule notification for entry base
         iOSNotificationCenter.ScheduleNotification(entryBasedNotification);
     }
@@ -267,13 +275,15 @@ public class TraceManager : MonoBehaviour
     {
         var exitLocationTrigger = new iOSNotificationLocationTrigger
         {
-            Center = new Vector2(latitude, longitude),
+            Latitude = latitude,
+            Longitude = longitude,
             Radius = radius,
             NotifyOnEntry = false,
-            NotifyOnExit = true
+            NotifyOnExit = true,
+            Repeats = true
         };
         
-        var entryBasedNotification = new iOSNotification
+        var exitBasedNotification = new iOSNotification
         {
             
             Title = "Cool Spot?",
@@ -285,7 +295,7 @@ public class TraceManager : MonoBehaviour
         };
         
         // Schedule notification for entry base
-        iOSNotificationCenter.ScheduleNotification(entryBasedNotification);
+        iOSNotificationCenter.ScheduleNotification(exitBasedNotification);
     }
     public void StopLocationServices()
     {
@@ -440,10 +450,10 @@ public class TraceManager : MonoBehaviour
     }
     public void UpdateMap(Vector2 vector2)
     {
-        // ]\Debug.Log("Map Update");
         ClearTracesOnMap();
         UpdateTracesOnMap();
         _scaleMapElements.UpdateAllTraceScale();
+        ScheduleNotifications(); //todo: make run only when application quit
     }
     public void ClearTracesOnMap()
     {
@@ -460,12 +470,12 @@ public class TraceManager : MonoBehaviour
     
     void OnApplicationQuit()
     {
-        Debug.Log("Application ending after " + Time.time + " seconds");
+        Debug.Log("Application ending after " + Time.time + " seconds: running ScheduleNotifications");
         ScheduleNotifications(); //todo: determine if background trace notifications are working
     }
     private void OnApplicationPaused()
     {
-        Debug.Log("Application Paused after " + Time.time + " seconds");
+        Debug.Log("Application Paused after " + Time.time + " seconds: running ScheduleNotifications");
         ScheduleNotifications(); //todo: determine if background trace notifications are working
     }
     
