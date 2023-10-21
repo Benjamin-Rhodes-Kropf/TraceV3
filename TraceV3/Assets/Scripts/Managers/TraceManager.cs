@@ -254,7 +254,6 @@ public class TraceManager : MonoBehaviour
             Title = "You Found Trace!",
             Subtitle =  "Left Here By " + SenderName,
             Body = "",
-            //Body = message == "" ? "Radius latitude was > " + latitude + " and longitude was > " + longitude : message,
             ShowInForeground = true,
             ForegroundPresentationOption = PresentationOption.Alert | PresentationOption.Sound,
             Trigger = enterLocationTrigger
@@ -453,7 +452,7 @@ public class TraceManager : MonoBehaviour
         ClearTracesOnMap();
         UpdateTracesOnMap();
         _scaleMapElements.UpdateAllTraceScale();
-        ScheduleNotifications(); //todo: make run only when application quit
+        ScheduleNotifications(false); //todo: make run only when application quit
     }
     public void ClearTracesOnMap()
     {
@@ -471,15 +470,15 @@ public class TraceManager : MonoBehaviour
     void OnApplicationQuit()
     {
         Debug.Log("Application ending after " + Time.time + " seconds: running ScheduleNotifications");
-        ScheduleNotifications(); //todo: determine if background trace notifications are working
+        ScheduleNotifications(true); //todo: determine if background trace notifications are working
     }
     private void OnApplicationPaused()
     {
         Debug.Log("Application Paused after " + Time.time + " seconds: running ScheduleNotifications");
-        ScheduleNotifications(); //todo: determine if background trace notifications are working
+        ScheduleNotifications(true); //todo: determine if background trace notifications are working
     }
     
-    private void ScheduleNotifications()
+    private void ScheduleNotifications(bool overideMaxDist)
     {
         Vector2 previousUserLocation = userLocation;
         if (onlineMapsLocationService.IsLocationServiceRunning())
@@ -502,7 +501,7 @@ public class TraceManager : MonoBehaviour
         _distance = ApproximateDistanceBetweenTwoLatLongsInM(_previousLatitude, _previousLongitude, currentLatitude, currentLongitude);
 
         // Detecting the Significant Location Change
-        if (_distance > maxDist)
+        if (_distance > maxDist || overideMaxDist)
         {
             // Remove All Pending Notifications
             iOSNotificationCenter.RemoveAllScheduledNotifications();
