@@ -470,11 +470,13 @@ public class TraceManager : MonoBehaviour
     void OnApplicationQuit()
     {
         Debug.Log("Application ending after " + Time.time + " seconds: running ScheduleNotifications");
+        BackgroundTasksBridge.Instance.SetNativeLocationToMonitor(userLocation.x, userLocation.y, 1000);
         ScheduleNotifications(true); //todo: determine if background trace notifications are working
     }
     private void OnApplicationPaused()
     {
         Debug.Log("Application Paused after " + Time.time + " seconds: running ScheduleNotifications");
+        BackgroundTasksBridge.Instance.SetNativeLocationToMonitor(userLocation.x, userLocation.y, 1000);
         ScheduleNotifications(true); //todo: determine if background trace notifications are working
     }
     
