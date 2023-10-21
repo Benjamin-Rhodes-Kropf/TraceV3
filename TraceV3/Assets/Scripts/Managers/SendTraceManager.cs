@@ -100,12 +100,12 @@ public class SendTraceManager : MonoBehaviour
     
     public void SendNotificationToUsersWhoRecivedTheTrace()
     {
-        //users
-        foreach (var user in usersToSendTrace)
-        {
-            if(FriendsModelManager.Instance.GetRelationship(user) != Relationship.SuperUser)
-                NotificationManager.Instance.StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user, FbManager.instance.thisUserModel.name, "Left You A Trace!", location.y,location.x));
-        }
+        //Dont Send Notification... it is annoying
+        // foreach (var user in usersToSendTrace)
+        // {
+        //     if(FriendsModelManager.Instance.GetRelationship(user) != Relationship.SuperUser)
+        //         NotificationManager.Instance.StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user, FbManager.instance.thisUserModel.name, "Left You A Trace!", location.y,location.x));
+        // }
     }
 }
 
