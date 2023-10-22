@@ -480,16 +480,18 @@ public class TraceManager : MonoBehaviour
     void OnApplicationQuit()
     {
         Debug.Log("Application ending after " + Time.time + " seconds: running ScheduleNotifications");
-        //BackgroundTasksBridge.Instance.SetNativeNotificationLocationToMonitor(userLocation.y, userLocation.x, 100);
-        //todo: determine if background trace notifications are working
-        //ScheduleNotifications(true); 
+        if(enableLocationNotificationSchedulingInUnity)
+            ScheduleNotifications(true); 
+        else
+            Debug.Log("Location notification scheduling in Unity Is turned Off");
     }
     private void OnApplicationPaused()
     {
         Debug.Log("Application Paused after " + Time.time + " seconds: running ScheduleNotifications");
-        //BackgroundTasksBridge.Instance.SetNativeNotificationLocationToMonitor(userLocation.y, userLocation.x, 100);
-        //todo: determine if background trace notifications are working
-        //ScheduleNotifications(true); 
+        if(enableLocationNotificationSchedulingInUnity)
+            ScheduleNotifications(true); 
+        else
+            Debug.Log("Location notification scheduling in Unity Is turned Off");
     }
 
     private void OnApplicationFocus(bool hasFocus)
@@ -497,12 +499,10 @@ public class TraceManager : MonoBehaviour
         if (!hasFocus)
         {
             Debug.Log("Application Will Resign Active after " + Time.time + " seconds");
-            //BackgroundTasksBridge.Instance.SetNativeNotificationLocationToMonitor(userLocation.y, userLocation.x,100);
-            
             if(enableLocationNotificationSchedulingInUnity)
                 ScheduleNotifications(true); 
             else
-                Debug.LogWarning("Location notification scheduling in Unity Is turned Off");
+                Debug.Log("Location notification scheduling in Unity Is turned Off");
         }
     }
 
