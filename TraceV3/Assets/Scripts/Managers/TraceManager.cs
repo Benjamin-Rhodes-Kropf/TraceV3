@@ -381,11 +381,44 @@ public class TraceManager : MonoBehaviour
     {
         homeScreenManager.RefreshTraceView(traceObject);
     }
+
+    public int CheckExpiration(DateTime expirationDate)
+    {
+        DateTime currentDate = DateTime.Now;
+        TimeSpan timeDifference = currentDate - expirationDate;
+
+        if (timeDifference.TotalDays >= 7)
+        {
+            return 3; // Expired by a week or more
+        }
+        else if (timeDifference.TotalDays >= 1)
+        {
+            return 2; // Expired by a day or more
+        }
+        else
+        {
+            return 1; // Not expired or expired within the day
+        }
+    }
     
     private DrawTraceOnMap.TraceType GetTraceType(double dist, TraceObject traceObject)
     {
         if (traceObject.isExpired)
-            return DrawTraceOnMap.TraceType.EXPIREDMOSTRECENT;
+        {
+            int expirationResult = CheckExpiration(traceObject.expiration);
+            switch (expirationResult)
+            {
+                case 1:
+                    return DrawTraceOnMap.TraceType.EXPIREDMOSTRECENT;
+                case 2:
+                    return DrawTraceOnMap.TraceType.EXPIREDRECENT;
+                case 3:
+                    return DrawTraceOnMap.TraceType.EXPIREDOLD;
+                default:
+                    throw new ArgumentOutOfRangeException("Invalid expiration result");
+            }
+        }
+            
         
         if (!traceObject.HasBeenOpened)
         {
