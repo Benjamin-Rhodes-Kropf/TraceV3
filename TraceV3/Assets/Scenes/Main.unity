@@ -4848,7 +4848,7 @@ MonoBehaviour:
   firebaseStorageReferenceUrl: gs://geosnapv1.appspot.com
   fakeLoginWaitTime: 0
   lowConnectivitySmartLogin: 0
-  useBackgroundLocationTasks: 0
+  useBackgroundLocationTasks: 1
   resetPlayerPrefs: 0
   _drawTraceOnMap: {fileID: 6068666308761308086}
   _dragAndZoomInertia: {fileID: 6068666308761308082}
@@ -35623,6 +35623,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  enableLocationNotificationSchedulingInUnity: 0
   maxDist: 10
 --- !u!114 &6068666308761308085
 MonoBehaviour:

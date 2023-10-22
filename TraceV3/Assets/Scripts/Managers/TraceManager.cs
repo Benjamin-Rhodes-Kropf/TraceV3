@@ -30,6 +30,7 @@ public class TraceManager : MonoBehaviour
     [Header("Variables")] 
     [SerializeField] private float pinModeMultiplyer;
     [SerializeField] private AnimationCurve _clickRadiusAnimationCurve;
+    [SerializeField] private bool enableLocationNotificationSchedulingInUnity;
 
     [Header("Maximum Distance in meters")]
     [SerializeField] private double maxDist;
@@ -217,7 +218,9 @@ public class TraceManager : MonoBehaviour
     }
     private void UpdateNotificationsForNext20Traces()
     {
+        Debug.Log("Remove All Scheduled Notifications");
         iOSNotificationCenter.RemoveAllScheduledNotifications();
+        
         if (receivedTraceObjects.Count < 1)
         {
             Debug.Log("UpdateNotificationsForNextTraces: No Traces Available!");
@@ -237,7 +240,7 @@ public class TraceManager : MonoBehaviour
             }
         }
         
-        //todo: uncomment once location notifications are working
+        //todo: uncomment to place on exit notification
         //Schedule prompt to tell user to send a trace
         //Debug.Log("Placed Exit Trace: lat:" + onlineMapsLocationService.position.x + " long:" + onlineMapsLocationService.position.y);
         //if you move a significant distance
@@ -263,14 +266,6 @@ public class TraceManager : MonoBehaviour
             ForegroundPresentationOption = PresentationOption.Alert | PresentationOption.Sound,
             Trigger = enterLocationTrigger
         };
-        
-        // Add custom data to the notification
-        // var customData = new Dictionary<string, object>
-        // {
-        //     {"content-available", 1},
-        //     {"CustomMessage", "hello wolrd!"} // You can add more custom data if needed
-        // };
-        // entryBasedNotification.Data = JsonUtility.ToJson(customData);
         
         // Schedule notification for entry base
         iOSNotificationCenter.ScheduleNotification(entryBasedNotification);
@@ -503,7 +498,11 @@ public class TraceManager : MonoBehaviour
         {
             Debug.Log("Application Will Resign Active after " + Time.time + " seconds");
             //BackgroundTasksBridge.Instance.SetNativeNotificationLocationToMonitor(userLocation.y, userLocation.x,100);
-            ScheduleNotifications(true); 
+            
+            if(enableLocationNotificationSchedulingInUnity)
+                ScheduleNotifications(true); 
+            else
+                Debug.LogWarning("Location notification scheduling in Unity Is turned Off");
         }
     }
 
