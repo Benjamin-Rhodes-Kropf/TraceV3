@@ -13,9 +13,14 @@ public class DrawTraceOnMap : MonoBehaviour
     [SerializeField] private int scaleAmount;
     [SerializeField] private OnlineMapsMarkerManager markerManager;
     [SerializeField] private bool showDebugTextures;
+    
     [SerializeField] private Texture2D primaryReceiverTexture;
     [SerializeField] private Texture2D primaryReceivingHollowTexture;
     [SerializeField] private Texture2D secondaryReceiverTexture;
+    
+    [SerializeField] private Texture2D primaryReceiverRedTexture;
+    [SerializeField] private Texture2D primaryReceivingRedHollowTexture;
+    [SerializeField] private Texture2D secondaryReceiverRedTexture;
     
     [SerializeField] private Texture2D primaryReceiverTextureBF;
     [SerializeField] private Texture2D primaryReceivingHollowTextureBF;
