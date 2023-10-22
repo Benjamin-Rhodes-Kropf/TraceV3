@@ -62,7 +62,12 @@ public class TraceManager : MonoBehaviour
         //handle map updates
         onlineMapsControlBase.OnMapClick += HandleMapClick;
         onlineMapsLocationService.OnLocationChanged += UpdateMap;
-        iOSNotificationCenter.RemoveAllDeliveredNotifications();
+        
+        if (enableLocationNotificationSchedulingInUnity)
+        {
+            iOSNotificationCenter.RemoveAllDeliveredNotifications();
+            ScheduleNotifications(false);
+        }
     }
     
     private void HandleMapClick()
