@@ -116,7 +116,7 @@ public class TraceManager : MonoBehaviour
                 }
 
                 //open all sent traces
-                if (distance < 0)
+                if (distance < 0 && !trace.Value.isExpired)
                 {
                     accessibleTraces.Add((trace.Value, distance));
                 }
@@ -353,11 +353,18 @@ public class TraceManager : MonoBehaviour
             {
                 if (!traceObject.Value.hasBeenAdded)
                 {
-                    if(traceObject.Value.hasUpdate)
-                        traceObject.Value.marker = drawTraceOnMap.DrawCircle(traceObject.Value.lat, traceObject.Value.lng, (traceObject.Value.radius), DrawTraceOnMap.TraceType.SPECIALClOSED, traceObject.Value.id);
+                    if (traceObject.Value.isExpired)
+                    {
+                        traceObject.Value.marker = drawTraceOnMap.DrawCircle(traceObject.Value.lat, traceObject.Value.lng, (traceObject.Value.radius), DrawTraceOnMap.TraceType.EXPIREDOLD, traceObject.Value.id);
+                    }
                     else
-                        traceObject.Value.marker = drawTraceOnMap.DrawCircle(traceObject.Value.lat, traceObject.Value.lng, (traceObject.Value.radius), DrawTraceOnMap.TraceType.SENT, traceObject.Value.id);
-                    
+                    {
+                        if(traceObject.Value.hasUpdate)
+                            traceObject.Value.marker = drawTraceOnMap.DrawCircle(traceObject.Value.lat, traceObject.Value.lng, (traceObject.Value.radius), DrawTraceOnMap.TraceType.SPECIALClOSED, traceObject.Value.id);
+                        else
+                            traceObject.Value.marker = drawTraceOnMap.DrawCircle(traceObject.Value.lat, traceObject.Value.lng, (traceObject.Value.radius), DrawTraceOnMap.TraceType.SENT, traceObject.Value.id);
+                    }
+
                     traceObject.Value.hasBeenAdded = true;
                 }
             }

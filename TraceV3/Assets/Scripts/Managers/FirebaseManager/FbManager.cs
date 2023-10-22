@@ -2455,7 +2455,7 @@ public partial class FbManager : MonoBehaviour
             childUpdates["TracesRecived/" + user.id +"/"+ trace.id + "/Sender"] = trace.senderID;
             
             //give update in trace for them
-            childUpdates["Traces/" + key + "/Reciver/" + user + "/HasUpdate"] = true;
+            childUpdates["Traces/" + trace.id + "/Reciver/" + user.id + "/HasUpdate"] = true;
         }
 
         if (trace.groupID != "null") //update for trace group
