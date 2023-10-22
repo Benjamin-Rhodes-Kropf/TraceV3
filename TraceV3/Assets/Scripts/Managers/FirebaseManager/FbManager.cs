@@ -1604,6 +1604,7 @@ public partial class FbManager : MonoBehaviour
         childUpdates["Traces/" + trace.id + "/Reciver/"+ _firebaseUser.UserId +"/ViewDate"] = DateTime.UtcNow.ToString();
         _databaseReference.UpdateChildrenAsync(childUpdates);
         trace.HasBeenOpened = true;
+        trace.hasUpdate = false;
     }
 
     public void RemoveTraceFromMap(TraceObject trace)

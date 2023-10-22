@@ -542,6 +542,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
 
     public void RemoveTraceFromMap()
     {
+        Debug.Log("RemoveTraceFromMap");
         FbManager.instance.RemoveTraceFromMap(trace);
         CloseSlideUpToViewTransition();
     }
