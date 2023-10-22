@@ -93,7 +93,7 @@ public class DrawTraceOnMap : MonoBehaviour
                 _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverRedTexture, secondaryReceiverRedTexture, primaryReceivingRedHollowTexture, expiredTextureMostRecent, markerID);
                 return _onlineMapsMarker;
             case TraceType.SPECIALOPENED:
-                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingRedHollowTexture, secondaryReceiverRedTexture, primaryReceiverRedTexture, expiredTextureMostRecent, markerID);
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceivingRedHollowTexture, secondaryReceiverRedTexture, primaryReceivingRedHollowTexture, expiredTextureMostRecent, markerID);
                 return _onlineMapsMarker;
             case TraceType.RECEIVED:
                 _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, expiredTextureMostRecent, markerID);

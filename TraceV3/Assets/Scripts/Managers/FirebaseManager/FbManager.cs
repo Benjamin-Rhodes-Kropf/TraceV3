@@ -1736,7 +1736,7 @@ public partial class FbManager : MonoBehaviour
                             bool hasViewed = (bool)receiverData["HasViewed"];
                             if(receiverData.ContainsKey("HasUpdate"))
                                 hasUpdate = (bool)receiverData["HasUpdate"];
-                            
+
                             //string profilePhoto = receiverData["ProfilePhoto"].ToString(); //if we ever want profile photo
                             receivers.Add(new TraceReceiverObject(receiverID, hasViewed));
                             

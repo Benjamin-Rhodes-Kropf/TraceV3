@@ -26,6 +26,7 @@ public class CameraManager : MonoBehaviour//PressInputBase
         imagePreviewPanel.SetActive(false);
         videoPreviewPanel.SetActive(false);
         Screen.fullScreen = true;
+        //_RecordButton.ForceRec();
         StartCoroutine(BeginCamera());
     }
 

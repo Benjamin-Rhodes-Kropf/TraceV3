@@ -256,7 +256,7 @@ public class TraceManager : MonoBehaviour
         var enterLocationTrigger = new iOSNotificationLocationTrigger
         {
             Center = new Vector2(latitude, longitude),
-            Radius = radius,
+            Radius = radius*1.1f, //make radius a bit bigger for better experience
             NotifyOnEntry = true,
             NotifyOnExit = false,
             Repeats = true,
@@ -404,7 +404,7 @@ public class TraceManager : MonoBehaviour
                     //if they cant open the trace draw trace recieved color depending on friendship
                     traceObject.canBeOpened = false;
                     if(traceObject.hasUpdate)
-                        return DrawTraceOnMap.TraceType.SPECIALOPENED;
+                        return DrawTraceOnMap.TraceType.SPECIALClOSED;
                     
                     if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).relationship == Relationship.BestFriend)
                     {
@@ -431,7 +431,7 @@ public class TraceManager : MonoBehaviour
                 
                 //has update for trace you cant get yet
                 if(traceObject.hasUpdate)
-                    return DrawTraceOnMap.TraceType.SPECIALOPENED;
+                    return DrawTraceOnMap.TraceType.SPECIALClOSED;
                 
                 if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).relationship == Relationship.BestFriend)
                 {
@@ -448,7 +448,7 @@ public class TraceManager : MonoBehaviour
             traceObject.canBeOpened = true; //all trace that have been opened can be opened regardless of distance
             
             if(traceObject.hasUpdate)
-                return DrawTraceOnMap.TraceType.SPECIALClOSED;
+                return DrawTraceOnMap.TraceType.SPECIALOPENED;
             
             if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).relationship == Relationship.BestFriend)
             {
