@@ -351,7 +351,11 @@ public class TraceManager : MonoBehaviour
             {
                 if (!traceObject.Value.hasBeenAdded)
                 {
-                    traceObject.Value.marker = drawTraceOnMap.DrawCircle(traceObject.Value.lat, traceObject.Value.lng, (traceObject.Value.radius), DrawTraceOnMap.TraceType.SENT, traceObject.Value.id);
+                    if(traceObject.Value.hasUpdate)
+                        traceObject.Value.marker = drawTraceOnMap.DrawCircle(traceObject.Value.lat, traceObject.Value.lng, (traceObject.Value.radius), DrawTraceOnMap.TraceType.SPECIALClOSED, traceObject.Value.id);
+                    else
+                        traceObject.Value.marker = drawTraceOnMap.DrawCircle(traceObject.Value.lat, traceObject.Value.lng, (traceObject.Value.radius), DrawTraceOnMap.TraceType.SENT, traceObject.Value.id);
+                    
                     traceObject.Value.hasBeenAdded = true;
                 }
             }
@@ -382,6 +386,8 @@ public class TraceManager : MonoBehaviour
                 {
                     //if they can open the trace draw trace opening color depending on friendship
                     traceObject.canBeOpened = true;
+                    if(traceObject.hasUpdate)
+                        return DrawTraceOnMap.TraceType.SPECIALOPENED;
                     if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).relationship == Relationship.BestFriend)
                     {
                         return DrawTraceOnMap.TraceType.OPENINGBESTFRIEND;
@@ -395,6 +401,8 @@ public class TraceManager : MonoBehaviour
                 {
                     //if they cant open the trace draw trace recieved color depending on friendship
                     traceObject.canBeOpened = false;
+                    if(traceObject.hasUpdate)
+                        return DrawTraceOnMap.TraceType.SPECIALClOSED;
                     if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).relationship == Relationship.BestFriend)
                     {
                         return DrawTraceOnMap.TraceType.RECEIVEDBESTFRIEND;
@@ -417,6 +425,11 @@ public class TraceManager : MonoBehaviour
                     //if they cant open the trace draw trace color depending on friendship
                     traceObject.canBeOpened = false;
                 }
+                
+                //has update for trace you cant get yet
+                if(traceObject.hasUpdate)
+                    return DrawTraceOnMap.TraceType.SPECIALClOSED;
+                
                 if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).relationship == Relationship.BestFriend)
                 {
                     return DrawTraceOnMap.TraceType.RECEIVEDBESTFRIEND;
@@ -430,6 +443,10 @@ public class TraceManager : MonoBehaviour
         else //trace object has been opened
         {
             traceObject.canBeOpened = true; //all trace that have been opened can be opened regardless of distance
+            
+            if(traceObject.hasUpdate)
+                return DrawTraceOnMap.TraceType.SPECIALOPENED;
+            
             if (FriendsModelManager.GetFriendModelByOtherFriendID(traceObject.senderID).relationship == Relationship.BestFriend)
             {
                 return DrawTraceOnMap.TraceType.OPENEDBESTFRIEND;
@@ -621,6 +638,7 @@ public class TraceObject
     private bool _hasBeenOpened = false;
     public string sendTime;
     public DateTime expiration;
+    public bool hasUpdate;
     public string debugExpiration; //dont use
     public bool exirationExists;
     public bool isExpired;
@@ -639,7 +657,7 @@ public class TraceObject
         }
     }
     
-    public TraceObject(double longitude, double latitude, float radius, List<TraceReceiverObject> people, Dictionary<string,TraceCommentObject> comments, string senderID, string senderName, string sendTime, DateTime expiration, bool exirationExists, string mediaType, string id, bool hasBeenOpened, bool isExpired, string groupID)
+    public TraceObject(double longitude, double latitude, float radius, List<TraceReceiverObject> people, Dictionary<string,TraceCommentObject> comments, string senderID, string senderName, string sendTime, DateTime expiration, bool exirationExists, string mediaType, string id, bool hasBeenOpened, bool isExpired, string groupID, bool hasUpdate)
     {
         lng = longitude;
         lat = latitude;
@@ -656,6 +674,7 @@ public class TraceObject
         this.mediaType = mediaType;
         this.id = id;
         this.isExpired = isExpired;
+        this.hasUpdate = hasUpdate;
         _hasBeenOpened = hasBeenOpened; //dont use setter because we dont want to destroy objects coming from memory
     }
 }

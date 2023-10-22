@@ -1507,7 +1507,7 @@ public partial class FbManager : MonoBehaviour
             receiverObjects.Add(new TraceReceiverObject(user, false));
         }
         
-        _drawTraceOnMap.sendingTraceTraceLoadingObject = new TraceObject(location.x, location.y, radius, receiverObjects, new Dictionary<string, TraceCommentObject>(), "null",thisUserModel.name,  DateTime.UtcNow.ToString(), DateTime.UtcNow.AddHours(24), false, mediaType.ToString(), "temp", true, false, "null");
+        _drawTraceOnMap.sendingTraceTraceLoadingObject = new TraceObject(location.x, location.y, radius, receiverObjects, new Dictionary<string, TraceCommentObject>(), "null",thisUserModel.name,  DateTime.UtcNow.ToString(), DateTime.UtcNow.AddHours(24), false, mediaType.ToString(), "temp", true, false, "null", false);
         _drawTraceOnMap.DrawCircle(location.x, location.y, radius, DrawTraceOnMap.TraceType.SENDING, "null");
         
         //update global traces
@@ -1540,6 +1540,7 @@ public partial class FbManager : MonoBehaviour
             }
             
             childUpdates["Traces/" + key + "/Reciver/" + user + "/HasViewed"] = false;
+            childUpdates["Traces/" + key + "/Reciver/" + user + "/HasUpdate"] = false;
             childUpdates["Traces/" + key + "/Reciver/" + user + "/ProfilePhoto"] = "null";
             childUpdates["TracesRecived/" + user +"/"+ key + "/Sender"] = thisUserModel.userID;
             childUpdates["TracesRecived/" + user+"/" + key + "/updated"] = DateTime.UtcNow.ToString();
@@ -1599,6 +1600,8 @@ public partial class FbManager : MonoBehaviour
     {
         Dictionary<string, Object> childUpdates = new Dictionary<string, Object>();
         childUpdates["Traces/" + trace.id + "/Reciver/"+ _firebaseUser.UserId +"/HasViewed"] = true;
+        childUpdates["Traces/" + trace.id + "/Reciver/"+ _firebaseUser.UserId +"/HasUpdate"] = false;
+        childUpdates["Traces/" + trace.id + "/Reciver/"+ _firebaseUser.UserId +"/ViewDate"] = DateTime.UtcNow.ToString();
         _databaseReference.UpdateChildrenAsync(childUpdates);
         trace.HasBeenOpened = true;
     }
@@ -1658,11 +1661,13 @@ public partial class FbManager : MonoBehaviour
             string senderID = "";
             string senderName = "";
             string sendTime = "";
-            DateTime experation = new DateTime();
+            bool hasUpdate = false;
             bool experationExisits = false;
+            DateTime experation = new DateTime();
             bool traceHasBeenOpenedByThisUser = false;
             List<TraceReceiverObject> receivers = new List<TraceReceiverObject>();
             Dictionary<string, TraceCommentObject> comments = new Dictionary<string, TraceCommentObject>();
+            
             
             foreach (var thing in DBTask.Result.Children)
             {
@@ -1728,6 +1733,9 @@ public partial class FbManager : MonoBehaviour
                             var receiverID = receiver.Key;
                             var receiverData = receiver.Value as Dictionary<string, object>;
                             bool hasViewed = (bool)receiverData["HasViewed"];
+                            if(receiverData.ContainsKey("HasUpdate"))
+                                hasUpdate = (bool)receiverData["HasUpdate"];
+                            
                             //string profilePhoto = receiverData["ProfilePhoto"].ToString(); //if we ever want profile photo
                             receivers.Add(new TraceReceiverObject(receiverID, hasViewed));
                             
@@ -1786,7 +1794,7 @@ public partial class FbManager : MonoBehaviour
             {
                 //todo: Take Action Based On If Trace Is Expired
                 bool isExpired = (experationExisits && HelperMethods.IsTraceExpired(experation));
-                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, experation, experationExisits, mediaType,traceID, traceHasBeenOpenedByThisUser, isExpired, groupID);
+                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, experation, experationExisits, mediaType,traceID, traceHasBeenOpenedByThisUser, isExpired, groupID, hasUpdate);
                 TraceManager.instance.receivedTraceObjects.Add(trace.id,trace);
                 if (!isExpired)
                 {
@@ -1831,6 +1839,7 @@ public partial class FbManager : MonoBehaviour
             string mediaType = "";
             DateTime experation = new DateTime();
             bool experationExisits = false;
+            bool hasupdate = false;
 
             foreach (var thing in DBTask.Result.Children)
             {
@@ -1896,6 +1905,8 @@ public partial class FbManager : MonoBehaviour
                             var receiverID = receiver.Key;
                             var receiverData = receiver.Value as Dictionary<string, object>;
                             bool hasViewed = (bool)receiverData["HasViewed"];
+                            if (receiverData.ContainsKey("HasUpdate"))
+                                hasupdate = (bool)receiverData["HasUpdate"];
                             //string profilePhoto = receiverData["ProfilePhoto"].ToString(); //if we ever want profile photo
                             receivers.Add(new TraceReceiverObject(receiverID,hasViewed));
                         }
@@ -1946,7 +1957,7 @@ public partial class FbManager : MonoBehaviour
             if (lat != 0 && lng != 0 && radius != 0)
             {
                 bool isExpired = experationExisits && HelperMethods.IsTraceExpired(experation);
-                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, experation, experationExisits, mediaType,traceID, false, isExpired, "null");
+                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, experation, experationExisits, mediaType,traceID, false, isExpired, "null", hasupdate);
                 TraceManager.instance.sentTraceObjects.Add(trace.id,trace);
                 BackgroundDownloadManager.s_Instance.DownloadMediaInBackground(trace.id,trace.mediaType);
                 TraceManager.instance.UpdateMap(new Vector2());
@@ -1987,6 +1998,7 @@ public partial class FbManager : MonoBehaviour
             string senderName = "";
             string sendTime = "";
             bool traceHasBeenOpenedByThisUser = false;
+            bool hasUpdate = false;
             List<TraceReceiverObject> receivers = new List<TraceReceiverObject>();
             Dictionary<string, TraceCommentObject> comments = new Dictionary<string, TraceCommentObject>();
             DateTime experation = new DateTime();
@@ -2056,6 +2068,9 @@ public partial class FbManager : MonoBehaviour
                             var receiverID = receiver.Key;
                             var receiverData = receiver.Value as Dictionary<string, object>;
                             bool hasViewed = (bool)receiverData["HasViewed"];
+                            if(receiverData.ContainsKey("HasUpdate"))
+                                hasUpdate = (bool)receiverData["HasUpdate"];
+                            
                             //string profilePhoto = receiverData["ProfilePhoto"].ToString(); //if we ever want profile photo
                             receivers.Add(new TraceReceiverObject(receiverID, hasViewed));
                             
@@ -2114,7 +2129,7 @@ public partial class FbManager : MonoBehaviour
             if (lat != 0 && lng != 0 && radius != 0) //check for malformed data entry
             {
                 bool isExpired = experationExisits && HelperMethods.IsTraceExpired(experation);
-                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, experation, experationExisits, mediaType,traceID, traceHasBeenOpenedByThisUser, isExpired, groupID);
+                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID, senderName, sendTime, experation, experationExisits, mediaType,traceID, traceHasBeenOpenedByThisUser, isExpired, groupID, hasUpdate);
                 Debug.Log("Changed:" + trace.id + " to dict");
                 TraceManager.instance.receivedTraceObjects[trace.id] = trace; //update trace
                 TraceManager.instance.RefreshTrace(trace);
@@ -2149,6 +2164,7 @@ public partial class FbManager : MonoBehaviour
             string mediaType = "";
             DateTime experation = new DateTime();
             bool experationExisits = false;
+            bool hasUpdate = false;
             
             foreach (var thing in DBTask.Result.Children)
             {
@@ -2216,6 +2232,8 @@ public partial class FbManager : MonoBehaviour
                             var receiverID = receiver.Key;
                             var receiverData = receiver.Value as Dictionary<string, object>;
                             bool hasViewed = (bool)receiverData["HasViewed"];
+                            if(receiverData.ContainsKey("HasUpdate"))
+                                hasUpdate = (bool)receiverData["HasUpdate"];
                             //string profilePhoto = receiverData["ProfilePhoto"].ToString(); //if we ever want profile photo
                             receivers.Add(new TraceReceiverObject(receiverID,hasViewed));
                         }
@@ -2262,7 +2280,7 @@ public partial class FbManager : MonoBehaviour
             if (lat != 0 && lng != 0 && radius != 0)
             {
                 bool isExpired = experationExisits && HelperMethods.IsTraceExpired(experation);
-                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID,senderName, sendTime, experation, experationExisits, mediaType,traceID, false, isExpired, "null");
+                var trace = new TraceObject(lng, lat, radius, receivers, comments, senderID,senderName, sendTime, experation, experationExisits, mediaType,traceID, false, isExpired, "null", hasUpdate);
                 Debug.Log("Trace Comments Update To:" + comments.Count);
                 TraceManager.instance.sentTraceObjects[trace.id] = trace; //update trace
                 TraceManager.instance.RefreshTrace(trace); //update if currently being displayed
@@ -2432,9 +2450,11 @@ public partial class FbManager : MonoBehaviour
         {
             if(user.id == trace.senderID) //make sure we dont make a sent trace become received
                 continue;
-            
             childUpdates["TracesRecived/" + user.id +"/"+ trace.id + "/updated"] = DateTime.UtcNow.ToString(); //change last updated
             childUpdates["TracesRecived/" + user.id +"/"+ trace.id + "/Sender"] = trace.senderID;
+            
+            //give update in trace for them
+            childUpdates["Traces/" + key + "/Reciver/" + user + "/HasUpdate"] = true;
         }
 
         if (trace.groupID != "null") //update for trace group

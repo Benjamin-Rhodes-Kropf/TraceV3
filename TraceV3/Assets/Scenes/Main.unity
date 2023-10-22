@@ -4017,6 +4017,7 @@ MonoBehaviour:
     hasBeenAdded: 0
     canBeOpened: 0
     sendTime: 
+    hasUpdate: 0
     debugExpiration: 
     exirationExists: 0
     isExpired: 0
@@ -29797,6 +29798,7 @@ MonoBehaviour:
     hasBeenAdded: 0
     canBeOpened: 0
     sendTime: 
+    hasUpdate: 0
     debugExpiration: 
     exirationExists: 0
     isExpired: 0
@@ -35864,6 +35866,7 @@ MonoBehaviour:
     hasBeenAdded: 0
     canBeOpened: 0
     sendTime: 
+    hasUpdate: 0
     debugExpiration: 
     exirationExists: 0
     isExpired: 0
@@ -35874,6 +35877,9 @@ MonoBehaviour:
   primaryReceiverTexture: {fileID: 2800000, guid: 9a0fa4f20e2d042388c09beb83813530, type: 3}
   primaryReceivingHollowTexture: {fileID: 2800000, guid: 6a02290f2ce2a45d0923befa818a8a27, type: 3}
   secondaryReceiverTexture: {fileID: 2800000, guid: f5d8ab6989be7440ab73d475447d9dc8, type: 3}
+  primaryReceiverRedTexture: {fileID: 2800000, guid: 87161f6b75aca4dd5886f5617497e7d5, type: 3}
+  primaryReceivingRedHollowTexture: {fileID: 2800000, guid: da023cbf225184b279702b19d020205e, type: 3}
+  secondaryReceiverRedTexture: {fileID: 2800000, guid: c2a60b92a801a47b092e4c2c14e6a82a, type: 3}
   primaryReceiverTextureBF: {fileID: 2800000, guid: 374c178f8f4dd4d8ab01c1cf26ac6acb, type: 3}
   primaryReceivingHollowTextureBF: {fileID: 2800000, guid: 84dd8c069b8e74eb3a42b03c829653e9, type: 3}
   secondaryReceiverTextureBF: {fileID: 2800000, guid: 37563f94c398744fdad6b1d2e41da68b, type: 3}

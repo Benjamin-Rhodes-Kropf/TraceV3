@@ -89,6 +89,12 @@ public class DrawTraceOnMap : MonoBehaviour
             case TraceType.SENDING:
                 _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primarySendingTextureHollow, secondarySentTexture, primarySendingTextureHollow, expiredTextureMostRecent, markerID);
                 return _onlineMapsMarker;
+            case TraceType.SPECIALClOSED:
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverRedTexture, secondaryReceiverRedTexture, primaryReceivingRedHollowTexture, expiredTextureMostRecent, markerID);
+                return _onlineMapsMarker;
+            case TraceType.SPECIALOPENED:
+                _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverRedTexture, secondaryReceiverRedTexture, primaryReceivingRedHollowTexture, expiredTextureMostRecent, markerID);
+                return _onlineMapsMarker;
             case TraceType.RECEIVED:
                 _onlineMapsMarker = markerManager.AddTraceToMap(lat, lng, radius, primaryReceiverTexture, secondaryReceiverTexture, primaryReceivingHollowTexture, expiredTextureMostRecent, markerID);
                 return _onlineMapsMarker;
@@ -138,6 +144,6 @@ public class DrawTraceOnMap : MonoBehaviour
         }
     }
     
-    public enum TraceType {RECEIVED, RECEIVEDBESTFRIEND, SENT, SENDING, OPENING, OPENINGBESTFRIEND, OPENED, OPENEDBESTFRIEND, EXPIREDMOSTRECENT,EXPIREDRECENT,EXPIREDOLD};
+    public enum TraceType {SPECIALClOSED,SPECIALOPENED, RECEIVED, RECEIVEDBESTFRIEND, SENT, SENDING, OPENING, OPENINGBESTFRIEND, OPENED, OPENEDBESTFRIEND, EXPIREDMOSTRECENT,EXPIREDRECENT,EXPIREDOLD};
 }
 
