@@ -576,7 +576,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
             FbManager.instance.MarkTraceAsOpened(trace);
             Vector2 _location = _onlineMapsLocation.GetUserLocation();
             NotificationManager.Instance.StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(trace.senderID, FbManager.instance.thisUserModel.name , "opened your trace!", _location.y, _location.x));
-        }else if (trace.HasBeenOpened && trace.senderID != FbManager.instance.thisUserModel.userID)
+        }else
         {
             FbManager.instance.MarkTraceAsOpened(trace);
         }

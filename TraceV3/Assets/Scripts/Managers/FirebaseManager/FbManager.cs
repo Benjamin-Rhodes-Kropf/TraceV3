@@ -1734,7 +1734,8 @@ public partial class FbManager : MonoBehaviour
                             var receiverID = receiver.Key;
                             var receiverData = receiver.Value as Dictionary<string, object>;
                             bool hasViewed = (bool)receiverData["HasViewed"];
-                            if(receiverData.ContainsKey("HasUpdate"))
+                            
+                            if(receiverData.ContainsKey("HasUpdate") && receiverID == thisUserModel.userID)
                                 hasUpdate = (bool)receiverData["HasUpdate"];
 
                             //string profilePhoto = receiverData["ProfilePhoto"].ToString(); //if we ever want profile photo
@@ -1906,7 +1907,7 @@ public partial class FbManager : MonoBehaviour
                             var receiverID = receiver.Key;
                             var receiverData = receiver.Value as Dictionary<string, object>;
                             bool hasViewed = (bool)receiverData["HasViewed"];
-                            if (receiverData.ContainsKey("HasUpdate"))
+                            if (receiverData.ContainsKey("HasUpdate") && receiverID == thisUserModel.userID)
                                 hasupdate = (bool)receiverData["HasUpdate"];
                             //string profilePhoto = receiverData["ProfilePhoto"].ToString(); //if we ever want profile photo
                             receivers.Add(new TraceReceiverObject(receiverID,hasViewed));
@@ -2069,7 +2070,9 @@ public partial class FbManager : MonoBehaviour
                             var receiverID = receiver.Key;
                             var receiverData = receiver.Value as Dictionary<string, object>;
                             bool hasViewed = (bool)receiverData["HasViewed"];
-                            if(receiverData.ContainsKey("HasUpdate"))
+                            
+                            //is there an update for this user (has update is global)
+                            if(receiverData.ContainsKey("HasUpdate") && receiverID == thisUserModel.userID)
                                 hasUpdate = (bool)receiverData["HasUpdate"];
                             
                             //string profilePhoto = receiverData["ProfilePhoto"].ToString(); //if we ever want profile photo
@@ -2233,9 +2236,11 @@ public partial class FbManager : MonoBehaviour
                             var receiverID = receiver.Key;
                             var receiverData = receiver.Value as Dictionary<string, object>;
                             bool hasViewed = (bool)receiverData["HasViewed"];
-                            if(receiverData.ContainsKey("HasUpdate"))
+                            
+                            //if the trace has an update for this user
+                            if(receiverData.ContainsKey("HasUpdate") && receiverID == thisUserModel.ID)
                                 hasUpdate = (bool)receiverData["HasUpdate"];
-                            //string profilePhoto = receiverData["ProfilePhoto"].ToString(); //if we ever want profile photo
+                            
                             receivers.Add(new TraceReceiverObject(receiverID,hasViewed));
                         }
                         break;
@@ -2445,18 +2450,29 @@ public partial class FbManager : MonoBehaviour
         
         Debug.Log(" UploadComment(): 3");
 
+        //update for sender
         childUpdates["TracesSent/" + trace.senderID +"/" + trace.id] = DateTime.UtcNow.ToString(); //change last updated
-   
+        if(trace.senderID != thisUserModel.userID)
+            childUpdates["Traces/" + trace.id + "/Reciver/" + trace.senderID + "/HasUpdate"] = true;
+        
         foreach (var user in trace.people)
         {
-            if(user.id == trace.senderID) //make sure we dont make a sent trace become received
+            //make sure we dont make the sender  become a reciever
+            if (user.id == trace.senderID)
+            {
                 continue;
+            }
+            
             childUpdates["TracesRecived/" + user.id +"/"+ trace.id + "/updated"] = DateTime.UtcNow.ToString(); //change last updated
             childUpdates["TracesRecived/" + user.id +"/"+ trace.id + "/Sender"] = trace.senderID;
             
-            //give update in trace for them
-            childUpdates["Traces/" + trace.id + "/Reciver/" + user.id + "/HasUpdate"] = true;
+            //we dont say this user has an update as they are the one making the update
+            if (user.id != thisUserModel.userID)
+            {
+                childUpdates["Traces/" + trace.id + "/Reciver/" + user.id + "/HasUpdate"] = true;
+            }
         }
+        
 
         if (trace.groupID != "null") //update for trace group
         {

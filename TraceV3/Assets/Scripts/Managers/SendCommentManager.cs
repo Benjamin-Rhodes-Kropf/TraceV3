@@ -32,14 +32,15 @@ public class SendCommentManager : MonoBehaviour
     {
         string displayName = FbManager.instance.thisUserModel.name;
         //users
-        string message = "Commented on " + traceObject.senderName + "'s " + "trace!";
+        string message = "commented on " + traceObject.senderName + "'s " + "trace!";
         foreach (var user in traceObject.people)
         {
-            NotificationManager.Instance.StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user.id, displayName, message, (float)traceObject.lng,(float)traceObject.lat));
+            if(user.id != traceObject.senderID && user.id != FbManager.instance.thisUserModel.userID)
+                NotificationManager.Instance.StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user.id, displayName, message, (float)traceObject.lng,(float)traceObject.lat));
         }
         
         if(FriendsModelManager.Instance.GetRelationship(traceObject.senderID) != Relationship.SuperUser)
-            NotificationManager.Instance.StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(traceObject.senderID, displayName, "Commented on your Trace!", (float)traceObject.lng,(float)traceObject.lat));
+            NotificationManager.Instance.StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(traceObject.senderID, displayName, "commented on your trace!", (float)traceObject.lng,(float)traceObject.lat));
     }
     
     public void SendLocalNotification(string title, string message, float delayInSeconds)
