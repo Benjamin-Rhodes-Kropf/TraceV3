@@ -6,8 +6,10 @@ public class BackgroundTasksBridge : MonoBehaviour
     // [DllImport("__Internal")]
     // private static extern void SetNativePlayerPrefs(string key, string value);
     //
-    // [DllImport("__Internal")]
-    // private static extern void SetLocationToMonitor(float latitude, float longitude, float radius);
+    
+    
+    [DllImport("__Internal")]
+    private static extern void MonitorMyLocation(float latitude, float longitude, float radius);
     
     [DllImport("__Internal")]
     private static extern void SetNotificationLocationToMonitor(float latitude, float longitude, float radius);
@@ -38,6 +40,16 @@ public class BackgroundTasksBridge : MonoBehaviour
         #elif UNITY_IOS
                 Debug.Log("SetNotificationLocationToMonitor");
                 SetNotificationLocationToMonitor(latitude, longitude, radius);
+        #endif
+    }
+    
+    public void NativeMonitorMyLocation(float latitude, float longitude, float radius)
+    {
+        #if UNITY_EDITOR
+                Debug.Log("Please Switch To IOS Device To get this work");
+        #elif UNITY_IOS
+                    Debug.Log("SetLocationToMonitor");
+                    MonitorMyLocation(latitude, longitude, radius);
         #endif
     }
 

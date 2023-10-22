@@ -259,7 +259,7 @@ public class TraceManager : MonoBehaviour
 
         var entryBasedNotification = new iOSNotification
         {
-            Title = "You Found Trace!",
+            Title = "You Found a Trace!",
             Subtitle =  "Left Here By " + SenderName,
             Body = "",
             ShowInForeground = true,
@@ -484,6 +484,11 @@ public class TraceManager : MonoBehaviour
             ScheduleNotifications(true); 
         else
             Debug.Log("Location notification scheduling in Unity Is turned Off");
+
+        if (FbManager.instance.useBackgroundLocationTasks)
+        {
+            BackgroundTasksBridge.Instance.NativeMonitorMyLocation(_previousLatitude, _previousLongitude, 100);
+        }
     }
     private void OnApplicationPaused()
     {
@@ -492,6 +497,11 @@ public class TraceManager : MonoBehaviour
             ScheduleNotifications(true); 
         else
             Debug.Log("Location notification scheduling in Unity Is turned Off");
+        
+        if (FbManager.instance.useBackgroundLocationTasks)
+        {
+            BackgroundTasksBridge.Instance.NativeMonitorMyLocation(_previousLatitude, _previousLongitude, 100);
+        }
     }
 
     private void OnApplicationFocus(bool hasFocus)
@@ -503,6 +513,11 @@ public class TraceManager : MonoBehaviour
                 ScheduleNotifications(true); 
             else
                 Debug.Log("Location notification scheduling in Unity Is turned Off");
+            
+            if (FbManager.instance.useBackgroundLocationTasks)
+            {
+                BackgroundTasksBridge.Instance.NativeMonitorMyLocation(_previousLatitude, _previousLongitude, 100);
+            }
         }
     }
 
