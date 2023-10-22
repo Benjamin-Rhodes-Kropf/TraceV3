@@ -4848,7 +4848,7 @@ MonoBehaviour:
   firebaseStorageReferenceUrl: gs://geosnapv1.appspot.com
   fakeLoginWaitTime: 0
   lowConnectivitySmartLogin: 0
-  useBackgroundLocationTasks: 1
+  useBackgroundLocationTasks: 0
   resetPlayerPrefs: 0
   _drawTraceOnMap: {fileID: 6068666308761308086}
   _dragAndZoomInertia: {fileID: 6068666308761308082}

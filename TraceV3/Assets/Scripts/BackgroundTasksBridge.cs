@@ -3,14 +3,14 @@ using UnityEngine;
 
 public class BackgroundTasksBridge : MonoBehaviour
 {
+    // [DllImport("__Internal")]
+    // private static extern void SetNativePlayerPrefs(string key, string value);
+    //
     [DllImport("__Internal")]
-    private static extern void SetNativePlayerPrefs(string key, string value);
-
-    [DllImport("__Internal")]
-    private static extern void SetDesiredLocationToMonitor(float latitude, float longitude, float radius);
+    private static extern void SetNotificationLocationToMonitor(float latitude, float longitude, float radius);
     
-    [DllImport("__Internal")]
-    private static extern void SetLocationToMonitor(float latitude, float longitude, float radius);
+    // [DllImport("__Internal")]
+    // private static extern void SetLocationToMonitor(float latitude, float longitude, float radius);
 
     public static BackgroundTasksBridge Instance { get; set; }
     
@@ -28,24 +28,27 @@ public class BackgroundTasksBridge : MonoBehaviour
         }
     }
     
-    public void SendLocationToMonitor(float latitude, float longitude, float radius)
+    //adds it to the background list of traces
+    public void SetNativeNotificationLocationToMonitor(float latitude, float longitude, float radius)
     {
         Debug.Log("Monitor Location!");
         #if UNITY_EDITOR
                 Debug.Log("Please Switch To IOS Device To get this work");
         #elif UNITY_IOS
-                SetDesiredLocationToMonitor(latitude, longitude, radius);
+                Debug.Log("SetNotificationLocationToMonitor");
+                SetNotificationLocationToMonitor(latitude, longitude, radius);
         #endif
     }
 
-    public void SetNativeLocationToMonitor(float lat, float lng, float rad)
-    {
-        #if UNITY_EDITOR
-                Debug.Log("Please Switch To IOS Device To get this work");
-        #elif UNITY_IOS
-                SetLocationToMonitor(lat,lng, rad);
-        #endif
-    }
+    // public void SetNativeMonitorMyLocation(float lat, float lng)
+    // {
+    //     #if UNITY_EDITOR
+    //             Debug.Log("Please Switch To IOS Device To get this work");
+    //     #elif UNITY_IOS
+    //             //Debug.Log("SetNativeLocationToMonitor");
+    //             //SetLocationToMonitor(lat,lng, 0);
+    //     #endif
+    // }
     
     
     

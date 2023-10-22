@@ -61,6 +61,7 @@ public class TraceManager : MonoBehaviour
         //handle map updates
         onlineMapsControlBase.OnMapClick += HandleMapClick;
         onlineMapsLocationService.OnLocationChanged += UpdateMap;
+        iOSNotificationCenter.RemoveAllDeliveredNotifications();
     }
     
     private void HandleMapClick()
@@ -216,6 +217,7 @@ public class TraceManager : MonoBehaviour
     }
     private void UpdateNotificationsForNext20Traces()
     {
+        iOSNotificationCenter.RemoveAllScheduledNotifications();
         if (receivedTraceObjects.Count < 1)
         {
             Debug.Log("UpdateNotificationsForNextTraces: No Traces Available!");
@@ -229,14 +231,17 @@ public class TraceManager : MonoBehaviour
         {
             var trace = filteredTraces[i];
             if (!trace.HasBeenOpened && !trace.isExpired)
+            {
+                Debug.Log("placed trace notification:" + i);
                 ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng, trace.radius, " ", trace.senderName);
+            }
         }
         
+        //todo: uncomment once location notifications are working
         //Schedule prompt to tell user to send a trace
-        Debug.Log("Placed Exit Trace: lat:" + onlineMapsLocationService.position.x + " long:" + onlineMapsLocationService.position.y);
-        
+        //Debug.Log("Placed Exit Trace: lat:" + onlineMapsLocationService.position.x + " long:" + onlineMapsLocationService.position.y);
         //if you move a significant distance
-        ScheduleNotificationOnExitInARadius(onlineMapsLocationService.position.x, onlineMapsLocationService.position.y, 1000);
+        //ScheduleNotificationOnExitInARadius(onlineMapsLocationService.position.x, onlineMapsLocationService.position.y, 1000);
     }
     private static void ScheduleNotificationOnEnterInARadius(float latitude, float longitude, float radius, string message, string SenderName)
     {
@@ -269,6 +274,14 @@ public class TraceManager : MonoBehaviour
         
         // Schedule notification for entry base
         iOSNotificationCenter.ScheduleNotification(entryBasedNotification);
+        
+        //count and debug number of IOS notifications
+        int counter = 0;
+        foreach (var iOsNotification in iOSNotificationCenter.GetScheduledNotifications()){
+            counter++;
+        }
+        Debug.Log("number of ios notifications:" + counter);
+
     }
     private static void ScheduleNotificationOnExitInARadius(float latitude, float longitude, float radius)
     {
@@ -452,7 +465,7 @@ public class TraceManager : MonoBehaviour
         ClearTracesOnMap();
         UpdateTracesOnMap();
         _scaleMapElements.UpdateAllTraceScale();
-        ScheduleNotifications(false); //todo: make run only when application quit
+        //ScheduleNotifications(false); //todo: make run only when application quit
     }
     public void ClearTracesOnMap()
     {
@@ -467,18 +480,34 @@ public class TraceManager : MonoBehaviour
         }
     }
     
+    
+    //when app is being exited
     void OnApplicationQuit()
     {
         Debug.Log("Application ending after " + Time.time + " seconds: running ScheduleNotifications");
-        BackgroundTasksBridge.Instance.SetNativeLocationToMonitor(userLocation.x, userLocation.y, 1000);
-        ScheduleNotifications(true); //todo: determine if background trace notifications are working
+        //BackgroundTasksBridge.Instance.SetNativeNotificationLocationToMonitor(userLocation.y, userLocation.x, 100);
+        //todo: determine if background trace notifications are working
+        //ScheduleNotifications(true); 
     }
     private void OnApplicationPaused()
     {
         Debug.Log("Application Paused after " + Time.time + " seconds: running ScheduleNotifications");
-        BackgroundTasksBridge.Instance.SetNativeLocationToMonitor(userLocation.x, userLocation.y, 1000);
-        ScheduleNotifications(true); //todo: determine if background trace notifications are working
+        //BackgroundTasksBridge.Instance.SetNativeNotificationLocationToMonitor(userLocation.y, userLocation.x, 100);
+        //todo: determine if background trace notifications are working
+        //ScheduleNotifications(true); 
     }
+
+    private void OnApplicationFocus(bool hasFocus)
+    {
+        if (!hasFocus)
+        {
+            Debug.Log("Application Will Resign Active after " + Time.time + " seconds");
+            //BackgroundTasksBridge.Instance.SetNativeNotificationLocationToMonitor(userLocation.y, userLocation.x,100);
+            ScheduleNotifications(true); 
+        }
+    }
+
+    
     
     private void ScheduleNotifications(bool overideMaxDist)
     {
