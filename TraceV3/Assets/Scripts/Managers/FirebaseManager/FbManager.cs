@@ -1530,6 +1530,11 @@ public partial class FbManager : MonoBehaviour
         }
 
         int count = 0;
+        
+        //put this user in the recivers so comments work
+        childUpdates["Traces/" + key + "/Reciver/" + thisUserModel.userID + "/HasViewed"] = false;
+        childUpdates["Traces/" + key + "/Reciver/" + thisUserModel.userID + "/HasUpdate"] = false;
+        
         foreach (var user in usersToSendTo) //each of the users in usersToSendToList is a UID
         {
             count++;
@@ -2452,25 +2457,19 @@ public partial class FbManager : MonoBehaviour
 
         //update for sender
         childUpdates["TracesSent/" + trace.senderID +"/" + trace.id] = DateTime.UtcNow.ToString(); //change last updated
-        if(trace.senderID != thisUserModel.userID)
-            childUpdates["Traces/" + trace.id + "/Reciver/" + trace.senderID + "/HasUpdate"] = true;
-        
+
         foreach (var user in trace.people)
         {
-            //make sure we dont make the sender  become a reciever
+            //we dont say this user has an update as they are the one making the update
+            if (user.id != thisUserModel.userID)
+                childUpdates["Traces/" + trace.id + "/Reciver/" + user.id + "/HasUpdate"] = true;
+            
+            //dont put trace in the senders recieved section
             if (user.id == trace.senderID)
-            {
                 continue;
-            }
             
             childUpdates["TracesRecived/" + user.id +"/"+ trace.id + "/updated"] = DateTime.UtcNow.ToString(); //change last updated
             childUpdates["TracesRecived/" + user.id +"/"+ trace.id + "/Sender"] = trace.senderID;
-            
-            //we dont say this user has an update as they are the one making the update
-            if (user.id != thisUserModel.userID)
-            {
-                childUpdates["Traces/" + trace.id + "/Reciver/" + user.id + "/HasUpdate"] = true;
-            }
         }
         
 

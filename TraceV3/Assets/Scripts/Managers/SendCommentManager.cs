@@ -39,7 +39,7 @@ public class SendCommentManager : MonoBehaviour
                 NotificationManager.Instance.StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(user.id, displayName, message, (float)traceObject.lng,(float)traceObject.lat));
         }
         
-        if(FriendsModelManager.Instance.GetRelationship(traceObject.senderID) != Relationship.SuperUser)
+        if(FriendsModelManager.Instance.GetRelationship(traceObject.senderID) != Relationship.SuperUser && FbManager.instance.thisUserModel.userID != traceObject.senderID)
             NotificationManager.Instance.StartCoroutine(NotificationManager.Instance.SendNotificationUsingFirebaseUserId(traceObject.senderID, displayName, "commented on your trace!", (float)traceObject.lng,(float)traceObject.lat));
     }
     
