@@ -73,8 +73,8 @@ public class TraceManager : MonoBehaviour
     private void HandleMapClick()
     {
         Vector2 mouseLatAndLong = markerManager.GetMouseLatAndLong();
-        var accessibleTraces = new List<(TraceObject, double)>();
-        var viewableAbleTraces = new List<(TraceObject, double)>();
+        var accessibleTraces = new List<(TraceObject, double, float)>();
+        var viewableAbleTraces = new List<(TraceObject, double, float)>();
         
         //sort traces based on location of click and which view the user is in
         if (!HomeScreenManager.isInSendTraceView)
@@ -82,22 +82,25 @@ public class TraceManager : MonoBehaviour
             foreach (var trace in receivedTraceObjects)
             {
                 double distanceFromMouse = 0;
+                float radius = 0;
                 if (trace.Value.marker.isShowingPrimaryTexture)
                 {
-                    distanceFromMouse = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.Value.lat, (float)trace.Value.lng, trace.Value.radius*1000f);
+                    radius = trace.Value.radius * 1000f;
+                    distanceFromMouse = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.Value.lat, (float)trace.Value.lng, (float)radius);
                 }
                 else
                 {
-                    distanceFromMouse = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.Value.lat, (float)trace.Value.lng, _clickRadiusAnimationCurve.Evaluate(onlineMaps.floatZoom)*pinModeMultiplyer);
+                    radius = _clickRadiusAnimationCurve.Evaluate(onlineMaps.floatZoom) * pinModeMultiplyer;
+                    distanceFromMouse = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.Value.lat, (float)trace.Value.lng, (float)radius);
                 }
                 
                 if (distanceFromMouse < 0 && (trace.Value.HasBeenOpened || trace.Value.canBeOpened) && !trace.Value.isExpired)
                 {
-                    accessibleTraces.Add((trace.Value, distanceFromMouse));
+                    accessibleTraces.Add((trace.Value, distanceFromMouse, radius));
                 }
                 else if (distanceFromMouse < 0 && !trace.Value.HasBeenOpened && !trace.Value.canBeOpened && !trace.Value.isExpired) 
                 {
-                    viewableAbleTraces.Add((trace.Value, distanceFromMouse));
+                    viewableAbleTraces.Add((trace.Value, distanceFromMouse,radius));
                 }
             }
         }
@@ -106,19 +109,22 @@ public class TraceManager : MonoBehaviour
             foreach (var trace in sentTraceObjects)
             {
                 double distance = 0;
+                float radius = 0;
                 if (trace.Value.marker.isShowingPrimaryTexture)
                 {
+                    radius = trace.Value.radius * 1000f;
                     distance = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.Value.lat, (float)trace.Value.lng, trace.Value.radius*1000f);
                 }
                 else
                 {
+                    radius = _clickRadiusAnimationCurve.Evaluate(onlineMaps.floatZoom) * pinModeMultiplyer;
                     distance = CalculateTheDistanceBetweenCoordinatesAndCurrentCoordinates(mouseLatAndLong.y, mouseLatAndLong.x, (float)trace.Value.lat, (float)trace.Value.lng, _clickRadiusAnimationCurve.Evaluate(onlineMaps.floatZoom)*pinModeMultiplyer);
                 }
 
                 //open all sent traces
                 if (distance < 0 && !trace.Value.isExpired)
                 {
-                    accessibleTraces.Add((trace.Value, distance));
+                    accessibleTraces.Add((trace.Value, distance, radius));
                 }
             }   
         }
@@ -126,18 +132,14 @@ public class TraceManager : MonoBehaviour
         //open based on sort
         if (accessibleTraces.Count > 0)
         {
-            accessibleTraces.Sort((i1, i2) => i1.Item2.CompareTo(i2.Item2));
+            accessibleTraces.Sort((i1, i2) => i2.Item3.CompareTo(i1.Item3));
             var traceToOpen = accessibleTraces[accessibleTraces.Count - 1];
             
             Debug.Log("OPEN TRACE:" + traceToOpen.Item1.id);
             Debug.Log("OPEN TRACE: can be opened:" + traceToOpen.Item1.canBeOpened);
             Debug.Log("OPEN TRACE: has been opened:" + traceToOpen.Item1.HasBeenOpened);
-            
-            
-            
+
             //if(currentlyClickingTraceID == traceToOpen.Item1.id) 
-            
-            
             //convert trace image to hollow if clicked
             traceToOpen.Item1.marker.displayedTexture =  traceToOpen.Item1.marker.primaryHollowInTexture;
 
@@ -150,7 +152,7 @@ public class TraceManager : MonoBehaviour
         }
         else if(viewableAbleTraces.Count > 0)
         {
-            viewableAbleTraces.Sort((i1, i2) => i1.Item2.CompareTo(i2.Item2));
+            viewableAbleTraces.Sort((i1, i2) => i2.Item3.CompareTo(i1.Item3));
             var traceToView = viewableAbleTraces[viewableAbleTraces.Count - 1];
             
             Debug.Log("VIEW TRACE:" + traceToView.Item1.id);
