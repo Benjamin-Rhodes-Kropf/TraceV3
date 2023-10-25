@@ -335,6 +335,7 @@ public class OpenTraceManager : MonoBehaviour, IDragHandler, IEndDragHandler
         m_targetYVal = -1000;
         videoPlayer.Pause();
         currentState = State.Closing;
+        TraceManager.instance.currentlyClickingTraceID = "";
     }
 
     void OnVideoEnded(VideoPlayer vp) //slide the window up to show comments
