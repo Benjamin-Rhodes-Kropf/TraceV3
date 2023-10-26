@@ -243,7 +243,7 @@ public class TraceManager : MonoBehaviour
             if (!trace.HasBeenOpened && !trace.isExpired)
             {
                 Debug.Log("placed trace notification:" + i);
-                ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng, trace.radius, " ", trace.senderName);
+                ScheduleNotificationOnEnterInARadius((float)trace.lat, (float)trace.lng, trace.radius, " ", trace.senderName, trace.id);
             }
         }
         
@@ -253,7 +253,7 @@ public class TraceManager : MonoBehaviour
         //if you move a significant distance
         //ScheduleNotificationOnExitInARadius(onlineMapsLocationService.position.x, onlineMapsLocationService.position.y, 1000);
     }
-    private static void ScheduleNotificationOnEnterInARadius(float latitude, float longitude, float radius, string message, string SenderName)
+    private static void ScheduleNotificationOnEnterInARadius(float latitude, float longitude, float radius, string message, string SenderName, string traceID)
     {
         var enterLocationTrigger = new iOSNotificationLocationTrigger
         {
@@ -271,7 +271,9 @@ public class TraceManager : MonoBehaviour
             Body = "",
             ShowInForeground = true,
             ForegroundPresentationOption = PresentationOption.Alert | PresentationOption.Sound,
-            Trigger = enterLocationTrigger
+            InterruptionLevel = NotificationInterruptionLevel.TimeSensitive,
+            Trigger = enterLocationTrigger,
+            Data = traceID
         };
         
         // Schedule notification for entry base
@@ -299,13 +301,13 @@ public class TraceManager : MonoBehaviour
         
         var exitBasedNotification = new iOSNotification
         {
-            
             Title = "Cool Spot?",
             Subtitle =  "Leave a Trace!",
             Body = "This might be a good spot to leave a trace",
             ShowInForeground = true,
             ForegroundPresentationOption = PresentationOption.Alert | PresentationOption.Sound,
-            Trigger = exitLocationTrigger
+            Trigger = exitLocationTrigger,
+            InterruptionLevel = NotificationInterruptionLevel.TimeSensitive
         };
         
         // Schedule notification for entry base
