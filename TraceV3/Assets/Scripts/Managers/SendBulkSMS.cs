@@ -22,8 +22,7 @@ public class SendBulkSMS : MonoBehaviour
     [Header("Trace")]
     public string baseUrl = "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/static/";
     public string imageUrl = "url-https%3A%2F%2Fstatic.wixstatic.com%2Fmedia%2F8708ae_9d90308609c04aa8a7d18b08b3baf231~mv2.png%2Fv1%2Ffill%2Fw_421%2Ch_421%2Cal_c%2Clg_1%2Cq_85%2Cenc_auto%2FTrace%2520Circle%2520(1).png";
-    public string accessToken = "pk.eyJ1IjoiYmVuamFsb3VpczA1IiwiYSI6ImNsN2MwenpxeTBlZHAzb3I1aWJtczEwejkifQ.GKiiZqUc66xVs5unZ_gnNA";
-    //public Vector2 coordinates = new Vector2(1.0001f, 15.0001f);
+    public string accessToken = ""; //removed for security
     public float zoomLevel = 17.71f;
     public Vector2Int imageSize = new Vector2Int(1280, 1280);
     
